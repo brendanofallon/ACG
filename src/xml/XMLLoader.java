@@ -95,6 +95,15 @@ public class XMLLoader {
 		doc = builder.parse(xmlFile);
 	}
 
+	
+	public XMLLoader(Document doc) throws ParserConfigurationException, SAXException, IOException {
+		if (primaryLoader != null) {
+			System.out.println("Warning: Multiple XML loaders operating concurrently, problems may arise");
+		}
+		primaryLoader = this;
+		this.doc = doc;
+	}
+	
 	/**
 	 * Turn on/off emitting of things to System.out
 	 * @param verb
@@ -193,7 +202,7 @@ public class XMLLoader {
 	/**
 	 * Attempt to find a Class with the given label in the map field classMap. If an entry for the given label
 	 * exists in the classMap, we simply return the Class (after doing a bit of error checking).
-	 * If such as class does not exist, we attempt to load the class using the pluginLoader and the given className.
+	 * If no such class already exists, we attempt to load the class using the pluginLoader and the given className.
 	 * If successful, we add a new entry to the map with key=label and value=Class. 
 	 * 
 	 * @param label A unique identifier for the object to be found / created
@@ -226,6 +235,21 @@ public class XMLLoader {
 		return clz;
 	}
 
+	/**
+	 * Returns a list of all object labels with a class that "isAssignableFrom" the given class
+	 * @param clz
+	 * @return
+	 */
+	public List<String> getObjLabelsForClass(Class clz) {
+		List<String> labels = new ArrayList<String>();
+		for(String label : classMap.keySet()) {
+			Class c = classMap.get(label);
+			if (clz.isAssignableFrom(c)) {
+				labels.add(label);
+			}
+		}
+		return labels;
+	}
 	
 	/**
 	 * Recursively examine all nodes starting from the document root, and load the associated classes using the pluginLoader

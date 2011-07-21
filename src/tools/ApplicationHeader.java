@@ -1,5 +1,7 @@
 package tools;
 
+import gui.ACGFrame;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -16,7 +18,7 @@ import xml.XMLLoader;
  */
 public class ApplicationHeader {
 
-	public final static String version = "0.01";
+	public final static String version = "0.1";
 	public final static String versionDate = "July 20, 2011";
 	
 	public static String getHeader() {
@@ -29,19 +31,30 @@ public class ApplicationHeader {
 		return header.toString();
 	}
 	
+	
+	public static void launchGUI() {
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				ACGFrame frame = new ACGFrame();
+				frame.setVisible(true);
+			}
+		});
+	}
+
+	
 	/**
 	 * Here's a simple main class that should work by parsing an xml-file with xmlloader
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		
-		System.out.println(ApplicationHeader.getHeader());
-		
 		if (args.length == 0) {
-			//Fire up a GUI?
-			System.out.println("Please enter the name of the input file you wish to execute.");
-			System.exit(0);
+			launchGUI();
+			return;
 		}
+		
+
+		System.out.println(ApplicationHeader.getHeader());
 		
 		File inputFile = new File(args[0]);
 		if (!inputFile.exists()) {
