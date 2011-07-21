@@ -22,6 +22,7 @@ import parameter.AbstractParameter;
 import parameter.InvalidParameterValueException;
 import parameter.Parameter;
 import testing.Timer;
+import xml.XMLUtils;
 
 public class MCMC {
 
@@ -81,6 +82,9 @@ public class MCMC {
 	private int currentState = 0;
 	
 	private boolean useTimers = true;
+	
+	//User-supplied value for run length
+	private int userRunLength;
 	
 	public MCMC( ) {
 		
@@ -218,6 +222,9 @@ public class MCMC {
 			addListener(debugger);
 		}
 		
+
+		userRunLength = XMLUtils.getIntegerOrFail("length", attrs);
+		
 		boolean runNow = false;
 		String runStr = attrs.get("run");
 		if (runStr != null) {
@@ -225,16 +232,9 @@ public class MCMC {
 			runNow = run;
 		}
 		
+				
 		if (runNow) {
-			String lengthStr = attrs.get("length");
-			if (lengthStr==null) {
-				System.out.println("Could not find run length attribute, but chain was set to run immediately.");
-				System.exit(0);
-			}
-			
-			Integer length = Integer.parseInt(lengthStr);
-			
-			run(length);		
+			run();		
 		}
 	}
 	
@@ -274,6 +274,10 @@ public class MCMC {
 	
 	public boolean removeParameter(AbstractParameter<?> param) {
 		return parameters.remove(param);
+	}
+	
+	public boolean removeListener(MCMCListener listener) {
+		return listeners.remove(listener);
 	}
 	
 	/**
@@ -341,6 +345,14 @@ public class MCMC {
 	public void setHeat(double heat) {
 		this.heat = heat;
 	}
+	
+	/**
+	 * Run the chains for a number of steps equal to the userRunLength field
+	 */
+	public void run() {
+		run(userRunLength);
+	}
+	
 	
 	/**
 	 * Run the MCMC chain for the given number of states

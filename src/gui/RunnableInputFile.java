@@ -10,6 +10,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import mcmc.MCMC;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -54,22 +56,75 @@ public class RunnableInputFile {
 			doc = builder.parse(file);
 			loader = new XMLLoader(doc);
 			loader.loadAllClasses(); //Attempt to load all of the classes referenced by the document
-			System.out.println( this );
+
+			
+			turnOffMCMC(); //Find all mcmc objects and make sure they're not set to run right away
+			loader.instantiateAll();
+			runMCMC();
+			
 		} catch (Exception e) {
 			doc = null;
 			throw new InvalidInputFileException(e.getMessage());
 		}
 	}
 	
-	public Document getDocument() {
-		return doc;
+	public void runMCMC() {
+		List<String> mcLabels = getMCMCLabels();
+		if (mcLabels.size()==0) {
+			throw new InvalidInputFileException("Could not find any MCMC objects");
+		}
+		if (mcLabels.size()==1) {
+			try {
+				MCMC mcmc = (MCMC)loader.getObjectForLabel(mcLabels.get(0));
+				mcmc.run();
+				
+			} catch (InstantiationException e) {
+				throw new InvalidInputFileException("Could not create mcmc object : " + e.getMessage());
+			} catch (IllegalAccessException e) {
+				throw new InvalidInputFileException("Could not create mcmc object : " + e.getMessage());
+			}
+			
+		}
 	}
 	
+	/**
+	 * Adds "run=false" as an attribute to all MCMC objects so they won't run right away when we create them
+	 */
+	private void turnOffMCMC() {
+		List<String> mcLabels = getMCMCLabels();
+		if (mcLabels.size()==0) {
+			throw new InvalidInputFileException("Could not find any MCMC objects");
+		}
+		for(String label : mcLabels) {
+			loader.addAttribute(label, "run", "false");
+		}
+	}
+
+	public void createAllObjects() {
+		loader.instantiateAll();
+	}
+	
+	
+	/**
+	 * Return a list of all of the labels of the objects that are MCMCs
+	 * @return
+	 */
+	public List<String> getMCMCLabels() {
+		return loader.getObjLabelsForClass(MCMC.class);
+	}
+	
+	/**
+	 * Return a list of all of the labels of the objects that are AbstractParameters
+	 * @return
+	 */
 	public List<String> getParameterLabels() {
 		return loader.getObjLabelsForClass(AbstractParameter.class);
 	}
 
-	
+	/**
+	 * Return a list of all of the labels of the objects that are LikelihoodComponents
+	 * @return
+	 */
 	public List<String> getLikelihoodLabels() {
 		return loader.getObjLabelsForClass(LikelihoodComponent.class);
 	}
@@ -145,7 +200,6 @@ public class RunnableInputFile {
 						System.err.println("Found a text node with text: " + node.getNodeValue() + " but there's no constructor info for label: " + label);
 					}
 					else {
-
 						//Add text content to the attribute map
 						if (text.trim().length()>0) {
 							xmlObj.attrs.put("content", text);
@@ -157,6 +211,11 @@ public class RunnableInputFile {
 		}
 	}
 	
+	/**
+	 * Summarizes some information about an object that will be created from the XML input file
+	 * @author brendano
+	 *
+	 */
 	class XMLObject {
 		String label;
 		String className;

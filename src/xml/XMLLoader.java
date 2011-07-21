@@ -378,6 +378,19 @@ public class XMLLoader {
 	}
 	
 	/**
+	 * Add an entry to the attribute map that will be used to create the object with the given label. 
+	 * This will result in a nullpointerexception if there is no object with the given objLabel. 
+	 * @param objLabel
+	 * @param key
+	 * @param value
+	 * @return The previous value associated with the key or null if no entry existed
+	 */
+	public String addAttribute(String objLabel, String key, String value) {
+		ConstructorInfo consItems = consMap.get(objLabel);
+		return consItems.attrMap.put(key, value);
+	}
+	
+	/**
 	 * Recursive function that attempts to instantiate the class with the given label. If an object with
 	 * the given label has already been constructed, we simply return that (it should be in the objMap map).
 	 * If not, we look up the class associated with the given label along with the labels of any sub-

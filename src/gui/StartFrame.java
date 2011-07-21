@@ -131,6 +131,8 @@ public class StartFrame extends JPanel {
 		for(String label : likeLabels) {
 			System.out.println(label);
 		}
+		
+		//So... now what?
 	}
 
 
