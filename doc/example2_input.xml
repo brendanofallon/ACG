@@ -1,0 +1,106 @@
+<!--  Another example ACG input file  -->
+<ACG>
+
+<!-- A random number generator is essential and will be used by all classes. -->
+<!-- A initial random seed can be specified with the seed="XXX" attribute -->
+<RandomSource class="math.RandomSource" />
+
+<!-- Sequence data is provided in the form of an alignment, which can refer to a file -->
+<!-- or contain a list of sequences -->
+<alignment class="sequence.Alignment" filename="example2.fas">
+</alignment>
+
+
+<!--  The Ancestral Recombination Graph (ARG) that is the central feature of the analysis. 
+ It's a type of Parameter, and so has a frequency specifying how often new values are 
+ proposed by the MCMC machinery. It also has a list of modifiers (proposal kernels) that
+ propose new values	 -->
+<arg class="arg.ARG" frequency="30.0">
+	<alignment />
+	<modifiers class="list">
+		<recombAddRemove class="modifier.RecombAddRemove"/>
+		<rootHeight class="modifier.RootHeightModifier" />
+		<nodeHeight class="modifier.NodeHeightModifier"/>
+		<swapper class="modifier.SubtreeSwap" />
+		<wideSwap class="modifier.WideSwap" />
+		<shifter class="modifier.BreakpointShifter" />
+		<bpSwap class="modifier.BreakpointSwapper" />
+	</modifiers>
+</arg>
+
+<!-- The TN93 mutation model has one more free parameter than the F84 model  -->
+<mutationModel class="dlCalculation.substitutionModels.TN93Matrix">
+	<stationaries class="dlCalculation.substitutionModels.BaseFrequencies" stationaries="0.25 0.25 0.25 0.25" />
+	<kappaR class="parameter.DoubleParameter" name="kappaR" value="2.0" lowerBound="0.5" upperBound="500">
+		<kappaRMod class="modifier.SimpleModifier" />
+	</kappaR>
+	<kappaY class="parameter.DoubleParameter" name="kappaY" value="2.0" lowerBound="0.5" upperBound="500">
+		<kappaYMod class="modifier.SimpleModifier" />
+	</kappaY>
+</mutationModel>
+
+<!--  A likelihood component that computes the probability of observing the data conditional on the ARG
+	  At minimum, it needs references to the mutation model, the ARG, and the data matrix -->
+<DLCalculator class="dlCalculation.DataLikelihood"> 
+	<mutationModel />
+	<arg />
+</DLCalculator>
+
+<!--  Parameter specifying population size (theta / 2.0)  -->
+<constantPopSize class="coalescent.ConstantPopSize" frequency="1.0" size="1">
+	<popSizeScaler class="modifier.ScaleModifier"/>
+</constantPopSize>
+
+<!-- Simple, constant recombination rate across sites -->
+<constantRecRate class="coalescent.ConstantRecombination">
+	<recRateScaler class="modifier.ScaleModifier"/>
+</constantRecRate>
+
+<!-- Place an exponential prior on the recombination rate with a mean of 25 -->
+<!-- The prior helps to confine the ARGs with a reasonable number of recombinations -->
+<recPrior class="priors.ExponentialPrior" mean="25">
+	<constantRecRate />
+</recPrior>
+
+<!-- A likelihood object specifying the probability of observing the ARG  -->
+<coalescentLikelihood class="coalescent.CoalescentLikelihood">
+	<constantPopSize />
+	<constantRecRate />
+	<arg />
+</coalescentLikelihood>
+
+
+<!-- A logger that tracks properties of the likelihoods and parameters in the MCMC -->
+<statelogger class="logging.StateLogger" filename="example2.log" frequency="5000" echoToScreen="true" />
+
+<!-- A logger that tracks the position of recombination breakpoints along the sequence -->
+<bpLocLogger class="logging.BreakpointLocation" filename="example2_bp.txt" frequency="5000" burnin="100000">
+	<arg />  <!-- This logger requires a reference to the ARG -->
+</bpLocLogger>
+
+<!-- a logger that tracks the distribution of TMRCA (root height of marginal trees) along the sequence -->
+<rootHeightLogger class="logging.RootHeightDensity" filename="example2_rootHeight.txt" frequency="5000" burnin="100000">
+	<arg />
+</rootHeightLogger>
+
+<mc class="mcmc.MCMC" length="20000000" run="true">
+	<parameters class="list">
+		<constantPopSize />
+		<constantRecRate />
+		<kappaR />
+		<kappaY />
+		<arg />  
+	</parameters>
+	<likelihoodComponents class="list">
+		<recPrior />
+		<coalescentLikelihood />
+		<DLCalculator />
+	</likelihoodComponents>
+	<loggers class="list">
+		<statelogger />
+		<bpLocLogger />
+		<rootHeightLogger />
+	</loggers>
+</mc>
+
+</ACG>
