@@ -476,6 +476,7 @@ public class MCMC {
 					double currentLike = comp.getCurrentLogLikelihood();
 					currentL += currentLike;
 					currentLikelist[i] = currentLike;
+					//System.out.println("Likelihood of component : " + comp + "\n " + currentLike);
 					i++;
 				}
 

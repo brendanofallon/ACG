@@ -150,9 +150,11 @@ public class DataLikelihood extends LikelihoodComponent {
 			nodes.get(i).computeProposedRanges(true);
 		}
 		
-		proposedLogLikelihood = computeProposedLikelihood(); 
+		proposedLogLikelihood = computeProposedLikelihood();
+		
 		stateAccepted();
 		tree.acceptValue();
+		System.out.println("Initial DL : " + currentLogLikelihood);
 	}
 	
 	public void setChain(MCMC chain) {
@@ -365,8 +367,28 @@ public class DataLikelihood extends LikelihoodComponent {
 		if (modified) { //It's important that we don't call accept on the compute core if we haven't modified anything
 			currentLogLikelihood = proposedLogLikelihood;
 			computeCore.accept();
+			
+			//Another periodically occurring validity check...propose all nodes and recompute the full DL to make
+			//sure it matches the DL we just accepted
+			if (calls < 10000 || calls % 10000 == 0) {
+				List<CoalNode> cNodes = arg.getDLCoalNodes(); //We only need the nodes that have coalescing sites
+				//Propose all nodes
+				TIntArrayList computeRefs = getComputeNodeIDs( cNodes );
+				for(int i=0; i<computeRefs.size(); i++) {
+					computeCore.proposeNode(computeRefs.get(i), computeCore.getHeightForNode( computeRefs.get(i)));
+				}
+				
+				double logProb = computeProposedLikelihood();
+				
+				//And see if it matches the likelihood we just accepted...
+				if (logProb != currentLogLikelihood) {
+					throw new IllegalStateException("Likelihood verification did not match, accepted likelihood=" + currentLogLikelihood + " recomputed: " + logProb);
+				}
+			}
+			
 			modified = false;
 			
+			//Stuff below not actually used now...
 			if (activeRootRanges == proposedRootRanges) {
 				SortedSiteRangeList tmp = proposedRootRanges;
 				proposedRootRanges = currentRootRanges;

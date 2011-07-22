@@ -386,7 +386,13 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 					if (alignment != null && sites != alignment.getSiteCount()) {
 						throw new IllegalArgumentException("ARG and sequence file disagree as to number of sites, arg reports " + sites + ", but sequences reports " + alignment.getSiteCount() );
 					}
-					initializeFromNodeList(nodes, sites, true);
+					
+					initializeFromNodeList(nodes, sites, false);
+					
+//					Integer[] bps = this.collectBreakPoints();
+//					System.out.println("Initial arg has " + bps.length + " breakpoints at ... ");
+//					for(int i=0; i<bps.length; i++)
+//						System.out.println(bps[i]);
 				}
 				
 

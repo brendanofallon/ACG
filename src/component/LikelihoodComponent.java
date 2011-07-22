@@ -33,7 +33,7 @@ public abstract class LikelihoodComponent implements ParameterListener, AcceptRe
 	
 	protected boolean recalculateLikelihood = true;
 	
-	protected double currentLogLikelihood = Double.NEGATIVE_INFINITY;
+	protected double currentLogLikelihood = Double.NaN;
 	protected double proposedLogLikelihood = Double.NaN;
 	
 	/**
@@ -151,14 +151,14 @@ public abstract class LikelihoodComponent implements ParameterListener, AcceptRe
 	 * likelihood. This method is called after verification and should be used to return the component
 	 * to the state it was in before verification. 
 	 */
-	public void restoreAfterVerify() {
-		
-	}
+//	public void restoreAfterVerify() {
+//	 Not used, currently...	
+//	}
 	
 	/**
 	 * Called when the chain is finished executing. In general, we don't care about this
 	 */
 	public void chainIsFinished() {
-		      
+		      //Most components don't care about this
 	}
 }

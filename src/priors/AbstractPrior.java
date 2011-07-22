@@ -15,6 +15,9 @@ public abstract class AbstractPrior extends LikelihoodComponent implements Prior
 	
 	public AbstractPrior(Parameter param) {
 		addParameter(param);
+		
+		proposedLogLikelihood = computeProposedLikelihood();
+		this.stateAccepted();
 	}
 	
 	

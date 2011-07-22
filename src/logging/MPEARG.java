@@ -19,12 +19,11 @@ import mcmc.MCMCListener;
  */
 public class MPEARG implements MCMCListener {
 	
-	ARG arg;
 	String filename;
 	ARGParser parser = new ARGParser();
 	DataLikelihood dataLikelihood = null;
 	double maxLnL = Double.NEGATIVE_INFINITY; //Tracks current max likelihood so we know if we reach a new max
-	int burnin = 1000000;
+	int burnin = 10000;
 	int frequency = 10000;
 	
 	public MPEARG(DataLikelihood dl, String fileName, int frequency) {
@@ -33,7 +32,6 @@ public class MPEARG implements MCMCListener {
 	}
 	
 	public MPEARG(DataLikelihood dl, String fileName) {
-		this.arg = dl.getTree();
 		this.dataLikelihood = dl;
 		this.filename = fileName;
 		if (!filename.endsWith(".xml")) 
@@ -49,7 +47,7 @@ public class MPEARG implements MCMCListener {
 				if (currentDL > maxLnL) {
 					System.out.println("Found new MPE arg, likelihood : " + currentDL);
 					maxLnL = currentDL;
-					parser.writeARG(arg, file);	
+					parser.writeARG(dataLikelihood.getTree(), file);	
 				}
 			} catch (IOException e) {
 				System.err.println("Could not write recovery arg to file, reason: " + e);
@@ -70,14 +68,13 @@ public class MPEARG implements MCMCListener {
 	
 	@Override
 	public void setMCMC(MCMC chain) {
-		dataLikelihood = findARG(chain);
+		dataLikelihood = findDL(chain);
 		if (dataLikelihood == null) {
-			throw new IllegalArgumentException("Cannot listen to a chain without an data likelihood component");
+			throw new IllegalArgumentException("Cannot listen to a chain without a data likelihood component");
 		}
-		this.arg = dataLikelihood.getTree();
 	}
 	
-	private DataLikelihood findARG(MCMC mc) {
+	private DataLikelihood findDL(MCMC mc) {
 		for(LikelihoodComponent comp : mc.getComponents()) {
 			if (comp instanceof DataLikelihood) {
 				return (DataLikelihood)comp;

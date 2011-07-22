@@ -24,13 +24,17 @@ public class ExponentialPrior extends LikelihoodComponent {
 		this.param = param;
 		this.mean = XMLUtils.getDoubleOrFail("mean", attrs);
 		exp = new Exponential(1.0/mean, RandomSource.getEngine());	
+		proposedLogLikelihood = computeProposedLikelihood();
+		this.stateAccepted();
 	}
 	
 	public ExponentialPrior(DoubleParameter param, double mean) {
 		addParameter(param);
 		this.param = param;
 		this.mean = mean;
-		exp = new Exponential(1.0/mean, RandomSource.getEngine());	
+		exp = new Exponential(1.0/mean, RandomSource.getEngine());
+		proposedLogLikelihood = computeProposedLikelihood();
+		this.stateAccepted();
 	}
 	
 	@Override

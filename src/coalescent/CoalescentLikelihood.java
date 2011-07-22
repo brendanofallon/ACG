@@ -41,16 +41,12 @@ public class CoalescentLikelihood extends LikelihoodComponent {
 		this.demoParam = demoParam;
 		this.recParam = recParam;
 		this.tree = tree;
+
+		//Make sure to initialize value so we don't end up with bogus likelihoods for the initial steps..
+		proposedLogLikelihood = computeProposedLikelihood();
+		this.stateAccepted();
 	}
-		
-	private double factorial(int k) {
-		double prob = 1.0;
-		for(int i=2; i<=k; i++) {
-			prob *= i;
-		}
-		return prob;
-	}
-	
+			
 	public Double computeProposedLikelihood() {
 		Double logProb = 0.0;
 		
@@ -62,15 +58,11 @@ public class CoalescentLikelihood extends LikelihoodComponent {
 		}
 		
 		
-		boolean emitStuff = false;
+		final boolean emitStuff = false;
 		
 		
 		ARGIntervals intervals = tree.getIntervals();
 		
-//		if (tree.getMaxHeight() > maxDLHeight && tree.getRecombNodes().size() > tree.getDLRecombNodes().size()+10 ) {
-//			System.out.println("Computing interval prob, total recombs: " + tree.getRecombNodes().size() + " site bps: " + tree.getDLRecombNodes().size());
-//			emitStuff = true;
-//		}
 		
 		double start = 0;
 		double end;

@@ -135,10 +135,11 @@ public class RecombMC3 {
 		siteMap.setRemovedColumns(removedCols);
 		
 		if (initARGfilename == null && useLastARG) {
-			this.initARGfilename = fileStem + "_lastARG.xml";
+			this.initARGfilename = fileStem + "_mpe_arg.xml";
 			File startARG = new File(this.initARGfilename);
 			if (! startARG.exists()) {
 				this.initARGfilename = null;
+				System.out.println("Could not find initial arg in " + this.initARGfilename);
 			}
 			else {
 				System.out.println("Initiating run from start arg in " + this.initARGfilename);
@@ -304,7 +305,9 @@ public class RecombMC3 {
 		parameters.add(popSize);
 		parameters.add(rec);
 		
-		return new MCMC(new HashMap<String, String>(), parameters, likelihoods, null);
+		HashMap<String, String> mcAttrs = new HashMap<String, String>();
+		mcAttrs.put("length", "" + runLength); //Without this attr the run won't initialize
+		return new MCMC(mcAttrs, parameters, likelihoods, null);
 	}
 	
 	public void run() {
