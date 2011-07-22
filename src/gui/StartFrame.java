@@ -36,7 +36,6 @@ import mcmc.MCMC;
 public class StartFrame extends JPanel {
 	
 	ACGFrame acgParent;
-	Color backgroundColor = new Color(120, 120, 120);
 	
 	public StartFrame(ACGFrame acgParentFrame) {
 		this.acgParent = acgParentFrame;
@@ -46,20 +45,20 @@ public class StartFrame extends JPanel {
 	
 	private void initComponents() {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setBackground(backgroundColor);
+		this.setBackground(ACGFrame.backgroundColor);
 		
 		
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
 		topPanel.add(Box.createVerticalStrut(50));
-		topPanel.setBackground(backgroundColor);
+		topPanel.setBackground(ACGFrame.backgroundColor);
 		//Add a logo or something to the top panel....?
 		add(topPanel);
 		
 		JPanel centerPanel = new FancyInputBox();
 		
 		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
-		centerPanel.setBackground(backgroundColor);
+		centerPanel.setBackground(ACGFrame.backgroundColor);
 		centerPanel.add(Box.createHorizontalStrut(50));
 		centerPanel.setPreferredSize(new Dimension(300, 150));
 		centerPanel.setMaximumSize(new Dimension(400, 200));
@@ -88,7 +87,7 @@ public class StartFrame extends JPanel {
 		
 		JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		bottomPanel.setBackground(backgroundColor);
+		bottomPanel.setBackground(ACGFrame.backgroundColor);
 		JButton done = new JButton("Done");
 		done.addActionListener( new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {

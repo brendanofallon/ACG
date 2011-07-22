@@ -53,7 +53,7 @@ public class XYSeriesFigure extends SeriesFigure {
 		yLabelElement.setCanConfigure(true);
 		yLabelElement.setMobile(true);
 		axes = new AxesElement(this);
-		axes.setBounds(0.02, 0.03, 0.9, 0.85);
+		axes.setBounds(0.04, 0.03, 0.9, 0.85);
 		axes.setCanConfigure(true);
 		addMouseListeningElement(axes);
 		//Note that is is probably necessary to have the axes element as first in this list
@@ -333,7 +333,13 @@ public class XYSeriesFigure extends SeriesFigure {
 		return newElement;
 	}
 	
-	
+	/**
+	 * Sets whether or not mouse dragging causes the selection region to appear in the axes
+	 * @param allowMouseDragSelection
+	 */
+	public void setAllowMouseDragSelection(boolean allowMouseDragSelection) {
+		axes.setAllowMouseDragSelection(allowMouseDragSelection);
+	}
 	
 	
 	public void componentResized(ComponentEvent arg0) {

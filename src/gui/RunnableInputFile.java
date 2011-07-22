@@ -67,7 +67,7 @@ public class RunnableInputFile {
 		}
 	}
 	
-	public void runMCMC() {
+	public ExecutingChain runMCMC() {
 		List<String> mcLabels = getMCMCLabels();
 		if (mcLabels.size()==0) {
 			throw new InvalidInputFileException("Could not find any MCMC objects");
@@ -75,9 +75,9 @@ public class RunnableInputFile {
 		if (mcLabels.size()==1) {
 			try {
 				MCMC mcmc = (MCMC)loader.getObjectForLabel(mcLabels.get(0));
-				Runner runner = new Runner(mcmc);
+				ExecutingChain runner = new ExecutingChain(mcmc);
 				runner.execute();
-				
+				return runner;
 				
 			} catch (InstantiationException e) {
 				throw new InvalidInputFileException("Could not create mcmc object : " + e.getMessage());
@@ -86,6 +86,7 @@ public class RunnableInputFile {
 			}
 			
 		}
+		return null;
 	}
 	
 	/**
@@ -245,22 +246,6 @@ public class RunnableInputFile {
 		public InvalidInputFileException(String message) {
 			super(message);
 		}
-	}
-	
-	
-	class Runner extends SwingWorker {
-		
-		MCMC chain;
-		
-		public Runner(MCMC chain) {
-			this.chain = chain;
-		}
-		
-		protected Object doInBackground() throws Exception {
-			chain.run();
-			return null;
-		}
-		
 	}
 	
 }

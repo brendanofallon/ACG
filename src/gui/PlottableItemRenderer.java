@@ -4,6 +4,7 @@ import gui.PickPlottablesPanel.PlottableInfo;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 
 import javax.swing.JCheckBox;
@@ -14,7 +15,7 @@ import javax.swing.ListCellRenderer;
 
 public class PlottableItemRenderer extends JPanel implements ListCellRenderer {
 
-	Color stripeColor = new Color(248, 248, 247);
+	Color stripeColor = new Color(238, 238, 237);
 	JCheckBox checkBox;
 	JLabel label;
 	
@@ -24,6 +25,7 @@ public class PlottableItemRenderer extends JPanel implements ListCellRenderer {
 		label = new JLabel();
 		this.add(checkBox);
 		this.add(label);
+		setPreferredSize(new Dimension(200, 40));
 	}
 	
 	

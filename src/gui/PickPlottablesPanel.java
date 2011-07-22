@@ -35,6 +35,7 @@ public class PickPlottablesPanel extends JPanel {
 		this.acgParent = acgParent;
 		this.file = file;
 		initComponents();
+		setBackground(ACGFrame.backgroundColor);
 	}
 
 	private void initComponents() {
@@ -48,7 +49,7 @@ public class PickPlottablesPanel extends JPanel {
 		this.add(topPanel, BorderLayout.NORTH);
 		
 		JPanel centerPanel = new JPanel();
-		centerPanel.setLayout(new BorderLayout());
+		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
 		
 		List<String> paramLabels = file.getParameterLabels();
 		List<String> likeLabels = file.getLikelihoodLabels();
@@ -72,8 +73,6 @@ public class PickPlottablesPanel extends JPanel {
 			plotArr[i] = plottables.get(i);
 		}
 		
-		//It's not really just the labels we want to plot... each 
-		//thing needs it's own checkbox and descriptor as well as label
 		plottableList = new JList(plotArr);
 		plottableList.setCellRenderer(new PlottableItemRenderer());
 		plottableList.addMouseListener(new MouseAdapter() {
@@ -83,7 +82,9 @@ public class PickPlottablesPanel extends JPanel {
 		});
 		
 		JScrollPane scrollPane = new JScrollPane(plottableList);
+		centerPanel.add(Box.createGlue());
 		centerPanel.add(scrollPane, BorderLayout.CENTER);
+		centerPanel.add(Box.createGlue());
 		this.add(centerPanel, BorderLayout.CENTER);
 		
 		JPanel bottomPanel = new JPanel();
@@ -208,22 +209,18 @@ public class PickPlottablesPanel extends JPanel {
 			for(PlottableInfo plottable : selectedPlottables) {
 				Object obj = file.getObjectForLabel(plottable.label);
 				if (obj instanceof AbstractParameter<?>) {
-
-					System.out.println("Adding parameter " + obj);
 					outputPane.addChart( (AbstractParameter<?>)obj);
 				}
 				if (obj instanceof LikelihoodComponent) {
-					System.out.println("Adding likelihood " + obj);
 					outputPane.addChart( (LikelihoodComponent)obj);
 				}
 			}
 
 			acgParent.initializeProgressBar(chain);
-			
-
 			acgParent.replaceCenterPanel(outputPane);
 
-			file.runMCMC();
+			ExecutingChain runner = file.runMCMC();
+			acgParent.setRunner(runner);
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
