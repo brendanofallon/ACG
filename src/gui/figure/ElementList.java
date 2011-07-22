@@ -41,6 +41,10 @@ public class ElementList implements Iterable {
 		return elements.iterator();
 	}
 
+	public boolean contains(FigureElement el) {
+		return elements.contains(el); 
+	}
+	
 	public void remove(FigureElement toRemove) {
 		elements.remove(toRemove);
 	}
@@ -96,4 +100,6 @@ public class ElementList implements Iterable {
 		}
 		
 	}
+
+
 }

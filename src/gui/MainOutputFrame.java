@@ -39,11 +39,17 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 		initComponents();
 	}
 	
-	public void addChart(AbstractParameter<?> param) {
+	public void addChart(AbstractParameter<?> param, String logKey) {
 		if (nextRowIndex == rows) {
 			throw new IllegalArgumentException("Can't add any more charts to this panel!");
 		}
-		StatusFigure figure = new StatusFigure(param);
+		
+		StatusFigure figure;
+		if (logKey != null)
+			 figure = new StatusFigure(param, logKey);
+		else
+			 figure = new StatusFigure(param);
+
 		figures[nextRowIndex][nextColIndex] = figure;
 		nextColIndex++;
 		if (nextColIndex == cols) {
@@ -53,6 +59,10 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 		
 		figureList.add(figure);
 		this.add(figure);
+	}
+	
+	public void addChart(AbstractParameter<?> param) {
+		addChart(param, null);
 	}
 	
 	public void addChart(LikelihoodComponent comp) {

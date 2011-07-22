@@ -17,6 +17,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import arg.ARG;
+
 import mcmc.MCMC;
 import parameter.AbstractParameter;
 import parameter.DoubleParameter;
@@ -57,15 +59,13 @@ public class PickPlottablesPanel extends JPanel {
 		//All the things we could potentially plot
 		List<PlottableInfo> plottables = new ArrayList<PlottableInfo>();
 		for(String pLabel : paramLabels) {
-			PlottableInfo info = findPlottableInfo(pLabel);
-			if (info != null)
-				plottables.add(info);
+			List<PlottableInfo> items = findPlottableInfo(pLabel);
+			plottables.addAll(items);
 		}
 		
 		for(String lLabel : likeLabels) {
-			PlottableInfo info = findPlottableInfo(lLabel);
-			if (info != null)
-				plottables.add(info);
+			List<PlottableInfo> items = findPlottableInfo(lLabel);
+			plottables.addAll(items);
 		}
 		
 		PlottableInfo[] plotArr = new PlottableInfo[plottables.size()];
@@ -114,43 +114,31 @@ public class PickPlottablesPanel extends JPanel {
 		plottableList.repaint();
 	}
 
-	private PlottableInfo findPlottableInfo(String label) {
+	private List<PlottableInfo> findPlottableInfo(String label) {
+		List<PlottableInfo> list = new ArrayList<PlottableInfo>();
 		try {
 			Object obj = file.getObjectForLabel(label);
 			if (obj instanceof LikelihoodComponent) {
 				PlottableInfo info = new PlottableInfo();
 				info.label = label;
 				info.descriptor = "Likelihood";
-				return info;
+				list.add(info);
 			}
 			
 			if (obj instanceof AbstractParameter<?>) {
 				AbstractParameter<?> par = (AbstractParameter<?>)obj;
-				PlottableInfo info = new PlottableInfo();
-				info.label = label;
-				Object t = par.getValue();
-				if (t instanceof Double)
-					info.descriptor = "Single-value parameter";
-				if (t instanceof double[]) {
-					int l = ((double[])t).length;
-					info.descriptor = "" + l + "-value parameter";
-				}
-				if (t instanceof Double[]){
-					int l = ((Double[])t).length;
-					info.descriptor = "" + l + "-value parameter";
-				}
-				if (t instanceof Integer) { 
-					info.descriptor = "Single-value parameter";
-				}
 				
-				if (info.descriptor == null)
-					return null;
-				else 
-					return info;
+				String[] logKeys = par.getLogKeys();
+				for(int i=0; i<logKeys.length; i++) {
+					PlottableInfo info = new PlottableInfo();
+					info.label = label;
+					info.key = logKeys[i];
+					info.descriptor = " Item: " + logKeys[i];
+					list.add(info);
+				}
+
 			}
-			else {
-				return null;
-			}
+			
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -159,7 +147,7 @@ public class PickPlottablesPanel extends JPanel {
 			e.printStackTrace();
 		}
 		
-		return null;
+		return list;
 	}
 	
 	/**
@@ -209,7 +197,7 @@ public class PickPlottablesPanel extends JPanel {
 			for(PlottableInfo plottable : selectedPlottables) {
 				Object obj = file.getObjectForLabel(plottable.label);
 				if (obj instanceof AbstractParameter<?>) {
-					outputPane.addChart( (AbstractParameter<?>)obj);
+					outputPane.addChart( (AbstractParameter<?>)obj, plottable.key);
 				}
 				if (obj instanceof LikelihoodComponent) {
 					outputPane.addChart( (LikelihoodComponent)obj);
@@ -231,8 +219,9 @@ public class PickPlottablesPanel extends JPanel {
 	}
 	
 	class PlottableInfo {
-		String label;
-		boolean selected = false;
+		String label; //Label of the object
+		String key;	  //LogKey of item to log
+		boolean selected = false; //Whether or not item is selected
 		String descriptor;
 	}
 	

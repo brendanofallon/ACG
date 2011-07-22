@@ -132,8 +132,9 @@ public class XYSeriesFigure extends SeriesFigure {
 			if (ymax > 0) 
 				ymax = upperVal(ymax);
 			
-			if (ymin < 0)
-				ymin = Math.round(1000*ymin*1.1)/1000;
+			//This is broken... for now we just 
+//			if (ymin < 0)
+//				ymin = Math.round(1000*ymin*1.1)/1000;
 			
 			
 			if (ymax == ymin) {
@@ -309,12 +310,24 @@ public class XYSeriesFigure extends SeriesFigure {
 		return seriesElements.size();
 	}
 	
-	public void setXLabel(String label) {
-		xLabelElement.setText(label);
+	public void setXLabel(String label) {		
+		if (label == null)
+			this.elements.remove(xLabelElement);
+		else {
+			if (! elements.contains(xLabelElement))
+				addElement(xLabelElement);
+			xLabelElement.setText(label);
+		}
 	}
 	
 	public void setYLabel(String label) {
-		yLabelElement.setText(label);
+		if (label == null)
+			this.elements.remove(yLabelElement);
+		else {
+			if (! elements.contains(yLabelElement))
+				addElement(yLabelElement);
+			yLabelElement.setText(label);
+		}
 	}
 	
 	/**
