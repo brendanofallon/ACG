@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.SwingWorker;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -56,11 +57,9 @@ public class RunnableInputFile {
 			doc = builder.parse(file);
 			loader = new XMLLoader(doc);
 			loader.loadAllClasses(); //Attempt to load all of the classes referenced by the document
-
 			
 			turnOffMCMC(); //Find all mcmc objects and make sure they're not set to run right away
 			loader.instantiateAll();
-			runMCMC();
 			
 		} catch (Exception e) {
 			doc = null;
@@ -76,7 +75,9 @@ public class RunnableInputFile {
 		if (mcLabels.size()==1) {
 			try {
 				MCMC mcmc = (MCMC)loader.getObjectForLabel(mcLabels.get(0));
-				mcmc.run();
+				Runner runner = new Runner(mcmc);
+				runner.execute();
+				
 				
 			} catch (InstantiationException e) {
 				throw new InvalidInputFileException("Could not create mcmc object : " + e.getMessage());
@@ -121,6 +122,17 @@ public class RunnableInputFile {
 		return loader.getObjLabelsForClass(AbstractParameter.class);
 	}
 
+	/**
+	 * Returns the object with the given label, instantiating if necessary
+	 * @param label
+	 * @return
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 */
+	public Object getObjectForLabel(String label) throws InstantiationException, IllegalAccessException {
+		return loader.getObjectForLabel(label);
+	}
+	
 	/**
 	 * Return a list of all of the labels of the objects that are LikelihoodComponents
 	 * @return
@@ -233,6 +245,22 @@ public class RunnableInputFile {
 		public InvalidInputFileException(String message) {
 			super(message);
 		}
+	}
+	
+	
+	class Runner extends SwingWorker {
+		
+		MCMC chain;
+		
+		public Runner(MCMC chain) {
+			this.chain = chain;
+		}
+		
+		protected Object doInBackground() throws Exception {
+			chain.run();
+			return null;
+		}
+		
 	}
 	
 }

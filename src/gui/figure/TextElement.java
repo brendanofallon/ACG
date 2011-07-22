@@ -1,4 +1,4 @@
-package figure;
+package gui.figure;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -10,7 +10,6 @@ import java.awt.geom.Rectangle2D;
 
 import javax.swing.JTextField;
 
-import element.DoubleRectangle;
 
 /**
  * A horizontal string on a Figure
@@ -77,14 +76,14 @@ public class TextElement extends FigureElement {
 		font = new Font(font.getFamily(), Font.PLAIN, size);
 	}
 	
-	public DoubleRectangle getBounds(Graphics g) {
-		DoubleRectangle boundaries = new DoubleRectangle();
-		boundaries.x = bounds.x;
-		boundaries.y = bounds.y;
+	public Rectangle2D getBounds(Graphics g) {
+		Rectangle2D boundaries = new Rectangle2D.Double();
+		
 		FontMetrics fm = g.getFontMetrics();
 		
-		boundaries.width = fm.getStringBounds(text, 0, text.length(), g).getWidth()/xFactor; 
-		boundaries.height = fm.getStringBounds(text, 0, text.length(), g).getHeight()/yFactor;
+		double width = fm.getStringBounds(text, 0, text.length(), g).getWidth()/xFactor; 
+		double height = fm.getStringBounds(text, 0, text.length(), g).getHeight()/yFactor;
+		boundaries.setFrame(bounds.x, bounds.y, width, height);
 		return boundaries;
 	}
 	

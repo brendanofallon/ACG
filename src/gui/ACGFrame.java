@@ -7,8 +7,12 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+
+import mcmc.MCMC;
+import mcmc.MCMCListener;
 
 public class ACGFrame extends JFrame {
 	
@@ -30,7 +34,7 @@ public class ACGFrame extends JFrame {
         }
         
 		initComponents();
-		setPreferredSize(new Dimension(400, 400));
+		setPreferredSize(new Dimension(1000, 500));
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 		pack();
@@ -38,18 +42,46 @@ public class ACGFrame extends JFrame {
 	}
 	
 	
+	public void initializeProgressBar(MCMC chain) {
+		progressBar.setMaximum(chain.getUserRunLength());
+		chain.addListener(new MCMCListener() {
+			@Override
+			public void newState(int stateNumber) {
+				if (stateNumber % 1000 == 0) {
+					setProgress(stateNumber);
+				}
+			}
+
+			@Override
+			public void chainIsFinished() {	}
+
+			public void setMCMC(MCMC chain) {	}
+		});
+	}
+	/**
+	 * Set the value of the progress bar
+	 * @param prog
+	 */
+	public void setProgress(int val) {
+		progressBar.setValue(val);
+	}
+	
 	private void initComponents() {
 		BorderLayout layout = new BorderLayout();
 		Container mainContainer = this.getContentPane();
 		mainContainer.setLayout(layout);
 		
-		JPanel centerPanel = new StartFrame();
+		JPanel centerPanel = new StartFrame(this);
 		mainContainer.add(centerPanel, BorderLayout.CENTER);
 		
 		
-		JPanel bottomPanel = new JPanel();
-		bottomPanel.add(new JLabel("Bottom panel"));
+		bottomPanel = new JPanel();
+		progressBar = new JProgressBar(0, 1000);
+		progressBar.setPreferredSize(new Dimension(800, 24));
+		bottomPanel.add(progressBar);
 		mainContainer.add(bottomPanel, BorderLayout.SOUTH);
 	}
 
+	private JPanel bottomPanel;
+	private JProgressBar progressBar;
 }

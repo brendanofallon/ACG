@@ -1,4 +1,4 @@
-package figure;
+package gui.figure;
 
 import java.util.ArrayList;
 import java.util.Collections;

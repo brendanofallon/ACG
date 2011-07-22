@@ -1,4 +1,6 @@
-package figure.series;
+package gui.figure.series;
+
+import gui.figure.ColorSwatchButton;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -9,10 +11,6 @@ import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import figure.Figure;
-import guiWidgets.ColorSwatchButton;
-
 
 /**
  * A frame that allows the user to adjust some properties of the series. 

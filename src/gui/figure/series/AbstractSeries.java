@@ -1,7 +1,4 @@
-package figure.series;
-
-import java.awt.Color;
-import java.util.Iterator;
+package gui.figure.series;
 
 /**
  * Implements the idea of a named list of points, where the points have a x- and y-labels of some sort. Various 
@@ -12,7 +9,6 @@ import java.util.Iterator;
  */
 public abstract class AbstractSeries {
 
-	//Color color;
 	float weight; 
 	String name;
 	

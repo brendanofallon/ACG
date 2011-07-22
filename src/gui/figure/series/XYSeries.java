@@ -1,8 +1,8 @@
-package figure.series;
+package gui.figure.series;
 
 
-import element.Point;
-
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,45 +22,54 @@ import java.util.List;
  */
 public class XYSeries extends AbstractSeries {
 
-	//TODO : Use of List here is pointless since these are immutable, array of Point would be much faster
-	//and have less overhead, but would require somewhat significant refactoring, and the current
-	//implementation appears to be speedy enough despite this shortcoming 
-	protected Point[] pointList;
+	protected List<Point2D> pointList;
 
-	public XYSeries(List<Point> points, String name) {
+	public XYSeries(List<Point2D> points, String name) {
 		this.name = name;
-		constructPointsFromList(points);
-	}
-	
-	public XYSeries(List<Point> points) {
-		this(points, "Untitled series");
-	}
-	
-	public XYSeries(Point[] points, String name) {
 		this.pointList = points;
 		sortByX();
+	}
+
+	/**
+	 * Create a new XY series with the given name and no data
+	 * @param name
+	 */
+	public XYSeries(String name) {
 		this.name = name;
+		pointList = new ArrayList<Point2D>();
+	}
+	
+	public XYSeries(List<Point2D> points) {
+		this(points, "Untitled series");
+	}
+
+	
+	public void addPointInOrder(Point2D newPoint) {
+		if (pointList.size()>0 && newPoint.getX() < getMaxX())
+			throw new IllegalArgumentException("Non-increasing x value");
+		
+		pointList.add(newPoint);
 	}
 	
 	/**
 	 * Constructs a new array of points from the given list of points. 
 	 * @param points
 	 */
-	protected void constructPointsFromList(List<Point> points) {
-		pointList = new Point[points.size()];
-		int index = 0;
-		for(Point p : points) {
-			pointList[index] = p;
-			index++;
-		}
-		sortByX();
-	}
+//	protected void constructPointsFromList(List<Point2D> points) {
+//		pointList = new Point2D[points.size()];
+//		int index = 0;
+//		for(Point2D p : points) {
+//			pointList[index] = p;
+//			index++;
+//		}
+//		sortByX();
+//	}
 	
 	/**
 	 * Sorts the values in X order
 	 */
 	private void sortByX() {
-		Arrays.sort(pointList, getXComparator());
+		Collections.sort(pointList, getXComparator());
 	}
 
 	/**
@@ -69,7 +78,7 @@ public class XYSeries extends AbstractSeries {
 	 * @return
 	 */
 	public double getX(int index) {
-		return pointList[index].x;
+		return pointList.get(index).getX();
 	}
 	
 	/**
@@ -78,20 +87,20 @@ public class XYSeries extends AbstractSeries {
 	 * @return
 	 */
 	public double getY(int index) {
-		return pointList[index].y;
+		return pointList.get(index).getY();
 	}
 	
 	
-	public Point[] getLineForXVal(double xVal) {
+	public Point2D[] getLineForXVal(double xVal) {
 		int lower = getIndexForXVal(xVal);
 		
-		if (lower<0 || lower>=(pointList.length-1))
+		if (lower<0 || lower>=(pointList.size()-1))
 			return null;
 		
 		int upper = lower+1;
-		Point[] line = new Point[2];
-		line[0] = pointList[lower];
-		line[1] = pointList[upper];
+		Point2D[] line = new Point2D[2];
+		line[0] = pointList.get(lower);
+		line[1] = pointList.get(upper);
 		return line;
 	}
 
@@ -102,38 +111,40 @@ public class XYSeries extends AbstractSeries {
 	 * what the right index is at the start
 	 */
 	public int getIndexForXVal(double xVal) {
-		int upper = pointList.length-1;
+		int upper = pointList.size()-1;
 		int lower = 0;
+		
+		if (pointList.size()==0)
+			return 0;
 		
 		//TODO Are we sure an arrays.binarySearch(pointList, xVal) wouldn't be a better choice here?
 		//it can gracefully handle cases where the key isn't in the list of values...
-		double stepWidth = (pointList[pointList.length-1].x-pointList[0].x)/(double)pointList.length;
+		double stepWidth = (pointList.get(pointList.size()-1).getX()-pointList.get(0).getX())/(double)pointList.size();
 		
-		int index = (int)Math.floor( (xVal-pointList[0].x)/stepWidth );
+		int index = (int)Math.floor( (xVal-pointList.get(0).getX())/stepWidth );
 		//System.out.println("Start index: " + index);
 		
 		//Check to see if we got it right
-		if (index>=0 && (index<pointList.length-1) && pointList[index].x < xVal && pointList[index+1].x>xVal) {
+		if (index>=0 && (index<pointList.size()-1) && pointList.get(index).getX() < xVal && pointList.get(index+1).getX()>xVal) {
 			//System.out.println("Got it right on the first check, returning index : " + index);
 			return index;
 		}
 		
 		//Make sure the starting index is sane (between upper and lower)
-		if (index<0 || index>=pointList.length )
+		if (index<0 || index>=pointList.size() )
 			index = (upper+lower)/2; 
 		
-		if (xVal < pointList[0].x) {
+		if (xVal < pointList.get(0).getX()) {
 			return 0;
 		}
 			
-		if(xVal > pointList[pointList.length-1].x) {
-			return pointList.length-1;
+		if(xVal > pointList.get(pointList.size()-1).getX()) {
+			return pointList.size()-1;
 		}
 		
 		int count = 0;
 		while( upper-lower > 1) {
-			//System.out.println("Step : " + count + " upper: " + upper + " lower: " + lower + " index: " + index);
-			if (xVal < pointList[index].x) {
+			if (xVal < pointList.get(index).getX()) {
 				upper = index;
 			}
 			else
@@ -151,13 +162,13 @@ public class XYSeries extends AbstractSeries {
 	 * usually expect x-values to be linearly increasing, we can make an educated guess about
 	 * what the right index is at the start
 	 */
-	public Point getClosePointForXVal(double xVal) {
+	public Point2D getClosePointForXVal(double xVal) {
 		int index = getIndexForXVal(xVal);
 		
-		if (index<0 || index>=pointList.length)
+		if (index<0 || index>=pointList.size())
 			return null;
 		else
-			return pointList[index];
+			return pointList.get(index);
 	}
 	
 	
@@ -167,20 +178,20 @@ public class XYSeries extends AbstractSeries {
 	 * @return
 	 */
 	public double getMinX() {
-		if (pointList.length==0) {
+		if (pointList.size()==0) {
 			return 0;
 		}
-		return pointList[0].x;
+		return pointList.get(0).getX();
 	}
 	
 	public double getMinY() {
-		if (pointList.length==0) {
+		if (pointList.size()==0) {
 			return 0;
 		}
-		double min = pointList[0].y;
-		for(int i=0; i<pointList.length; i++)
-			if (min>pointList[i].y)
-				min = pointList[i].y;
+		double min = pointList.get(0).getY();
+		for(int i=0; i<pointList.size(); i++)
+			if (min>pointList.get(i).getY())
+				min = pointList.get(i).getY();
 		return min;
 	}
 	
@@ -191,20 +202,20 @@ public class XYSeries extends AbstractSeries {
 	 * @return
 	 */
 	public double getMaxX() {
-		if (pointList.length==0) {
+		if (pointList.size()==0) {
 			return 0;
 		}
-		return pointList[pointList.length-1 ].x;
+		return pointList.get(pointList.size()-1 ).getX();
 	}
 	
 	public double getMaxY() {
-		if (pointList.length==0) {
+		if (pointList.size()==0) {
 			return 0;
 		}
-		double max = pointList[0].y;
-		for(int i=0; i<pointList.length; i++)
-			if (max<pointList[i].y)
-				max = pointList[i].y;
+		double max = pointList.get(0).getY();
+		for(int i=0; i<pointList.size(); i++)
+			if (max<pointList.get(i).getY())
+				max = pointList.get(i).getY();
 		return max;
 	}
 	
@@ -215,8 +226,8 @@ public class XYSeries extends AbstractSeries {
 	 */
 	public int lastNonZero() {
 		int i;
-		for(i=pointList.length-1; i>=0; i--) {
-			if (pointList[i].y > 0)
+		for(i=pointList.size()-1; i>=0; i--) {
+			if (pointList.get(i).getY() > 0)
 				return i;
 		}
 		return 0;
@@ -226,7 +237,7 @@ public class XYSeries extends AbstractSeries {
 	 * The number of points in the list
 	 */
 	public int size() {
-		return pointList.length;
+		return pointList.size();
 	}
 
 	
@@ -235,22 +246,22 @@ public class XYSeries extends AbstractSeries {
 	 * @param i
 	 * @return
 	 */
-	public Point get(int i) {
-		if (i>=pointList.length)
+	public Point2D get(int i) {
+		if (i>=pointList.size())
 			return null;
 		else {
-			return pointList[i];
+			return pointList.get(i);
 		}
 	}
 	
-	private Comparator<Point> getXComparator() {
+	private Comparator<Point2D> getXComparator() {
 		return new XComparator();
 	}
 
-	class XComparator implements Comparator<Point> {
+	class XComparator implements Comparator<Point2D> {
 
-		public int compare(Point a, Point b) {
-			return a.x > b.x ? 1 : -1;
+		public int compare(Point2D a, Point2D b) {
+			return a.getX() > b.getX() ? 1 : -1;
 		}
 		
 	}

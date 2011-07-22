@@ -1,4 +1,6 @@
-package figure.series;
+package gui.figure.series;
+
+import gui.figure.FigureElement;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -9,7 +11,6 @@ import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
-import figure.FigureElement;
 
 /**
  * Draws a legend for a series figure. Configuration allows for adjusting the properties of

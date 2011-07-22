@@ -1,4 +1,4 @@
-package figure;
+package gui.figure;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -6,8 +6,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
-
-import element.DoubleRectangle;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 /**
  * Base class of anything that is part of a chart - axes, labels, etc. 
@@ -21,7 +21,7 @@ import element.DoubleRectangle;
 public abstract class FigureElement {
 	
 	//The bounding rectangle for this elements, in 'figure' (0..1) scale
-	protected DoubleRectangle bounds;
+	protected Rectangle2D.Double bounds;
 	
 	//The number of pixels per unit of ChartElement size. Since chartElement coordinates are always
 	//from 0..1, the xFactor should be the size of the canvas the object is being drawn on. 
@@ -49,7 +49,7 @@ public abstract class FigureElement {
 
 	public FigureElement(Figure parent) {
 		this.parent = parent;
-		bounds = new DoubleRectangle();
+		bounds = new Rectangle2D.Double();
 	}
 	
 	/**
@@ -65,8 +65,8 @@ public abstract class FigureElement {
 		return zPosition;
 	}
 	
-	public element.Point getPosition() {
-		return new element.Point(bounds.x, bounds.y);
+	public Point2D getPosition() {
+		return new Point2D.Double(bounds.x, bounds.y);
 	}
 	
 	public double getX() {
@@ -77,8 +77,8 @@ public abstract class FigureElement {
 		return bounds.y;
 	}
 	
-	public element.Point getCenterPoint() {
-		return new element.Point(bounds.x + bounds.width/2.0, bounds.y+bounds.height/2.0);
+	public Point2D getCenterPoint() {
+		return new Point2D.Double(bounds.x + bounds.width/2.0, bounds.y+bounds.height/2.0);
 	}
 	
 	public double getCenterX() {
@@ -200,13 +200,13 @@ public abstract class FigureElement {
 	 * Do what you will here. 
 	 * @param pos The mouse position in bounds (0..1) coordinates
 	 */
-	protected void mouseMoved(element.Point pos) {	};
+	protected void mouseMoved(Point2D pos) {	};
 	
-	protected void mousePressed(element.Point pos) {	};
+	protected void mousePressed(Point2D pos) {	};
 	
-	protected void mouseReleased(element.Point pos) {	};
+	protected void mouseReleased(Point2D pos) {	};
 	
-	protected void mouseDragged(element.Point pos) {	};
+	protected void mouseDragged(Point2D pos) {	};
 	
 	
 	
@@ -304,11 +304,11 @@ public abstract class FigureElement {
 		return cont;
 	}
 	
-	public final boolean contains(element.Point p) {
-		return contains(p.x, p.y);
+	public final boolean contains(Point2D p) {
+		return contains(p.getX(), p.getY());
 	}
 	
-	public DoubleRectangle getBounds() {
+	public Rectangle2D getBounds() {
 		return bounds;
 	}
 	

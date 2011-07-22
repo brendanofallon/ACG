@@ -1,4 +1,4 @@
- package figure.series;
+ package gui.figure.series;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -15,7 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 
-import figure.Figure;
+import gui.figure.Figure;
 
 public class AxesConfigFrame extends JFrame {
 

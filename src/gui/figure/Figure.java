@@ -1,4 +1,4 @@
-package figure;
+package gui.figure;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,6 +18,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -25,7 +26,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import figure.series.AxesElement;
+import gui.figure.series.AxesElement;
 
 
 /**
@@ -51,7 +52,7 @@ public abstract class Figure extends JPanel implements ComponentListener, KeyLis
 	int currentX = 0;
 	int currentY = 0;
 	java.awt.Point mousePos;	//The mouse position in java.awt.coordinate (integer)terms
-	element.Point mousePosFigure; //The mouse position in figure (0..1) terms
+	Point2D.Double mousePosFigure; //The mouse position in figure (0..1) terms
 	protected FigureMouseListener mouseListener;
 	
 	//When true, painting begins with drawing a white rectangle over everything.
@@ -98,7 +99,7 @@ public abstract class Figure extends JPanel implements ComponentListener, KeyLis
 		addKeyListener(this);
 		this.setFocusTraversalKeysEnabled(false);
 		mouseListeningElements = new ArrayList<FigureElement>();
-		mousePosFigure = new element.Point(0,0);
+		mousePosFigure = new Point2D.Double(0,0);
 		selectRect = new Rectangle(0, 0, 0, 0);
 		prevRect = new Rectangle(0, 0, 0, 0);
 		if (clickTimer == null) {

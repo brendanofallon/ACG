@@ -238,6 +238,10 @@ public class MCMC {
 		}
 	}
 	
+	public int getUserRunLength() {
+		return userRunLength;
+	}
+	
 	/**
 	 * Turn on or off timing stuff for this markov chain. This should only be used before the first call to run();
 	 * @param useEm

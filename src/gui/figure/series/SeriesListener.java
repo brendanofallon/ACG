@@ -1,4 +1,4 @@
-package figure.series;
+package gui.figure.series;
 
 /**
  * An interface for parties interested in when series in a series figure are changed

@@ -1,12 +1,8 @@
-package figure.series;
+package gui.figure.series;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-
-import figure.Figure;
-import figure.FigureElement;
 
 /**
  * A figure that displays one or more series of data. These will generally contain an Axes element which actually
@@ -15,7 +11,7 @@ import figure.FigureElement;
  * @author brendan
  *
  */
-public abstract class SeriesFigure extends Figure {
+public abstract class SeriesFigure extends gui.figure.Figure {
 
 	ArrayList<SeriesElement> seriesElements;
 	

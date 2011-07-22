@@ -1,4 +1,4 @@
-package figure.series;
+package gui.figure.series;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -18,12 +18,8 @@ import java.awt.geom.Rectangle2D;
 
 import javax.swing.JTextField;
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
-
-import topLevelGUI.SunFishFrame;
-
-import figure.Figure;
-import figure.FigureElement;
-
+import gui.figure.*;
+import gui.figure.series.SeriesElement;
 /**
  * An element that draws a series of points in x-y space. Different markers can be placed
  * on data points, or lines can be drawn through points, or the series can be represented by
@@ -137,7 +133,6 @@ public class XYSeriesElement extends SeriesElement {
 			}
 		}
 		
-		SunFishFrame.getSunFishFrame().getLogger().warning("Unrecognized current mode in XYSeriesElement : " + currentMode);
 		throw new IllegalStateException("Illegal current mode in XYSeries Element : " + currentMode);		
 	}
 	
@@ -155,7 +150,6 @@ public class XYSeriesElement extends SeriesElement {
 		}
 		
 		//We should never get here
-		SunFishFrame.getSunFishFrame().getLogger().warning("Unrecognized current marker type in XYSeriesElement : " + currentMarkerType);
 		throw new IllegalStateException("Illegal current marker type in XYSeries Element : " + currentMarkerType);
 	}
 	
@@ -175,7 +169,6 @@ public class XYSeriesElement extends SeriesElement {
 		}
 		
 		if (!valid) {
-			SunFishFrame.getSunFishFrame().getLogger().warning("Illegal marker type request from XYSeriesElement : " + markerType);
 			throw new IllegalArgumentException("Cannot set marker type to : " + markerType);
 		}
 	}
@@ -234,23 +227,23 @@ public class XYSeriesElement extends SeriesElement {
 		}
 		
 		if (pathShape == null) {
-			pathShape = new GeneralPath(new Line2D.Double(xySeries.get(0).x, xySeries.get(0).y, xySeries.get(1).x, xySeries.get(1).y) );
+			pathShape = new GeneralPath(new Line2D.Double(xySeries.get(0).getX(), xySeries.get(0).getY(), xySeries.get(1).getX(), xySeries.get(1).getY()) );
 		}
 		else 
 			pathShape.reset();
 		
 		if (currentMode == LINES || currentMode == POINTS_AND_LINES || currentMode == POINTS) {
 			if (xySeries.size()>1) {
-				double x1 = axes.dataXtoBoundsX(xySeries.get(0).x  );
-				double y1 = axes.dataYtoBoundsY(xySeries.get(0).y );
-				double x2 = axes.dataXtoBoundsX( xySeries.get(1).x);
-				double y2 = axes.dataYtoBoundsY( xySeries.get(1).y );
+				double x1 = axes.dataXtoBoundsX(xySeries.get(0).getX()  );
+				double y1 = axes.dataYtoBoundsY(xySeries.get(0).getX() );
+				double x2 = axes.dataXtoBoundsX( xySeries.get(1).getX());
+				double y2 = axes.dataYtoBoundsY( xySeries.get(1).getY() );
 				pathShape = new GeneralPath(new Line2D.Double(x1, y1, x2, y2) );
 				
 				boolean connect = true;
 				for(int i=1; i<xySeries.size(); i++) {
-					x1 = axes.dataXtoBoundsX( xySeries.get(i).x);
-					y1 = axes.dataYtoBoundsY( xySeries.get(i).y );
+					x1 = axes.dataXtoBoundsX( xySeries.get(i).getX());
+					y1 = axes.dataYtoBoundsY( xySeries.get(i).getY() );
 					
 					
 					//We've moved from a undrawn region into an OK one, so just move the 'pointer
@@ -298,16 +291,16 @@ public class XYSeriesElement extends SeriesElement {
 			double dataX = axes.boundsXtoDataX(x);
 			
 			lineRect.setRect(x*xFactor-4, y*yFactor-4, 7, 7);
-			element.Point[] line = xySeries.getLineForXVal(dataX);
+			Point2D[] line = xySeries.getLineForXVal(dataX);
 //			System.out.println("Series " + getName() + " Testing point x: " + x + ", " + y);
 //			System.out.println(" Point 0 : " + line[0]);
 //			System.out.println(" Point 1 : " + line[1]);
-			if (line==null || Double.isNaN(line[0].y) || Double.isNaN(line[1].y)) {
+			if (line==null || Double.isNaN(line[0].getY()) || Double.isNaN(line[1].getY())) {
 				//System.out.println("line is null or NaN, returning false");
 				return false;
 			}
 			else {
-				boolean contains = lineRect.intersectsLine(axes.dataXtoBoundsX(line[0].x)*xFactor, axes.dataYtoBoundsY(line[0].y)*yFactor, axes.dataXtoBoundsX(line[1].x)*xFactor, axes.dataYtoBoundsY(line[1].y)*yFactor);
+				boolean contains = lineRect.intersectsLine(axes.dataXtoBoundsX(line[0].getX())*xFactor, axes.dataYtoBoundsY(line[0].getY())*yFactor, axes.dataXtoBoundsX(line[1].getX())*xFactor, axes.dataYtoBoundsY(line[1].getY())*yFactor);
 				return contains;
 			}
 			
@@ -342,35 +335,35 @@ public class XYSeriesElement extends SeriesElement {
 	public void drawMarker(Graphics2D g, int x, int y) {
 		if (currentMarkerType.equals("Circle")) {
 			g.setColor(getLineColor());
-			g.fillOval(round(x-markerSize/2.0), round(y-markerSize/2.0), markerSize, markerSize);
+			g.fillOval((int)Math.round(x-markerSize/2.0), (int)Math.round(y-markerSize/2.0), markerSize, markerSize);
 		}
 		if (currentMarkerType.equals("Square")) {
 			g.setColor(getLineColor());
-			g.fillRect(round(x-markerSize/2.0), round(y-markerSize/2.0), markerSize, markerSize);			
+			g.fillRect((int)Math.round(x-markerSize/2.0), (int)Math.round(y-markerSize/2.0), markerSize, markerSize);			
 		}
 		if (currentMarkerType.equals("Diamond")) {
 			g.setColor(getLineColor());
-			xvals[0] = round(x-markerSize/2.0);
+			xvals[0] = (int)Math.round(x-markerSize/2.0);
 			xvals[1] = x;
-			xvals[2] = round(x+markerSize/2.0);
+			xvals[2] = (int)Math.round(x+markerSize/2.0);
 			xvals[3] = x;
 			xvals[4] = xvals[0];
 			yvals[0] = y;
-			yvals[1] = round(y-markerSize/2.0);
+			yvals[1] = (int)Math.round(y-markerSize/2.0);
 			yvals[2] = y;
-			yvals[3] = round(y+markerSize/2.0);
+			yvals[3] = (int)Math.round(y+markerSize/2.0);
 			yvals[4] = y;
 			g.fillPolygon(xvals, yvals, 5);
 		}
 		if (currentMarkerType.equals("Plus")) {
 			g.setColor(getLineColor());
-			g.drawLine(round(x-markerSize/2.0), y, round(x+markerSize/2.0), y);
-			g.drawLine(x, round(y-markerSize/2.0), x, round(y+markerSize/2.0));
+			g.drawLine((int)Math.round(x-markerSize/2.0), y, (int)Math.round(x+markerSize/2.0), y);
+			g.drawLine(x, (int)Math.round(y-markerSize/2.0), x, (int)Math.round(y+markerSize/2.0));
 		}
 		if (currentMarkerType.equals("X")) {
 			g.setColor(getLineColor());
-			g.drawLine(round(x-markerSize/2.0), round(y-markerSize/2.0), round(x+markerSize/2.0), round(y+markerSize/2.0));
-			g.drawLine(round(x-markerSize/2.0), round(y+markerSize/2.0), round(x+markerSize/2.0), round(y-markerSize/2.0));
+			g.drawLine((int)Math.round(x-markerSize/2.0), (int)Math.round(y-markerSize/2.0), (int)Math.round(x+markerSize/2.0), (int)Math.round(y+markerSize/2.0));
+			g.drawLine((int)Math.round(x-markerSize/2.0), (int)Math.round(y+markerSize/2.0), (int)Math.round(x+markerSize/2.0), (int)Math.round(y-markerSize/2.0));
 		}
 	}
 	
@@ -411,12 +404,12 @@ public class XYSeriesElement extends SeriesElement {
 		double boxWidth = calculateBoxWidth();
 		
 		double halfBox = Math.ceil(boxWidth/2.0);
-		double dataY = axes.dataYtoFigureY(xySeries.get(i).y);
+		double dataY = axes.dataYtoFigureY(xySeries.get(i).getY());
 		double xOffset = boxOffset*boxWidth;
-		if (xySeries.get(i).y>0) 
-			boxRect.setRect(axes.dataXtoFigureX(xySeries.get(i).x)-halfBox-xOffset, dataY, boxWidth, yZero-dataY);
+		if (xySeries.get(i).getY()>0) 
+			boxRect.setRect(axes.dataXtoFigureX(xySeries.get(i).getX())-halfBox-xOffset, dataY, boxWidth, yZero-dataY);
 		else 
-			boxRect.setRect(axes.dataXtoFigureX(xySeries.get(i).x)-halfBox-xOffset, yZero, boxWidth, dataY-yZero);
+			boxRect.setRect(axes.dataXtoFigureX(xySeries.get(i).getX())-halfBox-xOffset, yZero, boxWidth, dataY-yZero);
 
 		return boxRect;
 	}
@@ -471,7 +464,7 @@ public class XYSeriesElement extends SeriesElement {
 		if (currentMode == POINTS ) {
 			g.setColor(getLineColor());
 			for(int i=0; i<xySeries.size(); i++) {
-				drawMarker(g, round(axes.dataXtoFigureX(xySeries.get(i).x)), round(axes.dataYtoFigureY(xySeries.get(i).y)));
+				drawMarker(g, round(axes.dataXtoFigureX(xySeries.get(i).getX())), round(axes.dataYtoFigureY(xySeries.get(i).getY())));
 			}
 		}
 		
@@ -481,7 +474,7 @@ public class XYSeriesElement extends SeriesElement {
 			
 			g.setColor(getLineColor());
 			for(int i=0; i<xySeries.size(); i++) {
-				drawMarker(g, round(axes.dataXtoFigureX(xySeries.get(i).x)), round(axes.dataYtoFigureY(xySeries.get(i).y))); 
+				drawMarker(g, round(axes.dataXtoFigureX(xySeries.get(i).getX())), round(axes.dataYtoFigureY(xySeries.get(i).getY()))); 
 			}
 		}	
 		
@@ -504,7 +497,7 @@ public class XYSeriesElement extends SeriesElement {
 				int dwidth = (int)Math.round(rect.getWidth()/2.0);
 				for(int i=0; i<dwidth; i++) {
 					g.setColor(new Color(1.0f, 1.0f, 1.0f, (0.2f)*(1.0f-(float)i/(float)dwidth)));
-					g.drawLine(round(rect.getX()+i), round(rect.getY()), round(rect.getX()+i), round(rect.getY()+rect.getHeight()));
+					g.drawLine((int)Math.round(rect.getX()+i), (int)Math.round(rect.getY()), (int)Math.round(rect.getX()+i), (int)Math.round(rect.getY()+rect.getHeight()));
 				}
 
 			}

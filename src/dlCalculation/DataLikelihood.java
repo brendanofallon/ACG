@@ -437,12 +437,12 @@ public class DataLikelihood extends LikelihoodComponent {
 	@Override
 	public String getLogHeader() {
 		//return "treeLikelihood";
-		return "treeLikelihood\t num.patterns\t num.nodes";
+		return "treeLikelihood";
 	}
 	
 	public String getLogString() {
 		//return "" + currentLogLikelihood;
-		return "" + currentLogLikelihood + "\t" + computeCore.countPatterns( getComputeNodeIDs(arg.getCoalescentNodes()) ) + "\t" + computeCore.getNodeCount();
+		return "" + currentLogLikelihood;
 	}
 
 

@@ -1,4 +1,4 @@
-package figure.series;
+package gui.figure.series;
 
 import java.awt.Color;
 import java.awt.FontMetrics;
@@ -12,12 +12,11 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import figure.ElementList;
-import figure.Figure;
-import figure.FigureElement;
-import figure.TextElement;
-import figure.VerticalTextElement;
-import figure.categorySeries.CatSeriesElement;
+import gui.figure.ElementList;
+import gui.figure.Figure;
+import gui.figure.FigureElement;
+import gui.figure.TextElement;
+import gui.figure.VerticalTextElement;
 
 /**
  * A versatile figure that displays multiple  "xy" data series, where the data are in the form of an XYSeries.
@@ -84,33 +83,42 @@ public class XYSeriesFigure extends SeriesFigure {
 		colorList[5] = Color.black;
 	}
 	
+	
 	/**
 	 * Informs the axes element of what its data bounds should be
 	 */
 	public void inferBoundsFromCurrentSeries() {
+		inferXBoundsFromSeries();
+		inferYBoundsFromSeries();
+	}
+	
+	/**
+	 * Set boundaries to match the current series, but if the user has already set anything for the x or y axes then
+	 * don't change it
+	 */
+	public void inferBoundsPolitely() {
+		if (! axes.hasUserX) {
+			inferXBoundsFromSeries();
+		}
+		if (! axes.hasUserY) {
+			inferYBoundsFromSeries();
+		}
+	}
+
+	
+	public void inferYBoundsFromSeries() {
 		if (seriesElements.size()==0) {
 			axes.setDataBounds(0, 1, 0, 1);
 		}
 		else {
-			
-			double xmin = seriesElements.get(0).getMinX();
 
-			double xmax = seriesElements.get(0).getMaxX();
 			double ymin = seriesElements.get(0).getMinY();
 			if (ymin > 0)
 				ymin = 0;
 			double ymax = seriesElements.get(0).getMaxY();
 			
 			
-			for(int i=1; i<seriesElements.size(); i++) {
-				double serMaxX = seriesElements.get(i).getMaxX(); 
-				if (serMaxX > xmax)
-					xmax = serMaxX;
-				
-				double serMinX = seriesElements.get(i).getMinX(); 
-				if (serMinX < xmin)
-					xmin = serMinX;
-				
+			for(int i=1; i<seriesElements.size(); i++) {	
 				double serMaxY = seriesElements.get(i).getMaxY(); 
 				if (serMaxY > ymax)
 					ymax = serMaxY;
@@ -125,11 +133,8 @@ public class XYSeriesFigure extends SeriesFigure {
 				ymax = upperVal(ymax);
 			
 			if (ymin < 0)
-				ymin = lowerVal(ymin);
+				ymin = Math.round(1000*ymin*1.1)/1000;
 			
-			
-			if (xmin>0 && (xmax-xmin)/xmin>3 )
-				xmin = 0;
 			
 			if (ymax == ymin) {
 				if (Math.abs(ymax)<1e-12) {
@@ -141,6 +146,38 @@ public class XYSeriesFigure extends SeriesFigure {
 					ymax *= 1.5;
 				}
 			}
+			
+			axes.setDataBounds(axes.getXMin(), axes.getXMax(), ymin, ymax);
+			axes.setRationalTicks();
+		}
+	}
+	
+	
+	public void inferXBoundsFromSeries() {
+		if (seriesElements.size()==0) {
+			axes.setDataBounds(0, 1, 0, 1);
+		}
+		else {
+			
+			double xmin = seriesElements.get(0).getMinX();
+			double xmax = seriesElements.get(0).getMaxX();
+
+			
+			for(int i=1; i<seriesElements.size(); i++) {
+				double serMaxX = seriesElements.get(i).getMaxX(); 
+				if (serMaxX > xmax)
+					xmax = serMaxX;
+				
+				double serMinX = seriesElements.get(i).getMinX(); 
+				if (serMinX < xmin)
+					xmin = serMinX;
+	
+			}
+			
+			if (xmin>0 && (xmax-xmin)/xmin>3 )
+				xmin = 0;
+			
+	
 			if (xmin == xmax) {
 				if (Math.abs(xmin)<1e-12) {
 					xmin = 0;
@@ -152,11 +189,13 @@ public class XYSeriesFigure extends SeriesFigure {
 				}
 			}
 			
-			System.out.println("Inferring new bounds, ymin: " + ymin + " ymax: " + ymax);
-			axes.setDataBounds(xmin, xmax, ymin, ymax);
+			//System.out.println("Inferring new bounds, ymin: " + ymin + " ymax: " + ymax);
+			axes.setDataBounds(xmin, xmax, axes.getYMin(), axes.getYMax());
 			axes.setRationalTicks();
 		}
 	}
+	
+
 	
 	
 	/**
@@ -311,7 +350,7 @@ public class XYSeriesFigure extends SeriesFigure {
 		double pow = 1;
 		if (x==1)
 			return 1;
-		
+				
 		if (x>1.0) {
 			while(x>1.0) {
 				x /= 10.0;

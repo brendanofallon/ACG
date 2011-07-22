@@ -1,7 +1,11 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.GridLayout;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import mcmc.MCMC;
@@ -13,7 +17,6 @@ import parameter.AbstractParameter;
 
 public class MainOutputFrame extends JPanel implements MCMCListener {
 	
-	//
 	private int rows = 2;
 	private int cols = 2;
 	private int nextRowIndex = 0;
@@ -22,9 +25,11 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 	private int frequency;
 	
 	protected StatusFigure[][] figures = new StatusFigure[rows][cols];
+	private List<StatusFigure> figureList = new ArrayList<StatusFigure>();
 	
 	public MainOutputFrame(MCMC chain, int frequency, int rows, int cols) {
 		this.mcmc = chain;
+		chain.addListener(this);
 		this.frequency = frequency;
 		this.rows = rows;
 		this.cols = cols;
@@ -43,6 +48,7 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 			nextRowIndex++;
 		}
 		
+		figureList.add(figure);
 		this.add(figure);
 	}
 	
@@ -57,7 +63,8 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 			nextColIndex = 0;
 			nextRowIndex++;
 		}
-		
+
+		figureList.add(figure);
 		this.add(figure);
 	}
 	
@@ -69,15 +76,15 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 
 	@Override
 	public void setMCMC(MCMC chain) {
-		this.mcmc.removeListener(this);
 		this.mcmc = chain;
-		this.mcmc.addListener(this);
 	}
 
 	@Override
 	public void newState(int stateNumber) {
 		if (stateNumber % frequency == 0) {
-			//alert those figures of the new state!
+			for(StatusFigure fig : figureList) {
+				fig.update(stateNumber);
+			}
 		}
 	}
 

@@ -1,4 +1,4 @@
-package figure.series;
+package gui.figure.series;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -13,16 +13,18 @@ import java.awt.Stroke;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.List;
 
+import logging.StringUtils;
 
-import figure.Figure;
-import figure.FigureElement;
-import figure.series.AxesConfigFrame.AxesOptions;
-import guiWidgets.StringUtilities;
+
+import gui.figure.Figure;
+import gui.figure.FigureElement;
+import gui.figure.series.AxesConfigFrame.AxesOptions;
 
 /**
  * Paints graph axes in the specified boundaries, using the minXVal... etc to paint labels.
@@ -50,6 +52,10 @@ public class AxesElement extends FigureElement {
 	double xTickWidth = 0.02;
 	double yTickWidth = 0.01;
 	int fontSize = 11;
+	
+	//These indicate if the user has set values for the x or y axis, and they we should not auto-set them
+	boolean hasUserX = false;
+	boolean hasUserY = false;
 	
 	boolean drawYGrid = true;
 	Color yGridColor = Color.lightGray;
@@ -106,8 +112,8 @@ public class AxesElement extends FigureElement {
 	
 	List<String> xLabelList = null; //An alternate listing of string-valued x labels. This is used for integer values if it is not null.
 
-	element.Point mouseDragStart = new element.Point(0,0);
-	element.Point mouseDragEnd = new element.Point(0, 0);
+	Point2D mouseDragStart = new Point2D.Double(0,0);
+	Point2D mouseDragEnd = new Point2D.Double(0, 0);
 	boolean mouseIsBeingDragged = false; 
 	
 	//Controls whether dragging the mouse causes the rectangular selection area to appear
@@ -137,14 +143,14 @@ public class AxesElement extends FigureElement {
 	}
 	
 	
-	protected void mouseMoved(element.Point pos) {
+	protected void mouseMoved(Point2D pos) {
 		if (bounds.contains(pos)) {
-			double dataX = boundsXtoDataX(pos.x);
-			double dataY = boundsYtoDataY(pos.y);
+			double dataX = boundsXtoDataX(pos.getX());
+			double dataY = boundsYtoDataY(pos.getY());
 			if (dataX>= minXVal && dataX <= maxXVal && dataY >= minYVal && dataY <= maxYVal) {
 				drawMousePosTick = true;
-				mousePos.x = round(pos.x*xFactor);
-				mousePos.y = round(pos.y*yFactor);
+				mousePos.x = round(pos.getX()*xFactor);
+				mousePos.y = round(pos.getY()*yFactor);
 			}
 			else {
 				drawMousePosTick = false;
@@ -174,53 +180,53 @@ public class AxesElement extends FigureElement {
 		xLabelList = null;
 	}
 	
-	protected void mousePressed(element.Point pos) {
-		mouseDragStart.x = pos.x; //It's just the x values that we care about
-		mouseDragEnd.x = mouseDragStart.x;
+	protected void mousePressed(Point2D pos) {
+		mouseDragStart.setLocation(pos);  
+		mouseDragEnd.setLocation(pos);
 		isRangeSelected = false;
 		leftMarkerPos = 0;
 		rightMarkerPos = 0;
 	}
 	
-	protected void mouseReleased(element.Point pos) {
+	protected void mouseReleased(Point2D pos) {
 		mouseIsBeingDragged = false;
 		
-		if (allowMouseDragSelection && mouseDragStart.x != mouseDragEnd.x) {
-			double newXMin = Math.min(mouseDragStart.x, mouseDragEnd.x);
-			double newXMax = Math.max(mouseDragStart.x, mouseDragEnd.x);
+		if (allowMouseDragSelection && mouseDragStart.getX() != mouseDragEnd.getX()) {
+			double newXMin = Math.min(mouseDragStart.getX(), mouseDragEnd.getX());
+			double newXMax = Math.max(mouseDragStart.getX(), mouseDragEnd.getX());
 
 			newXMin = this.boundsXtoDataX(newXMin);
 			newXMax = this.boundsXtoDataX(newXMax);
 
-			if (mouseDragStart.x < mouseDragEnd.x) {
-				leftMarkerPos = (int)Math.round( xFactor*mouseDragStart.x);
-				rightMarkerPos = (int)Math.round( xFactor*mouseDragEnd.x);	
+			if (mouseDragStart.getX() < mouseDragEnd.getX()) {
+				leftMarkerPos = (int)Math.round( xFactor*mouseDragStart.getX());
+				rightMarkerPos = (int)Math.round( xFactor*mouseDragEnd.getX());	
 			}
 			else {
-				leftMarkerPos = (int)Math.round( xFactor*mouseDragEnd.x);
-				rightMarkerPos = (int)Math.round( xFactor*mouseDragStart.x);
+				leftMarkerPos = (int)Math.round( xFactor*mouseDragEnd.getX());
+				rightMarkerPos = (int)Math.round( xFactor*mouseDragStart.getX());
 			}
 		}
 		
-		mouseDragStart.x = 0;
-		mouseDragEnd.x = 0;
+		mouseDragStart.setLocation(0, 0);
+		mouseDragEnd.setLocation(0, 0);
 	
 	}
 	
 	/**
 	 * Called by the parental figure as the mouse is being dragged across this element
 	 */
-	protected void mouseDragged(element.Point pos) {
-		mouseDragEnd.x = pos.x;
+	protected void mouseDragged(Point2D pos) {
+		mouseDragEnd.setLocation(pos);
 		mouseIsBeingDragged = true;
 		isRangeSelected = true;
-		if (mouseDragStart.x < mouseDragEnd.x) {
-			leftMarkerPos = (int)Math.round( xFactor*mouseDragStart.x);
-			rightMarkerPos = (int)Math.round( xFactor*mouseDragEnd.x);	
+		if (mouseDragStart.getX() < mouseDragEnd.getX()) {
+			leftMarkerPos = (int)Math.round( xFactor*mouseDragStart.getX());
+			rightMarkerPos = (int)Math.round( xFactor*mouseDragEnd.getX());	
 		}
 		else {
-			leftMarkerPos = (int)Math.round( xFactor*mouseDragEnd.x);
-			rightMarkerPos = (int)Math.round( xFactor*mouseDragStart.x);
+			leftMarkerPos = (int)Math.round( xFactor*mouseDragEnd.getX());
+			rightMarkerPos = (int)Math.round( xFactor*mouseDragStart.getX());
 		}
 	}
 	
@@ -320,10 +326,10 @@ public class AxesElement extends FigureElement {
 	 * 
 	 * @return The point at which the data point (0, 0) should be plotted, in pixels;
 	 */
-	public element.Point getOrigin() {
+	public Point2D getOrigin() {
 		double x = dataXtoFigureX(0);
 		double y = dataYtoFigureY(0);
-		return new element.Point(x, y);
+		return new Point2D.Double(x, y);
 	}
 	
 	public void setDrawMinorXTicks(boolean drawMinorXTicks) {
@@ -345,6 +351,7 @@ public class AxesElement extends FigureElement {
 			this.xTickSpacing = ops.tickSpacing;
 		}
 
+		hasUserX = true;
 		drawXGrid = ops.drawAxis;
 		recalculateBounds = true;
 		parent.repaint();
@@ -358,6 +365,9 @@ public class AxesElement extends FigureElement {
 		if (ops.tickSpacing > 0) {
 			this.yTickSpacing = ops.tickSpacing;
 		}
+		
+
+		hasUserY = true;
 		drawYGrid = ops.drawAxis;
 		recalculateBounds = true;
 		parent.repaint();
@@ -433,6 +443,22 @@ public class AxesElement extends FigureElement {
 		setSelected(false);
 		isXSelected = false;
 		isYSelected = false;
+	}
+	
+	public double getYMin() {
+		return minYVal;
+	}
+	
+	public double getYMax() {
+		return maxYVal;
+	}
+	
+	public double getXMax() {
+		return maxXVal;
+	}
+	
+	public double getXMin() {
+		return minYVal;
 	}
 	
 	/**
@@ -645,9 +671,9 @@ public class AxesElement extends FigureElement {
 			g.drawLine(leftMarkerPos, round(graphAreaTop), leftMarkerPos, round(graphAreaTop+graphAreaHeight));
 			g.drawLine(rightMarkerPos, round(graphAreaTop), rightMarkerPos, round(graphAreaTop+graphAreaHeight));
 			double dataRX = figureXtoDataX(rightMarkerPos);
-			String drxStr = StringUtilities.format(dataRX);
+			String drxStr = StringUtils.format(dataRX);
 			double dataLX = figureXtoDataX(leftMarkerPos);
-			String dlxStr = StringUtilities.format(dataLX);
+			String dlxStr = StringUtils.format(dataLX);
 			g.setColor(Color.gray);
 			g.setFont(mouseDragNumberFont);
 			g.drawString(drxStr, rightMarkerPos, round(graphAreaTop+graphAreaHeight+10));
@@ -931,7 +957,7 @@ public class AxesElement extends FigureElement {
 		else {
 			g.setFont(xLabelFont);
 			FontMetrics fm = g.getFontMetrics();
-			String label = StringUtilities.format(val); //labelFormatter.format(val);
+			String label = StringUtils.format(val); //labelFormatter.format(val);
 			Rectangle2D rect = fm.getStringBounds(label, 0, label.length(), g);
 			g.drawString(label, round(xPos-rect.getWidth()), round(yPos+rect.getHeight()/3.0));
 		} //number didn't need to be converted to scientific notation
@@ -982,7 +1008,7 @@ public class AxesElement extends FigureElement {
 			//val is between 0.001 and 10000, does not need to be set in scientific notation
 			g.setFont(xLabelFont);
 			FontMetrics fm = g.getFontMetrics();
-			String label = StringUtilities.format(val); // labelFormatter.format(val);
+			String label = StringUtils.format(val); // labelFormatter.format(val);
 			Rectangle2D rect = fm.getStringBounds(label, 0, label.length(), g);
 			g.drawString(label, round(xPos-rect.getWidth()/2.0), round(yPos+rect.getHeight()));
 		}

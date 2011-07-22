@@ -1,4 +1,6 @@
-package figure.series;
+package gui.figure.series;
+
+import gui.figure.ColorSwatchButton;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -23,11 +25,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
-import topLevelGUI.SunFishFrame;
-
-import errorHandling.ErrorWindow;
-import guiWidgets.ColorSwatchButton;
 
 /**
  * A configuration tool for figure legends, this actually allows all series currently in the figure to
@@ -123,7 +120,7 @@ public class LegendConfigFrame extends JFrame {
 				contentPanel.add(Box.createVerticalGlue());
 			}
 			else {
-				ErrorWindow.showErrorWindow(new IllegalArgumentException("The default legend config frame cannot currently handle series that aren't XY series."), SunFishFrame.getSunFishFrame().getLogger());
+				throw new IllegalArgumentException("The default legend config frame cannot currently handle series that aren't XY series.");
 			}
 		}
 		

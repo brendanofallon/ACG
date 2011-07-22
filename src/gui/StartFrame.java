@@ -22,6 +22,12 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import component.LikelihoodComponent;
+
+import parameter.DoubleParameter;
+
+import mcmc.MCMC;
+
 /**
  * First panel allowing used to pick an input data file
  * @author brendano
@@ -29,8 +35,10 @@ import javax.swing.WindowConstants;
  */
 public class StartFrame extends JPanel {
 	
-	public StartFrame() {
-
+	ACGFrame acgParent;
+	
+	public StartFrame(ACGFrame acgParentFrame) {
+		this.acgParent = acgParentFrame;
 		initComponents();
 	}
 
@@ -40,8 +48,10 @@ public class StartFrame extends JPanel {
 		
 		/*********** Card 1 is where we ask the user for the input file **********/
 		
-		JPanel firstPanel = makeFirstPanel();
+		firstPanel = makeFirstPanel();
 		this.add(firstPanel, "first");
+		
+		/// MMM, other cards?
 			
 	}
 	
@@ -120,19 +130,46 @@ public class StartFrame extends JPanel {
 		RunnableInputFile runnableFile = new RunnableInputFile(inputFile);
 		
 		List<String> paramLabels = runnableFile.getParameterLabels();
-		System.out.println("Found these parameters : ");
-		for(String label : paramLabels) {
-			System.out.println(label);
-		}
-
+//		System.out.println("Found these parameters : ");
+//		for(String label : paramLabels) {
+//			System.out.println(label);
+//		}
+//
 		
 		List<String> likeLabels = runnableFile.getLikelihoodLabels();
-		System.out.println("\n\n Found these likelihoods : ");
-		for(String label : likeLabels) {
-			System.out.println(label);
-		}
 		
-		//So... now what?
+		List<String> mcLabels = runnableFile.getMCMCLabels();
+		MCMC chain;
+		try {
+			chain = (MCMC)runnableFile.getObjectForLabel(mcLabels.get(0));
+			MainOutputFrame outputPane = new MainOutputFrame(chain, 10000, 2, 2);
+			
+			DoubleParameter kappa = (DoubleParameter)runnableFile.getObjectForLabel("kappa");
+			DoubleParameter popSize = (DoubleParameter)runnableFile.getObjectForLabel("constantPopSize");
+			
+			LikelihoodComponent dl = (LikelihoodComponent)runnableFile.getObjectForLabel("DLCalculator");
+			
+			outputPane.addChart(kappa);
+			outputPane.addChart(popSize);
+			outputPane.addChart(dl);
+			
+			acgParent.initializeProgressBar(chain);
+			
+			this.remove(firstPanel);
+			this.revalidate();
+			
+			this.add(outputPane, BorderLayout.CENTER);
+			this.revalidate();
+			
+			runnableFile.runMCMC();
+			
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 
@@ -153,7 +190,7 @@ public class StartFrame extends JPanel {
 	
 	//Stores the file the user selected from the file chooser, or null
 	private File selectedFile = null;
-	
+	private JPanel firstPanel = null;
 	private JFileChooser fileChooser = null;
 	private JTextField filenameField;
 

@@ -1,14 +1,12 @@
-package figure.series;
+package gui.figure.series;
+
+import gui.figure.Figure;
+import gui.figure.FigureElement;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
-
-import topLevelGUI.SunFishFrame;
-
-import figure.Figure;
-import figure.FigureElement;
 
 /**
  * A generic element that displays a series of data, either ordinal or non-ordinal. Subclasses implement
@@ -128,7 +126,6 @@ public abstract class SeriesElement extends FigureElement {
 			currentMode = newMode;
 		}
 		else {
-			SunFishFrame.getSunFishFrame().getLogger().warning("Illegal series mode type request from XYSeriesElement : " + newMode);
 			throw new IllegalArgumentException("Cannot set a series mode to : " + newMode);
 		}
 	}
@@ -160,6 +157,7 @@ public abstract class SeriesElement extends FigureElement {
 		this.boxWidthDivisor = boxWidthDivisor;
 		this.boxOffset = offset;
 	}
+
 	
 	
 
