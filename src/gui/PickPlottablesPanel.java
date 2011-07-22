@@ -28,11 +28,8 @@ public class PickPlottablesPanel extends JPanel {
 	RunnableInputFile file;
 	ACGFrame acgParent;
 	
-	//Labels of the parameter objects we'll display in the the next panel
-	List<String> selectedParams = new ArrayList<String>();
-	
-	//Labels of the likelihood components we'll display in the the next panel
-	List<String> selectedLikelihoods = new ArrayList<String>();
+	//Holds list of things we'll display in the next panel
+	List<PlottableInfo> selectedPlottables = new ArrayList<PlottableInfo>();
 	
 	public PickPlottablesPanel(ACGFrame acgParent, RunnableInputFile file) {
 		this.acgParent = acgParent;
@@ -105,6 +102,14 @@ public class PickPlottablesPanel extends JPanel {
 		int index = plottableList.locationToIndex(p);
 		PlottableInfo info = (PlottableInfo)plottableList.getModel().getElementAt(index);
 		info.selected = !info.selected;
+		
+		if (info.selected) {
+			if (! selectedPlottables.contains(info)) 
+				selectedPlottables.add(info);
+		}
+		else {
+			selectedPlottables.remove(info);
+		}
 		plottableList.repaint();
 	}
 
@@ -200,14 +205,18 @@ public class PickPlottablesPanel extends JPanel {
 			chain = (MCMC)file.getObjectForLabel(mcLabels.get(0));
 			MainOutputFrame outputPane = new MainOutputFrame(chain, 5000, 2, 2);
 
-			DoubleParameter kappa = (DoubleParameter)file.getObjectForLabel("kappa");
-			DoubleParameter popSize = (DoubleParameter)file.getObjectForLabel("constantPopSize");
+			for(PlottableInfo plottable : selectedPlottables) {
+				Object obj = file.getObjectForLabel(plottable.label);
+				if (obj instanceof AbstractParameter<?>) {
 
-			LikelihoodComponent dl = (LikelihoodComponent)file.getObjectForLabel("DLCalculator");
-
-			outputPane.addChart(kappa);
-			outputPane.addChart(popSize);
-			outputPane.addChart(dl);
+					System.out.println("Adding parameter " + obj);
+					outputPane.addChart( (AbstractParameter<?>)obj);
+				}
+				if (obj instanceof LikelihoodComponent) {
+					System.out.println("Adding likelihood " + obj);
+					outputPane.addChart( (LikelihoodComponent)obj);
+				}
+			}
 
 			acgParent.initializeProgressBar(chain);
 			

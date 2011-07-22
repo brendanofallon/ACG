@@ -1,11 +1,9 @@
 package gui;
 
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import mcmc.MCMC;
@@ -15,6 +13,11 @@ import component.LikelihoodComponent;
 
 import parameter.AbstractParameter;
 
+/**
+ * Panel that displays various output charts
+ * @author brendano
+ *
+ */
 public class MainOutputFrame extends JPanel implements MCMCListener {
 	
 	private int rows = 2;

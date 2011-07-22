@@ -36,6 +36,7 @@ import mcmc.MCMC;
 public class StartFrame extends JPanel {
 	
 	ACGFrame acgParent;
+	Color backgroundColor = new Color(120, 120, 120);
 	
 	public StartFrame(ACGFrame acgParentFrame) {
 		this.acgParent = acgParentFrame;
@@ -44,36 +45,24 @@ public class StartFrame extends JPanel {
 
 	
 	private void initComponents() {
-		this.setLayout(new CardLayout());
-		
-		/*********** Card 1 is where we ask the user for the input file **********/
-		
-		firstPanel = makeFirstPanel();
-		this.add(firstPanel, "first");
-		
-		/// MMM, other cards?
-			
-	}
-	
-	/**
-	 * Create and return the panel that allows the user to select an input file
-	 * @return
-	 */
-	private JPanel makeFirstPanel() {
-		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.setBackground(backgroundColor);
 		
 		
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
-		topPanel.add(Box.createVerticalStrut(100));
-		//Add a logo or something to the top panel....
-		panel.add(topPanel, BorderLayout.NORTH);
+		topPanel.add(Box.createVerticalStrut(50));
+		topPanel.setBackground(backgroundColor);
+		//Add a logo or something to the top panel....?
+		add(topPanel);
 		
-		JPanel centerPanel = new JPanel();
+		JPanel centerPanel = new FancyInputBox();
 		
-		centerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		panel.add(centerPanel, BorderLayout.CENTER);
+		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
+		centerPanel.setBackground(backgroundColor);
+		centerPanel.add(Box.createHorizontalStrut(50));
+		centerPanel.setPreferredSize(new Dimension(300, 150));
+		centerPanel.setMaximumSize(new Dimension(400, 200));
 		
 		
 		filenameField = new JTextField("Enter name of file");
@@ -83,19 +72,23 @@ public class StartFrame extends JPanel {
 				clearSelectedFile();
 			}
 		});
+		filenameField.setMaximumSize(new Dimension(800, 30));
 		centerPanel.add(filenameField);
 		
 		JButton browse = new JButton("Browse");
+		
 		browse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				browseForFile();
 			}
 		});
 		centerPanel.add(browse);
-		
+		centerPanel.add(Box.createHorizontalStrut(50));
+		add(centerPanel);
 		
 		JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		bottomPanel.setBackground(backgroundColor);
 		JButton done = new JButton("Done");
 		done.addActionListener( new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -103,10 +96,9 @@ public class StartFrame extends JPanel {
 			}
 		});
 		bottomPanel.add(done);
-		panel.add(bottomPanel, BorderLayout.SOUTH);
-		
-		return panel;
+		add(bottomPanel);	
 	}
+
 
 	/**
 	 * Called when the user has clicked on the 'Done' button. We see if a valid input file has been selected, and
@@ -153,7 +145,6 @@ public class StartFrame extends JPanel {
 	
 	//Stores the file the user selected from the file chooser, or null
 	private File selectedFile = null;
-	private JPanel firstPanel = null;
 	private JFileChooser fileChooser = null;
 	private JTextField filenameField;
 

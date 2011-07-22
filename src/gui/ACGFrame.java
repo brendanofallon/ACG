@@ -17,7 +17,7 @@ import mcmc.MCMCListener;
 public class ACGFrame extends JFrame {
 	
 	public ACGFrame( /* might be nice to get some properties here */ ) {
-		
+		super("ACG");
         try {
         	String plaf = UIManager.getSystemLookAndFeelClassName();
         	String gtkLookAndFeel = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
@@ -34,7 +34,7 @@ public class ACGFrame extends JFrame {
         }
         
 		initComponents();
-		setPreferredSize(new Dimension(1000, 500));
+		setPreferredSize(new Dimension(800, 500));
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 		pack();
@@ -70,6 +70,7 @@ public class ACGFrame extends JFrame {
 		this.remove(centerPanel);
 		this.validate();
 		
+		this.centerPanel = newCenterPanel;
 		this.add(newCenterPanel, BorderLayout.CENTER);
 		this.validate();
 	}
@@ -85,7 +86,7 @@ public class ACGFrame extends JFrame {
 		
 		bottomPanel = new JPanel();
 		progressBar = new JProgressBar(0, 1000);
-		progressBar.setPreferredSize(new Dimension(800, 24));
+		progressBar.setPreferredSize(new Dimension(600, 24));
 		bottomPanel.add(progressBar);
 		mainContainer.add(bottomPanel, BorderLayout.SOUTH);
 	}
