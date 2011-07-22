@@ -66,12 +66,20 @@ public class ACGFrame extends JFrame {
 		progressBar.setValue(val);
 	}
 	
+	public void replaceCenterPanel(JPanel newCenterPanel) {
+		this.remove(centerPanel);
+		this.validate();
+		
+		this.add(newCenterPanel, BorderLayout.CENTER);
+		this.validate();
+	}
+	
 	private void initComponents() {
 		BorderLayout layout = new BorderLayout();
 		Container mainContainer = this.getContentPane();
 		mainContainer.setLayout(layout);
 		
-		JPanel centerPanel = new StartFrame(this);
+		centerPanel = new StartFrame(this);
 		mainContainer.add(centerPanel, BorderLayout.CENTER);
 		
 		
@@ -82,6 +90,7 @@ public class ACGFrame extends JFrame {
 		mainContainer.add(bottomPanel, BorderLayout.SOUTH);
 	}
 
+	private JPanel centerPanel;
 	private JPanel bottomPanel;
 	private JProgressBar progressBar;
 }

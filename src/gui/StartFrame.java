@@ -129,47 +129,10 @@ public class StartFrame extends JPanel {
 		
 		RunnableInputFile runnableFile = new RunnableInputFile(inputFile);
 		
-		List<String> paramLabels = runnableFile.getParameterLabels();
-//		System.out.println("Found these parameters : ");
-//		for(String label : paramLabels) {
-//			System.out.println(label);
-//		}
-//
-		
-		List<String> likeLabels = runnableFile.getLikelihoodLabels();
-		
-		List<String> mcLabels = runnableFile.getMCMCLabels();
-		MCMC chain;
-		try {
-			chain = (MCMC)runnableFile.getObjectForLabel(mcLabels.get(0));
-			MainOutputFrame outputPane = new MainOutputFrame(chain, 10000, 2, 2);
+
+			PickPlottablesPanel pickPanel = new PickPlottablesPanel(acgParent, runnableFile);
 			
-			DoubleParameter kappa = (DoubleParameter)runnableFile.getObjectForLabel("kappa");
-			DoubleParameter popSize = (DoubleParameter)runnableFile.getObjectForLabel("constantPopSize");
-			
-			LikelihoodComponent dl = (LikelihoodComponent)runnableFile.getObjectForLabel("DLCalculator");
-			
-			outputPane.addChart(kappa);
-			outputPane.addChart(popSize);
-			outputPane.addChart(dl);
-			
-			acgParent.initializeProgressBar(chain);
-			
-			this.remove(firstPanel);
-			this.revalidate();
-			
-			this.add(outputPane, BorderLayout.CENTER);
-			this.revalidate();
-			
-			runnableFile.runMCMC();
-			
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			acgParent.replaceCenterPanel(pickPanel);
 	}
 
 
