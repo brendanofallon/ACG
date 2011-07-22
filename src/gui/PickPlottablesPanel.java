@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -21,6 +23,7 @@ import arg.ARG;
 
 import mcmc.MCMC;
 import parameter.AbstractParameter;
+import parameter.CompoundParameter;
 import parameter.DoubleParameter;
 
 import component.LikelihoodComponent;
@@ -42,17 +45,19 @@ public class PickPlottablesPanel extends JPanel {
 
 	private void initComponents() {
 		setLayout(new BorderLayout());
-		
+		this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
 		topPanel.add(Box.createHorizontalGlue());
 		topPanel.add(new JLabel("Pick items to plot from list below"));
 		topPanel.add(Box.createHorizontalGlue());
+		topPanel.setBackground(ACGFrame.backgroundColor);
+		
 		this.add(topPanel, BorderLayout.NORTH);
 		
 		JPanel centerPanel = new JPanel();
 		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
-		
+		centerPanel.setBackground(ACGFrame.backgroundColor);
 		List<String> paramLabels = file.getParameterLabels();
 		List<String> likeLabels = file.getLikelihoodLabels();
 		
@@ -95,6 +100,7 @@ public class PickPlottablesPanel extends JPanel {
 			}
 		});
 		bottomPanel.add(nextButton);
+		bottomPanel.setBackground(ACGFrame.backgroundColor);
 		this.add(bottomPanel, BorderLayout.SOUTH);
 	}
 
@@ -126,6 +132,10 @@ public class PickPlottablesPanel extends JPanel {
 			}
 			
 			if (obj instanceof AbstractParameter<?>) {
+				if (obj instanceof CompoundParameter) {
+					return list;
+				}
+				
 				AbstractParameter<?> par = (AbstractParameter<?>)obj;
 				
 				String[] logKeys = par.getLogKeys();
@@ -133,7 +143,7 @@ public class PickPlottablesPanel extends JPanel {
 					PlottableInfo info = new PlottableInfo();
 					info.label = label;
 					info.key = logKeys[i];
-					info.descriptor = " Item: " + logKeys[i];
+					info.descriptor = logKeys[i];
 					list.add(info);
 				}
 
@@ -150,42 +160,7 @@ public class PickPlottablesPanel extends JPanel {
 		return list;
 	}
 	
-	/**
-	 * Returns true if the object with the given label is an AbstractParameter
-	 * whose value is of type Double, double[], or Integer
-	 * @param pLabel
-	 * @return
-	 */
-	private boolean isPlottable(String pLabel) {
-		try {
-			Object obj = file.getObjectForLabel(pLabel);
-			if (obj instanceof AbstractParameter<?>) {
-				AbstractParameter<?> par = (AbstractParameter<?>)obj;
-				Object t = par.getValue();
-				if (t instanceof Double)
-					return true;
-				if (t instanceof double[])
-					return true;
-				if (t instanceof Double[])
-					return true;
-				if (t instanceof Integer) 
-					return true;
-				
-				return false;
-			}
-			else {
-				return false;
-			}
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return false;
-	}
+
 
 	protected void startChain() {
 		List<String> mcLabels = file.getMCMCLabels();

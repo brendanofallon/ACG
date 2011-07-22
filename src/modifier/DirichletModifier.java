@@ -27,6 +27,7 @@ public class DirichletModifier extends AbstractModifier<Parameter<double[]>> {
 	//double scale = 2.0; //Inversely proportional to how much variance distributions will have, making this huge will 
 	//make all value cluster very close to 0.25 
 	
+	
 	public DirichletModifier(Map<String, String> attributes) {
 		super(attributes);
 		//TODO try to read a scale attribute from the list of attributes
@@ -36,11 +37,7 @@ public class DirichletModifier extends AbstractModifier<Parameter<double[]>> {
 	public DirichletModifier() {
 		this(new HashMap<String, String>());
 	}	
-	
-	public DirichletModifier copy() {
-		DirichletModifier copy = new DirichletModifier();
-		return copy;
-	}
+
 
 	@Override
 	public Double modify() throws InvalidParameterValueException,

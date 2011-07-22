@@ -30,7 +30,9 @@
 
 <!-- The TN93 mutation model has one more free parameter than the F84 model  -->
 <mutationModel class="dlCalculation.substitutionModels.TN93Matrix">
-	<stationaries class="dlCalculation.substitutionModels.BaseFrequencies" stationaries="0.25 0.25 0.25 0.25" />
+	<stationaries class="dlCalculation.substitutionModels.BaseFrequencies" stationaries="0.25 0.25 0.25 0.25" >
+		<stationariesMod class="modifier.DirichletModifier" />
+	</stationaries>
 	<kappaR class="parameter.DoubleParameter" name="kappaR" value="2.0" lowerBound="0.5" upperBound="500">
 		<kappaRMod class="modifier.SimpleModifier" />
 	</kappaR>
@@ -75,7 +77,7 @@
 
 <!-- A logger that tracks the position of recombination breakpoints along the sequence -->
 <bpLocLogger class="logging.BreakpointLocation" filename="example2_bp.txt" frequency="5000" burnin="100000">
-	<arg />  <!-- This logger requires a reference to the ARG -->
+	<arg />  
 </bpLocLogger>
 
 <!-- a logger that tracks the distribution of TMRCA (root height of marginal trees) along the sequence -->
@@ -87,6 +89,7 @@
 	<parameters class="list">
 		<constantPopSize />
 		<constantRecRate />
+		<stationaries />
 		<kappaR />
 		<kappaY />
 		<arg />  

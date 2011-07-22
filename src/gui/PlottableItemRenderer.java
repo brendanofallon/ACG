@@ -15,7 +15,7 @@ import javax.swing.ListCellRenderer;
 
 public class PlottableItemRenderer extends JPanel implements ListCellRenderer {
 
-	Color stripeColor = new Color(238, 238, 237);
+	Color stripeColor = new Color(220, 230, 240);
 	JCheckBox checkBox;
 	JLabel label;
 	
@@ -25,7 +25,9 @@ public class PlottableItemRenderer extends JPanel implements ListCellRenderer {
 		label = new JLabel();
 		this.add(checkBox);
 		this.add(label);
-		setPreferredSize(new Dimension(200, 40));
+		setPreferredSize(new Dimension(200, 30));
+		setMaximumSize(new Dimension(200, 30));
+
 	}
 	
 	

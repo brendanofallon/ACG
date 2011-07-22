@@ -17,7 +17,8 @@ import mcmc.MCMC;
 import mcmc.MCMCListener;
 
 /**
- * A handler of several print streams, 
+ * A logger that writes a parameter values and likelihoods to a one or more print streams, including system.out . Use addStream(newStream)
+ * to add more print streams to print to. 
  * @author brendan
  *
  */

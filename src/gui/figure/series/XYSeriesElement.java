@@ -235,12 +235,15 @@ public class XYSeriesElement extends SeriesElement {
 		if (currentMode == LINES || currentMode == POINTS_AND_LINES || currentMode == POINTS) {
 			if (xySeries.size()>1) {
 				double x1 = axes.dataXtoBoundsX(xySeries.get(0).getX()  );
-				double y1 = axes.dataYtoBoundsY(xySeries.get(0).getX() );
+				double y1 = axes.dataYtoBoundsY(xySeries.get(0).getY() );
 				double x2 = axes.dataXtoBoundsX( xySeries.get(1).getX());
 				double y2 = axes.dataYtoBoundsY( xySeries.get(1).getY() );
 				pathShape = new GeneralPath(new Line2D.Double(x1, y1, x2, y2) );
 				
 				boolean connect = true;
+				
+				//System.out.println("Name : " + this.getName() + " First point " + y1 + " second point : " + y2);
+				
 				for(int i=1; i<xySeries.size(); i++) {
 					x1 = axes.dataXtoBoundsX( xySeries.get(i).getX());
 					y1 = axes.dataYtoBoundsY( xySeries.get(i).getY() );

@@ -31,6 +31,13 @@ public class BaseFrequencies extends AbstractParameter<double[]> {
 	static final int A = DNAUtils.A;
 	static final int G = DNAUtils.G;
 	
+	//String[] logKeys = {"a.freq", "c.freq", "t.freq", "g.freq"};
+	String[] logKey = new String[]{"a.freq\tc.freq\tg.freq\tt.freq"};
+			
+	public BaseFrequencies(Map<String, String> attrs, Modifier mod) {
+		this(attrs);
+		addModifier(mod);
+	}
 	
 	public BaseFrequencies(Map<String, String> attrs) {
 		
@@ -84,57 +91,70 @@ public class BaseFrequencies extends AbstractParameter<double[]> {
 		return "base.frequencies";
 	}
 
-	@Override
-	public String getLogHeader() {
-		return "a.freq \t c.freq \t g.freq \t t.freq";
+	public int getKeyCount() {
+		return 1;
 	}
-
-	@Override
+	
+	/**
+	 * Returns a list of keys associated with the loggable items of this param. 
+	 * Default implementation is a single item whose key is 'getName()'
+	 */
+	public String[] getLogKeys() {
+		return logKey;
+	}
+	
+	/**
+	 * Return the current value of the log item associated with the given key.
+	 * Default implementation is to always just return currentValue
+	 */
+	public Object getLogItem(String key) {
+		double[] freqs = getStationaries();
+		return "" + freqs[A] + "\t" + freqs[C] + "\t" + freqs[G] + "\t" + freqs[T];
+	}
+	
 	public String getLogString() {
-		return "" + StringUtils.format(currentValue[DNAUtils.A], 3) + "\t" + StringUtils.format(currentValue[DNAUtils.C], 3) + "\t" + StringUtils.format(currentValue[DNAUtils.G], 3) + "\t" + StringUtils.format(currentValue[DNAUtils.T], 3);
+		double[] freqs = getStationaries();
+		return "" + freqs[A] + "\t" + freqs[C] + "\t" + freqs[G] + "\t" + freqs[T];		
 	}
 	
 
-
 	
-
-	
-	public static void main(String[] args) {
-		RandomSource.initialize();
-		double[] stats = new double[]{0.25, 0.25, 0.25, 0.25};
-
-		BaseFrequencies freqs = new BaseFrequencies(stats);
-		DirichletModifier mod = new DirichletModifier();
-		freqs.addModifier(mod);
-		
-		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter("freqData.log"));
-			writer.write("A \t C \t T \t G \n");
-			for(int i=0; i<100000; i++) {
-				try {
-					mod.modify();
-				} catch (InvalidParameterValueException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalModificationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ModificationImpossibleException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				freqs.acceptValue();
-				stats = freqs.getValue();
-				if (i%50==0) {
-					System.out.println(stats[0] + "\t" + stats[1] + "\t" + stats[2] + "\t" + stats[3]);
-					writer.write(stats[0] + "\t" + stats[1] + "\t" + stats[2] + "\t" + stats[3] + "\n" );
-				}
-			}
-			writer.close();
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//	public static void main(String[] args) {
+//		RandomSource.initialize();
+//		double[] stats = new double[]{0.25, 0.25, 0.25, 0.25};
+//
+//		BaseFrequencies freqs = new BaseFrequencies(stats);
+//		DirichletModifier mod = new DirichletModifier();
+//		freqs.addModifier(mod);
+//		
+//		try {
+//			BufferedWriter writer = new BufferedWriter(new FileWriter("freqData.log"));
+//			writer.write("A \t C \t T \t G \n");
+//			for(int i=0; i<100000; i++) {
+//				try {
+//					mod.modify();
+//				} catch (InvalidParameterValueException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (IllegalModificationException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (ModificationImpossibleException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				freqs.acceptValue();
+//				stats = freqs.getValue();
+//				if (i%50==0) {
+//					System.out.println(stats[0] + "\t" + stats[1] + "\t" + stats[2] + "\t" + stats[3]);
+//					writer.write(stats[0] + "\t" + stats[1] + "\t" + stats[2] + "\t" + stats[3] + "\n" );
+//				}
+//			}
+//			writer.close();
+//
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 }

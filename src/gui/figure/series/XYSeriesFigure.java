@@ -266,6 +266,11 @@ public class XYSeriesFigure extends SeriesFigure {
 		
 	}
 	
+	public AxesElement getAxes() {
+		return axes;
+	}
+	
+	
 	/**
 	 * Set the distance (in data units) between x ticks on the axes element
 	 * @param spacing

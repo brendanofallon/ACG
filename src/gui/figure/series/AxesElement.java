@@ -47,8 +47,9 @@ public class AxesElement extends FigureElement {
 	double maxYVal = 1;
 	
 	double xTickSpacing = 1.0;
-
 	double yTickSpacing = 1.0;
+	boolean hasUserXTickNum = false;	//True if user has set x tick number
+	boolean hasUserYTickNum = false;	//True if user has set y tick number
 	double xTickWidth = 0.02;
 	double yTickWidth = 0.01;
 	int fontSize = 11;
@@ -304,8 +305,7 @@ public class AxesElement extends FigureElement {
 	}
 	
 	public void setNumXTicks(int num) {
-		xTickSpacing = (maxXVal - minXVal)/num;
-		
+		xTickSpacing = (maxXVal - minXVal)/num;	
 		recalculateBounds = true;
 	}
 	
@@ -603,21 +603,23 @@ public class AxesElement extends FigureElement {
 	 */
 	public void setRationalTicks() {
 		double range = maxXVal - minXVal;
+		double numXticks = 4;
 		int log = (int)Math.floor( Math.log10(range));
 		int pow = (int)Math.round( Math.pow(10.0, log-2));
 		if (pow != 0)
-			xTickSpacing = Math.round(range/5.0*pow)/pow;
+			xTickSpacing = Math.round(range/numXticks*pow)/pow;
 		else
-			xTickSpacing = range/5.0;
+			xTickSpacing = range/numXticks;
 		//System.out.println("X range: " + range + " log: " + log + " pow: " + pow + " x spacing: " + xTickSpacing);
 		
+		double numYticks = 4;
 		range = maxYVal - minYVal;
 		log = (int)Math.floor( Math.log10(range));
 		pow = (int)Math.round( Math.pow(10.0, log-2));
 		if (pow != 0)
-			yTickSpacing = Math.round(range/5.0*pow)/pow;
+			yTickSpacing = Math.round(range/numYticks*pow)/pow;
 		else
-			yTickSpacing = range/5.0;
+			yTickSpacing = range/numYticks;
 		//System.out.println("Y range: " + range + " log: " + log + " pow: " + pow + " y spacing: " + yTickSpacing);
 		
 	}

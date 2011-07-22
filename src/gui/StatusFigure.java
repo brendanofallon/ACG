@@ -26,12 +26,21 @@ public class StatusFigure extends XYSeriesFigure {
 		this.setAllowMouseDragSelection(false);
 		this.setXLabel("MCMC state");
 		this.setYLabel(null);
+		this.getAxes().setNumXTicks(4);
+		this.getAxes().setNumYTicks(4);
+		
+		//This ALL NEEDS TO BE REFACTORED BADLY! BUT how do we know if things should be grouped together, or not? 
+		String[] logKeyItems = logKey.split("\\t");
+		
 		
 		String logStr = (param.getLogItem(logKey)).toString();
 		String[] logToks = logStr.split("\\t");
 		series = new XYSeries[logToks.length];
-		for(int i=0; i<logToks.length; i++) {
-			series[i] = new XYSeries(logKey + "(" + i + ")");
+		for(int i=0; i<Math.min(logToks.length, logKeyItems.length); i++) {
+			String displayName = logKeyItems[i];
+			if (i>0)
+				displayName = logKeyItems[i] + "(" + i + ")";
+			series[i] = new XYSeries(displayName);
 			XYSeriesElement serEl = addDataSeries(series[i]);
 			serEl.setLineWidth(defaultLineWidth);	
 		}
@@ -78,6 +87,8 @@ public class StatusFigure extends XYSeriesFigure {
 		this.comp = comp;
 		this.setAllowMouseDragSelection(false);
 		this.setXLabel("MCMC state");
+		this.getAxes().setNumXTicks(4);
+		this.getAxes().setNumYTicks(4);
 		this.setYLabel(null);
 		series = new XYSeries[1];
 		series[0] = new XYSeries(comp.getLogHeader());

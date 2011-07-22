@@ -270,6 +270,11 @@ public class MCMC {
 	public void addParameter(AbstractParameter<?> param) {
 		if (parameters.contains(param))
 			throw new IllegalArgumentException("Param " + param + " is already in the list of parameters");
+		
+
+		if (verbose)
+			System.out.println("Adding parameter : " + param);
+		
 		parameters.add(param);
 		if (param instanceof AcceptRejectListener) {
 			arListeners.add((AcceptRejectListener)param);
@@ -292,6 +297,9 @@ public class MCMC {
 	public void addComponent(LikelihoodComponent comp) {
 		if (components.contains(comp))
 			throw new IllegalArgumentException("Component " + comp + " is already in the list of parameters");
+		
+		if (verbose)
+			System.out.println("Adding likelihood component : " + comp);
 		components.add(comp);
 		arListeners.add(comp);
 		
