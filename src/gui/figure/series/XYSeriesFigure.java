@@ -132,10 +132,6 @@ public class XYSeriesFigure extends SeriesFigure {
 			if (ymax > 0) 
 				ymax = upperVal(ymax);
 			
-			//This is broken... for now we just 
-//			if (ymin < 0)
-//				ymin = Math.round(1000*ymin*1.1)/1000;
-			
 			
 			if (ymax == ymin) {
 				if (Math.abs(ymax)<1e-12) {

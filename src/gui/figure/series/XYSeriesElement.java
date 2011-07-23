@@ -174,7 +174,11 @@ public class XYSeriesElement extends SeriesElement {
 	}
 	
 	public void popupConfigureTool(java.awt.Point pos) {
-		configFrame.display(getName(), currentMode, getLineColor(), round(((BasicStroke)normalStroke).getLineWidth()), markerSize, currentMarkerType);
+		if (xySeries instanceof HistogramSeries) {
+			//TODO pop up a different tool where you can configure bin number?
+		}
+		else
+			configFrame.display(getName(), currentMode, getLineColor(), round(((BasicStroke)normalStroke).getLineWidth()), markerSize, currentMarkerType);
 	}
 	
 	/**

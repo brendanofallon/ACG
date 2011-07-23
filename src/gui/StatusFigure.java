@@ -24,7 +24,7 @@ public class StatusFigure extends JPanel {
 	XYSeriesFigure traceFigure;
 	XYSeries[] series;
 	HistogramSeries[] histoSeries;
-	
+	String[] titles;
 	String logKey = null;
 	
 	public StatusFigure(AbstractParameter<?> param, String logKey) {
@@ -38,10 +38,12 @@ public class StatusFigure extends JPanel {
 		String logStr = (param.getLogItem(logKey)).toString();
 		String[] logToks = logStr.split("\\t");
 		series = new XYSeries[logToks.length];
+		titles = new String[logToks.length];
 		for(int i=0; i<Math.min(logToks.length, logKeyItems.length); i++) {
 			String displayName = logKeyItems[i];
 			if (i>0)
 				displayName = logKeyItems[i] + "(" + i + ")";
+			titles[i] = displayName;
 			series[i] = new XYSeries(displayName);
 			XYSeriesElement serEl = traceFigure.addDataSeries(series[i]);
 			serEl.setLineWidth(defaultLineWidth);	
@@ -92,6 +94,9 @@ public class StatusFigure extends JPanel {
 		serEl.setLineWidth(defaultLineWidth);
 	}
 	
+	/**
+	 * Creates the figure and sets a few defaults for it
+	 */
 	private void initializeFigure() {
 		this.setLayout(new BorderLayout());
 		traceFigure = new XYSeriesFigure();
@@ -104,6 +109,9 @@ public class StatusFigure extends JPanel {
 		traceFigure.setYLabel(null);
 	}
 	
+	/**
+	 * Creates the popup 
+	 */
 	private void initializePopup() {
 		 popup = new JPopupMenu();
 		 JMenuItem switchItem = new JMenuItem("Switch to histogram");
@@ -138,10 +146,13 @@ public class StatusFigure extends JPanel {
 			traceFigure.removeAllSeries();
 			histoSeries = new HistogramSeries[series.length];
 			for(int i=0; i<series.length; i++) {
-				HistogramSeries hSeries = new HistogramSeries("Density", series[i].getPointList(), 100, series[i].getMinX()*0.8, series[i].getMaxX()*1.5);
+				HistogramSeries hSeries = new HistogramSeries(titles[i] , series[i].getPointList(), 100, series[i].getMinY()*0.8, series[i].getMaxY()*1.5);
 				histoSeries[i] = hSeries;
-				traceFigure.addDataSeries(hSeries);
+				XYSeriesElement el = traceFigure.addDataSeries(hSeries);
+				el.setMode(XYSeriesElement.BOXES);
 			}
+			traceFigure.inferBoundsFromCurrentSeries();
+			traceFigure.repaint();
 		}
 		else {
 			traceFigure.removeAllSeries();
@@ -155,6 +166,7 @@ public class StatusFigure extends JPanel {
 		traceFigure.repaint();
 	}
 
+	
 	public void update(int state) {
 		if (param != null) {
 			String logStr = (param.getLogItem(logKey)).toString();
@@ -164,8 +176,9 @@ public class StatusFigure extends JPanel {
 					Double val = Double.parseDouble(logToks[i]);
 					Point2D.Double point = new Point2D.Double(state, val);
 					series[i].addPointInOrder(point);
-					if (histoSeries != null) 
+					if (histoSeries != null) {
 						histoSeries[i].addValue(val);
+					}
 				}
 				catch (NumberFormatException nex) {
 					//don't worry about it

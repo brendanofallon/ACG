@@ -18,6 +18,7 @@ public class HistogramSeries extends XYSeries {
 	public HistogramSeries(String name, int bins, double min, double max) {
 		super(name);
 		histo = new Histogram(min, max, bins);
+		System.out.println("Creating new empty histogram with " + bins + " bins xmin: " + min + " max: "+ max);
 		pointList = null;
 	}
 
@@ -25,6 +26,7 @@ public class HistogramSeries extends XYSeries {
 	public HistogramSeries(String name, List<Point2D> points, int bins, double min, double max) {
 		super(name);
 		replace(points, bins, min, max);
+		System.out.println("Creating new empty histogram with " + bins + " bins xmin: " + min + " max: "+ max);
 		pointList = null;
 	}
 	
@@ -74,7 +76,7 @@ public class HistogramSeries extends XYSeries {
 	 * @return
 	 */
 	public double getY(int index) {
-		return histo.getFreq(index);
+		return histo.getCount(index);
 	}
 	
 	
@@ -110,7 +112,7 @@ public class HistogramSeries extends XYSeries {
 		if (index<0 || index>=histo.getBinCount())
 			return null;
 		else
-			return new Point2D.Double(getX(index), histo.getFreq(index));
+			return new Point2D.Double(getX(index), histo.getCount(index));
 	}
 	
 	
@@ -138,7 +140,7 @@ public class HistogramSeries extends XYSeries {
 	}
 	
 	public double getMaxY() {
-		return histo.getMaxFrequency();
+		return histo.getMaxCount();
 	}
 	
 	/**
@@ -147,12 +149,7 @@ public class HistogramSeries extends XYSeries {
 	 * @return
 	 */
 	public int lastNonZero() {
-		int i;
-		for(i=pointList.size()-1; i>=0; i--) {
-			if (pointList.get(i).getY() > 0)
-				return i;
-		}
-		return 0;
+		return histo.getBinCount();
 	}
 	
 	/**
@@ -162,6 +159,9 @@ public class HistogramSeries extends XYSeries {
 		return histo.getBinCount();
 	}
 
+	public int getCount() {
+		return histo.getCount();
+	}
 	
 	/**
 	 * Returns the Point at the given index in this list of points, or null if  i> this.size()
@@ -187,4 +187,6 @@ public class HistogramSeries extends XYSeries {
 		}
 		
 	}
+
+	
 }

@@ -116,11 +116,11 @@ public class Histogram {
 	 * Returns the frequency of the bin with the greatest frequency
 	 * @return
 	 */
-	public double getMaxFrequency() {
+	public double getMaxCount() {
 		double max = 0;
 		for(int i=0; i<hist.length; i++) {
 			if (hist[i] > max) {
-				max = hist[i]/count;
+				max = hist[i];
 			}
 		}
 		return max;
@@ -183,7 +183,15 @@ public class Histogram {
 		
 		return Double.NaN;
 	}
+
 	
+	public double getCount(int whichBin) {
+		if (whichBin>=0 && whichBin<hist.length) {
+			return hist[whichBin]; 
+		}
+		
+		return Double.NaN;
+	}
 	
 	/**
 	 * Returns the approximate x-value which divides the mass in half
