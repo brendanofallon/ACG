@@ -55,6 +55,14 @@ public class Histogram {
 		return count;
 	}
 	
+	public double getMin() {
+		return minValue;
+	}
+	
+	public double getMax() {
+		return maxValue;
+	}
+	
 	/**
 	 * Set all counts in the histogram to zero
 	 */
@@ -85,12 +93,37 @@ public class Histogram {
 			return;
 		}
 		
-		int bin = (int)Math.floor( (val-minValue)/(maxValue-minValue)*(double)hist.length );
+		int bin = getBin(val);
+		//int bin = (int)Math.floor( (val-minValue)/(maxValue-minValue)*(double)hist.length );
 		hist[ bin ]++;
+	}
+	
+	/**
+	 * Returns the bin that the given value would fall into. Doesn't do error checking, so this value
+	 * may be negative or >= getBinCount()
+	 * @param val
+	 * @return
+	 */
+	public int getBin(double val) {
+		return (int)Math.floor( (val-minValue)/(maxValue-minValue)*(double)hist.length );
 	}
 	
 	public double getMean() {
 		return currentSum / (double)count;
+	}
+	
+	/**
+	 * Returns the frequency of the bin with the greatest frequency
+	 * @return
+	 */
+	public double getMaxFrequency() {
+		double max = 0;
+		for(int i=0; i<hist.length; i++) {
+			if (hist[i] > max) {
+				max = hist[i]/count;
+			}
+		}
+		return max;
 	}
 	
 	/**
@@ -150,6 +183,7 @@ public class Histogram {
 		
 		return Double.NaN;
 	}
+	
 	
 	/**
 	 * Returns the approximate x-value which divides the mass in half

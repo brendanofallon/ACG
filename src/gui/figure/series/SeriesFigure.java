@@ -13,9 +13,9 @@ import java.util.List;
  */
 public abstract class SeriesFigure extends gui.figure.Figure {
 
-	ArrayList<SeriesElement> seriesElements;
+	protected ArrayList<SeriesElement> seriesElements;
 	
-	List<SeriesListener> seriesListeners;
+	protected List<SeriesListener> seriesListeners;
 	
 	public SeriesFigure() {
 		seriesListeners = new ArrayList<SeriesListener>();

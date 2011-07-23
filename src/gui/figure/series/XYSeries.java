@@ -43,12 +43,44 @@ public class XYSeries extends AbstractSeries {
 		this(points, "Untitled series");
 	}
 
+	/**
+	 * Remove all values from point list
+	 */
+	public void clear() {
+		pointList.clear();
+	}
+	
+	/**
+	 * Assign y-values of the points from the given array. First 
+	 * @param values
+	 */
+//	public void assign(double[] values, double xmin, double spacing) {
+//		double x = xmin;
+//		if (pointList.size() != values.length) {
+//			pointList.clear();
+//			for(int i=0; i<values.length; i++) {
+//				pointList.add(new Point2D.Double(x, values[i]));
+//				x += spacing;
+//			}
+//		}
+//		else {
+//			for(int i=0; i<values.length; i++) {
+//				Point2D point = pointList.get(i);
+//				point.setLocation(x, values[i]);
+//				x += spacing;
+//			}
+//		}
+//	}
 	
 	public void addPointInOrder(Point2D newPoint) {
 		if (pointList.size()>0 && newPoint.getX() < getMaxX())
 			throw new IllegalArgumentException("Non-increasing x value");
 		
 		pointList.add(newPoint);
+	}
+	
+	public List<Point2D> getPointList() {
+		return pointList;
 	}
 	
 	/**
@@ -117,7 +149,7 @@ public class XYSeries extends AbstractSeries {
 		if (pointList.size()==0)
 			return 0;
 		
-		//TODO Are we sure an arrays.binarySearch(pointList, xVal) wouldn't be a better choice here?
+		//TODO Are we sure an binarySearch(pointList, xVal) wouldn't be a better choice here?
 		//it can gracefully handle cases where the key isn't in the list of values...
 		double stepWidth = (pointList.get(pointList.size()-1).getX()-pointList.get(0).getX())/(double)pointList.size();
 		

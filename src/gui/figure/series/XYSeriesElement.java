@@ -227,17 +227,17 @@ public class XYSeriesElement extends SeriesElement {
 		}
 		
 		if (pathShape == null) {
-			pathShape = new GeneralPath(new Line2D.Double(xySeries.get(0).getX(), xySeries.get(0).getY(), xySeries.get(1).getX(), xySeries.get(1).getY()) );
+			pathShape = new GeneralPath(new Line2D.Double(xySeries.getX(0), xySeries.getY(0), xySeries.getX(1), xySeries.getY(1)) );
 		}
 		else 
 			pathShape.reset();
 		
 		if (currentMode == LINES || currentMode == POINTS_AND_LINES || currentMode == POINTS) {
 			if (xySeries.size()>1) {
-				double x1 = axes.dataXtoBoundsX(xySeries.get(0).getX()  );
-				double y1 = axes.dataYtoBoundsY(xySeries.get(0).getY() );
-				double x2 = axes.dataXtoBoundsX( xySeries.get(1).getX());
-				double y2 = axes.dataYtoBoundsY( xySeries.get(1).getY() );
+				double x1 = axes.dataXtoBoundsX(xySeries.getX(0)  );
+				double y1 = axes.dataYtoBoundsY(xySeries.getY(0) );
+				double x2 = axes.dataXtoBoundsX( xySeries.getX(1));
+				double y2 = axes.dataYtoBoundsY( xySeries.getY(1) );
 				pathShape = new GeneralPath(new Line2D.Double(x1, y1, x2, y2) );
 				
 				boolean connect = true;
@@ -245,8 +245,8 @@ public class XYSeriesElement extends SeriesElement {
 				//System.out.println("Name : " + this.getName() + " First point " + y1 + " second point : " + y2);
 				
 				for(int i=1; i<xySeries.size(); i++) {
-					x1 = axes.dataXtoBoundsX( xySeries.get(i).getX());
-					y1 = axes.dataYtoBoundsY( xySeries.get(i).getY() );
+					x1 = axes.dataXtoBoundsX( xySeries.getX(i) );
+					y1 = axes.dataYtoBoundsY( xySeries.getY(i) );
 					
 					
 					//We've moved from a undrawn region into an OK one, so just move the 'pointer
@@ -410,9 +410,9 @@ public class XYSeriesElement extends SeriesElement {
 		double dataY = axes.dataYtoFigureY(xySeries.get(i).getY());
 		double xOffset = boxOffset*boxWidth;
 		if (xySeries.get(i).getY()>0) 
-			boxRect.setRect(axes.dataXtoFigureX(xySeries.get(i).getX())-halfBox-xOffset, dataY, boxWidth, yZero-dataY);
+			boxRect.setRect(axes.dataXtoFigureX(xySeries.getX(i))-halfBox-xOffset, dataY, boxWidth, yZero-dataY);
 		else 
-			boxRect.setRect(axes.dataXtoFigureX(xySeries.get(i).getX())-halfBox-xOffset, yZero, boxWidth, dataY-yZero);
+			boxRect.setRect(axes.dataXtoFigureX(xySeries.getX(i))-halfBox-xOffset, yZero, boxWidth, dataY-yZero);
 
 		return boxRect;
 	}
@@ -467,7 +467,7 @@ public class XYSeriesElement extends SeriesElement {
 		if (currentMode == POINTS ) {
 			g.setColor(getLineColor());
 			for(int i=0; i<xySeries.size(); i++) {
-				drawMarker(g, round(axes.dataXtoFigureX(xySeries.get(i).getX())), round(axes.dataYtoFigureY(xySeries.get(i).getY())));
+				drawMarker(g, round(axes.dataXtoFigureX(xySeries.getX(i))), round(axes.dataYtoFigureY(xySeries.getY(i))));
 			}
 		}
 		
@@ -477,7 +477,7 @@ public class XYSeriesElement extends SeriesElement {
 			
 			g.setColor(getLineColor());
 			for(int i=0; i<xySeries.size(); i++) {
-				drawMarker(g, round(axes.dataXtoFigureX(xySeries.get(i).getX())), round(axes.dataYtoFigureY(xySeries.get(i).getY()))); 
+				drawMarker(g, round(axes.dataXtoFigureX(xySeries.getX(i))), round(axes.dataYtoFigureY(xySeries.getY(i)))); 
 			}
 		}	
 		
@@ -507,12 +507,9 @@ public class XYSeriesElement extends SeriesElement {
 
 			g.setColor(boxOutlineColor);
 			g.draw(rect);
-		}
-		
+		}		
 
 	}
-
-
 
 	
 }
