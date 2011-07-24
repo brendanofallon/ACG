@@ -21,6 +21,7 @@ import org.w3c.dom.NodeList;
 import component.LikelihoodComponent;
 
 import parameter.AbstractParameter;
+import parameter.CompoundParameter;
 import xml.XMLLoader;
 
 /**
@@ -57,7 +58,7 @@ public class RunnableInputFile {
 			doc = builder.parse(file);
 			loader = new XMLLoader(doc);
 			loader.loadAllClasses(); //Attempt to load all of the classes referenced by the document
-			
+			checkValidity(); //Must come after class loading
 			turnOffMCMC(); //Find all mcmc objects and make sure they're not set to run right away
 			loader.instantiateAll();
 			
@@ -102,6 +103,9 @@ public class RunnableInputFile {
 		}
 	}
 
+	/**
+	 * Instantiate all objects in this document
+	 */
 	public void createAllObjects() {
 		loader.instantiateAll();
 	}
@@ -155,15 +159,124 @@ public class RunnableInputFile {
 	
 	
 	
-	public void checkValidity() throws InvalidInputFileException {
-		//Hmm... what should we do here?
+	public void checkValidity() throws InvalidInputFileException, BadStructureException {
+		List<String> params = getParameterLabels();
+		List<String> likelihoods = getLikelihoodLabels();
+		List<String> mcmcs = getMCMCLabels();
+		
+		//Make sure all (non-compound) pararameters are referred to by an MCMC, 
+		for(String param : params) {
+			Class cls = loader.getClassForLabel(param);
+			//If parameter is not a compound parameter, make sure an MCMC refers to it...
+			if (! CompoundParameter.class.isAssignableFrom(cls)) {
+				boolean getsReferredTo = false;
+				for(String mcmc : mcmcs) {
+					Element mcmcElement = getFirstElement(mcmc);
+					if ( getElementRefersToLabel(mcmcElement, param)) {
+						getsReferredTo = true;
+						break;
+					}
+				}
+				
+				if (!getsReferredTo) {
+					throw new BadStructureException("Parameter with label " + param + " is not used in any MCMC object!");
+				}
+			}
+		}
+		
+		
+		for(String likeLabel : likelihoods) {
+			Class cls = loader.getClassForLabel(likeLabel);
+			//If parameter is not a compound parameter, make sure an MCMC refers to it...
+			if (! CompoundParameter.class.isAssignableFrom(cls)) {
+				boolean getsReferredTo = false;
+				for(String mcmc : mcmcs) {
+					Element mcmcElement = getFirstElement(mcmc);
+					if ( getElementRefersToLabel(mcmcElement, likeLabel)) {
+						getsReferredTo = true;
+						break;
+					}
+				}
+				
+				if (!getsReferredTo) {
+					throw new BadStructureException("Likelihood with label " + likeLabel + " is not used in any MCMC object!");
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Returns the XML Element encountered in a postorder traversal of the nodes in the
+	 * tree that has the given label. This Element is the one used to construct the corresponding
+	 * object
+	 * 
+	 * @param label
+	 * @return
+	 */
+	public Element getFirstElement(String label) {
+		return getFirstElement(doc.getDocumentElement(), label);
+	}
+	
+	/**
+	 * Recursive helper for getFirstElement(String), this performs a postorder traversal 
+	 * from the root to find nodes with the given label
+	 * @param root
+	 * @param label
+	 * @return
+	 */
+	private Element getFirstElement(Node root, String label) {
+		NodeList nodeList = root.getChildNodes();
+
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			Node node = nodeList.item(i);
+
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Element el = (Element) node;
+				String nodeName = el.getNodeName();
+				if (nodeName.equals(label)) {
+					return el;
+				}
+				
+				readNodes(el);
+			}
+			
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns true if the element provided has any child element with the given label
+	 * as the name of a node
+	 * @param el
+	 * @param label
+	 * @return
+	 */
+	public boolean getElementRefersToLabel(Node root, String label) {
+		NodeList nodeList = root.getChildNodes();
+		boolean hasRef = false;
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			Node node = nodeList.item(i);
+
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Element el = (Element) node;
+				String nodeName = el.getNodeName();
+				if (nodeName.equals(label)) {
+					hasRef = true;
+				}
+				
+				 if (! hasRef)
+					 hasRef = getElementRefersToLabel(el, label);
+			}
+			
+		}
+		return hasRef;
 	}
 	
 	
 	
-	public void readAllNodes() {
-		readNodes(doc.getDocumentElement());
-	}
+//	public void readAllNodes() {
+//		readNodes(doc.getDocumentElement());
+//	}
 	
 	/**
 	 * Recursive helper function for node examination and class loading. Loads all classes below the given XML node
@@ -233,17 +346,27 @@ public class RunnableInputFile {
 		String label;
 		String className;
 		Map<String, String> attrs = new HashMap<String, String>();
-		// ???? Refs to other objects??
 	}
 	
 	/**
 	 * These get thrown when theres a problem with an input file
-	 * @author brendano
 	 *
 	 */
 	class InvalidInputFileException extends RuntimeException {
 		
 		public InvalidInputFileException(String message) {
+			super(message);
+		}
+	}
+	
+	/**
+	 * These get thrown when there's a less serious issue with the input file, for instance
+	 * a declared Parameter that is not referenced by an mcmc element
+	 *
+	 */
+	class BadStructureException extends Exception {
+		
+		public BadStructureException(String message) {
 			super(message);
 		}
 	}

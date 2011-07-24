@@ -1,5 +1,7 @@
 package gui;
 
+import gui.RunnableInputFile.InvalidInputFileException;
+
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -157,11 +159,15 @@ public class StartFrame extends JPanel {
 			return;
 		}
 		
-		RunnableInputFile runnableFile = new RunnableInputFile(inputFile);
-		
-		PickPlottablesPanel pickPanel = new PickPlottablesPanel(acgParent, runnableFile);
-			
-		acgParent.replaceCenterPanel(pickPanel);
+		try {
+			RunnableInputFile runnableFile = new RunnableInputFile(inputFile);
+			PickPlottablesPanel pickPanel = new PickPlottablesPanel(acgParent, runnableFile);
+			acgParent.replaceCenterPanel(pickPanel);
+		}
+		catch (InvalidInputFileException ex) {
+			JOptionPane.showMessageDialog(acgParent, "Error reading input file : " + ex.getMessage() );
+		}
+
 	}
 
 
