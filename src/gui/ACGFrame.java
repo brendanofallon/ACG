@@ -6,6 +6,8 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -13,6 +15,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.UIManager;
@@ -21,9 +24,9 @@ import javax.swing.WindowConstants;
 import mcmc.MCMC;
 import mcmc.MCMCListener;
 
-public class ACGFrame extends JFrame {
+public class ACGFrame extends JFrame implements WindowListener {
 	
-	public static final Color backgroundColor = new Color(120, 120, 120);
+	public static final Color backgroundColor = new Color(140, 140, 140);
 	
 	
 	public ACGFrame( /* might be nice to get some properties here */ ) {
@@ -45,8 +48,9 @@ public class ACGFrame extends JFrame {
         
 		initComponents();
 		setPreferredSize(new Dimension(800, 500));
-		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		setLocationRelativeTo(null);
+		//We handle things from a listener of our own design
+		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		this.addWindowListener(this);
 		pack();
 		
 	}
@@ -186,6 +190,69 @@ public class ACGFrame extends JFrame {
 
 
 
+
+
+
+
+	@Override
+	public void windowClosed(WindowEvent e) { }
+
+
+	@Override
+	public void windowClosing(WindowEvent e) {  
+		if (runner != null) {
+			if (! runner.isDone()) {
+				Object[] options = {"Cancel",
+						"Continue in background",
+						"Abort run"};
+				int op = JOptionPane.showOptionDialog(this,
+						"Abort current run ? ",
+						"Abort run",
+						JOptionPane.YES_NO_CANCEL_OPTION,
+						JOptionPane.QUESTION_MESSAGE,
+						null,
+						options,
+						options[2]);
+				if (op == 0) {
+					return;
+				}
+				
+				if (op==1) {
+					this.setVisible(false);
+					this.dispose();
+				}
+				
+				if (op == 2) {
+					runner.cancel(true);
+					//wait for half a sec, then exit
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e1) {
+					}
+
+					this.setVisible(false);
+					this.dispose();
+					System.exit(0);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) { 	}
+	
+	@Override
+	public void windowDeactivated(WindowEvent e) {	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {	}
+
+	@Override
+	public void windowIconified(WindowEvent e) { }
+
+	@Override
+	public void windowOpened(WindowEvent e) { }
+	
 	private ExecutingChain runner = null;
 	
 	private JPanel centerPanel;
@@ -193,4 +260,5 @@ public class ACGFrame extends JFrame {
 	private JProgressBar progressBar;
 	private JButton runButton;
 	private JButton pauseButton;
+
 }

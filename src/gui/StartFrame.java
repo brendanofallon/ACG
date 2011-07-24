@@ -86,19 +86,58 @@ public class StartFrame extends JPanel {
 		add(centerPanel);
 		
 		JPanel bottomPanel = new JPanel();
+		bottomPanel.setMaximumSize(new Dimension(2000, 40));
+		bottomPanel.setAlignmentY(BOTTOM_ALIGNMENT);
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		bottomPanel.setBackground(ACGFrame.backgroundColor);
-		JButton done = new JButton("Done");
-		done.addActionListener( new ActionListener() {
+		runInGUIButton = new JButton("Run with UI");
+		runInGUIButton.setEnabled(false);
+		runInGUIButton.addActionListener( new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				loadFile();
 			}
 		});
-		bottomPanel.add(done);
+		bottomPanel.add(runInGUIButton);
+		
+		
+		runNoGUIButton = new JButton("Run in background");
+		runNoGUIButton.setEnabled(false);
+		runNoGUIButton.addActionListener( new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				loadAndRunInBackground();
+			}
+		});
+		bottomPanel.add(runNoGUIButton);
+		add(Box.createGlue());
 		add(bottomPanel);	
 	}
 
 
+	/**
+	 * Attempt to load the file selected, run it in the background, and
+	 * destroy the acgParent (and this object as well)
+	 */
+	protected void loadAndRunInBackground() {
+		File inputFile = null;
+		if (selectedFile != null) {
+			inputFile = selectedFile;
+		}
+		else {
+			inputFile = new File( filenameField.getText() );
+		}
+		
+		if (inputFile == null || (! inputFile.exists())) {
+			String filename = inputFile == null ? "(empty)" : inputFile.getName();
+			JOptionPane.showMessageDialog(getRootPane(), "The file " + filename + " cannot be found.");
+			return;
+		}
+		
+
+		RunnableInputFile runnableFile = new RunnableInputFile(inputFile);
+		ExecutingChain runner = runnableFile.runMCMC();
+		this.setVisible(false);
+		acgParent.dispose();
+	}
 	/**
 	 * Called when the user has clicked on the 'Done' button. We see if a valid input file has been selected, and
 	 * then attempt to install some hooks and run it
@@ -120,10 +159,9 @@ public class StartFrame extends JPanel {
 		
 		RunnableInputFile runnableFile = new RunnableInputFile(inputFile);
 		
-
-			PickPlottablesPanel pickPanel = new PickPlottablesPanel(acgParent, runnableFile);
+		PickPlottablesPanel pickPanel = new PickPlottablesPanel(acgParent, runnableFile);
 			
-			acgParent.replaceCenterPanel(pickPanel);
+		acgParent.replaceCenterPanel(pickPanel);
 	}
 
 
@@ -131,6 +169,9 @@ public class StartFrame extends JPanel {
 		selectedFile = null;
 	}
 	
+	/**
+	 * Called when user clicks 'Browse' button 
+	 */
 	protected void browseForFile() {
 		if (fileChooser == null)
 			fileChooser = new JFileChooser( System.getProperty("user.dir"));
@@ -139,10 +180,14 @@ public class StartFrame extends JPanel {
 		if (option == JFileChooser.APPROVE_OPTION) {
 			selectedFile = fileChooser.getSelectedFile();
 			filenameField.setText(selectedFile.getName());
+			runInGUIButton.setEnabled(true);
+			runNoGUIButton.setEnabled(true);
 		}
 	}
 	
 	//Stores the file the user selected from the file chooser, or null
+	JButton runNoGUIButton;
+	JButton runInGUIButton;
 	private File selectedFile = null;
 	private JFileChooser fileChooser = null;
 	private JTextField filenameField;

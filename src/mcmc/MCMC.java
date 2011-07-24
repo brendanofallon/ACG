@@ -86,6 +86,9 @@ public class MCMC {
 	//User-supplied value for run length
 	private int userRunLength;
 	
+	//If set to true will halt the running chain and call chainIsFinished
+	private boolean abort = false;
+	
 	public MCMC( ) {
 		
 	}
@@ -240,6 +243,13 @@ public class MCMC {
 	
 	public int getUserRunLength() {
 		return userRunLength;
+	}
+	
+	/**
+	 * Stop a running chain and fire a chainIsFinished event
+	 */
+	public void abort() {
+		this.abort = true;
 	}
 	
 	/**
@@ -469,7 +479,7 @@ public class MCMC {
 		Double currentL = 0.0;
 		Double propL = 0.0;
 
-		while(step < states) {		
+		while(step < states && (!abort)) {		
 			if (verbose) {
 				System.out.println("\n\nBeginning calculations for state: " + acceptedStates + " / " + totalStates);
 				System.out.println("Calculating current likelihood");

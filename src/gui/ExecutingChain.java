@@ -5,10 +5,17 @@ import javax.swing.SwingWorker;
 import mcmc.MCMC;
 import mcmc.MCMCListener;
 
+/**
+ * Wraps a running MCMC chain so that it may be run in the background
+ * as well as paused and restarted
+ * @author brendan
+ *
+ */
 public class ExecutingChain extends SwingWorker implements MCMCListener {
 
 	MCMC chain;
 	private boolean paused = false;
+	private boolean done = false;
 	
 	public ExecutingChain(MCMC chain) {
 		this.chain = chain;
@@ -24,6 +31,16 @@ public class ExecutingChain extends SwingWorker implements MCMCListener {
 		return paused;
 	}
 	
+	public void done() {
+		this.done = true;
+	}
+	
+	
+	/**
+	 * Set the paused state to the given value. When paused the thread sleeps, but
+	 * wakes up periodically to see if it's been unpaused
+	 * @param paused
+	 */
 	public void setPaused(boolean paused) {
 		this.paused = paused;
 	}
@@ -34,8 +51,11 @@ public class ExecutingChain extends SwingWorker implements MCMCListener {
 			try {
 				Thread.sleep(500); //Wake up every 0.5 seconds to see if we're unpaused
 			} catch (InterruptedException e) {
-				//Dont do anything
+				
 			} 
+		}
+		if (this.isCancelled()) {
+			chain.abort();
 		}
 	}
 
