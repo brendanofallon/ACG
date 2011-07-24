@@ -1,6 +1,6 @@
 package gui;
 
-import gui.RunnableInputFile.InvalidInputFileException;
+import gui.ACGDocument.InvalidInputFileException;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -135,7 +135,7 @@ public class StartFrame extends JPanel {
 		}
 		
 
-		RunnableInputFile runnableFile = new RunnableInputFile(inputFile);
+		ACGDocument runnableFile = new ACGDocument(inputFile);
 		ExecutingChain runner = runnableFile.runMCMC();
 		this.setVisible(false);
 		acgParent.dispose();
@@ -160,7 +160,7 @@ public class StartFrame extends JPanel {
 		}
 		
 		try {
-			RunnableInputFile runnableFile = new RunnableInputFile(inputFile);
+			ACGDocument runnableFile = new ACGDocument(inputFile);
 			PickPlottablesPanel pickPanel = new PickPlottablesPanel(acgParent, runnableFile);
 			acgParent.replaceCenterPanel(pickPanel);
 		}

@@ -1,12 +1,15 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -114,7 +117,8 @@ public class StatusFigure extends JPanel {
 	 */
 	private void initializePopup() {
 		 popup = new JPopupMenu();
-		 JMenuItem switchItem = new JMenuItem("Switch to histogram");
+		popup.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY) );
+		 switchItem = new JMenuItem("Switch to histogram");
 		 switchItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				switchHistoTrace();
@@ -153,6 +157,8 @@ public class StatusFigure extends JPanel {
 			}
 			traceFigure.inferBoundsFromCurrentSeries();
 			traceFigure.repaint();
+			switchItem.setText("Switch to trace");
+			traceFigure.setXLabel(titles[0]);
 		}
 		else {
 			traceFigure.removeAllSeries();
@@ -160,6 +166,8 @@ public class StatusFigure extends JPanel {
 				traceFigure.addDataSeries(series[i]);
 			}
 			histoSeries = null;
+			switchItem.setText("Switch to histogram");
+			traceFigure.setXLabel("MCMC State");
 		}
 		
 		traceFigure.inferBoundsFromCurrentSeries();
@@ -214,6 +222,7 @@ public class StatusFigure extends JPanel {
 	    }
 	}
 	
+	private JMenuItem switchItem;
 	private JPopupMenu popup;
 	private AbstractParameter<?> param = null;
 	private LikelihoodComponent comp = null;

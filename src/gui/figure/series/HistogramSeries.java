@@ -18,7 +18,6 @@ public class HistogramSeries extends XYSeries {
 	public HistogramSeries(String name, int bins, double min, double max) {
 		super(name);
 		histo = new Histogram(min, max, bins);
-		System.out.println("Creating new empty histogram with " + bins + " bins xmin: " + min + " max: "+ max);
 		pointList = null;
 	}
 
@@ -26,7 +25,6 @@ public class HistogramSeries extends XYSeries {
 	public HistogramSeries(String name, List<Point2D> points, int bins, double min, double max) {
 		super(name);
 		replace(points, bins, min, max);
-		System.out.println("Creating new empty histogram with " + bins + " bins xmin: " + min + " max: "+ max);
 		pointList = null;
 	}
 	
@@ -125,10 +123,6 @@ public class HistogramSeries extends XYSeries {
 		return histo.getMin();
 	}
 	
-	public double getMinY() {
-		return 0;
-	}
-	
 	/**
 	 * Return the maximum x-value in the list. Since the list is sorted by x-value, this is always the x-val
 	 * of the last point in the list. 
@@ -138,6 +132,11 @@ public class HistogramSeries extends XYSeries {
 	public double getMaxX() {
 		return histo.getMax();
 	}
+	
+	public double getMinY() {
+		return 0;
+	}
+	
 	
 	public double getMaxY() {
 		return histo.getMaxCount();

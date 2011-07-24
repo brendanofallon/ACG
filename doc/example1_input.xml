@@ -81,8 +81,6 @@
 	<arg />
 </DLCalculator>
 
-<unrefedLikelihood class="priors.ExponentialPrior" />
-
 <!--  Parameter specifying population size (theta / 2.0)  -->
 <constantPopSize class="coalescent.ConstantPopSize" frequency="1.0" size="1">
 	<popSizeScaler class="modifier.ScaleModifier"/>

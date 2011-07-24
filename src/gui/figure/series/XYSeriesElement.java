@@ -176,6 +176,7 @@ public class XYSeriesElement extends SeriesElement {
 	public void popupConfigureTool(java.awt.Point pos) {
 		if (xySeries instanceof HistogramSeries) {
 			//TODO pop up a different tool where you can configure bin number?
+			configFrame.display(getName(), currentMode, getLineColor(), round(((BasicStroke)normalStroke).getLineWidth()), markerSize, currentMarkerType);
 		}
 		else
 			configFrame.display(getName(), currentMode, getLineColor(), round(((BasicStroke)normalStroke).getLineWidth()), markerSize, currentMarkerType);
@@ -299,11 +300,7 @@ public class XYSeriesElement extends SeriesElement {
 			
 			lineRect.setRect(x*xFactor-4, y*yFactor-4, 7, 7);
 			Point2D[] line = xySeries.getLineForXVal(dataX);
-//			System.out.println("Series " + getName() + " Testing point x: " + x + ", " + y);
-//			System.out.println(" Point 0 : " + line[0]);
-//			System.out.println(" Point 1 : " + line[1]);
 			if (line==null || Double.isNaN(line[0].getY()) || Double.isNaN(line[1].getY())) {
-				//System.out.println("line is null or NaN, returning false");
 				return false;
 			}
 			else {
@@ -322,14 +319,9 @@ public class XYSeriesElement extends SeriesElement {
 			double dataX = axes.boundsXtoDataX(x+(boxWidth*boxOffset+Math.ceil(boxWidth/2.0))/xFactor);
 			int boxIndex = xySeries.getIndexForXVal(dataX);
 			Rectangle2D rect = getBoxForIndex(boxIndex, yAxis); 
-			//System.out.println( " click x: " + x*xFactor + " data x: " + dataX + "Box index: " + boxIndex + " x: " + rect.getX() + " width: " + rect.getWidth() );
-			if (rect==null) {
-				//System.out.println("Rect is null, returning false");
-				return false;
-			}
+			//System.out.println( " click x: " + x*xFactor + " data x: " + dataX + "Box index: " + boxIndex + " x: " + rect.getX() + " height: " + rect.getHeight() + " width: " + rect.getWidth() );
 			Point2D pos = new Point2D.Double(x*xFactor, y*yFactor);
 			return rect.contains(pos);
-			
 		}
 		
 		if (currentMode == POINTS) {
@@ -338,6 +330,24 @@ public class XYSeriesElement extends SeriesElement {
 		
 		return false;
 	}
+	
+	
+	/**
+	 * Called (by Figure) when this element is single clicked
+	 */
+	public void clicked(Point pos) {
+		setSelected(true);
+	}
+
+	/**
+	 * Called (by Figure) when this element is double clicked
+	 */
+	public void doubleClicked(Point pos) { 
+		setSelected(true);
+		if (canConfigure) {
+			popupConfigureTool(pos);
+		}
+	};
 	
 	public void drawMarker(Graphics2D g, int x, int y) {
 		if (currentMarkerType.equals("Circle")) {
@@ -411,7 +421,7 @@ public class XYSeriesElement extends SeriesElement {
 		double boxWidth = calculateBoxWidth();
 		
 		double halfBox = Math.ceil(boxWidth/2.0);
-		double dataY = axes.dataYtoFigureY(xySeries.get(i).getY());
+		double dataY = axes.dataYtoFigureY(xySeries.getY(i));
 		double xOffset = boxOffset*boxWidth;
 		if (xySeries.get(i).getY()>0) 
 			boxRect.setRect(axes.dataXtoFigureX(xySeries.getX(i))-halfBox-xOffset, dataY, boxWidth, yZero-dataY);
@@ -440,12 +450,9 @@ public class XYSeriesElement extends SeriesElement {
 			g.setStroke(highlightStroke);
 			if (currentMode == LINES || currentMode == POINTS_AND_LINES || currentMode == BOXES) 
 				g.draw(pathShape);
-		
 		}
 		
 		g.setStroke(normalStroke);
-		
-		
 		
 		if (currentMode == LINES) {
 			g.setColor(getLineColor());
@@ -454,11 +461,6 @@ public class XYSeriesElement extends SeriesElement {
 		
 		if (currentMode == BOXES) {
 			g.setColor(getLineColor());
-			//This code is currently duplicated in contains - if you change something here, change it there too 
-			//double boxesShowing = series.size()*(axes.maxXVal-axes.minXVal)/(xySeries.getMaxX()-xySeries.getMinX()); 
-			//double boxWidth = axes.getGraphAreaBounds().width / boxesShowing / (double)boxWidthDivisor;
-			//double xOffset = boxOffset*boxWidth;
-			//System.out.println("Box offset: " + boxOffset + " box divisor: "  + boxWidthDivisor + " boxwidth: " + boxWidth);
 			double yAxis = axes.dataYtoFigureY(0);
 			
 			for(int i=0; i<xySeries.size(); i++) {
@@ -499,6 +501,12 @@ public class XYSeriesElement extends SeriesElement {
 		g.setColor(getLineColor());
 		g.fill(rect);
 
+		if (isSelected) {
+			g.setColor(highlightColor);
+			g.setStroke(highlightStroke);
+			g.draw(rect);
+		}
+		
 		if (rect.getWidth()>4) {
 			if (decorateBoxes) {
 				int dwidth = (int)Math.round(rect.getWidth()/2.0);
@@ -508,7 +516,8 @@ public class XYSeriesElement extends SeriesElement {
 				}
 
 			}
-
+			
+			g.setStroke(normalStroke);
 			g.setColor(boxOutlineColor);
 			g.draw(rect);
 		}		

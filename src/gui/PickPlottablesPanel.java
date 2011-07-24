@@ -30,13 +30,13 @@ import component.LikelihoodComponent;
 
 public class PickPlottablesPanel extends JPanel {
 
-	RunnableInputFile file;
+	ACGDocument file;
 	ACGFrame acgParent;
 	
 	//Holds list of things we'll display in the next panel
 	List<PlottableInfo> selectedPlottables = new ArrayList<PlottableInfo>();
 	
-	public PickPlottablesPanel(ACGFrame acgParent, RunnableInputFile file) {
+	public PickPlottablesPanel(ACGFrame acgParent, ACGDocument file) {
 		this.acgParent = acgParent;
 		this.file = file;
 		initComponents();

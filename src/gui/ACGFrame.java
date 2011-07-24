@@ -236,6 +236,11 @@ public class ACGFrame extends JFrame implements WindowListener {
 				}
 			}
 		}
+		else {
+			this.setVisible(false);
+			this.dispose();
+			System.exit(0);
+		}
 	}
 
 	@Override

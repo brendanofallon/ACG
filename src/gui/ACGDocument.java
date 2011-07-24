@@ -29,7 +29,7 @@ import xml.XMLLoader;
  * @author brendano
  *
  */
-public class RunnableInputFile {
+public class ACGDocument {
 
 	public static final String CLASS_NAME_ATTR = "class";
 	public static final String LIST_ATTR = "list";
@@ -48,7 +48,7 @@ public class RunnableInputFile {
 	List<AbstractParameter<?>> params = new ArrayList<AbstractParameter<?>>();
 	List<LikelihoodComponent> likelihoods = new ArrayList<LikelihoodComponent>();
 	
-	public RunnableInputFile(File file) {
+	public ACGDocument(File file) {
 		sourceFile = file;
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
