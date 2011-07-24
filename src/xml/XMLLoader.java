@@ -128,6 +128,14 @@ public class XMLLoader {
 		objMap.clear();
 	}
 	
+	/**
+	 * Returns the Class corresponding to object with the given label 
+	 * @param label
+	 * @return
+	 */
+	public Class getClassForLabel(String label) {
+		return classMap.get(label);
+	}
 	
 	/**
 	 * Examines the children of a given node and gathers the information required to call a constructor for the 
@@ -139,7 +147,7 @@ public class XMLLoader {
 	 * 
 	 * @param node The node whose children will be examined
 	 */
-	public void loadConstructorInfo(Node node) {
+	private void loadConstructorInfo(Node node) {
 		Element nodeEl = (Element)node;
 		String nodeLabel = node.getNodeName();
 		
@@ -223,7 +231,6 @@ public class XMLLoader {
 				System.err.println("Could not find class for object with label: " + label + " and class : " + className);
 				System.exit(0);
 			}
-			//System.out.println("\n Putting class with label: " + label + " className : " + className + " class: " + clz);
 			classMap.put(label, clz);
 		}
 		else { //If the label was already in the map, check to make sure the associated class is the same as the one we specified in the argument
@@ -276,7 +283,7 @@ public class XMLLoader {
 				//System.out.println("Node name: " + el.getNodeName() + " className: " + className + " label: " + label);
 				loadConstructorInfo(node);
 				loadClasses(el);
-				Class loadedClass = findClass(label, className);
+				Class loadedClass = findClass(label, className); //Puts label=className mapping into classMap
 			}
 			
 		}	

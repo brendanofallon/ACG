@@ -87,7 +87,7 @@ public class ACGFrame extends JFrame {
 			icon = new ImageIcon(imageURL);
 		}
 		catch (Exception ex) {
-			System.out.println("Error loadind icon from resouce : " + ex);
+			System.out.println("Error loading icon from resouce : " + ex);
 		}
 		return icon;
 	}
