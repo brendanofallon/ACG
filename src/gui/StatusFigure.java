@@ -97,6 +97,8 @@ public class StatusFigure extends JPanel {
 		initializeFigure();
 		series = new XYSeries[1];
 		series[0] = new XYSeries(comp.getLogHeader());
+		titles = new String[1];
+		titles[0] = "Log likelihood";
 		XYSeriesElement serEl = traceFigure.addDataSeries(series[0]);
 		serEl.setLineWidth(defaultLineWidth);
 	}
@@ -165,6 +167,19 @@ public class StatusFigure extends JPanel {
 	}
 
 	/**
+	 * Create the histogram series that are used to store data for drawing
+	 * in XYSeriesElements
+	 */
+	private void createHistograms() {
+		histoSeries = new HistogramSeries[series.length];
+		for(int i=0; i<series.length; i++) {
+			HistogramSeries hSeries = new HistogramSeries(titles[i] , series[i].getPointList(), 100, series[i].getMinY()*0.8, series[i].getMaxY()*1.1);
+			histoSeries[i] = hSeries;
+		}		
+	}
+	
+	
+	/**
 	 * Called to switch between the Histogram and Trace modes
 	 */
 	protected void switchHistoTrace() {
@@ -172,12 +187,7 @@ public class StatusFigure extends JPanel {
 			mode = Mode.HISTOGRAM; //We're now in histogram mode
 			traceFigure.removeAllSeries();
 			if (histoSeries == null) {
-				histoSeries = new HistogramSeries[series.length];
-				for(int i=0; i<series.length; i++) {
-					HistogramSeries hSeries = new HistogramSeries(titles[i] , series[i].getPointList(), 100, series[i].getMinY()*0.8, series[i].getMaxY()*1.1);
-					histoSeries[i] = hSeries;
-
-				}
+				createHistograms();
 			}
 			
 			for(int i=0; i<series.length; i++) {
@@ -232,7 +242,7 @@ public class StatusFigure extends JPanel {
 		}
 		
 		if (el == null) {
-			System.out.println("Aggh! Couldn't find element for series!");
+			return;
 		}
 		
 		HistogramSeries newSeries = new HistogramSeries(titles[i] , series[i].getPointList(), bins, series[i].getMinY()*0.8, series[i].getMaxY()*1.1);
@@ -268,8 +278,12 @@ public class StatusFigure extends JPanel {
 			Double val = comp.getCurrentLogLikelihood();
 			Point2D.Double point = new Point2D.Double(state, val);
 			series[0].addPointInOrder(point);
-			if (histoSeries != null)
+			
+			if (histoSeries != null) {
+				if (histoSeries[0] == null)
+					createHistograms();
 				histoSeries[0].addValue(val);
+			}
 		}
 		traceFigure.inferBoundsPolitely();
 		repaint();
