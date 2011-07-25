@@ -395,6 +395,14 @@ public class Alignment {
 		return seqs.get(i);
 	}
 	
+	/**
+	 * Return a list of sequences in this alignment. 
+	 * @return
+	 */
+	public List<Sequence> getSequences() {
+		return seqs;
+	}
+	
 	public String toString() {
 		StringBuilder str = new StringBuilder();
 		for(Sequence seq : seqs) {
@@ -403,13 +411,15 @@ public class Alignment {
 		return str.toString();
 	}
 
-	public static void main(String[] args) {
-		Alignment aln = new Alignment("test.fas");
-		System.out.println("Before : \n" + aln);
-		
-		List<Integer> removed = aln.removeGapsAndUnknowns();
-		System.out.println("Removed : " + removed.size() + " cols");
-		
-		System.out.println("After : \n" + aln);
-	}
+//	public static void main(String[] args) {
+//		Alignment aln = new Alignment("test.fas");
+//		System.out.println("Before : \n" + aln);
+//		
+//		List<Integer> removed = aln.removeGapsAndUnknowns();
+//		System.out.println("Removed : " + removed.size() + " cols");
+//		
+//		System.out.println("After : \n" + aln);
+//	}
+
+	
 }

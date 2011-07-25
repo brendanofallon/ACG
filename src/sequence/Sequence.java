@@ -7,6 +7,12 @@ import java.util.Map;
 
 import xml.XMLUtils;
 
+/**
+ * A sequence of ambiguous type (just a string of characters) with a label (also just a string of characters).
+ * Not really any funtionality here. 
+ * @author brendano
+ *
+ */
 public class Sequence {
 
 	String seq;
@@ -62,6 +68,10 @@ public class Sequence {
     	seq = buf.toString();
 	}
 	
+	public String getSequence() {
+		return seq;
+	}
+	
 	/**
 	 * Removes the character at the given site. 
 	 * @param site
@@ -78,4 +88,6 @@ public class Sequence {
 			}
 		}
 	}
+
+	
 }
