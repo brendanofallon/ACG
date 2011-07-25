@@ -15,6 +15,8 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 
+import logging.StringUtils;
+
 import gui.figure.Figure;
 
 public class AxesConfigFrame extends JFrame {
@@ -51,19 +53,23 @@ public class AxesConfigFrame extends JFrame {
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 		this.add(mainPanel);
-		mainPanel.setPreferredSize(new Dimension(200, 205));
-		setPreferredSize(new Dimension(200, 205) );
+		mainPanel.setPreferredSize(new Dimension(350, 205));
+		setPreferredSize(new Dimension(350, 205) );
 		
 		panel1 = new JPanel();
 		panel1.setLayout(new FlowLayout(FlowLayout.LEFT));
-		maxXField = new JTextField();
+		maxXField = new JTextField("XXXXXX");
+		maxXField.setMinimumSize(new Dimension(100, 10));
+		maxXField.setMaximumSize(new Dimension(120, 10));
 		panel1.add(maxXField);
 		panel1.add(new JLabel("Maximum value"));
 		mainPanel.add(panel1);
 		
 		panel2 = new JPanel();
 		panel2.setLayout(new FlowLayout(FlowLayout.LEFT));
-		minXField = new JTextField();
+		minXField = new JTextField("XXXXXX");
+		minXField.setMinimumSize(new Dimension(100, 10));
+		minXField.setMaximumSize(new Dimension(120, 10));
 		panel2.add(minXField);
 		panel2.add(new JLabel("Minimum value"));
 		mainPanel.add(panel2);
@@ -168,8 +174,8 @@ public class AxesConfigFrame extends JFrame {
 		pos.y += parentFig.getBounds().y;
 
 		setLocation(pos);
-		minXField.setText(Double.toString(min));
-		maxXField.setText(Double.toString(max));
+		minXField.setText(StringUtils.format(min));
+		maxXField.setText(StringUtils.format(max));
 		if (changingXAxis)
 			gridLinesBox.setSelected( axes.showXGrid() );
 		else {

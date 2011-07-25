@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
 import component.LikelihoodComponent;
+import gui.figure.FigureElement;
 import gui.figure.series.HistogramSeries;
 import gui.figure.series.XYSeries;
 import gui.figure.series.XYSeriesElement;
@@ -24,11 +25,14 @@ import parameter.DoubleParameter;
 
 public class StatusFigure extends JPanel {
 
+	enum Mode {TRACE, HISTOGRAM};
+	
 	XYSeriesFigure traceFigure;
 	XYSeries[] series;
 	HistogramSeries[] histoSeries;
 	String[] titles;
 	String logKey = null;
+	Mode mode = Mode.TRACE;
 	
 	public StatusFigure(AbstractParameter<?> param, String logKey) {
 		this.param = param;
@@ -126,12 +130,22 @@ public class StatusFigure extends JPanel {
 		 });
 		 popup.add(switchItem);
 		 
+		 
+		 histoOptions = new JMenuItem("Configure histogram");
+		 histoOptions.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				popupHistoOptions();
+			} 
+		 });
+		 popup.add(histoOptions);
+		 
 		 JMenuItem saveImage = new JMenuItem("Save image");
 		 saveImage.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				saveImage();
 			}
 		 });
+		 
 		 popup.add(saveImage);
 		 PopupListener popupListener = new PopupListener();
 		 this.addMouseListener(popupListener);
@@ -140,32 +154,48 @@ public class StatusFigure extends JPanel {
 	
 	
 
+	protected void popupHistoOptions() {
+		HistoOptionsFrame histoFrame = new HistoOptionsFrame(this, histoSeries[0]);
+		histoFrame.setVisible(true);
+	}
+
 	protected void saveImage() {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+	 * Called to switch between the Histogram and Trace modes
+	 */
 	protected void switchHistoTrace() {
-		if (histoSeries == null) {
+		if (mode == Mode.TRACE) {
+			mode = Mode.HISTOGRAM; //We're now in histogram mode
 			traceFigure.removeAllSeries();
-			histoSeries = new HistogramSeries[series.length];
-			for(int i=0; i<series.length; i++) {
-				HistogramSeries hSeries = new HistogramSeries(titles[i] , series[i].getPointList(), 100, series[i].getMinY()*0.8, series[i].getMaxY()*1.5);
-				histoSeries[i] = hSeries;
-				XYSeriesElement el = traceFigure.addDataSeries(hSeries);
-				el.setMode(XYSeriesElement.BOXES);
+			if (histoSeries == null) {
+				histoSeries = new HistogramSeries[series.length];
+				for(int i=0; i<series.length; i++) {
+					HistogramSeries hSeries = new HistogramSeries(titles[i] , series[i].getPointList(), 100, series[i].getMinY()*0.8, series[i].getMaxY()*1.1);
+					histoSeries[i] = hSeries;
+
+				}
 			}
+			
+			for(int i=0; i<series.length; i++) {
+				XYSeriesElement el = traceFigure.addDataSeries(histoSeries[i]);
+				el.setMode(XYSeriesElement.BOXES);				
+			}
+
 			traceFigure.inferBoundsFromCurrentSeries();
 			traceFigure.repaint();
 			switchItem.setText("Switch to trace");
 			traceFigure.setXLabel(titles[0]);
 		}
 		else {
+			mode = Mode.TRACE;
 			traceFigure.removeAllSeries();
 			for(int i=0; i<series.length; i++) {
 				traceFigure.addDataSeries(series[i]);
 			}
-			histoSeries = null;
 			switchItem.setText("Switch to histogram");
 			traceFigure.setXLabel("MCMC State");
 		}
@@ -174,7 +204,48 @@ public class StatusFigure extends JPanel {
 		traceFigure.repaint();
 	}
 
+	public void updateHistogram(HistogramSeries hSeries, Integer bins) {
+		//Find the series we're replacing
+		int i = 0;
+		for(i=0; i<histoSeries.length; i++) {
+			if (histoSeries[i] == hSeries) {
+				break;
+			}
+		}
+		
+		if (i==histoSeries.length) {
+			//Couldn't find series we're replacing...abort
+			System.out.println("Aggh! Couldn't find index for series!");
+			return;
+		}
+		
+		//Find element to remove from figure
+		XYSeriesElement el = null;
+		for(Object obj : traceFigure.getElementList()) {
+			if (obj instanceof XYSeriesElement) {
+				XYSeriesElement testEl = (XYSeriesElement)obj;
+				if (testEl.getSeries() == hSeries) {
+					el = testEl;
+					break;
+				}
+			}
+		}
+		
+		if (el == null) {
+			System.out.println("Aggh! Couldn't find element for series!");
+		}
+		
+		HistogramSeries newSeries = new HistogramSeries(titles[i] , series[i].getPointList(), bins, series[i].getMinY()*0.8, series[i].getMaxY()*1.1);
+		el.setSeries(newSeries);				
+		histoSeries[i] = newSeries;
+		repaint();
+	}
 	
+	/**
+	 * Called when the mcmc chain fires a new state ot the MainOutputWindow,
+	 * this is where we add new data to the chart 
+	 * @param state
+	 */
 	public void update(int state) {
 		if (param != null) {
 			String logStr = (param.getLogItem(logKey)).toString();
@@ -222,10 +293,13 @@ public class StatusFigure extends JPanel {
 	    }
 	}
 	
+	private JMenuItem histoOptions;
 	private JMenuItem switchItem;
 	private JPopupMenu popup;
 	private AbstractParameter<?> param = null;
 	private LikelihoodComponent comp = null;
 	
 	private float defaultLineWidth = 1.1f;
+
+	
 }

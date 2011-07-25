@@ -101,7 +101,9 @@ public class XYSeriesElement extends SeriesElement {
 	}
 	
 	public void setSeries(XYSeries newSeries) {
+		super.series = newSeries;
 		this.xySeries = newSeries;
+		regenerateShape();
 	}
 	
 
@@ -289,7 +291,7 @@ public class XYSeriesElement extends SeriesElement {
 	 * @return
 	 */
 	private double calculateBoxWidth() {
-		double boxesShowing = series.size()*(axes.maxXVal-axes.minXVal)/(xySeries.getMaxX()-xySeries.getMinX()); 
+		double boxesShowing = xySeries.size()*(axes.maxXVal-axes.minXVal)/(xySeries.getMaxX()-xySeries.getMinX()); 
 		return axes.getGraphAreaBounds().width / boxesShowing / (double)boxWidthDivisor;
 	}
 	

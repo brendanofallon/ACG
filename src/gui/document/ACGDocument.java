@@ -1,4 +1,6 @@
-package gui;
+package gui.document;
+
+import gui.ExecutingChain;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,6 +49,8 @@ public class ACGDocument {
 	
 	List<AbstractParameter<?>> params = new ArrayList<AbstractParameter<?>>();
 	List<LikelihoodComponent> likelihoods = new ArrayList<LikelihoodComponent>();
+	
+	ValidityChecker validityChecker = new ACGValidityChecker();
 	
 	public ACGDocument(File file) {
 		sourceFile = file;
@@ -158,51 +162,12 @@ public class ACGDocument {
 	}
 	
 	
-	
-	public void checkValidity() throws InvalidInputFileException, BadStructureException {
-		List<String> params = getParameterLabels();
-		List<String> likelihoods = getLikelihoodLabels();
-		List<String> mcmcs = getMCMCLabels();
-		
-		//Make sure all (non-compound) pararameters are referred to by an MCMC, 
-		for(String param : params) {
-			Class cls = loader.getClassForLabel(param);
-			//If parameter is not a compound parameter, make sure an MCMC refers to it...
-			if (! CompoundParameter.class.isAssignableFrom(cls)) {
-				boolean getsReferredTo = false;
-				for(String mcmc : mcmcs) {
-					Element mcmcElement = getFirstElement(mcmc);
-					if ( getElementRefersToLabel(mcmcElement, param)) {
-						getsReferredTo = true;
-						break;
-					}
-				}
-				
-				if (!getsReferredTo) {
-					throw new BadStructureException("Parameter with label " + param + " is not used in any MCMC object!");
-				}
-			}
-		}
-		
-		
-		for(String likeLabel : likelihoods) {
-			Class cls = loader.getClassForLabel(likeLabel);
-			//If parameter is not a compound parameter, make sure an MCMC refers to it...
-			if (! CompoundParameter.class.isAssignableFrom(cls)) {
-				boolean getsReferredTo = false;
-				for(String mcmc : mcmcs) {
-					Element mcmcElement = getFirstElement(mcmc);
-					if ( getElementRefersToLabel(mcmcElement, likeLabel)) {
-						getsReferredTo = true;
-						break;
-					}
-				}
-				
-				if (!getsReferredTo) {
-					throw new BadStructureException("Likelihood with label " + likeLabel + " is not used in any MCMC object!");
-				}
-			}
-		}
+	/**
+	 * Check the validity of this document using the default validity checker
+	 * @throws Exception
+	 */
+	public void checkValidity() throws Exception {
+		validityChecker.checkValidity(this);
 	}
 	
 	/**
@@ -352,23 +317,12 @@ public class ACGDocument {
 	 * These get thrown when theres a problem with an input file
 	 *
 	 */
-	class InvalidInputFileException extends RuntimeException {
+	public class InvalidInputFileException extends RuntimeException {
 		
 		public InvalidInputFileException(String message) {
 			super(message);
 		}
 	}
 	
-	/**
-	 * These get thrown when there's a less serious issue with the input file, for instance
-	 * a declared Parameter that is not referenced by an mcmc element
-	 *
-	 */
-	class BadStructureException extends Exception {
-		
-		public BadStructureException(String message) {
-			super(message);
-		}
-	}
 	
 }

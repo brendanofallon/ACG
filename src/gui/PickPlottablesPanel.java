@@ -1,5 +1,7 @@
 package gui;
 
+import gui.document.ACGDocument;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -167,7 +169,11 @@ public class PickPlottablesPanel extends JPanel {
 		MCMC chain;
 		try {
 			chain = (MCMC)file.getObjectForLabel(mcLabels.get(0));
-			MainOutputFrame outputPane = new MainOutputFrame(chain, 5000, 2, 2);
+			int freq = chain.getUserRunLength() / 5000;
+			if (freq < 100)
+				freq = 100;
+				
+			MainOutputFrame outputPane = new MainOutputFrame(chain, freq, 2, 2);
 
 			for(PlottableInfo plottable : selectedPlottables) {
 				Object obj = file.getObjectForLabel(plottable.label);

@@ -53,6 +53,13 @@ public class HistogramSeries extends XYSeries {
 		addValue(newPoint.getY());
 	}
 	
+	/**
+	 * The number of bins in the histogram
+	 * @return
+	 */
+	public int getBinCount() {
+		return histo.getBinCount();
+	}
 		
 	/**
 	 * Sorts the values in X order

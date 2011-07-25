@@ -1,6 +1,6 @@
 package gui;
 
-import gui.ACGDocument.InvalidInputFileException;
+import gui.document.ACGDocument;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -164,7 +164,7 @@ public class StartFrame extends JPanel {
 			PickPlottablesPanel pickPanel = new PickPlottablesPanel(acgParent, runnableFile);
 			acgParent.replaceCenterPanel(pickPanel);
 		}
-		catch (InvalidInputFileException ex) {
+		catch (ACGDocument.InvalidInputFileException ex) {
 			JOptionPane.showMessageDialog(acgParent, "Error reading input file : " + ex.getMessage() );
 		}
 
