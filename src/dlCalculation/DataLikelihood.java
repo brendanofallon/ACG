@@ -63,7 +63,7 @@ public class DataLikelihood extends LikelihoodComponent {
 	//Call to start log on
 	private final int verificationStart = 0;
 	//Frequency with which we write verification log stuff, if at all
-	private final int verificationFrequency = 1;
+	private final int verificationFrequency = 10;
 	private BufferedWriter vLog;
 	
 	//Debugging, used to write comments into the verification file

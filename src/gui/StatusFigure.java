@@ -260,7 +260,8 @@ public class StatusFigure extends JPanel {
 	 */
 	private void thinSeries(XYSeries series) {
 		System.out.println("Thinning series " + series.getName());
-		for(int i=series.size(); i>0; i-=2) {
+		//We're actually incrementing the index removed by two, since removing a point increments the index by one itself
+		for(int i=0; i<series.size()/2; i++) {
 			series.removePoint(i);
 		}
 	}

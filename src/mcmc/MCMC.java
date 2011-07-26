@@ -52,7 +52,7 @@ public class MCMC {
 	private boolean paramFreqsKnown = false;
 	private double paramFreqSum = 0;
 
-	boolean verbose = true;
+	boolean verbose = false;
 	
 	boolean verifyRejection = true; //These get turned off after the 'careful period'
 	boolean verifyLogCalc = false;

@@ -15,7 +15,7 @@ public class ScaleModifier extends AbstractModifier<DoubleParameter> {
 	
 	double scaleMin = 0.02;
 	double scaleMax = 1.5;
-	double scaleSize = 0.2;
+	double scaleSize = 0.1;
 
 	public ScaleModifier() {
 		super(new HashMap<String, String>());

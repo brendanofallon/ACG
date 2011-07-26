@@ -117,7 +117,7 @@ public class DataLikelihoodTest {
 		}
 		
 		
-		mc.run( 3670 );
+		mc.run( 50000 );
 
 	}
 	
