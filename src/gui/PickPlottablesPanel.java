@@ -23,6 +23,7 @@ import javax.swing.JScrollPane;
 
 import arg.ARG;
 
+import logging.StateLogger;
 import mcmc.MCMC;
 import parameter.AbstractParameter;
 import parameter.CompoundParameter;
@@ -172,9 +173,19 @@ public class PickPlottablesPanel extends JPanel {
 			int freq = chain.getUserRunLength() / 5000;
 			if (freq < 100)
 				freq = 100;
-				
+					
+			
 			MainOutputFrame outputPane = new MainOutputFrame(chain, freq, 2, 2);
 
+			//Attempt to turn off System.out writing for state loggers...
+			List<String> stateLoggerLabels = file.getLabelForClass(StateLogger.class);
+			for(String loggerLabel : stateLoggerLabels) {
+				Object obj = file.getObjectForLabel(loggerLabel);
+				if (obj instanceof StateLogger) { //Should be one of these, but you never know
+					((StateLogger)obj).removeStream(System.out);
+				}
+			}
+			
 			for(PlottableInfo plottable : selectedPlottables) {
 				Object obj = file.getObjectForLabel(plottable.label);
 				if (obj instanceof AbstractParameter<?>) {

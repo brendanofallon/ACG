@@ -20,6 +20,9 @@ import parameter.AbstractParameter;
  */
 public class MainOutputFrame extends JPanel implements MCMCListener {
 	
+	//Maximum size we allow data series to get before they're thinned
+	public final int MAX_SERIES_SIZE = 500;
+	
 	private int rows = 2;
 	private int cols = 2;
 	private MCMC mcmc = null;
@@ -80,6 +83,23 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 		if (stateNumber % frequency == 0) {
 			for(StatusFigure fig : figureList) {
 				fig.update(stateNumber);
+			}
+			
+			//If any figures have more than MAX_SERIES_SIZE data point, remove half of the data points from all
+			//series and multiply frequency by two (so we collect less frequently)
+			boolean needsThinning = false;
+			for(StatusFigure fig : figureList) {
+				needsThinning = fig.getSeriesSize() > MAX_SERIES_SIZE;
+				if (needsThinning)
+					break;
+			}
+			
+			if (needsThinning) {
+				System.out.println("Thinning all series.....");
+				for(StatusFigure fig : figureList) { 
+					fig.thinSeries();
+				}
+				frequency *= 2;
 			}
 		}
 	}

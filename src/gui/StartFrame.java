@@ -135,8 +135,8 @@ public class StartFrame extends JPanel {
 		}
 		
 
-		ACGDocument runnableFile = new ACGDocument(inputFile);
-		ExecutingChain runner = runnableFile.runMCMC();
+		ACGDocument acgDocument = new ACGDocument(inputFile);
+		ExecutingChain runner = acgDocument.runMCMC();
 		this.setVisible(false);
 		acgParent.dispose();
 	}
@@ -160,8 +160,8 @@ public class StartFrame extends JPanel {
 		}
 		
 		try {
-			ACGDocument runnableFile = new ACGDocument(inputFile);
-			PickPlottablesPanel pickPanel = new PickPlottablesPanel(acgParent, runnableFile);
+			ACGDocument acgDocument = new ACGDocument(inputFile);
+			PickPlottablesPanel pickPanel = new PickPlottablesPanel(acgParent, acgDocument);
 			acgParent.replaceCenterPanel(pickPanel);
 		}
 		catch (ACGDocument.InvalidInputFileException ex) {

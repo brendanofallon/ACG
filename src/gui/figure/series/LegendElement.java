@@ -28,6 +28,7 @@ public class LegendElement extends FigureElement {
 	Stroke highlightStroke;
 	
 	LegendConfigFrame configFrame;
+	Color backgroundColor = new Color(0.99f, 0.99f, 0.99f, 0.9f);
 	
 	public LegendElement(SeriesFigure fig) {
 		super(fig);
@@ -46,7 +47,7 @@ public class LegendElement extends FigureElement {
 		}
 		
 		g.setClip(0, 0, round(xFactor), round(yFactor));
-		g.setColor(Color.white);
+		g.setColor(backgroundColor);
 		g.setFont(font);
 		int markerSpace = 20;
 		int pos = 4;
@@ -77,7 +78,7 @@ public class LegendElement extends FigureElement {
 		}
 		
 		//Draw the background
-		g.setColor(Color.white);
+		g.setColor(backgroundColor);
 		g.fillRect(round(bounds.x*xFactor), round(bounds.y*yFactor), round(bounds.width*xFactor), round(bounds.height*yFactor));
 		
 		

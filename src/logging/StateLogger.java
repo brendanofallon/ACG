@@ -102,6 +102,14 @@ public class StateLogger implements MCMCListener {
 	}
 	
 	/**
+	 * Remove the given streams from the list of streams to write output to 
+	 * @param ps
+	 */
+	public void removeStream(PrintStream ps) {
+		streams.remove(ps);
+	}
+	
+	/**
 	 * Write the given string to all of the streams
 	 * @param str
 	 */

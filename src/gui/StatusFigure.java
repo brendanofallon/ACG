@@ -25,7 +25,6 @@ import parameter.DoubleParameter;
 
 public class StatusFigure extends JPanel {
 
-	public final int MAX_SERIES_SIZE = 2000;
 	
 	enum Mode {TRACE, HISTOGRAM};
 	
@@ -258,12 +257,23 @@ public class StatusFigure extends JPanel {
 	 * Removes every even-indexed elemtent of the series, thus halving it in size
 	 * @param series
 	 */
-	private void thinSeries(XYSeries series) {
-		System.out.println("Thinning series " + series.getName());
-		//We're actually incrementing the index removed by two, since removing a point increments the index by one itself
-		for(int i=0; i<series.size()/2; i++) {
-			series.removePoint(i);
+	public void thinSeries() {
+		for(int j=0; j<series.length; j++) {
+			XYSeries ser = series[j];
+
+			//We're actually incrementing the index removed by two, since removing a point increments the index by one itself
+			for(int i=0; i<ser.size()/2; i++) {
+				ser.removePoint(i);
+			}
 		}
+	}
+	
+	/**
+	 * Returns the number of data points currently in series 0
+	 * @return
+	 */
+	public int getSeriesSize() {
+		return series[0].size();
 	}
 	
 	/**
@@ -280,8 +290,6 @@ public class StatusFigure extends JPanel {
 					Double val = Double.parseDouble(logToks[i]);
 					Point2D.Double point = new Point2D.Double(state, val);
 					series[i].addPointInOrder(point);
-					if (series[i].size() > MAX_SERIES_SIZE) 
-						thinSeries(series[i]);
 					if (histoSeries != null) {
 						histoSeries[i].addValue(val);
 					}
@@ -295,8 +303,6 @@ public class StatusFigure extends JPanel {
 			Double val = comp.getCurrentLogLikelihood();
 			Point2D.Double point = new Point2D.Double(state, val);
 			series[0].addPointInOrder(point);
-			if (series[0].size() > MAX_SERIES_SIZE) 
-				thinSeries(series[0]);
 			
 			if (histoSeries != null) {
 				if (histoSeries[0] == null)

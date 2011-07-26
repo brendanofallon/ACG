@@ -114,6 +114,17 @@ public class ACGDocument {
 		loader.instantiateAll();
 	}
 	
+	/**
+	 * Put the key=value pair into the attribute list for the object with the given label. This will
+	 * have no effect if the objects have already been created. 
+	 * @param label
+	 * @param key
+	 * @param value
+	 */
+	public void addAttribute(String label, String key, String value) {
+		loader.addAttribute(label, key, value);
+	}
+	
 	
 	/**
 	 * Return a list of all of the labels of the objects that are MCMCs
@@ -148,6 +159,15 @@ public class ACGDocument {
 	 */
 	public List<String> getLikelihoodLabels() {
 		return loader.getObjLabelsForClass(LikelihoodComponent.class);
+	}
+	
+	/**
+	 * Return all object labels that refer to an object of the given class
+	 * @param clazz
+	 * @return
+	 */
+	public List<String> getLabelForClass(Class clazz) {
+		return loader.getObjLabelsForClass(clazz);
 	}
 	
 	public String toString() {
