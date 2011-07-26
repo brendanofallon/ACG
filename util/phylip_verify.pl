@@ -89,16 +89,16 @@ for my $line (<loghandle>) {
 	$line =~ /kappa=([\d.\d]+)/;
 	my $kappa = $1;
 	
-	$line =~ /a=([\d.\d]+)/;
+	$line =~ / a=([\d.\d]+)/;
 	my $AFreq = $1;
 	
-	$line =~ /c=([\d.\d]+)/;
+	$line =~ / c=([\d.\d]+)/;
 	my $CFreq = $1;
 	
-	$line =~ /g=([\d.\d]+)/;
+	$line =~ / g=([\d.\d]+)/;
 	my $GFreq = $1;
 	
-	$line =~ /t=([\d.\d]+)/;
+	$line =~ / t=([\d.\d]+)/;
 	my $TFreq = $1;
 		
 	$line =~ /rates=([\d]+)/;
@@ -218,6 +218,13 @@ close tmpfile;
 				my $accepted = $1;
 				my $proposed = $2;
 				print "Likelihoods do not match on line $linenum ! dif = $dif\n";
+				
+				print "Category rates : $rates \n";
+				
+				if ($tree =~ /E-7/ || $tree =~ /E-8/) {
+					print " ** Tree contains at least one short branch **\n";
+				}
+				
 				exit(0);
 				$count++;
 			}

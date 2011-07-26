@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<graphml>
+<graph rangemax="1000" rangemin="0">
+<node height="2.630682058196561E-4" id="10"/>
+<node height="4.736987083505706E-4" id="11"/>
+<node height="6.059497228659531E-4" id="12"/>
+<node height="9.121595490674656E-4" id="13"/>
+<node height="0.002009464411460642" id="14"/>
+<node height="0.0026557315428957554" id="15"/>
+<node height="0.004542238152682104" id="16"/>
+<node height="0.013618350441662" id="17"/>
+<node height="0.01702957706783462" id="20"/>
+<node height="0.019019817660234375" id="23"/>
+<node height="0.019637417958348655" id="24"/>
+<node height="0.02351689349735433" id="26"/>
+<node height="0.027557731394630844" id="28"/>
+<node height="0.02903515847052035" id="29"/>
+<node height="0.03240687560790581" id="31"/>
+<node height="0.04847922923217449" id="32"/>
+<node height="0.013778149750700868" id="18"/>
+<node height="0.0163384384470686" id="19"/>
+<node height="0.018795740577542987" id="21"/>
+<node height="0.018886081272578924" id="22"/>
+<node height="0.023075347872129816" id="25"/>
+<node height="0.02637501786444871" id="27"/>
+<node height="0.031541632104071814" id="30"/>
+<node height="0.0" id="tip0"/>
+<node height="0.0" id="tip1"/>
+<node height="0.0" id="tip2"/>
+<node height="0.0" id="tip3"/>
+<node height="0.0" id="tip4"/>
+<node height="0.0" id="tip5"/>
+<node height="0.0" id="tip6"/>
+<node height="0.0" id="tip7"/>
+<node height="0.0" id="tip8"/>
+<node height="0.0" id="tip9"/>
+<edge id="edge0" source="tip2" target="10"/>
+<edge id="edge1" source="tip7" target="10"/>
+<edge id="edge2" source="10" target="11"/>
+<edge id="edge3" source="tip4" target="11"/>
+<edge id="edge4" source="11" target="19"/>
+<edge id="edge5" source="tip8" target="12"/>
+<edge id="edge6" source="tip9" target="12"/>
+<edge id="edge7" source="12" target="14"/>
+<edge id="edge8" source="tip5" target="13"/>
+<edge id="edge9" source="tip3" target="13"/>
+<edge id="edge10" source="13" target="16"/>
+<edge id="edge11" source="tip6" target="14"/>
+<edge id="edge12" source="14" target="15"/>
+<edge id="edge13" source="tip1" target="15"/>
+<edge id="edge14" source="15" target="17"/>
+<edge id="edge15" source="tip0" target="16"/>
+<edge id="edge16" source="16" target="17"/>
+<edge id="edge17" source="17" target="18"/>
+<edge id="edge18" source="18" target="20">
+<range>
+<start>0</start>
+<end>723</end>
+</range>
+</edge>
+<edge id="edge19" source="19" target="20">
+<range>
+<start>0</start>
+<end>862</end>
+</range>
+</edge>
+<edge id="edge20" source="20" target="22"/>
+<edge id="edge21" source="22" target="23">
+<range>
+<start>0</start>
+<end>876</end>
+</range>
+</edge>
+<edge id="edge22" source="21" target="23">
+<range>
+<start>0</start>
+<end>632</end>
+</range>
+</edge>
+<edge id="edge23" source="23" target="24"/>
+<edge id="edge24" source="22" target="24">
+<range>
+<start>876</start>
+<end>1000</end>
+</range>
+</edge>
+<edge id="edge25" source="24" target="25"/>
+<edge id="edge26" source="18" target="26">
+<range>
+<start>723</start>
+<end>1000</end>
+</range>
+</edge>
+<edge id="edge27" source="25" target="26">
+<range>
+<start>0</start>
+<end>618</end>
+</range>
+</edge>
+<edge id="edge28" source="26" target="28"/>
+<edge id="edge29" source="27" target="28">
+<range>
+<start>0</start>
+<end>851</end>
+</range>
+</edge>
+<edge id="edge30" source="28" target="29"/>
+<edge id="edge31" source="25" target="29">
+<range>
+<start>618</start>
+<end>1000</end>
+</range>
+</edge>
+<edge id="edge32" source="29" target="31"/>
+<edge id="edge33" source="30" target="31">
+<range>
+<start>0</start>
+<end>543</end>
+</range>
+</edge>
+<edge id="edge34" source="31" target="32"/>
+<edge id="edge35" source="30" target="32">
+<range>
+<start>543</start>
+<end>1000</end>
+</range>
+</edge>
+<edge id="edge36" source="19" target="21">
+<range>
+<start>862</start>
+<end>1000</end>
+</range>
+</edge>
+<edge id="edge37" source="21" target="27">
+<range>
+<start>632</start>
+<end>1000</end>
+</range>
+</edge>
+<edge id="edge38" source="27" target="30">
+<range>
+<start>851</start>
+<end>1000</end>
+</range>
+</edge>
+</graph>
+</graphml>
+

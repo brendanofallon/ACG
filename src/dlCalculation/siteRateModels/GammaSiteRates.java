@@ -114,7 +114,7 @@ public class GammaSiteRates extends AbstractSiteRateModel {
 		
 		double totalMean = 0;
 		double rateSum = 0;
-		//System.out.println("Proposing new rates, alpha: " + alphaParam.getValue() + "\t cov:" + 1.0/Math.sqrt(alphaParam.getValue()));
+		System.out.println("Proposing new rates, alpha: " + alphaParam.getValue() );
 		if (categories > 1) {
 			Gamma cDist = new Gamma(1.0/alphaParam.getValue(), 1.0/alphaParam.getValue(), null); //Not a bug, both parameters really are alpha to get the right cdf
 			Gamma gamDist = new Gamma(1.0/alphaParam.getValue(), alphaParam.getValue(), null);
@@ -129,7 +129,7 @@ public class GammaSiteRates extends AbstractSiteRateModel {
 				rateSum += rate;
 				totalMean += rate * 1.0/(double)categories;
 
-				//System.out.println("Category: " + i + "\t rate: " + rate);
+				System.out.println("Category: " + i + "\t rate: " + rate);
 				prevCutoff = cutoff;
 				prob += 1.0/(double)categories;
 			}
@@ -143,9 +143,9 @@ public class GammaSiteRates extends AbstractSiteRateModel {
 		proposal.rates[categories-1] = categories - rateSum;  
 		totalMean += proposal.rates[categories-1] / (double)categories;
 		
-		//System.out.println("Category: " + (categories-1) + "\t rate: " + proposal.rates[categories-1]);
+		System.out.println("Category: " + (categories-1) + "\t rate: " + proposal.rates[categories-1]);
+		System.out.println("Overall average rate: "+ totalMean);
 		
-		//System.out.println("Overall average rate: "+ totalMean);
 		if (totalMean < 0.99 || totalMean > 1.01) {
 			throw new IllegalStateException("There was an error calculating the rate categories for the gamma distributed rates model, alpha: " + alphaParam.getValue() + " mean of rates: " + totalMean);
 		}

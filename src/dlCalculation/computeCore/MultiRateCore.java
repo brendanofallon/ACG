@@ -227,18 +227,19 @@ public class MultiRateCore extends AbstractComputeCore {
 	 * @return
 	 */
 	public boolean isNodeProposed(int nodeNumber) {
-		ComputeNode node = nodePool.getAssignedNode(nodeNumber);
-		if (node == null) {
-			throw new IllegalStateException("Node " + nodeNumber + " does not exist");
-		}
-		else {
-			return node.activeState.leftNode != node.currentState.leftNode
-					|| node.activeState.rightNode != node.currentState.rightNode
-					|| node.activeState.subtreePatternMap != node.currentState.subtreePatternMap
-					|| node.activeState.height != node.currentState.height
-					|| node.activeState.globalStartSite != node.currentState.globalStartSite
-					|| node.activeState.globalEndSite != node.currentState.globalEndSite;
-		}
+		throw new IllegalStateException("Does anything ever use this?");
+//		ComputeNode node = nodePool.getAssignedNode(nodeNumber);
+//		if (node == null) {
+//			throw new IllegalStateException("Node " + nodeNumber + " does not exist");
+//		}
+//		else {
+//			return node.activeState.leftNode != node.currentState.leftNode
+//					|| node.activeState.rightNode != node.currentState.rightNode
+//					|| node.activeState.subtreePatternMap != node.currentState.subtreePatternMap
+//					|| node.activeState.height != node.currentState.height
+//					|| node.activeState.globalStartSite != node.currentState.globalStartSite
+//					|| node.activeState.globalEndSite != node.currentState.globalEndSite;
+//		}
 	}
 	
 	/**

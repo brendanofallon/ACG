@@ -6,6 +6,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -302,10 +303,12 @@ public class DataLikelihood extends LikelihoodComponent {
 		double tFreq = stats[DNAUtils.T];
 		String freqStr = " a=" + aFreq + " c=" + cFreq + " g=" + gFreq + " t=" + tFreq;
 		
+		DecimalFormat formatter = new DecimalFormat("##.#######");
 		String rateStr = null;
-		StringBuilder rateBldr = new StringBuilder(" rates=" + siteRateModel.getCategoryCount());
+		double alpha = ((GammaSiteRates)siteRateModel).getAlpha();
+		StringBuilder rateBldr = new StringBuilder(" rates=" + siteRateModel.getCategoryCount() + " alph=" + alpha);
 		for(int i=0; i<siteRateModel.getCategoryCount(); i++) {
-			rateBldr.append(" rate" + i + "=" + siteRateModel.getRateForCategory(i) + " prob" + i + "=" + siteRateModel.getProbForCategory(i));
+			rateBldr.append(" rate" + i + "=" + formatter.format(siteRateModel.getRateForCategory(i)) + " prob" + i + "=" + siteRateModel.getProbForCategory(i));
 		}
 		rateStr = rateBldr.toString();
 	
