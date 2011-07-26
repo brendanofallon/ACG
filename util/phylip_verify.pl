@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl 
 
 # Brendan O'Fallon
 # University of Washington
@@ -54,17 +54,17 @@ open loghandle, $logfile or die "Could not open log file $logfile \n";
 
 #Input to phylip. First number is the transition to transversion ratio
 # Set of four numbers is are the frequencies of the bases. 
-open tmpfile, ">.phyinput.txt";
-print tmpfile "R
-U
-L
-T
-1.0
-F
-0.2 0.1 0.25 0.45
-Y
-R";
-close tmpfile;
+#open tmpfile, ">.phyinput.txt";
+#print tmpfile "R
+#U
+#L
+#T
+#1.0
+#F
+#0.2 0.1 0.25 0.45
+#Y
+#R";
+#close tmpfile;
 
 my $linenum = 0;
 
@@ -100,6 +100,28 @@ for my $line (<loghandle>) {
 	
 	$line =~ /t=([\d.\d]+)/;
 	my $TFreq = $1;
+		
+	$line =~ /rates=([\d]+)/;
+	my $cats = $1;
+
+
+	my $probs = "";
+	my $rates = "";
+	#print "Found $cats total categories \n";
+	for my $cat (0..($cats-1)) {
+		$line =~ /rate$cat=([\d.\d]+)/;
+		my $rate = $1;
+		$rates = $rates . " " . $rate;
+		
+		$line =~ /prob$cat=([\d.\d]+)/;
+		my $prob = $1;
+		$probs = $probs . " " . $prob;
+		
+		#print "Cat: $cat  rate: $rate prob: $prob \n";
+	}
+	
+	
+
 	
 open tmpfile, ">.phyinput.txt";
 print tmpfile "R
@@ -109,8 +131,15 @@ T
 $kappa
 F
 $AFreq $CFreq $GFreq $TFreq
+R
+R
+R
 Y
+$cats
+$rates
+$probs
 R";
+
 close tmpfile;
 
 

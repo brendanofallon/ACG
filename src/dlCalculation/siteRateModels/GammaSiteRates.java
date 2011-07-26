@@ -114,11 +114,10 @@ public class GammaSiteRates extends AbstractSiteRateModel {
 		
 		double totalMean = 0;
 		double rateSum = 0;
-		
+		//System.out.println("Proposing new rates, alpha: " + alphaParam.getValue() + "\t cov:" + 1.0/Math.sqrt(alphaParam.getValue()));
 		if (categories > 1) {
 			Gamma cDist = new Gamma(1.0/alphaParam.getValue(), 1.0/alphaParam.getValue(), null); //Not a bug, both parameters really are alpha to get the right cdf
 			Gamma gamDist = new Gamma(1.0/alphaParam.getValue(), alphaParam.getValue(), null);
-
 
 			double prevCutoff = 0;
 			for(int i=0; i<categories-1; i++) {
@@ -135,6 +134,7 @@ public class GammaSiteRates extends AbstractSiteRateModel {
 				prob += 1.0/(double)categories;
 			}
 		}
+		
 		//The rate for the last bin is hard to compute, since where is the upper boundary (it's infinite)? 
 		//Instead, we assume we've done the math right for the other categories, and thus we know 
 		//what the rate should be for the last bin (since all rates average to 1.0)
@@ -149,6 +149,10 @@ public class GammaSiteRates extends AbstractSiteRateModel {
 		if (totalMean < 0.99 || totalMean > 1.01) {
 			throw new IllegalStateException("There was an error calculating the rate categories for the gamma distributed rates model, alpha: " + alphaParam.getValue() + " mean of rates: " + totalMean);
 		}
+		
+//		for(int i=0; i<categories; i++) {
+//			proposal.rates[i] = 1.0;
+//		}
 		proposeValue(proposal);
 	}
 	
@@ -246,14 +250,28 @@ public class GammaSiteRates extends AbstractSiteRateModel {
 		GammaSiteRates gRates = new GammaSiteRates(4, alphaParam);
 		
 		
+		for(double x=0.1; x<10; x+=0.1) {
+			try {
+				alphaParam.proposeValue(x);
+				alphaParam.acceptValue();
+				gRates.acceptValue();
+			} catch (ModificationImpossibleException e) {
+				e.printStackTrace();
+			}
+			
+		}
 		
-		//double r = calcRate(d, 1.0, 1.25);
-		//System.out.println("Rate : " + r);
-		
-		//double c = findCutoff(cD, 0.1, 1e-6);
+//		//double r = calcRate(d, 1.0, 1.25);
+//		//System.out.println("Rate : " + r);
 //		
-//		System.out.println("Found cutoff:" + c);
-//		System.out.println("CDF at cutoff:" + cD.cdf(c));
+//		//double c = findCutoff(cD, 0.1, 1e-6);
+////		
+////		System.out.println("Found cutoff:" + c);
+////		System.out.println("CDF at cutoff:" + cD.cdf(c));
+	}
+
+	public double getAlpha() {
+		return alphaParam.getValue();
 	}
 
 }

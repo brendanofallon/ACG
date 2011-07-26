@@ -35,6 +35,7 @@ import dlCalculation.computeCore.CompressionCore2;
 import dlCalculation.computeCore.ComputeCore;
 import dlCalculation.computeCore.MultiRateCore;
 import dlCalculation.siteRateModels.ConstantSiteRates;
+import dlCalculation.siteRateModels.GammaSiteRates;
 import dlCalculation.siteRateModels.SiteRateModel;
 import dlCalculation.substitutionModels.F84Matrix;
 import dlCalculation.substitutionModels.MutationModel;
@@ -56,12 +57,12 @@ public class DataLikelihood extends LikelihoodComponent {
 	
 	//Field for writing the 'verification log', which emits trees and their likelihoods to a 
 	//stream, so they can be verified with external tools
-	private final boolean writeVerificationLog = false;
+	private final boolean writeVerificationLog = true;
 	private final boolean writeARGs = false;
 	//Call to start log on
 	private final int verificationStart = 0;
 	//Frequency with which we write verification log stuff, if at all
-	private final int verificationFrequency = 5;
+	private final int verificationFrequency = 1;
 	private BufferedWriter vLog;
 	
 	//Debugging, used to write comments into the verification file
@@ -301,52 +302,62 @@ public class DataLikelihood extends LikelihoodComponent {
 		double tFreq = stats[DNAUtils.T];
 		String freqStr = " a=" + aFreq + " c=" + cFreq + " g=" + gFreq + " t=" + tFreq;
 		
+		String rateStr = null;
+		StringBuilder rateBldr = new StringBuilder(" rates=" + siteRateModel.getCategoryCount());
+		for(int i=0; i<siteRateModel.getCategoryCount(); i++) {
+			rateBldr.append(" rate" + i + "=" + siteRateModel.getRateForCategory(i) + " prob" + i + "=" + siteRateModel.getProbForCategory(i));
+		}
+		rateStr = rateBldr.toString();
+	
+		
 		if (vLog != null && calls > 0) {
 			try {
 				double recomputedDL = 0;
-				if (arg.getRecombNodes().size()==0) {
-					String newick = TreeUtils.getNewick( TreeUtils.createMarginalTree(arg, 0)); //Creates marginal newick at site 0
-					double dl = computeCore.computeRootLogDL();
-					recomputedDL += dl;
-					vLog.write(dl + "\t[ state=" + chain.getCurrentState() + freqStr + " kappa=" + kappa + " start=0 end=" + arg.getSiteCount() + " ]\t" + newick + "\n");
+				
+				//for(int category = 0; category<siteRateModel.getCategoryCount(); category++) {
+				//	String rateStr = " catry=" + category + " rate=" + siteRateModel.getRateForCategory(category) + " ";
+					if (arg.getRecombNodes().size()==0) {
+						String newick = TreeUtils.getNewick( TreeUtils.createMarginalTree(arg, 0)); //Creates marginal newick at site 0
+						double dl = computeCore.computeRootLogDLForRange(0, arg.getSiteCount());
+						recomputedDL += dl;
+						vLog.write(dl + "\t[ state=" + chain.getCurrentState() + rateStr + freqStr + " kappa=" + kappa + " start=0 end=" + arg.getSiteCount() + " ]\t" + newick + "\n");
+						vLog.flush();
+
+						//System.out.println("Verification range " + 0 + " .. " +  dataMatrix.getTotalColumnCount() + " : " + dl);
+						return;
+					}
+
+					Integer[] internalBPs = arg.collectBreakPoints();
+					Integer[] breakpoints = new Integer[ internalBPs.length + 1];
+					breakpoints[0] = 0;
+					for(int i=1; i<breakpoints.length; i++)
+						breakpoints[i] = internalBPs[i-1];
+					Arrays.sort(breakpoints);
+
+
+					for(int i=0; i<breakpoints.length-1; i++) {
+						if (breakpoints[i] == breakpoints[i+1]) //Skip redundant breakpoints
+							continue;
+						String newick = TreeUtils.getNewick( TreeUtils.createMarginalTree(arg, breakpoints[i])); //Creates marginal newick at site 0
+						double dl = computeCore.computeRootLogDLForRange(breakpoints[i], breakpoints[i+1]);
+						vLog.write(dl + "\t[ state=" + chain.getCurrentState() + rateStr + freqStr + " kappa=" + kappa + " start=" + breakpoints[i] + " end=" + breakpoints[i+1] + " ]\t" + newick + "\n");
+						recomputedDL += dl;
+
+						//System.out.println("Verification range " + breakpoints[i] + " .. " +  breakpoints[i+1] + " : " + dl);
+						vLog.flush();
+					}
+
+					int lastSite = arg.getSiteCount();
+					String newick = TreeUtils.getNewick( TreeUtils.createMarginalTree(arg, lastSite-1)); //Creates marginal newick at site 0
+					double dl = computeCore.computeRootLogDLForRange(breakpoints[ breakpoints.length-1], lastSite);
+					vLog.write(dl + "\t[ state=" + chain.getCurrentState() + rateStr + freqStr + " kappa=" + kappa + " start=" + breakpoints[ breakpoints.length-1] + " end=" + lastSite + " ]\t" + newick + "\n");
 					vLog.flush();
 
-					//System.out.println("Verification range " + 0 + " .. " +  dataMatrix.getTotalColumnCount() + " : " + dl);
-					return;
-				}
-				
-				Integer[] internalBPs = arg.collectBreakPoints();
-				Integer[] breakpoints = new Integer[ internalBPs.length + 1];
-				breakpoints[0] = 0;
-				for(int i=1; i<breakpoints.length; i++)
-					breakpoints[i] = internalBPs[i-1];
-				Arrays.sort(breakpoints);
-
-				
-				for(int i=0; i<breakpoints.length-1; i++) {
-					if (breakpoints[i] == breakpoints[i+1]) //Skip redundant breakpoints
-						continue;
-					String newick = TreeUtils.getNewick( TreeUtils.createMarginalTree(arg, breakpoints[i])); //Creates marginal newick at site 0
-					double dl = computeCore.computeRootLogDLForRange(breakpoints[i], breakpoints[i+1]);
-					vLog.write(dl + "\t[ state=" + chain.getCurrentState() + freqStr + " kappa=" + kappa + " start=" + breakpoints[i] + " end=" + breakpoints[i+1] + " ]\t" + newick + "\n");
+					//System.out.println("Verification range " + breakpoints[ breakpoints.length-1] + " .. " +  lastSite + " : " + dl);
 					recomputedDL += dl;
+					//System.out.println("State: " + MCMC.getCurrentState() + " total DL: " + recomputedDL);
+				//}
 
-					//System.out.println("Verification range " + breakpoints[i] + " .. " +  breakpoints[i+1] + " : " + dl);
-					vLog.flush();
-				}
-				
-				int lastSite = arg.getSiteCount();
-				String newick = TreeUtils.getNewick( TreeUtils.createMarginalTree(arg, lastSite-1)); //Creates marginal newick at site 0
-				double dl = computeCore.computeRootLogDLForRange(breakpoints[ breakpoints.length-1], lastSite);
-				vLog.write(dl + "\t[ state=" + chain.getCurrentState() + freqStr + " kappa=" + kappa + " start=" + breakpoints[ breakpoints.length-1] + " end=" + lastSite + " ]\t" + newick + "\n");
-				vLog.flush();
-
-				//System.out.println("Verification range " + breakpoints[ breakpoints.length-1] + " .. " +  lastSite + " : " + dl);
-				recomputedDL += dl;
-					
-
-				//System.out.println("State: " + MCMC.getCurrentState() + " total DL: " + recomputedDL);
-				
 				if (Math.abs(recomputedDL - logDL) > 1e-6) {
 					throw new IllegalStateException("Uh-oh, verification DLs did not add up to proposed DL. \n Verification DL sum : " + recomputedDL + " prop DL : " + logDL);
 

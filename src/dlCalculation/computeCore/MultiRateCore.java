@@ -639,7 +639,6 @@ public class MultiRateCore extends AbstractComputeCore {
 										 + sitePartials[2] * stat2
 										 + sitePartials[3] * stat3);
 				}
-				//System.out.println("DL of site " + aliased)
 				logDL +=  Math.log(siteProb) * cardinality; 		
 			}
 			
@@ -684,6 +683,8 @@ public class MultiRateCore extends AbstractComputeCore {
 		return logDL;
 	}
 
+
+	
 	/**
 	 * Returns an array of ints such that array[DNAUtils.X] is the number of invariant sites 
 	 * with symbol X between start and end

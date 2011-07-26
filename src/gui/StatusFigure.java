@@ -25,6 +25,8 @@ import parameter.DoubleParameter;
 
 public class StatusFigure extends JPanel {
 
+	public final int MAX_SERIES_SIZE = 2000;
+	
 	enum Mode {TRACE, HISTOGRAM};
 	
 	XYSeriesFigure traceFigure;
@@ -157,7 +159,10 @@ public class StatusFigure extends JPanel {
 	
 
 	protected void popupHistoOptions() {
-		HistoOptionsFrame histoFrame = new HistoOptionsFrame(this, histoSeries[0]);
+		if (histoSeries == null || histoSeries[0] == null) {
+			createHistograms();
+		}
+		HistoOptionsFrame histoFrame = new HistoOptionsFrame(this, histoSeries);
 		histoFrame.setVisible(true);
 	}
 
@@ -250,6 +255,17 @@ public class StatusFigure extends JPanel {
 	}
 	
 	/**
+	 * Removes every even-indexed elemtent of the series, thus halving it in size
+	 * @param series
+	 */
+	private void thinSeries(XYSeries series) {
+		System.out.println("Thinning series " + series.getName());
+		for(int i=series.size(); i>0; i-=2) {
+			series.removePoint(i);
+		}
+	}
+	
+	/**
 	 * Called when the mcmc chain fires a new state ot the MainOutputWindow,
 	 * this is where we add new data to the chart 
 	 * @param state
@@ -263,6 +279,8 @@ public class StatusFigure extends JPanel {
 					Double val = Double.parseDouble(logToks[i]);
 					Point2D.Double point = new Point2D.Double(state, val);
 					series[i].addPointInOrder(point);
+					if (series[i].size() > MAX_SERIES_SIZE) 
+						thinSeries(series[i]);
 					if (histoSeries != null) {
 						histoSeries[i].addValue(val);
 					}
@@ -276,6 +294,8 @@ public class StatusFigure extends JPanel {
 			Double val = comp.getCurrentLogLikelihood();
 			Point2D.Double point = new Point2D.Double(state, val);
 			series[0].addPointInOrder(point);
+			if (series[0].size() > MAX_SERIES_SIZE) 
+				thinSeries(series[0]);
 			
 			if (histoSeries != null) {
 				if (histoSeries[0] == null)

@@ -72,8 +72,8 @@ public interface ComputeCore {
 	
 	/**
 	 * Compute the root partials over a restricted range of sites
-	 * @param startSite
-	 * @param endSite
+	 * @param startSite First site in range (in 'global' coords, inclusive)
+	 * @param endSite (exclusive)
 	 * @return
 	 */
 	public double computeRootLogDLForRange(int startSite, int endSite);

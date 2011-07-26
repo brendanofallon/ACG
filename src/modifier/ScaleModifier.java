@@ -59,6 +59,25 @@ public class ScaleModifier extends AbstractModifier<DoubleParameter> {
 			newVal = param.getUpperBound()-dif;
 		}
 		
+		if (newVal < param.getLowerBound()) {
+			double dif = param.getLowerBound() - newVal;
+			newVal = param.getLowerBound()+dif;
+		}
+		
+		if (newVal > param.getUpperBound()) {
+			double dif = newVal - param.getUpperBound();
+			newVal = param.getUpperBound()-dif;
+		}
+		
+		if (newVal < param.getLowerBound()) {
+			double dif = param.getLowerBound() - newVal;
+			newVal = param.getLowerBound()+dif;
+		}
+		
+		if (newVal > param.getUpperBound()) {
+			double dif = newVal - param.getUpperBound();
+			newVal = param.getUpperBound()-dif;
+		}
 		if (newVal <= param.getLowerBound()) {
 			throw new IllegalModificationException("New value is less than lower bound (value: " + newVal + ", lower bound: " + param.getLowerBound() +")" );
 		}
@@ -68,14 +87,10 @@ public class ScaleModifier extends AbstractModifier<DoubleParameter> {
 		}
 		
 		
-//		if (param.getName().equals("kappa"))
-//			System.out.println("Scaling kappa by : " + multiplier + " from " + val + " to " + newVal + "    " + getCallsSinceReset() + " / " + getTotalCalls() + " ratio: " + getRecentAcceptanceRatio() + " scale size: " + scaleSize);
 		param.proposeValue(newVal);
 		
 		tallyCall();
 		if (getCallsSinceReset() > 100 & getTotalCalls() % 50 == 0) {
-//			if (param.getName().equals("kappa"))
-//				System.out.println("Changing tuning of kappa, calls since reset: " + getCallsSinceReset());
 			changeTuning();
 		}
 		return multiplier; 

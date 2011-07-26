@@ -3,6 +3,8 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import gui.figure.series.HistogramSeries;
 import gui.figure.series.XYSeriesElement;
@@ -22,12 +24,12 @@ import javax.swing.SpinnerNumberModel;
  */
 public class HistoOptionsFrame extends JFrame {
 	
-	HistogramSeries series;
+	HistogramSeries[] series;
 	XYSeriesElement element;
 	StatusFigure figure;
 	JSpinner binsSpinner;
 	
-	public HistoOptionsFrame(StatusFigure figure, HistogramSeries series) {
+	public HistoOptionsFrame(StatusFigure figure, HistogramSeries[] series) {
 		super("Configure histogram");
 		this.series = series;
 		this.figure = figure;
@@ -39,7 +41,21 @@ public class HistoOptionsFrame extends JFrame {
 		binsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		JLabel binsLabel = new JLabel("Number of bins:");
 		binsPanel.add(binsLabel);
-		binsSpinner = new JSpinner(new SpinnerNumberModel(series.getBinCount(), 1, 10000, 1));
+		binsSpinner = new JSpinner(new SpinnerNumberModel(series[0].getBinCount(), 1, 10000, 1));
+		//Make it so when the user changes the value and hits return ("Action key") we call .done()
+		binsSpinner.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				if (arg0.isActionKey()) {
+					done();
+				}
+			}
+			
+			public void keyPressed(KeyEvent arg0) {	}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) { }
+		});
 		binsPanel.add(binsSpinner);
 		contentPane.add(binsPanel, BorderLayout.CENTER);
 		
@@ -73,7 +89,9 @@ public class HistoOptionsFrame extends JFrame {
 	
 	protected void done() {
 		//Easy way out...for now, will have to be refactored if we want more complicated settings
-		figure.updateHistogram(series, (Integer)binsSpinner.getValue());
+		for(int i=0; i<series.length; i++) {
+			figure.updateHistogram(series[i], (Integer)binsSpinner.getValue());
+		}
 		cancel(); //dispose of frame
 	}
 	

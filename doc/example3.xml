@@ -98,13 +98,10 @@
 </siteRateModel>
 
 <!-- The TN93 mutation model has one more free parameter than the F84 model  -->
-<mutationModel class="dlCalculation.substitutionModels.TN93Matrix">
+<mutationModel class="dlCalculation.substitutionModels.F84Matrix">
 	<stationaries class="dlCalculation.substitutionModels.BaseFrequencies" frequency="0.1" stationaries="0.25 0.25 0.25 0.25" >
 		<stationariesMod class="modifier.DirichletModifier" />
 	</stationaries>
-	<kappaR class="parameter.DoubleParameter" name="kappaR" frequency="0.1" value="2.0" lowerBound="0.5" upperBound="500">
-		<kappaRMod class="modifier.SimpleModifier" />
-	</kappaR>
 	<kappaY class="parameter.DoubleParameter" name="kappaY" frequency="0.1" value="2.0" lowerBound="0.5" upperBound="500">
 		<kappaYMod class="modifier.SimpleModifier" />
 	</kappaY>
@@ -155,13 +152,12 @@
 	<arg />
 </rootHeightLogger>
 
-<mc class="mcmc.MCMC" length="200" run="true" verbose="true">
+<mc class="mcmc.MCMC" length="2000000" run="true" verbose="false">
 	<parameters class="list">
 		<constantPopSize />
 		<constantRecRate />
 		<stationaries />
 		<alphaParam />
-		<kappaR />
 		<kappaY />
 		<arg />  
 	</parameters>

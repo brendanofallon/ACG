@@ -72,7 +72,7 @@ public class DataLikelihoodTest {
 		
 		Map<String, String> loggerProps = new HashMap<String, String>();
 		loggerProps.put("echoToScreen", "true");
-		loggerProps.put("frequency", "1");
+		loggerProps.put("frequency", "10");
 		loggerProps.put("logFile", "gammatest.log");
 		StateLogger logger = new StateLogger(loggerProps);
 		mcListeners.add(logger);
@@ -117,7 +117,7 @@ public class DataLikelihoodTest {
 		}
 		
 		
-		mc.run( 100 );
+		mc.run( 1000 );
 
 	}
 	
@@ -133,8 +133,8 @@ public class DataLikelihoodTest {
 
 		//File file = new File(homeDir + "24.04e6_L50K.fas");
 		//File file = new File(homeDir + "test/test_arg_3tip_R1_L100.fas");
-		//File file = new File(homeDir + "test/10tips_N100_L250_1bigrecomb.fas");
-		File file = new File(homeDir + "verification_data/N500_mu2e6_R002/20tips_N500_mu2e6_r0_L10K_23.fas");
+		File file = new File(homeDir + "test/10tips_N100_L250_1bigrecomb.fas");
+		//File file = new File(homeDir + "verification_data/N500_mu2e6_R002/20tips_N500_mu2e6_r0_L10K_23.fas");
 		
 		
 		//Newick newick = new Newick("(one:1.0, two:1.0);");
@@ -161,7 +161,7 @@ public class DataLikelihoodTest {
 
 		DoubleParameter alpha = new DoubleParameter(0.5, "siteRates.alpha", "siteRates.alpha", 0.01, 100.0);
 		alpha.addModifier(new SimpleModifier());
-		alpha.setFrequency(0.5);
+		alpha.setFrequency(4);
 		GammaSiteRates siteRates = new GammaSiteRates(4, alpha);
 		params.add(siteRates);
 		params.add(alpha);

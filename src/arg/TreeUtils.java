@@ -334,11 +334,15 @@ public class TreeUtils {
 	}
 	
 	public static String getNewick(CoalNode root, boolean includeBranchLengths) {
+		return getScaledNewick(root, includeBranchLengths, 1.0);
+	}
+	
+	public static String getScaledNewick(CoalNode root, boolean includeBranchLengths, double scaleFactor) {
 		StringBuffer str = new StringBuffer("(");
 		int i;
 
-		String lStr = getNewickSubtree( root.getLeftOffspring(), includeBranchLengths);
-		String rStr = getNewickSubtree( root.getRightOffspring(), includeBranchLengths);
+		String lStr = getNewickSubtree( root.getLeftOffspring(), includeBranchLengths, scaleFactor);
+		String rStr = getNewickSubtree( root.getRightOffspring(), includeBranchLengths, scaleFactor);
 		
 		if (lStr.hashCode() < rStr.hashCode()) {
 			str.append( lStr + ", ");
@@ -352,7 +356,14 @@ public class TreeUtils {
 		str.append(");");
 		return str.toString();		
 	}
+
 	
+	/**
+	 * Returns a canonical string form of the tree, including branch lengths  
+	 */
+	public static String getScaledNewick(CoalNode root, double scaleFactor) {
+		return getScaledNewick(root, true, scaleFactor);
+	}
 	
 	/**
 	 * Returns a canonical string form of the tree, including branch lengths  
@@ -366,10 +377,10 @@ public class TreeUtils {
 	 * @param n The node which defines the clade to generate tre newick string for 
 	 * @return
 	 */
-	private static String getNewickSubtree(ARGNode n, boolean includeBranchLengths) {
+	private static String getNewickSubtree(ARGNode n, boolean includeBranchLengths, double scaleFactor) {
 		String branchLengthStr  = "";
 		if (includeBranchLengths) {
-			branchLengthStr = ":" + (n.getParent(0).getHeight() - n.getHeight());
+			branchLengthStr = ":" + ((n.getParent(0).getHeight() - n.getHeight())*scaleFactor);
 		}
 		
 		if (n.getNumOffspring()==0) {
@@ -389,8 +400,8 @@ public class TreeUtils {
 		else {
 			StringBuffer str = new StringBuffer("(");
 			int i;
-			String lStr = getNewickSubtree( n.getOffspring(0), includeBranchLengths);
-			String rStr = getNewickSubtree( n.getOffspring(1), includeBranchLengths);
+			String lStr = getNewickSubtree( n.getOffspring(0), includeBranchLengths, scaleFactor);
+			String rStr = getNewickSubtree( n.getOffspring(1), includeBranchLengths, scaleFactor);
 			
 			if (lStr.hashCode() < rStr.hashCode()) {
 				str.append( lStr + ", ");

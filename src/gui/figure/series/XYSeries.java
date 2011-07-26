@@ -252,6 +252,14 @@ public class XYSeries extends AbstractSeries {
 	}
 	
 	/**
+	 * Remove the point at the given index
+	 * @param i
+	 */
+	public void removePoint(int i) {
+		pointList.remove(i);
+	}
+	
+	/**
 	 * Return the greatest x-val such that the y-val of all subsequent elements is zero. Useful for
 	 * some data sets which tend to generate long lists of 0-valued points (such as allele frequency spectra)
 	 * @return
@@ -297,5 +305,5 @@ public class XYSeries extends AbstractSeries {
 		}
 		
 	}
-	
+
 }
