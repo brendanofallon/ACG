@@ -14,7 +14,7 @@ public class ScaleModifier extends AbstractModifier<DoubleParameter> {
 	DoubleParameter param = null;
 	
 	double scaleMin = 0.02;
-	double scaleMax = 2.0;
+	double scaleMax = 1.5;
 	double scaleSize = 0.2;
 
 	public ScaleModifier() {
@@ -49,22 +49,22 @@ public class ScaleModifier extends AbstractModifier<DoubleParameter> {
 		Double newVal = val * multiplier; 
 		
 		//Reflecting boundaries?
-//		if (newVal < param.getLowerBound()) {
-//			double dif = param.getLowerBound() - newVal;
-//			newVal = param.getLowerBound()+dif;
-//		}
-//		
-//		if (newVal > param.getUpperBound()) {
-//			double dif = newVal - param.getUpperBound();
-//			newVal = param.getUpperBound()-dif;
-//		}
-		
-		if (newVal <= param.getLowerBound()) {
-			throw new IllegalModificationException("New value is less than lower bound (value: " + newVal + ", lower bound: " + param.getLowerBound());
+		if (newVal < param.getLowerBound()) {
+			double dif = param.getLowerBound() - newVal;
+			newVal = param.getLowerBound()+dif;
 		}
 		
 		if (newVal > param.getUpperBound()) {
-			throw new IllegalModificationException("New value is greater than upper bound (value: " + newVal + ", lower bound: " + param.getUpperBound());
+			double dif = newVal - param.getUpperBound();
+			newVal = param.getUpperBound()-dif;
+		}
+		
+		if (newVal <= param.getLowerBound()) {
+			throw new IllegalModificationException("New value is less than lower bound (value: " + newVal + ", lower bound: " + param.getLowerBound() +")" );
+		}
+		
+		if (newVal > param.getUpperBound()) {
+			throw new IllegalModificationException("New value is greater than upper bound (value: " + newVal + ", lower bound: " + param.getUpperBound() +")");
 		}
 		
 		

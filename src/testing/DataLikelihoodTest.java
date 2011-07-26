@@ -72,7 +72,7 @@ public class DataLikelihoodTest {
 		
 		Map<String, String> loggerProps = new HashMap<String, String>();
 		loggerProps.put("echoToScreen", "true");
-		loggerProps.put("frequency", "1000");
+		loggerProps.put("frequency", "1");
 		loggerProps.put("logFile", "gammatest.log");
 		StateLogger logger = new StateLogger(loggerProps);
 		mcListeners.add(logger);
@@ -106,7 +106,9 @@ public class DataLikelihoodTest {
 				parameters.add(par);
 		}
 		
-		MCMC mc = new MCMC(parameters, likelihoods);
+		Map<String, String> mcAttrs = new HashMap<String, String>();
+		mcAttrs.put("length", "100");
+		MCMC mc = new MCMC(mcAttrs, parameters, likelihoods);
 		if (dl!= null)
 			dl.setChain(mc);
 		for(MCMCListener listener : mcListeners) {
@@ -115,7 +117,7 @@ public class DataLikelihoodTest {
 		}
 		
 		
-		mc.run( 1000000 );
+		mc.run( 100 );
 
 	}
 	
@@ -125,7 +127,7 @@ public class DataLikelihoodTest {
 		
 		//String homeDir = "/Users/brendano/workspace/ACG_exp/";
 		//String homeDir = "/home/brendan/workspace/ACG/";
-		String homeDir = "/Users/brendano/workspace/ACG_exp/";
+		String homeDir = "/Users/brendano/workspace/ACG/";
 
 		//String homeDir = "/home/brendan/workspace/ACG_exp/";
 
@@ -160,11 +162,11 @@ public class DataLikelihoodTest {
 		DoubleParameter alpha = new DoubleParameter(0.5, "siteRates.alpha", "siteRates.alpha", 0.01, 100.0);
 		alpha.addModifier(new SimpleModifier());
 		alpha.setFrequency(0.5);
-		//GammaSiteRates siteRates = new GammaSiteRates(2, alpha);
-		//params.add(siteRates);
-		//params.add(alpha);
+		GammaSiteRates siteRates = new GammaSiteRates(4, alpha);
+		params.add(siteRates);
+		params.add(alpha);
 		
-		ConstantSiteRates siteRates = new ConstantSiteRates();
+		//ConstantSiteRates siteRates = new ConstantSiteRates();
 		
 		
 		DoubleParameter kappa = new DoubleParameter(1.25, "kappa", "kappa", 0, 1000);

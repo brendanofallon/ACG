@@ -18,12 +18,13 @@ import xml.XMLUtils;
  * @author brendan
  *
  */
-public class GammaSiteRates extends AbstractSiteRateModel implements ParameterListener {
+public class GammaSiteRates extends AbstractSiteRateModel {
 
 	DoubleParameter alphaParam;
 	
 	private final double[] equalProbs;
 	final int categories;
+
 	
 	public GammaSiteRates(int categories, double alpha) {
 		super(categories);
@@ -62,13 +63,14 @@ public class GammaSiteRates extends AbstractSiteRateModel implements ParameterLi
 		this.alphaParam = alphaParam;
 		try {
 			proposeRates();
+			alphaParam.acceptValue();
 		} catch (ModificationImpossibleException e) {
 			throw new IllegalArgumentException("Invalid initial value for alpha: " + alphaParam.getValue());
 		} //Set rates 
 		catch (InvalidParameterValueException e) {
 			throw new IllegalArgumentException("Invalid initial value for alpha: " + alphaParam.getValue());
 		}
-		alphaParam.addListener(this);
+		addParameter(alphaParam);
 	}
 
 	@Override

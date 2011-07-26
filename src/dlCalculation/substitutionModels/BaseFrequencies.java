@@ -34,7 +34,7 @@ public class BaseFrequencies extends AbstractParameter<double[]> {
 	//String[] logKeys = {"a.freq", "c.freq", "t.freq", "g.freq"};
 	String[] logKey = new String[]{"a.freq\tc.freq\tg.freq\tt.freq"};
 			
-	public BaseFrequencies(Map<String, String> attrs, Modifier mod) {
+	public BaseFrequencies(Map<String, String> attrs, Modifier<?> mod) {
 		this(attrs);
 		addModifier(mod);
 	}

@@ -225,6 +225,9 @@ public class MCMC {
 			addListener(debugger);
 		}
 		
+		Boolean verb = XMLUtils.getOptionaBoolean("verbose", attrs);
+		if (verb != null)
+			verbose = verb;
 
 		userRunLength = XMLUtils.getIntegerOrFail("length", attrs);
 		
