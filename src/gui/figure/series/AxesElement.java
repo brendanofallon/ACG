@@ -273,7 +273,6 @@ public class AxesElement extends FigureElement {
 		this.maxYVal = ymax;
 		this.minXVal = xmin;
 		this.minYVal = ymin;
-		
 		recalculateBounds = true;
 	}
 	
@@ -343,8 +342,9 @@ public class AxesElement extends FigureElement {
 	
 	
 	public void setXAxisOptions(AxesOptions ops) {
-		if (ops.min != Double.NaN)
+		if (ops.min != Double.NaN) {
 			minXVal = ops.min;
+		}
 		if (ops.max != Double.NaN)
 			maxXVal = ops.max;
 		if (ops.tickSpacing > 0) {
@@ -386,7 +386,7 @@ public class AxesElement extends FigureElement {
 	}
 	
 	private boolean yAxisContains(int x, int y) {
-		if (x > (graphAreaLeft-10) && x < (graphAreaLeft) ) {
+		if (x > (graphAreaLeft-8) && x < (graphAreaLeft+2) ) {
 			if (y > graphAreaTop && y < graphAreaBottom) {
 				return true;
 			}
@@ -458,7 +458,7 @@ public class AxesElement extends FigureElement {
 	}
 	
 	public double getXMin() {
-		return minYVal;
+		return minXVal;
 	}
 	
 	/**
@@ -506,9 +506,6 @@ public class AxesElement extends FigureElement {
 		
 		double figureX = boundsX*xFactor;
 		double x = figureXtoDataX(figureX);
-//		double x0 = figureXtoDataX(0);
-//		double xc = figureXtoDataX(graphAreaLeft);
-		//System.out.println("Pos: " + boundsX + " x0 " + x0 + " X. g.a. " + xc + " G.A. left: " + graphAreaLeft + " fig : " + figureX + " data: " + x);
 		return x;
 	}
 	
@@ -860,12 +857,7 @@ public class AxesElement extends FigureElement {
 					paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), i*xLabelStep);
 				}
 				else {
-					if (minXVal>=0) {
-						paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), i*xLabelStep+minXVal);
-					}
-					else {
-						paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), i*xLabelStep);
-					}
+					paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), i*xLabelStep+minXVal);
 				}
 				i++;
 				tickX += tickStep;
@@ -1050,22 +1042,22 @@ public class AxesElement extends FigureElement {
 	}
 
 
-	public void setXMin(double xmin) {
-		if (xmin<maxXVal) 
-			minXVal = xmin;
-		else
-			throw new IllegalArgumentException("Cannot set min X val to be greater than max X val");
-		recalculateBounds = true;
-	}
-
-
-	public void setXMax(double xmax) {
-		if (xmax>minXVal) 
-			maxXVal = xmax;
-		else
-			throw new IllegalArgumentException("Cannot set max X val to be less than min X val");
-		recalculateBounds = true;		
-	}
+//	public void setXMin(double xmin) {
+//		if (xmin<maxXVal) 
+//			minXVal = xmin;
+//		else
+//			throw new IllegalArgumentException("Cannot set min X val to be greater than max X val");
+//		recalculateBounds = true;
+//	}
+//
+//
+//	public void setXMax(double xmax) {
+//		if (xmax>minXVal) 
+//			maxXVal = xmax;
+//		else
+//			throw new IllegalArgumentException("Cannot set max X val to be less than min X val");
+//		recalculateBounds = true;		
+//	}
 
 
 	

@@ -181,12 +181,17 @@ public class XYSeriesFigure extends SeriesFigure {
 					xmax = 0.001;
 				}
 				else {
-					xmin /= 2;
-					xmax *= 1.5;
+					if (xmin < 0)
+						xmin /= -2;
+					else
+						xmin /= 2;
+					if (xmin < 0)
+						xmax *= -1.5;
+					else
+						xmax *= 1.5;
 				}
 			}
 			
-			//System.out.println("Inferring new bounds, ymin: " + ymin + " ymax: " + ymax);
 			axes.setDataBounds(xmin, xmax, axes.getYMin(), axes.getYMax());
 			axes.setRationalTicks();
 		}
@@ -432,12 +437,12 @@ public class XYSeriesFigure extends SeriesFigure {
 		axes.setYMax(max);
 	}
 	
-	public void setXMin(double xmin) {
-		axes.setXMin(xmin);
-	}
-	
-	public void setXMax(double xmax) {
-		axes.setXMax(xmax);
-	}
+//	public void setXMin(double xmin) {
+//		axes.setXMin(xmin);
+//	}
+//	
+//	public void setXMax(double xmax) {
+//		axes.setXMax(xmax);
+//	}
 
 }

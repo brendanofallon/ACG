@@ -33,6 +33,7 @@ public class HistogramSeries extends XYSeries {
 	}
 	
 	public void addValue(double x) {
+		int bin = histo.getBin(x);
 		histo.addValue(x);
 	}
 	
