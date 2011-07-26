@@ -133,7 +133,8 @@ public class DataLikelihoodTest {
 
 		//File file = new File(homeDir + "24.04e6_L50K.fas");
 		//File file = new File(homeDir + "test/test_arg_3tip_R1_L100.fas");
-		File file = new File(homeDir + "test/10tips_N100_L250_1bigrecomb.fas");
+		//File file = new File(homeDir + "test/10tips_N100_L250_1bigrecomb.fas");
+		File file = new File(homeDir + "test/10tips_t01_L1K.fas");
 		//File file = new File(homeDir + "verification_data/N500_mu2e6_R002/20tips_N500_mu2e6_r0_L10K_23.fas");
 		
 		
