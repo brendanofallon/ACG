@@ -273,7 +273,6 @@ public class AxesElement extends FigureElement {
 		this.maxYVal = ymax;
 		this.minXVal = xmin;
 		this.minYVal = ymin;
-		System.out.println("Set data bounds: xmin : "+ xmin + " xmax: " + xmax);
 		recalculateBounds = true;
 	}
 	
@@ -345,7 +344,6 @@ public class AxesElement extends FigureElement {
 	public void setXAxisOptions(AxesOptions ops) {
 		if (ops.min != Double.NaN) {
 			minXVal = ops.min;
-			System.out.println("Setting xmin to : " + minXVal + " from setXAxisOptions?");
 		}
 		if (ops.max != Double.NaN)
 			maxXVal = ops.max;
@@ -859,12 +857,7 @@ public class AxesElement extends FigureElement {
 					paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), i*xLabelStep);
 				}
 				else {
-					if (minXVal>=0) {
-						paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), i*xLabelStep+minXVal);
-					}
-					else {
-						paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), i*xLabelStep);
-					}
+					paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), i*xLabelStep+minXVal);
 				}
 				i++;
 				tickX += tickStep;

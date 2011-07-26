@@ -192,7 +192,6 @@ public class XYSeriesFigure extends SeriesFigure {
 				}
 			}
 			
-			System.out.println("Inferring new bounds, xmin: " + xmin + " xmax: " + xmax);
 			axes.setDataBounds(xmin, xmax, axes.getYMin(), axes.getYMax());
 			axes.setRationalTicks();
 		}
