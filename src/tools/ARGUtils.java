@@ -7,6 +7,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import sequence.Alignment;
+import sequence.Sequence;
+
 import math.RandomSource;
 
 import arg.ARG;
@@ -173,6 +176,7 @@ public class ARGUtils {
 		str.append(" --emit-tmrca    [argfile.xml] 		  \n\t Emit root heights across sequence length \n");
 		str.append(" --scale [factor] [argfile.xml | treefile.tre] 		   \n\t Emit tree with branches scaled by factor \n");
 		str.append(" --genarg [tips] [theta] [rho] [sites]	   \n\t Generate random ARG with given parameters \n");
+		str.append(" --convert [inputFile.fas | inputFile.phy]  \n\t Convert fasta or phylip file to ACG alignment block \n");
 
 		return str.toString();
 	}
@@ -278,6 +282,30 @@ public class ARGUtils {
 			return;
 			
 		}
+		
+		
+		if (args[0].equals("--convert")) {
+			if (args.length == 1) {
+				System.out.println("Please enter the name of at least one file to convert");
+				System.exit(0);
+			}
+			
+			for(int i=1; i<args.length; i++) {
+				Alignment aln = new Alignment(args[i]);
+				
+				System.out.println("<alignment" + (i) + " class=\"sequence.Alignment\">");
+				System.out.println("\t<sequences" + i + " class=\"list\">");
+				for(Sequence seq : aln.getSequences()) {
+					String seqName = seq.getLabel();
+					System.out.println("\t\t<" + seqName + " class=\"sequence.Sequence\">");
+					System.out.println("\t\t\t" + seq.getSequence() );
+					System.out.println("\t\t</" + seqName + ">");
+				}
+				System.out.println("\t</sequences" + i +">");
+				System.out.println("</alignment" + i +">");
+			}
+		}
+		
 		System.err.println("Unknown option : " + args[0]);
 		
 	}
