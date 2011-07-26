@@ -291,8 +291,10 @@ public class XYSeriesElement extends SeriesElement {
 	 * @return
 	 */
 	private double calculateBoxWidth() {
-		double boxesShowing = xySeries.size()*(axes.maxXVal-axes.minXVal)/(xySeries.getMaxX()-xySeries.getMinX()); 
-		return axes.getGraphAreaBounds().width / boxesShowing / (double)boxWidthDivisor;
+		double boxesShowing = xySeries.size()*(axes.maxXVal-axes.minXVal)/(xySeries.getMaxX()-xySeries.getMinX());
+		double boxWidth = axes.getGraphAreaBounds().width / boxesShowing / (double)boxWidthDivisor;
+		//System.out.println("Box width: " + boxWidth);
+		return boxWidth;
 	}
 	
 	public boolean contains(double x, double y) {		
@@ -323,7 +325,10 @@ public class XYSeriesElement extends SeriesElement {
 			Rectangle2D rect = getBoxForIndex(boxIndex, yAxis); 
 			//System.out.println( " click x: " + x*xFactor + " data x: " + dataX + "Box index: " + boxIndex + " x: " + rect.getX() + " height: " + rect.getHeight() + " width: " + rect.getWidth() );
 			Point2D pos = new Point2D.Double(x*xFactor, y*yFactor);
-			return rect.contains(pos);
+			if (rect == null)
+				return false;
+			else
+				return rect.contains(pos);
 		}
 		
 		if (currentMode == POINTS) {

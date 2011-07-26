@@ -53,14 +53,15 @@ public class AxesConfigFrame extends JFrame {
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 		this.add(mainPanel);
-		mainPanel.setPreferredSize(new Dimension(350, 205));
-		setPreferredSize(new Dimension(350, 205) );
+		mainPanel.setPreferredSize(new Dimension(300, 205));
+		setPreferredSize(new Dimension(300, 205) );
 		
 		panel1 = new JPanel();
 		panel1.setLayout(new FlowLayout(FlowLayout.LEFT));
 		maxXField = new JTextField("XXXXXX");
-		maxXField.setMinimumSize(new Dimension(100, 10));
-		maxXField.setMaximumSize(new Dimension(120, 10));
+		maxXField.setMinimumSize(new Dimension(120, 10));
+		maxXField.setPreferredSize(new Dimension(120, 26));
+		maxXField.setMaximumSize(new Dimension(120, 50));
 		panel1.add(maxXField);
 		panel1.add(new JLabel("Maximum value"));
 		mainPanel.add(panel1);
@@ -68,8 +69,9 @@ public class AxesConfigFrame extends JFrame {
 		panel2 = new JPanel();
 		panel2.setLayout(new FlowLayout(FlowLayout.LEFT));
 		minXField = new JTextField("XXXXXX");
-		minXField.setMinimumSize(new Dimension(100, 10));
-		minXField.setMaximumSize(new Dimension(120, 10));
+		minXField.setMinimumSize(new Dimension(120, 10));
+		minXField.setPreferredSize(new Dimension(120, 26));
+		minXField.setMaximumSize(new Dimension(120, 50));
 		panel2.add(minXField);
 		panel2.add(new JLabel("Minimum value"));
 		mainPanel.add(panel2);
@@ -181,7 +183,7 @@ public class AxesConfigFrame extends JFrame {
 		else {
 			gridLinesBox.setSelected( axes.showYGrid() );
 		}
-		tickXField.setText(String.valueOf(num));
+		tickXField.setText(StringUtils.format(num,4));
 		setVisible(true);
 	}
 	

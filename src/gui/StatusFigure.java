@@ -173,8 +173,9 @@ public class StatusFigure extends JPanel {
 	private void createHistograms() {
 		histoSeries = new HistogramSeries[series.length];
 		for(int i=0; i<series.length; i++) {
-			HistogramSeries hSeries = new HistogramSeries(titles[i] , series[i].getPointList(), 100, series[i].getMinY()*0.8, series[i].getMaxY()*1.1);
+			HistogramSeries hSeries = new HistogramSeries(titles[i] , series[i].getPointList(), 100, series[i].getMinY(), series[i].getMaxY());
 			histoSeries[i] = hSeries;
+			System.out.println("Creating histogram with min X: " + hSeries.getMinX() + " maxX: " + hSeries.getMaxX() + " minY: "+ hSeries.getMinY() + " maxY: "+ hSeries.getMaxY());
 		}		
 	}
 	
