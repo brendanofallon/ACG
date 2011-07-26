@@ -25,9 +25,7 @@ public class HistogramSeries extends XYSeries {
 	public HistogramSeries(String name, List<Point2D> points, int bins, double min, double max) {
 		super(name);
 		replace(points, bins, min, max);
-		System.out.println("Initializing histogram with min: " + min + " and max: " + max);
 		pointList = null;
-		System.out.println(histo.toString());
 	}
 	
 	public HistogramSeries(int bins, double min, double max) {
