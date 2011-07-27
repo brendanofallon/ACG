@@ -1,6 +1,7 @@
 package parameter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,12 +40,15 @@ public abstract class AbstractParameter<T> implements Parameter<T>, LogItemProvi
 	protected boolean modFrequenciesKnown = false;
 	protected double modFrequencySum = 0;
 	
-	public AbstractParameter() {
-		//Intentionally blank, sample frequency will be 1.0
-	}
+	protected Map<String, String> attrs = new HashMap<String, String>();
+	
+//	public AbstractParameter() {
+//		//Intentionally blank, sample frequency will be 1.0
+//	}
 	
 	public AbstractParameter(Map<String, String> attrs) {
 		String freqStr = attrs.get(XML_PARAM_FREQUENCY);
+		this.attrs = attrs;
 		if (freqStr != null) {
 			try {
 				frequency = Double.parseDouble(freqStr);
@@ -57,6 +61,15 @@ public abstract class AbstractParameter<T> implements Parameter<T>, LogItemProvi
 			}
 		}
 
+	}
+	
+	/**
+	 * Get the attribute associated with the given key
+	 * @param key
+	 * @return
+	 */
+	public String getAttribute(String key) {
+		return attrs.get(key);
 	}
 	
 	public void setFrequency(double frequency) {

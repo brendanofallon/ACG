@@ -1,5 +1,7 @@
 package component;
 
+import java.util.HashMap;
+
 import parameter.DoubleParameter;
 
 public class GaussianLikelihood extends LikelihoodComponent {
@@ -13,6 +15,7 @@ public class GaussianLikelihood extends LikelihoodComponent {
 	
 	
 	public GaussianLikelihood(DoubleParameter par) {
+		super(new HashMap<String, String>());
 		this.par = par;
 		addParameter(par);
 	}

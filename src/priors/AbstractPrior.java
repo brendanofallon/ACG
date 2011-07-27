@@ -1,5 +1,7 @@
 package priors;
 
+import java.util.Map;
+
 import component.LikelihoodComponent;
 
 import parameter.Parameter;
@@ -13,7 +15,8 @@ import parameter.Parameter;
 public abstract class AbstractPrior extends LikelihoodComponent implements Prior {
 
 	
-	public AbstractPrior(Parameter param) {
+	public AbstractPrior(Map<String, String> attrs, Parameter param) {
+		super(attrs);
 		addParameter(param);
 		
 		proposedLogLikelihood = computeProposedLikelihood();

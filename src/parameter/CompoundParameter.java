@@ -1,6 +1,7 @@
 package parameter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import mcmc.AcceptRejectListener;
@@ -20,6 +21,7 @@ public abstract class CompoundParameter<T> extends AbstractParameter<T> implemen
 	protected List<AbstractParameter<?>> parameters = new ArrayList<AbstractParameter<?>>();
 	
 	public CompoundParameter() {
+		super(new HashMap<String, String>());
 		setFrequency(0.0);
 	}
 	

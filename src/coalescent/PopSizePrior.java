@@ -6,6 +6,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import logging.StateLogger;
 import math.RandomSource;
@@ -37,20 +38,20 @@ public class PopSizePrior extends LikelihoodComponent {
 	
 	
 	PiecewiseLinearPopSize popSize;
-	
-	public PopSizePrior(PiecewiseLinearPopSize popSize) {
+
+	public PopSizePrior(Map<String, String> attrs, PiecewiseLinearPopSize popSize) {
+		super(attrs);
+
 		this.popSize = popSize;
 		addParameter(popSize);
 		double variance = stdev*stdev;
 		
 		gamDist = new Gamma(mean*mean/variance, variance/mean, null); //Has mean 1.0, 
 		cpPrior = new Poisson(changePointMean, null);
-		
-//		for(double x=0; x<10000; x+=200) {
-//			System.out.println(x + "\t" + gamDist.pdf(x));
-//		}
-//		
-//		System.exit(0);
+	}
+	
+	public PopSizePrior(PiecewiseLinearPopSize popSize) {
+		this(new HashMap<String, String>(), popSize);
 	}
 	
 	@Override

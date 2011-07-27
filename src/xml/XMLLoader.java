@@ -64,6 +64,7 @@ public class XMLLoader {
 	static XMLLoader primaryLoader = null;
 
 	public static final String CLASS_NAME_ATTR = "class";
+	public static final String NODE_ID = "element.id";
 	public static final String LIST_ATTR = "list";
 
 	PluginLoader loader = new PluginLoader();
@@ -164,6 +165,9 @@ public class XMLLoader {
 			//System.out.println("Node : " + nodeLabel + " : Putting " + attrNode.getNodeName() + " = " + attrNode.getNodeValue() + " into attr Map");
 		}
 
+		//Also put the label of the node into the attr map, so objects can know what their label is
+		attrMap.put(NODE_ID, nodeLabel);
+		
 		List<String> refList  = new ArrayList<String>();
 		List<Class> refClasses  = new ArrayList<Class>();
 
@@ -228,8 +232,7 @@ public class XMLLoader {
 			clz = loader.getClassForName(className);
 
 			if (clz == null) {
-				System.err.println("Could not find class for object with label: " + label + " and class : " + className);
-				System.exit(0);
+				throw new InvalidInputFileException("Could not find class for object with label: " + label + " and class : " + className);
 			}
 			classMap.put(label, clz);
 		}
@@ -510,8 +513,10 @@ public class XMLLoader {
 				this.refClasses[i+1] = classList[i];
 			}
 		}
-		
 	}
+	
+	
+
 
 	public static void main(String[] args) {
 		String filename = "plugins.xml";

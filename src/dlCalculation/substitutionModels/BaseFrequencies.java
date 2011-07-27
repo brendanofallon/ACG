@@ -3,6 +3,7 @@ package dlCalculation.substitutionModels;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import cern.jet.random.Gamma;
@@ -40,7 +41,7 @@ public class BaseFrequencies extends AbstractParameter<double[]> {
 	}
 	
 	public BaseFrequencies(Map<String, String> attrs) {
-		
+		super(attrs);
 		String statStr = attrs.get(TN93Matrix.XML_STATIONARIES);
 		String[] stats = statStr.split(" ");
 		if (stats.length != 4) {
@@ -63,6 +64,7 @@ public class BaseFrequencies extends AbstractParameter<double[]> {
 	
 	
 	public BaseFrequencies(double[] stationaries) {
+		super(new HashMap<String, String>());
 		currentValue = new double[4];
 		System.arraycopy(stationaries, 0, currentValue, 0, 4);
 		activeValue = currentValue;

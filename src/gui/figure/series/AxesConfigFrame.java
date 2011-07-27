@@ -59,9 +59,9 @@ public class AxesConfigFrame extends JFrame {
 		panel1 = new JPanel();
 		panel1.setLayout(new FlowLayout(FlowLayout.LEFT));
 		maxXField = new JTextField("XXXXXX");
-		maxXField.setMinimumSize(new Dimension(120, 10));
-		maxXField.setPreferredSize(new Dimension(120, 26));
-		maxXField.setMaximumSize(new Dimension(120, 50));
+		maxXField.setMinimumSize(new Dimension(100, 10));
+		maxXField.setPreferredSize(new Dimension(100, 26));
+		maxXField.setMaximumSize(new Dimension(100, 50));
 		panel1.add(maxXField);
 		panel1.add(new JLabel("Maximum value"));
 		mainPanel.add(panel1);
@@ -69,9 +69,9 @@ public class AxesConfigFrame extends JFrame {
 		panel2 = new JPanel();
 		panel2.setLayout(new FlowLayout(FlowLayout.LEFT));
 		minXField = new JTextField("XXXXXX");
-		minXField.setMinimumSize(new Dimension(120, 10));
-		minXField.setPreferredSize(new Dimension(120, 26));
-		minXField.setMaximumSize(new Dimension(120, 50));
+		minXField.setMinimumSize(new Dimension(100, 10));
+		minXField.setPreferredSize(new Dimension(100, 26));
+		minXField.setMaximumSize(new Dimension(100, 50));
 		panel2.add(minXField);
 		panel2.add(new JLabel("Minimum value"));
 		mainPanel.add(panel2);
@@ -84,7 +84,6 @@ public class AxesConfigFrame extends JFrame {
 		mainPanel.add(panel25);
 		
 		panel3 = new JPanel();
-		//SpinnerModel model = new SpinnerNumberModel(5, 0, 50, 1 );
 		tickXField = new JTextField();
 		
 		tickXField.setMinimumSize(new Dimension(65, 1));
@@ -93,6 +92,11 @@ public class AxesConfigFrame extends JFrame {
 		panel3.add(tickXField);
 		panel3.add(new JLabel("X tick spacing"));
 		mainPanel.add(panel3);
+		
+		
+
+		//SpinnerModel model = new SpinnerNumberModel(11, 0, 50, 1 );
+		
 		
 		panel4 = new JPanel();
 		panel4.setLayout(new BorderLayout());

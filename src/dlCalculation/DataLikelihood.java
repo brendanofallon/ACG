@@ -58,7 +58,7 @@ public class DataLikelihood extends LikelihoodComponent {
 	
 	//Field for writing the 'verification log', which emits trees and their likelihoods to a 
 	//stream, so they can be verified with external tools
-	private final boolean writeVerificationLog = true;
+	private final boolean writeVerificationLog = false;
 	private final boolean writeARGs = false;
 	//Call to start log on
 	private final int verificationStart = 0;
@@ -92,7 +92,8 @@ public class DataLikelihood extends LikelihoodComponent {
 		this(new HashMap<String, String>());
 	}
 	
-	public DataLikelihood(Map<String, String> attributes) {		
+	public DataLikelihood(Map<String, String> attributes) {	
+		super(attributes);
 		if (writeVerificationLog) {
 			File logFile = new File("treeDLlog.txt");
 			try {

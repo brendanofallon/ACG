@@ -22,6 +22,7 @@ public class GammaPrior extends LikelihoodComponent {
 	DoubleParameter param;
 	
 	public GammaPrior(Map<String, String> attrs, DoubleParameter param) {
+		super(attrs);
 		addParameter(param);
 		this.param = param;
 		double mean = XMLUtils.getDoubleOrFail("mean", attrs);

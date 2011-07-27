@@ -2,6 +2,7 @@ package component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A type of likelihood component that depends on multiple other likelihood components
@@ -11,6 +12,10 @@ import java.util.List;
 public class CompositeLikelihood extends LikelihoodComponent {
 
 	List<LikelihoodComponent> comps = new ArrayList<LikelihoodComponent>(5);
+	
+	public CompositeLikelihood(Map<String, String> attrs) {
+		super(attrs);
+	}
 	
 	public void addComponent(LikelihoodComponent comp) {
 		if (!comps.contains(comp))

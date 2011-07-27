@@ -2,6 +2,8 @@ package coalescent;
 
 import java.util.Map;
 
+import modifier.ModificationImpossibleException;
+
 import parameter.CompoundParameter;
 import parameter.DoubleParameter;
 import parameter.Parameter;
@@ -21,12 +23,18 @@ public class ExponentialGrowth extends CompoundParameter<Void> implements Demogr
 		addParameter(baseSize);
 		this.growthRate = growthRate;
 		addParameter(growthRate);
+		baseSize.acceptValue();
+		growthRate.acceptValue();
 	}
 	
 	@Override
 	public double getIntegral(double t0, double t1) {
-		// TODO Auto-generated method stub
-		return 0;
+		double r = growthRate.getValue();
+		if (Math.abs(r) < 1e-10) {
+			return (t1-t0)/baseSize.getValue();
+		}
+		else 
+			return (Math.exp(r*t1)-Math.exp(r*t0))/(baseSize.getValue()*r);
 	}
 
 	@Override
@@ -41,7 +49,14 @@ public class ExponentialGrowth extends CompoundParameter<Void> implements Demogr
 
 	@Override
 	protected void proposeNewValue(Parameter<?> source) {
-		//No intermediates to recalculate
+		try {
+			fireParameterChange();
+		} catch (ModificationImpossibleException e) {
+			if (growthRate.isProposed())
+				growthRate.revertValue();
+			if (baseSize.isProposed())
+				baseSize.revertValue();
+		}
 	}
 
 }

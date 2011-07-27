@@ -108,6 +108,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 	private DataMatrix dataMatrix = null;
 	
 	public ARG() {
+		super(new HashMap<String, String>());
 		//Create an empty arg. 
 	}
 	

@@ -1,7 +1,9 @@
 package priors;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import parameter.DoubleParameter;
 import parameter.Parameter;
 
 /**
@@ -10,20 +12,24 @@ import parameter.Parameter;
  * @author brendan
  *
  */
-public class UniformPrior extends Prior1D {
+public class UniformPrior extends AbstractPrior {
 
 	Double logDensity; //Stores the log of the density, generally log (1.0 / (upperBound - lowerBound));
 	
 	//Whether we know the current density. 
 	boolean densityKnown = false;
+	double lowerBound = Double.NEGATIVE_INFINITY;
+	double upperBound = Double.POSITIVE_INFINITY;
 	
+	DoubleParameter param;
 	
 	/**
 	 * Construct a new UniformPrior with no boundaries (lowerBound = negative infinity, upperBound = +infinity)
 	 * @param param
 	 */
-	public UniformPrior(Parameter<Double> param) {
-		super(param);
+	public UniformPrior(DoubleParameter param) {
+		super(new HashMap<String, String>(), param);
+		this.param = param;
 		logDensity = 1.0;
 	}
 	
@@ -33,10 +39,11 @@ public class UniformPrior extends Prior1D {
 	 * @param lowerBound
 	 * @param upperBound
 	 */
-	public UniformPrior(Parameter<Double> param, Double lowerBound, Double upperBound) {
-		super(param);
+	public UniformPrior(Map<String, String> attrs, DoubleParameter param, Double lowerBound, Double upperBound) {
+		super(attrs, param);
 		this.lowerBound = lowerBound;
 		this.upperBound = upperBound;
+		this.param = param;
 		if (upperBound < lowerBound)
 			throw new IllegalArgumentException("Cannot construct a uniform prior with upper bound < lower bound");
 		if (upperBound > lowerBound )
@@ -46,10 +53,9 @@ public class UniformPrior extends Prior1D {
 		}
 	}
 	
-	public UniformPrior(Map<String, String> attrs, Parameter<Double> param) {
-		super(param);
-		Double lower = this.lowerBound;
-		Double upper = this.upperBound;
+	public UniformPrior(Map<String, String> attrs, DoubleParameter param) {
+		super(attrs, param);
+		this.param = param;
 		String lowerStr = attrs.get("lowerBound");
 		if (lowerStr != null) {
 			try {
@@ -111,13 +117,6 @@ public class UniformPrior extends Prior1D {
 	 * @return
 	 */
 	public Double getProposedLogLikelihood() {
-//		Parameter param = parameters.get(0);
-//		if ( ((Double)param.getValue())>=lowerBound && (Double)param.getValue()<upperBound) {
-//			return 1.0;
-//		}
-//		else {
-//			return Double.NEGATIVE_INFINITY;
-//		}
 		if (!densityKnown)
 			computeProposedLikelihood();
 		return proposedLogLikelihood;
@@ -125,7 +124,7 @@ public class UniformPrior extends Prior1D {
 
 	@Override
 	public String getLogHeader() {
-		return "Uniform prior";
+		return "UniPrior[" + param.getName() + "]";
 	}
 
 }

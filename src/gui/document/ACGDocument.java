@@ -24,6 +24,7 @@ import component.LikelihoodComponent;
 
 import parameter.AbstractParameter;
 import parameter.CompoundParameter;
+import xml.InvalidInputFileException;
 import xml.XMLLoader;
 
 /**
@@ -331,17 +332,6 @@ public class ACGDocument {
 		String label;
 		String className;
 		Map<String, String> attrs = new HashMap<String, String>();
-	}
-	
-	/**
-	 * These get thrown when theres a problem with an input file
-	 *
-	 */
-	public class InvalidInputFileException extends RuntimeException {
-		
-		public InvalidInputFileException(String message) {
-			super(message);
-		}
 	}
 	
 	

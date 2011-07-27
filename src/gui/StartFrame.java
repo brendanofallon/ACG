@@ -27,6 +27,7 @@ import javax.swing.WindowConstants;
 import component.LikelihoodComponent;
 
 import parameter.DoubleParameter;
+import xml.InvalidInputFileException;
 
 import mcmc.MCMC;
 
@@ -164,7 +165,7 @@ public class StartFrame extends JPanel {
 			PickPlottablesPanel pickPanel = new PickPlottablesPanel(acgParent, acgDocument);
 			acgParent.replaceCenterPanel(pickPanel);
 		}
-		catch (ACGDocument.InvalidInputFileException ex) {
+		catch (InvalidInputFileException ex) {
 			JOptionPane.showMessageDialog(acgParent, "Error reading input file : " + ex.getMessage() );
 		}
 

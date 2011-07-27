@@ -18,21 +18,7 @@ public class ConstantPopSize extends DoubleParameter implements DemographicParam
 	}
 	
 	public ConstantPopSize(Map<String, String> attrs) {
-		super(1, "pop.size", "Population size", 0, Double.MAX_VALUE);
-		
-		lowerBound = 0.0;
-		
-		String sizeStr = attrs.get("size");
-		proposedValue = java.lang.Double.valueOf(1.0);
-		
-		if (sizeStr != null) {
-			try {
-				proposedValue = java.lang.Double.parseDouble(sizeStr);
-			}
-			catch (NumberFormatException nfe) {
-
-			}
-		}
+		super(attrs);
 	}
 	
 	public ConstantPopSize(Map<String, String> attrs, Modifier<?> mod) {

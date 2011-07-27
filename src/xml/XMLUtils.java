@@ -128,6 +128,17 @@ public class XMLUtils {
 	}
 	
 	/**
+	 * Return the (String) value associated with the given key or null if there is no entry for the key
+	 * @param key
+	 * @param attrs
+	 * @return
+	 */
+	public static String getOptionalString(String key,
+			Map<String, String> attrs) {
+		return attrs.get(key);
+	}
+	
+	/**
 	 * Return a the string value associated with the given key, or throw a runtime exception if there
 	 * is no such value
 	 * @param key
@@ -161,5 +172,7 @@ public class XMLUtils {
 			super(message);
 		}
 	}
+
+
 	
 }

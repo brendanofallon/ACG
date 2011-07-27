@@ -3,8 +3,7 @@ package priors;
 import parameter.Parameter;
 
 /**
- * Base class of priors which apply to parameters of type Double, and hence are of a 
- * single dimension
+ * No longer user, ignore this for now
  *  
  * @author brendan
  *
@@ -15,7 +14,7 @@ public abstract class Prior1D extends AbstractPrior {
 	Double upperBound = Double.POSITIVE_INFINITY;
 	
 	public Prior1D(Parameter<Double> param) {
-		super(param);
+		super(new HashMap<String, String>(), param);
 	}
 
 	public void setLowerBound(Double bound) {

@@ -1,7 +1,9 @@
 package parameter;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import xml.XMLLoader;
 import xml.XMLUtils;
 
 import logging.StringUtils;
@@ -22,6 +24,7 @@ public class DoubleParameter extends AbstractParameter<Double> {
 	protected String logHeader;
 	
 	public DoubleParameter(double initValue, String logHeader, String name, double lowerBound, double upperBound) {
+		super(new HashMap<String, String>());
 		this.name = name;
 		this.logHeader = logHeader;
 		setLowerBound(lowerBound);
@@ -49,11 +52,14 @@ public class DoubleParameter extends AbstractParameter<Double> {
 		if (uBound != null)
 			upperBound = uBound;
 		
-		name = XMLUtils.getStringOrFail("name", attrs);
+		name = XMLUtils.getOptionalString("name", attrs);
+		if (name == null)
+			name = attrs.get(XMLLoader.NODE_ID);
 		
 		Double val = XMLUtils.getDoubleOrFail("value", attrs);
 		try {
 			proposeValue(val);
+			acceptValue();
 		} catch (ModificationImpossibleException e) {
 			throw new IllegalArgumentException("Invalid initial value for parameter : " + name + ", got value: " + val);
 		}

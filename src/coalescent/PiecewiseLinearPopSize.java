@@ -1,5 +1,7 @@
 package coalescent;
 
+import java.util.HashMap;
+
 import math.RandomSource;
 import modifier.IllegalModificationException;
 import modifier.LinearFunctionMover;
@@ -17,6 +19,7 @@ public class PiecewiseLinearPopSize extends AbstractParameter<PiecewiseLinearFun
 
 	
 	public PiecewiseLinearPopSize() {
+		super(new HashMap<String, String>());
 		currentValue = new PiecewiseLinearFunction();
 		proposedValue = new PiecewiseLinearFunction();
 		

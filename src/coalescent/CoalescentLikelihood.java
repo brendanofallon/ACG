@@ -30,6 +30,7 @@ public class CoalescentLikelihood extends LikelihoodComponent {
 	}
 	
 	public CoalescentLikelihood(Map<String, String> attrs, DemographicParameter demoParam, RecombinationParameter recParam, ARG tree) {
+		super(attrs);
 		
 		if (recParam == null)
 			recParam = new ConstantRecombination(0.0);

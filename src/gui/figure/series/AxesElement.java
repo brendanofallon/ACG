@@ -52,7 +52,7 @@ public class AxesElement extends FigureElement {
 	boolean hasUserYTickNum = false;	//True if user has set y tick number
 	double xTickWidth = 0.02;
 	double yTickWidth = 0.01;
-	int fontSize = 11;
+	int fontSize = 12;
 	
 	//These indicate if the user has set values for the x or y axis, and they we should not auto-set them
 	boolean hasUserX = false;
@@ -815,7 +815,7 @@ public class AxesElement extends FigureElement {
 		Stroke origStroke = g.getStroke();
 		//	X-axis			
 		g.drawLine(round(graphAreaLeft), round(xAxisPos), round(graphAreaLeft+graphAreaWidth), round(xAxisPos));
-		
+				
 		if (xTickSpacing>0) {
 			
 			//positive x labels & ticks
@@ -828,22 +828,22 @@ public class AxesElement extends FigureElement {
 			
 			double minorTickOffset = tickStep / 2.0;
 			int i=0;
-			int tickX;
-			if (yAxisZero>=graphAreaLeft && yAxisZero < (graphAreaLeft+graphAreaWidth))
-				tickX = round(yAxisZero);
+			double tickX;
+			if (yAxisZero>=graphAreaLeft && yAxisZero < (graphAreaLeft+graphAreaWidth)) {
+				tickX = yAxisZero;
+			}
 			else {
-				tickX = round(graphAreaLeft);
+				tickX = graphAreaLeft;
 			}
 			
 			while(tickStep > 0 && tickX<=round(graphAreaLeft+graphAreaWidth)) {
-				g.drawLine(tickX, round(xAxisPos), tickX, Math.max(round(xAxisPos+2),round(xAxisPos+xTickWidth*yFactor)));
+				int iTickX = round(tickX);
+				g.drawLine(iTickX, round(xAxisPos), iTickX, Math.max(round(xAxisPos+2),round(xAxisPos+xTickWidth*yFactor)));
 				if (drawXGrid && tickX>(graphAreaLeft+1)) {
 					g.setColor(yGridColor);
-					g.drawLine(tickX, round(graphAreaTop), tickX, round(graphAreaBottom));
+					g.drawLine(iTickX, round(graphAreaTop), iTickX, round(graphAreaBottom));
 				}
 			
-				
-				
 				g.setStroke(origStroke);
 				g.setColor(origColor);
 				//Minor tick
@@ -857,36 +857,41 @@ public class AxesElement extends FigureElement {
 					paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), i*xLabelStep);
 				}
 				else {
-					paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), i*xLabelStep+minXVal);
+					double val;
+					if (tickX==yAxisZero)
+						val = 0;
+					else
+						val = figureXtoDataX(tickX);
+					paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), val);
 				}
 				i++;
 				tickX += tickStep;
 			}
-		
 			
 			if (minXVal<0) {
 				if (maxXVal>0) //represses drawing two zeros which may not overlap completely
 					i=1;
 				else
 					i=0;
-				tickX = round(yAxisZero-i*tickStep);
+				tickX = yAxisZero-i*tickStep;
 				while(tickX>=graphAreaLeft) {
-					g.drawLine(tickX, round(xAxisPos), tickX, Math.max(round(xAxisPos+2),round(xAxisPos+xTickWidth*yFactor)));
+					int iTickX = round(tickX);
+					g.drawLine(iTickX, round(xAxisPos), iTickX, Math.max(round(xAxisPos+2),round(xAxisPos+xTickWidth*yFactor)));
 					
 					//Minor tick
 					if (round(yAxisZero+i*tickStep-tickStep/2.0) < graphAreaLeft+graphAreaWidth )
 						g.drawLine(round(yAxisZero-i*tickStep+tickStep/2.0), round(xAxisPos), round(yAxisZero-i*tickStep+tickStep/2.0), round(xAxisPos+xTickWidth*yFactor/2.0));
 					
 					if (maxXVal<0) {
-						paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), -1.0*i*xLabelStep+minXVal);
+						paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), figureXtoDataX(tickX) /*-1.0*i*xLabelStep+minXVal */);
 					}
 					else {
-						paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), -1.0*i*xLabelStep);
+						paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), figureXtoDataX(tickX));
 
 					}
 
 					i++;
-					tickX = round(yAxisZero-i*tickStep);
+					tickX = yAxisZero-i*tickStep;
 				}
 
 			}

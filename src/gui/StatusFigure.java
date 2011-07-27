@@ -212,9 +212,8 @@ public class StatusFigure extends JPanel {
 		if (mode == Mode.TRACE) {
 			mode = Mode.HISTOGRAM; //We're now in histogram mode
 			traceFigure.removeAllSeries();
-			if (histoSeries == null) {
-				createHistograms();
-			}
+			createHistograms();
+			
 			
 			for(int i=0; i<series.length; i++) {
 				XYSeriesElement el = traceFigure.addDataSeries(histoSeries[i]);
@@ -327,8 +326,7 @@ public class StatusFigure extends JPanel {
 			series[0].addPointInOrder(point);
 			
 			if (histoSeries != null) {
-				if (histoSeries[0] == null)
-					createHistograms();
+				createHistograms();
 				histoSeries[0].addValue(val);
 			}
 		}

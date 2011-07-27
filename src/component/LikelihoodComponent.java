@@ -2,7 +2,9 @@ package component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import logging.StringUtils;
 import mcmc.AcceptRejectListener;
@@ -35,6 +37,17 @@ public abstract class LikelihoodComponent implements ParameterListener, AcceptRe
 	
 	protected double currentLogLikelihood = Double.NaN;
 	protected double proposedLogLikelihood = Double.NaN;
+	
+	//Attributes provided from xml elements, default is empty map
+	protected Map<String, String> attrs = new HashMap<String, String>();
+	
+	public LikelihoodComponent(Map<String, String> attrs) {
+		this.attrs = attrs;
+	}
+		
+	public String getAttribute(String key) {
+		return attrs.get(key);
+	}
 	
 	/**
 	 * Called to notify this component that it should accept the proposed state. This sets the current likelihood

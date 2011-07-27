@@ -1,5 +1,6 @@
 package priors;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import math.RandomSource;
@@ -20,6 +21,7 @@ public class ExponentialPrior extends LikelihoodComponent {
 	DoubleParameter param;
 	
 	public ExponentialPrior(Map<String, String> attrs, DoubleParameter param) {
+		super(attrs);
 		addParameter(param);
 		this.param = param;
 		this.mean = XMLUtils.getDoubleOrFail("mean", attrs);
@@ -29,6 +31,7 @@ public class ExponentialPrior extends LikelihoodComponent {
 	}
 	
 	public ExponentialPrior(DoubleParameter param, double mean) {
+		super(new HashMap<String, String>());
 		addParameter(param);
 		this.param = param;
 		this.mean = mean;

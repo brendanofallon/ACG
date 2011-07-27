@@ -82,12 +82,12 @@
 </DLCalculator>
 
 <!--  Parameter specifying population size (theta / 2.0)  -->
-<constantPopSize class="coalescent.ConstantPopSize" frequency="1.0" size="1">
+<constantPopSize class="coalescent.ConstantPopSize" frequency="1.0" value="1">
 	<popSizeScaler class="modifier.ScaleModifier"/>
 </constantPopSize>
 
 <!-- Simple, constant recombination rate across sites -->
-<constantRecRate class="coalescent.ConstantRecombination">
+<constantRecRate class="coalescent.ConstantRecombination" value="1">
 	<recRateScaler class="modifier.ScaleModifier"/>
 </constantRecRate>
 
