@@ -17,8 +17,8 @@ import mcmc.MCMC;
 import mcmc.MCMCListener;
 
 /**
- * A logger that writes a parameter values and likelihoods to a one or more print streams, including system.out . Use addStream(newStream)
- * to add more print streams to print to. 
+ * A logger that writes a parameter values and likelihoods to one or more print streams, 
+ * including system.out. Use addStream(newStream) to add more print streams to print to. 
  * @author brendan
  *
  */
@@ -26,6 +26,7 @@ public class StateLogger implements MCMCListener {
 
 	List<PrintStream> streams = new ArrayList<PrintStream>();
 	
+	//The chain we listen to. This will change over time in MC3 runs.
 	MCMC chain;
 	boolean first = true;
 	
@@ -48,7 +49,7 @@ public class StateLogger implements MCMCListener {
 			try {
 				File file = new File(filename);
 				addStream( new PrintStream(new FileOutputStream(file)));
-				System.out.println("Writing state log file to " + filename);
+				//System.out.println("Writing state log file to " + filename);
 			}
 			catch (IOException ex) {
 				System.err.println("Could not create output stream for file : " + filename);
@@ -86,11 +87,6 @@ public class StateLogger implements MCMCListener {
 		catch (Exception ex) {
 			
 		}
-	}
-	
-	
-	public StateLogger(PrintStream ps) {
-		streams.add(ps);
 	}
 	
 	/**

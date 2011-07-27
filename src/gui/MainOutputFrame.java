@@ -21,7 +21,7 @@ import parameter.AbstractParameter;
 public class MainOutputFrame extends JPanel implements MCMCListener {
 	
 	//Maximum size we allow data series to get before they're thinned
-	public final int MAX_SERIES_SIZE = 500;
+	public final int MAX_SERIES_SIZE = 1000;
 	
 	private int rows = 2;
 	private int cols = 2;
@@ -31,12 +31,10 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 	
 	private List<StatusFigure> figureList = new ArrayList<StatusFigure>();
 	
-	public MainOutputFrame(MCMC chain, int frequency, int rows, int cols) {
+	public MainOutputFrame(MCMC chain, int frequency) {
 		this.mcmc = chain;
 		chain.addListener(this);
 		this.frequency = frequency;
-		this.rows = rows;
-		this.cols = cols;
 		initComponents();
 	}
 	
@@ -46,7 +44,6 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 			 figure = new StatusFigure(param, logKey);
 		else
 			 figure = new StatusFigure(param);
-
 		
 		figureList.add(figure);
 		this.add(figure);
@@ -64,6 +61,9 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 	
 	
 	private void initComponents() {
+		//For reasons I don't understand at all, setting a layout here is required in order
+		//for figure legend element to be drawn, even though we set another
+		//layout later (in initializeMatrix). Your guess is as good as mine. 
 		GridLayout layout = new GridLayout(rows, cols, 2, 2);
 		this.setLayout(layout);
 		this.setBackground(ACGFrame.backgroundColor);

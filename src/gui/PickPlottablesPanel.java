@@ -175,7 +175,7 @@ public class PickPlottablesPanel extends JPanel {
 				freq = 100;
 					
 			
-			MainOutputFrame outputPane = new MainOutputFrame(chain, freq, 2, 2);
+			MainOutputFrame outputPane = new MainOutputFrame(chain, freq);
 
 			//Attempt to turn off System.out writing for state loggers...
 			List<String> stateLoggerLabels = file.getLabelForClass(StateLogger.class);

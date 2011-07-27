@@ -7,10 +7,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
@@ -165,9 +171,25 @@ public class StatusFigure extends JPanel {
 		histoFrame.setVisible(true);
 	}
 
+	/**
+	 * Gather an image of the figure and save it to a file
+	 */
 	protected void saveImage() {
-		// TODO Auto-generated method stub
+		BufferedImage image = traceFigure.getImage(); 
 		
+		if (fileChooser == null)
+			fileChooser = new JFileChooser( System.getProperty("user.dir"));
+		
+    	int val = fileChooser.showSaveDialog(this);
+    	if (val==JFileChooser.APPROVE_OPTION) {
+    		File file = fileChooser.getSelectedFile();
+    		try {
+    			ImageIO.write(image, "png", file);
+    		}
+    		catch(IOException ioe) {
+    			JOptionPane.showMessageDialog(this, "Error saving image: " + ioe.getLocalizedMessage());
+    		}
+    	}		
 	}
 
 	/**
@@ -332,6 +354,7 @@ public class StatusFigure extends JPanel {
 	    }
 	}
 	
+	static JFileChooser fileChooser;
 	private JMenuItem histoOptions;
 	private JMenuItem switchItem;
 	private JPopupMenu popup;

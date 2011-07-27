@@ -244,6 +244,10 @@ public class MCMC {
 		}
 	}
 	
+	/**
+	 * Get the anticipated run length of this mcmc chain as defined in the length attribute
+	 * @return
+	 */
 	public int getUserRunLength() {
 		return userRunLength;
 	}
@@ -467,7 +471,6 @@ public class MCMC {
 		
 		
 		if (getCurrentState()==0 && useTimers) {
-			System.out.println("Initializing timers for Markov chain");
 			Timer runLengthTimer = new Timer("RunLength");
 			Timer patternTimer = new Timer("Core-propose");
 			Timer dlTimer = new Timer("DL");

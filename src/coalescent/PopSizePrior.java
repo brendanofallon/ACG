@@ -101,45 +101,45 @@ public class PopSizePrior extends LikelihoodComponent {
 		return currentLogLikelihood + "\t" + calculateArea();// + strB.toString();
 	}
 	
-	public static void main(String[] args) {
-		RandomSource.initialize();
-		PiecewiseLinearPopSize popsize = new PiecewiseLinearPopSize();
-		ARG arg = new ARG(new HashMap<String, String>(), new Newick("(one:1.0, two:1.0);"));
-		popsize.addModifier(new LinearFunctionMover(arg));
-		popsize.addModifier(new LinearFunctionAddRemove(arg));
-		
-		
-		PopSizePrior prior = new PopSizePrior(popsize);
-		
-		
-		List<Object> likes = new ArrayList<Object>();
-		likes.add(prior);
-		
-		List<Object> params = new ArrayList<Object>();
-		params.add(popsize);
-		
-		List<Object> listeners = new ArrayList<Object>();
-		
-		PrintStream cplog;
-		try {
-			cplog= new PrintStream(new FileOutputStream("cpLog.txt"));
-
-			StateLogger slogger = new StateLogger(cplog);
-			slogger.addStream(System.out);
-			listeners.add( slogger );
-		} catch (FileNotFoundException e) {
-
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//listeners.add(new PopSizeLogger(100, 100, arg, popsize));
-
-		
-		MCMC mc = new MCMC(params, likes, listeners);
-		
-		mc.run(1000000);
-		
-		
-		System.out.println("Final pop size function :\n " + popsize.getFunction());
-	}
+//	public static void main(String[] args) {
+//		RandomSource.initialize();
+//		PiecewiseLinearPopSize popsize = new PiecewiseLinearPopSize();
+//		ARG arg = new ARG(new HashMap<String, String>(), new Newick("(one:1.0, two:1.0);"));
+//		popsize.addModifier(new LinearFunctionMover(arg));
+//		popsize.addModifier(new LinearFunctionAddRemove(arg));
+//		
+//		
+//		PopSizePrior prior = new PopSizePrior(popsize);
+//		
+//		
+//		List<Object> likes = new ArrayList<Object>();
+//		likes.add(prior);
+//		
+//		List<Object> params = new ArrayList<Object>();
+//		params.add(popsize);
+//		
+//		List<Object> listeners = new ArrayList<Object>();
+//		
+//		PrintStream cplog;
+//		try {
+//			cplog= new PrintStream(new FileOutputStream("cpLog.txt"));
+//
+//			StateLogger slogger = new StateLogger(cplog);
+//			slogger.addStream(System.out);
+//			listeners.add( slogger );
+//		} catch (FileNotFoundException e) {
+//
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		//listeners.add(new PopSizeLogger(100, 100, arg, popsize));
+//
+//		
+//		MCMC mc = new MCMC(params, likes, listeners);
+//		
+//		mc.run(1000000);
+//		
+//		
+//		System.out.println("Final pop size function :\n " + popsize.getFunction());
+//	}
 }
