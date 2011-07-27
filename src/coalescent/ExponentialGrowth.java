@@ -41,7 +41,7 @@ public class ExponentialGrowth extends CompoundParameter<Void> implements Demogr
 
 	@Override
 	protected void proposeNewValue(Parameter<?> source) {
-		
+		//No intermediates to recalculate
 	}
 
 }
