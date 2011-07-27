@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import xml.InvalidInputFileException;
+
 /**
  * A group of sequences which are of the same length. The length is determined by the first sequence added. Columns of this
  * are assumed to represent homologous characters
@@ -51,8 +53,7 @@ public class Alignment {
 		}
 		File file = new File(fileName);
 		if (!file.exists()) {
-			System.out.println("Error : Could not find input file " + fileName);
-			System.exit(1);
+			throw new InvalidInputFileException("Could not find alignment file: " + fileName);
 		}
 		parseSequencesFromFile(file);
 	}

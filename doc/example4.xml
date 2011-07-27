@@ -1,4 +1,7 @@
-<!--  Another example ACG input file  -->
+<!--  This ACG file uses an Exponential Growth model of population size change. The growth model
+	uses two new parameters, the Base Size and the the Growth Rate. Otherwise, we assume as simple F84
+	model of mutation with base frequencies and the Ts/Tv ratio estimated from the data, and a single
+	site rate class. -->
 <ACG>
 
 <!-- A random number generator is essential and will be used by all classes. -->
@@ -87,15 +90,6 @@
 	</modifiers>
 </arg>
 
-<!-- A model of how evolutionary rate varies over sites. This particular version
- 	 is the familiar discretized gamma distribution, here with 4 categories. Don't
- 	 forget to include a reference to it in the DL calculator -->
-<siteRateModel class="dlCalculation.siteRateModels.GammaSiteRates" categories="4">
-	<!-- This site rate model also needs a parameter of type DoubleParameter that affects the shape of the distribution -->
-	<alphaParam class="parameter.DoubleParameter" name="alpha" frequency="10" value="1.0" lowerBound="0.01" upperBound="50">
-		<alphaMod class="modifier.ScaleModifier"/>
-	</alphaParam>
-</siteRateModel>
 
 <!-- The TN93 mutation model has one more free parameter than the F84 model  -->
 <mutationModel class="dlCalculation.substitutionModels.F84Matrix">
@@ -116,20 +110,20 @@
 </DLCalculator>
 
 <!--  Parameter specifying population size (theta / 2.0)  -->
-<constantPopSize class="coalescent.ConstantPopSize" frequency="1.0" value="1">
-	<popSizeScaler class="modifier.ScaleModifier"/>
-</constantPopSize>
+<expGrowth class="coalescent.ExponentialGrowth" frequency="1.0" value="1">
+	<baseSize class="parameter.DoubleParameter" value="0.1">
+		<baseSizeMod class="modifier.ScaleModifier" />
+	</baseSize>
+	<growthRate class="parameter.DoubleParameter" value="0">
+		<growthRateMod class="modifier.SimpleModifier" />
+	</growthRate>
+</expGrowth>
 
 <!-- Simple, constant recombination rate across sites -->
 <constantRecRate class="coalescent.ConstantRecombination" value="1">
 	<recRateScaler class="modifier.ScaleModifier"/>
 </constantRecRate>
 
-
-<!-- A Gamma-distributed prior on the 'alpha' parameter of the site rates model -->
-<alphaPrior class="priors.GammaPrior" mean="1.0" stdev="2.0">
-	<alphaParam />
-</alphaPrior>
 	
 <!-- Place an exponential prior on the recombination rate with a mean of 25 -->
 <!-- The prior helps to confine the ARGs with a reasonable number of recombinations -->
@@ -139,43 +133,37 @@
 
 <!-- A likelihood object specifying the probability of observing the ARG  -->
 <coalescentLikelihood class="coalescent.CoalescentLikelihood">
-	<constantPopSize />
+	<expGrowth />
 	<constantRecRate />
 	<arg />
 </coalescentLikelihood>
 
 
 <!-- A logger that tracks properties of the likelihoods and parameters in the MCMC -->
-<statelogger class="logging.StateLogger" filename="example3.log" frequency="5000" echoToScreen="true" />
-
-<!-- A logger that tracks the position of recombination breakpoints along the sequence -->
-<bpLocLogger class="logging.BreakpointLocation" filename="example3_bp.txt" frequency="5000" burnin="10000">
-	<arg />  
-</bpLocLogger>
+<statelogger class="logging.StateLogger" filename="example4.log" frequency="5000" echoToScreen="true" />
 
 <!-- a logger that tracks the distribution of TMRCA (root height of marginal trees) along the sequence -->
-<rootHeightLogger class="logging.RootHeightDensity" filename="example3_rootHeight.txt" frequency="5000" burnin="10000">
+<rootHeightLogger class="logging.RootHeightDensity" filename="example4_rootHeight.txt" frequency="5000" burnin="100000">
 	<arg />
 </rootHeightLogger>
 
 <mc class="mcmc.MCMC" length="2000000" run="true" verbose="false">
 	<parameters class="list">
-		<constantPopSize />
+		<expGrowth />
+		<baseSize />
+		<growthRate />
 		<constantRecRate />
 		<stationaries />
-		<alphaParam />
 		<kappaY />
 		<arg />  
 	</parameters>
 	<likelihoodComponents class="list">
 		<recPrior />
-		<alphaPrior />
 		<coalescentLikelihood />
 		<DLCalculator />
 	</likelihoodComponents>
 	<loggers class="list">
 		<statelogger />
-		<bpLocLogger />
 		<rootHeightLogger />
 	</loggers>
 </mc>
