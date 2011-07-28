@@ -41,9 +41,9 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 	public void addChart(AbstractParameter<?> param, String logKey) {		
 		MonitorPanel figure;
 		if (logKey != null)
-			 figure = new MonitorPanel(param, logKey);
+			 figure = new ParamMonitor(param, logKey);
 		else
-			 figure = new MonitorPanel(param);
+			 figure = new ParamMonitor(param);
 		
 		figureList.add(figure);
 		this.add(figure);
@@ -54,7 +54,7 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 	}
 	
 	public void addChart(LikelihoodComponent comp) {
-		MonitorPanel figure = new MonitorPanel(comp);	
+		MonitorPanel figure = new LikelihoodMonitor(comp);	
 		figureList.add(figure);
 		this.add(figure);
 	}

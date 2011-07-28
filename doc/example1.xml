@@ -73,7 +73,7 @@
 </arg>
 
 
-<!----------------------  Mutation model and data likelihood   ------------------------------> 
+<!-- =====================    Mutation model and data likelihood   =======================     --> 
 
 <!-- A parameter used in the substitution model below. This parameter just takes on just single
  values, it is of class "DoubleParameter". The "name" attribute specifies the label that will
@@ -96,7 +96,7 @@
 	<arg />
 </DLCalculator>
 
-<!----------------------  Coalescent model and likelihood   ------------------------------> 
+<!-- =======================  Coalescent model and likelihood  ==============================  --> 
 
 <!--  Parameter specifying population size (theta / 2.0)  -->
 <constantPopSize class="coalescent.ConstantPopSize" frequency="1.0" value="1">
@@ -122,7 +122,7 @@
 	<arg />
 </coalescentLikelihood>
 
-<!----------------------     Logging and output      ------------------------------> 
+<!-- ==============================   Logging and output   ==================================== --> 
 
 <!-- A logger that tracks properties of the likelihoods and parameters in the MCMC -->
 <statelogger class="logging.StateLogger" filename="example1.log" frequency="1000" echoToScreen="true" />
@@ -136,7 +136,7 @@
 
 
 
-<!----------------------      Markov chain        ------------------------------> 
+<!-- ==============================     Markov chain   ====================================    --> 
 
 <!-- Finally, we define the MCMC object that will perform the analysis. It needs references to three lists
 	First, it needs references to all of the Parameters we've defined (for our purposes, anything with a modifier 
