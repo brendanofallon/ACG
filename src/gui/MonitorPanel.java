@@ -29,7 +29,7 @@ import gui.figure.series.XYSeriesFigure;
 import parameter.AbstractParameter;
 import parameter.DoubleParameter;
 
-public class MonitorPanel extends JPanel {
+public abstract class MonitorPanel extends JPanel {
 
 	
 	enum Mode {TRACE, HISTOGRAM};
@@ -41,79 +41,17 @@ public class MonitorPanel extends JPanel {
 	String logKey = null;
 	Mode mode = Mode.TRACE;
 	
-	public MonitorPanel(AbstractParameter<?> param, String logKey) {
-		this.param = param;
-		this.logKey = logKey;
-		initializeFigure();
-		//This ALL NEEDS TO BE REFACTORED BADLY! BUT how do we know if things should be grouped together, or not? 
-		String[] logKeyItems = logKey.split("\\t");
-		
-		
-		String logStr = (param.getLogItem(logKey)).toString();
-		String[] logToks = logStr.split("\\t");
-		series = new XYSeries[logToks.length];
-		titles = new String[logToks.length];
-		for(int i=0; i<Math.min(logToks.length, logKeyItems.length); i++) {
-			String displayName = logKeyItems[i];
-			if (i>0)
-				displayName = logKeyItems[i] + "(" + i + ")";
-			titles[i] = displayName;
-			series[i] = new XYSeries(displayName);
-			XYSeriesElement serEl = traceFigure.addDataSeries(series[i]);
-			serEl.setLineWidth(defaultLineWidth);	
-		}
-	}
-	
-	public MonitorPanel(AbstractParameter<?> param) {
-		this.param = param;
-		Object t = param.getValue();
-		
-		initializeFigure();
-		if (t instanceof Double) {
-			series = new XYSeries[1];
-			series[0] = new XYSeries(param.getName());
-			XYSeriesElement serEl = traceFigure.addDataSeries(series[0]);
-			serEl.setLineWidth(defaultLineWidth);	
-		}
-		else {
-			if (t instanceof double[]) {
-				//also fine, but we'll draw multiple lines
-				double[] vals = (double[])t;
-				series = new XYSeries[ vals.length ];
-				for(int i=0; i<vals.length; i++) {
-					series[i] = new XYSeries(param.getName() + "(" + i + ")");
-					XYSeriesElement serEl = traceFigure.addDataSeries(series[i]);
-					serEl.setLineWidth(defaultLineWidth);	
-				}
-			}
-			else {
-				if (t instanceof Integer) {
-					//OK
-					//We could theoretically do an array of integers?
-					series = new XYSeries[1];
-				}
-				else {
-					throw new IllegalArgumentException("Can't create a Figure for parameter with type " + t.getClass());
-				}
-			}
-		}
-	}
-	
-	public MonitorPanel(LikelihoodComponent comp) {
-		this.comp = comp;
-		initializeFigure();
-		series = new XYSeries[1];
-		series[0] = new XYSeries(comp.getLogHeader());
-		titles = new String[1];
-		titles[0] = "Log likelihood";
-		XYSeriesElement serEl = traceFigure.addDataSeries(series[0]);
-		serEl.setLineWidth(defaultLineWidth);
-	}
+
+	/**
+	 * Called when object we're tracking changes so we can append a new values to the series
+	 * @param steps
+	 */
+	public abstract void update(int steps);
 	
 	/**
 	 * Creates the figure and sets a few defaults for it
 	 */
-	private void initializeFigure() {
+	protected void initializeFigure() {
 		this.setLayout(new BorderLayout());
 		traceFigure = new XYSeriesFigure();
 		this.add(traceFigure, BorderLayout.CENTER);
@@ -196,7 +134,7 @@ public class MonitorPanel extends JPanel {
 	 * Create the histogram series that are used to store data for drawing
 	 * in XYSeriesElements
 	 */
-	private void createHistograms() {
+	protected void createHistograms() {
 		histoSeries = new HistogramSeries[series.length];
 		for(int i=0; i<series.length; i++) {
 			HistogramSeries hSeries = new HistogramSeries(titles[i] , series[i].getPointList(), 100, series[i].getMinY(), series[i].getMaxY());
@@ -297,42 +235,7 @@ public class MonitorPanel extends JPanel {
 		return series[0].size();
 	}
 	
-	/**
-	 * Called when the mcmc chain fires a new state ot the MainOutputWindow,
-	 * this is where we add new data to the chart 
-	 * @param state
-	 */
-	public void update(int state) {
-		if (param != null) {
-			String logStr = (param.getLogItem(logKey)).toString();
-			String[] logToks = logStr.split("\\t");
-			for(int i=0; i<logToks.length; i++) {
-				try {
-					Double val = Double.parseDouble(logToks[i]);
-					Point2D.Double point = new Point2D.Double(state, val);
-					series[i].addPointInOrder(point);
-					if (histoSeries != null) {
-						histoSeries[i].addValue(val);
-					}
-				}
-				catch (NumberFormatException nex) {
-					//don't worry about it
-				}
-			}
-		}
-		else {
-			Double val = comp.getCurrentLogLikelihood();
-			Point2D.Double point = new Point2D.Double(state, val);
-			series[0].addPointInOrder(point);
-			
-			if (histoSeries != null) {
-				createHistograms();
-				histoSeries[0].addValue(val);
-			}
-		}
-		traceFigure.inferBoundsPolitely();
-		repaint();
-	}
+
 	
 	
 	class PopupListener extends MouseAdapter {
@@ -356,10 +259,9 @@ public class MonitorPanel extends JPanel {
 	private JMenuItem histoOptions;
 	private JMenuItem switchItem;
 	private JPopupMenu popup;
-	private AbstractParameter<?> param = null;
-	private LikelihoodComponent comp = null;
+
 	
-	private float defaultLineWidth = 1.1f;
+	protected float defaultLineWidth = 1.1f;
 
 	
 }

@@ -25,6 +25,7 @@ public class ExecutingChain extends SwingWorker implements MCMCListener {
 		chain.addListener(this);
 	}
 	
+	
 	public ExecutingChain(MC3 mc3) {
 		this.mc3 = mc3;
 		this.coldChain = mc3.getColdChain();
