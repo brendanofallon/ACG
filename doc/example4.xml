@@ -114,7 +114,9 @@
 
 <!----------------------  Coalescent model and likelihood   ------------------------------> 
 
-<!--  Parameter specifying population size (theta / 2.0)  -->
+<!--  Parameter specifying population size that is growing at an exponential rate. We 
+ want to estimate two parameters, the current size ("baseSize") as well as the growth 
+ rate ("growthRate"). Don't forget to add these parameters to MCMC! -->
 <expGrowth class="coalescent.ExponentialGrowth" frequency="1.0" value="1">
 	<baseSize class="parameter.DoubleParameter" value="0.1">
 		<baseSizeMod class="modifier.ScaleModifier" />

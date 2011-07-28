@@ -60,13 +60,17 @@ public class MC3 {
 	
 	int swapSteps = 400;
 	
+	int runLength = -1;
+	
 	//Number of swaps to attempt every swapSteps MCMC steps
 	int swapsPerSwapStep = 2;
 	
 	ChainHeats chainHeats = null;
-	//double[] heats = null;
 	RunnableChain[] chains = null;
 	List<MCMC> protoChains = new ArrayList<MCMC>(); //Stores chains while they're being added
+	
+	private boolean paused = false;
+	private boolean abort = false;
 	
 	public MC3(Map<String, String> attrs, MCMC chain, ChainHeats heatModel) {
 		this(attrs, chain, heatModel, null);
@@ -78,12 +82,14 @@ public class MC3 {
 		this.numThreads = XMLUtils.getIntegerOrFail("threads", attrs);
 		this.chainHeats = heatModel;
 		int numChains = XMLUtils.getIntegerOrFail("chains", attrs);
-		int runLength = XMLUtils.getIntegerOrFail("length", attrs);
+		this.runLength = XMLUtils.getIntegerOrFail("length", attrs);
 		Integer swapStepOp = XMLUtils.getOptionalInteger("swap.steps", attrs);
 		if (swapStepOp != null)
 			this.swapSteps = swapStepOp;
 		
-		String mcLabel = XMLUtils.getStringOrFail("mc.label", attrs);
+		//Label of the XML node defining the chain, we need this because we want to create multiple
+		//instances of the chain, and we need to know which one
+		String mcLabel = chain.getAttribute(XMLLoader.NODE_ID);
 		
 		addChain(chain);
 		
@@ -120,27 +126,17 @@ public class MC3 {
 			}
 		}
 		
-		run(runLength);
+		//Run unless the attributes say not to
+		Boolean runNow = XMLUtils.getOptionalBoolean("run", attrs);
+		if (runNow == null || runNow) {
+			run();
+		}
+		
 	}
 	
-	
-	/**
-	 * XML-approved constructor
-	 * @param attrs
-	 * @param components
-	 * @param parameters
-	 */
-	public MC3(Map<String, String> attrs) {
-		threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(numThreads);
-	}
-
 	public MC3(int threads) {
-		this(new HashMap<String, String>());
-		numThreads = threads;
-	}
-	
-	public MC3() {
-		this(new HashMap<String, String>());
+		this.numThreads = threads;
+		threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(numThreads);
 	}
 	
 	public void addChain(MCMC chain) {
@@ -152,14 +148,57 @@ public class MC3 {
 	}
 	
 	/**
+	 * Pause / unpause this chain in a thread-safe way
+	 * @param paused
+	 */
+	public void setPaused(boolean pause) {
+		this.paused = pause;
+	}
+	
+	/**
+	 * Abort all chains and exit
+	 */
+	public void abort() {
+		this.abort = true;
+	}
+	
+	/**
+	 * Get the non-heated MCMC chain
+	 * @return
+	 */
+	public MCMC getColdChain() {
+		if (chains != null)
+			return chains[0].chain;
+		else {
+			if (protoChains.size() > 0)
+				return protoChains.get(0);
+			else
+				return null;
+		}
+	}
+	
+	public MCMC getChain(int which) {
+		return chains[which].chain;
+	}
+	
+	public int getChainCount() {
+		if (chains != null)
+			return chains.length;
+		else 
+			return protoChains.size();
+	}
+	
+	
+	
+	/**
 	 * Run using the current values for swap steps and chain heats
 	 * @param steps
 	 */
-	public void run(int steps) {
-		run(steps, swapSteps, chainHeats);
+	public void run() {
+		run(runLength, swapSteps, chainHeats);
 	}
 	
-	public void run(int steps, int swapSteps, ChainHeats cHeats) {
+	private void run(int steps, int swapSteps, ChainHeats cHeats) {
 		if (cHeats.getHeatCount() != protoChains.size()) {
 			throw new IllegalStateException("Same number of chains and heats is required");
 		}
@@ -182,7 +221,7 @@ public class MC3 {
 		int attemptedSwaps = 0;
 		int actualSwaps = 0;
 		
-		while(stateNumber < steps) {
+		while((!abort) && stateNumber < steps) {
 			cycleNumber++;
 			
 			Future<?>[] res = new Future<?>[chains.length];
@@ -210,12 +249,18 @@ public class MC3 {
 				}
 			}
 			
-			
+			while(paused) {
+				try {
+					Thread.sleep(500); //Wake up every 0.5 seconds to see if we're unpaused
+				} catch (InterruptedException e) {
+					
+				} 
+			}
 			
 			//Try a swap of chains
 			if (chains.length > 1) {
 				//Occasionally emit some info so we can see whats going on
-				if (cycleNumber%10==0) {
+//				if (cycleNumber%10==0) {
 //					System.out.print("Swap rates  : ");
 //					for(int i=0; i<chains.length; i++) {
 //						System.out.print(StringUtils.format( (double)swaps[i]/(double)swapAttempts[i], 4) + "\t");
@@ -231,7 +276,7 @@ public class MC3 {
 //						System.out.print(StringUtils.format(chains[i].chain.getTotalLogLikelihood()) + "\t");
 //					}
 //					System.out.println();
-				}
+//				}
 				
 				//Clear every so often so we can see how this changes over time
 				if (attemptedSwaps%500<swapsPerSwapStep) {
@@ -250,8 +295,6 @@ public class MC3 {
 				
 			}
 			
-				
-
 			stateNumber = chains[0].chain.getStatesProposed();
 		}
 		

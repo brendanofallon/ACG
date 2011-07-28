@@ -26,10 +26,10 @@ public class HistoOptionsFrame extends JFrame {
 	
 	HistogramSeries[] series;
 	XYSeriesElement element;
-	StatusFigure figure;
+	MonitorPanel figure;
 	JSpinner binsSpinner;
 	
-	public HistoOptionsFrame(StatusFigure figure, HistogramSeries[] series) {
+	public HistoOptionsFrame(MonitorPanel figure, HistogramSeries[] series) {
 		super("Configure histogram");
 		this.series = series;
 		this.figure = figure;

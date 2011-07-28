@@ -89,6 +89,9 @@ public class MCMC {
 	//If set to true will halt the running chain and call chainIsFinished
 	private boolean abort = false;
 	
+	//Stores attributes given to constructor so we can reference them later
+	private Map<String, String> attrs = new HashMap<String, String>();
+	
 	public MCMC( ) {
 		
 	}
@@ -119,6 +122,7 @@ public class MCMC {
 		List<AbstractParameter<?>> parList = new ArrayList<AbstractParameter<?>>();
 		List<LikelihoodComponent> compList = new ArrayList<LikelihoodComponent>();
 		List<MCMCListener> listList = new ArrayList<MCMCListener>();
+		this.attrs = attrs;
 		for(Object comp : comps) {
 			try {
 				compList.add( (LikelihoodComponent)comp);
@@ -154,39 +158,26 @@ public class MCMC {
 	}
 	
 	private void initialize(Map<String, String> attrs, List<AbstractParameter<?>> params, List<LikelihoodComponent> comps, List<MCMCListener> listeners) {
+		this.attrs = attrs;
+		
 		if (comps.isEmpty()) {
-			System.err.println("This model has no likelihood components, aborting run.");
-			System.exit(0);
+			throw new IllegalArgumentException("Error: No likelihood components found, cannot run chain");
 		}
 		for(LikelihoodComponent comp : comps) {
-			try {
 				addComponent(comp);
-			}
-			catch (ClassCastException cce) {
-				System.err.println("Could not cast object " + comp + " to likelihood component, aborting");
-				System.exit(0);
-			}
 		}
 		
 		if (params.isEmpty()) {
-			System.err.println("This model has zero active parameters, aborting run.");
-			System.exit(0);
+			throw new IllegalArgumentException("Error: No parameters found, cannot run chain");
 		}
 		int modCount = 0;
-		for(Object param : params) {
-			try {
-				addParameter( (AbstractParameter<?>)param);
-				modCount += ((AbstractParameter<?>)param).getModifierCount();
-			}
-			catch (ClassCastException cce) {
-				System.err.println("Could not cast object " + param + " to parameter, aborting");
-				System.exit(0);				
-			}
+		for(AbstractParameter<?> param : params) {
+			addParameter(param);
+			modCount += param.getModifierCount();
 		}
 
 		if (modCount==0) {
-			System.err.println("No modifiers found for any parameter, cannot execute MCMC");
-			System.exit(0);
+			throw new IllegalArgumentException("Error: No modifiers found, cannot run chain");
 		}
 		
 		String verboseStr = attrs.get("verbose");
@@ -225,7 +216,7 @@ public class MCMC {
 			addListener(debugger);
 		}
 		
-		Boolean verb = XMLUtils.getOptionaBoolean("verbose", attrs);
+		Boolean verb = XMLUtils.getOptionalBoolean("verbose", attrs);
 		if (verb != null)
 			verbose = verb;
 
@@ -244,6 +235,14 @@ public class MCMC {
 		}
 	}
 	
+	/**
+	 * Obtain the attribute associated with the given key
+	 * @param key
+	 * @return
+	 */
+	public String getAttribute(String key) {
+		return attrs.get(key);
+	}
 	/**
 	 * Get the anticipated run length of this mcmc chain as defined in the length attribute
 	 * @return

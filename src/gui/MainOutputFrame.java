@@ -29,7 +29,7 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 	private int frequency;
 	private boolean initialized = false;
 	
-	private List<StatusFigure> figureList = new ArrayList<StatusFigure>();
+	private List<MonitorPanel> figureList = new ArrayList<MonitorPanel>();
 	
 	public MainOutputFrame(MCMC chain, int frequency) {
 		this.mcmc = chain;
@@ -39,11 +39,11 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 	}
 	
 	public void addChart(AbstractParameter<?> param, String logKey) {		
-		StatusFigure figure;
+		MonitorPanel figure;
 		if (logKey != null)
-			 figure = new StatusFigure(param, logKey);
+			 figure = new MonitorPanel(param, logKey);
 		else
-			 figure = new StatusFigure(param);
+			 figure = new MonitorPanel(param);
 		
 		figureList.add(figure);
 		this.add(figure);
@@ -54,7 +54,7 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 	}
 	
 	public void addChart(LikelihoodComponent comp) {
-		StatusFigure figure = new StatusFigure(comp);	
+		MonitorPanel figure = new MonitorPanel(comp);	
 		figureList.add(figure);
 		this.add(figure);
 	}
@@ -81,14 +81,14 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 		}
 		
 		if (stateNumber % frequency == 0) {
-			for(StatusFigure fig : figureList) {
+			for(MonitorPanel fig : figureList) {
 				fig.update(stateNumber);
 			}
 			
 			//If any figures have more than MAX_SERIES_SIZE data point, remove half of the data points from all
 			//series and multiply frequency by two (so we collect less frequently)
 			boolean needsThinning = false;
-			for(StatusFigure fig : figureList) {
+			for(MonitorPanel fig : figureList) {
 				needsThinning = fig.getSeriesSize() > MAX_SERIES_SIZE;
 				if (needsThinning)
 					break;
@@ -96,7 +96,7 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 			
 			if (needsThinning) {
 				System.out.println("Thinning all series.....");
-				for(StatusFigure fig : figureList) { 
+				for(MonitorPanel fig : figureList) { 
 					fig.thinSeries();
 				}
 				frequency *= 2;
@@ -126,7 +126,7 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 		
 		GridLayout layout = new GridLayout(rows, cols, 2, 2);
 		this.setLayout(layout);
-		for(StatusFigure fig : figureList) {
+		for(MonitorPanel fig : figureList) {
 			this.add(fig);
 		}
 		

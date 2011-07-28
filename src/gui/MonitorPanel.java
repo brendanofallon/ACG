@@ -29,7 +29,7 @@ import gui.figure.series.XYSeriesFigure;
 import parameter.AbstractParameter;
 import parameter.DoubleParameter;
 
-public class StatusFigure extends JPanel {
+public class MonitorPanel extends JPanel {
 
 	
 	enum Mode {TRACE, HISTOGRAM};
@@ -41,7 +41,7 @@ public class StatusFigure extends JPanel {
 	String logKey = null;
 	Mode mode = Mode.TRACE;
 	
-	public StatusFigure(AbstractParameter<?> param, String logKey) {
+	public MonitorPanel(AbstractParameter<?> param, String logKey) {
 		this.param = param;
 		this.logKey = logKey;
 		initializeFigure();
@@ -64,7 +64,7 @@ public class StatusFigure extends JPanel {
 		}
 	}
 	
-	public StatusFigure(AbstractParameter<?> param) {
+	public MonitorPanel(AbstractParameter<?> param) {
 		this.param = param;
 		Object t = param.getValue();
 		
@@ -99,7 +99,7 @@ public class StatusFigure extends JPanel {
 		}
 	}
 	
-	public StatusFigure(LikelihoodComponent comp) {
+	public MonitorPanel(LikelihoodComponent comp) {
 		this.comp = comp;
 		initializeFigure();
 		series = new XYSeries[1];

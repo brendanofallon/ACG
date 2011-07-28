@@ -87,7 +87,7 @@ public class XMLUtils {
 	 * @return A new Boolean parsed from the value associated with the key provided
 	 * @throws AttributeNotFoundException If key if not found in map 
 	 */
-	public static Boolean getOptionaBoolean(String key, Map<String, String> attrs) throws AttributeNotFoundException {
+	public static Boolean getOptionalBoolean(String key, Map<String, String> attrs) throws AttributeNotFoundException {
 		String value = attrs.get(key);
 		if (value == null) {
 			return null;

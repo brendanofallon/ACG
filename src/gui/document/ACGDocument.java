@@ -14,6 +14,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import mcmc.MCMC;
+import mcmc.mc3.MC3;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -78,6 +79,23 @@ public class ACGDocument {
 		if (mcLabels.size()==0) {
 			throw new InvalidInputFileException("Could not find any MCMC objects");
 		}
+		
+		List<String> mcmcmcLabels = getLabelForClass(MC3.class);
+		if (mcmcmcLabels.size() > 0) {
+			try {
+				MC3 mc3 = (MC3)loader.getObjectForLabel(mcmcmcLabels.get(0));
+				ExecutingChain runner = new ExecutingChain(mc3);
+				runner.execute();
+				return runner;
+				
+			} catch (InstantiationException e) {
+				throw new InvalidInputFileException("Could not create mc3 object : " + e.getMessage());
+			} catch (IllegalAccessException e) {
+				throw new InvalidInputFileException("Could not create mc3 object : " + e.getMessage());
+			}
+			
+		}
+		
 		if (mcLabels.size()==1) {
 			try {
 				MCMC mcmc = (MCMC)loader.getObjectForLabel(mcLabels.get(0));
@@ -92,6 +110,8 @@ public class ACGDocument {
 			}
 			
 		}
+		
+		
 		return null;
 	}
 	
@@ -106,6 +126,13 @@ public class ACGDocument {
 		for(String label : mcLabels) {
 			loader.addAttribute(label, "run", "false");
 		}
+		
+		//Also turn off instant run for all MC3 objects, if any
+		mcLabels = getLabelForClass(MC3.class);
+		for(String label : mcLabels) {
+			loader.addAttribute(label, "run", "false");
+		}
+
 	}
 
 	/**

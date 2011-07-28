@@ -31,8 +31,9 @@ public class ExpChainHeats implements ChainHeats, ParameterListener {
 
 	public ExpChainHeats(Map<String, String> attrs, DoubleParameter lambda) {
 		int numberOfChains = XMLUtils.getIntegerOrFail("numberOfChains", attrs);
-		Boolean adaptive = XMLUtils.getOptionaBoolean("adaptive", attrs);
-		if (adaptive != null && adaptive) {
+		this.lambdaParam = lambda;
+
+		if (lambda.getModifierCount()>0) {
 			System.out.println("Creating exponential heating model with adaptive tuning");
 			setUseAdaptiveHeating(true);
 		}
@@ -41,7 +42,6 @@ public class ExpChainHeats implements ChainHeats, ParameterListener {
 		}
 		
 		heats = new double[numberOfChains];
-		this.lambdaParam = lambda;
 		lambdaParam.addListener(this);
 		recalcHeats();
 	}

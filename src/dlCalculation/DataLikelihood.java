@@ -157,7 +157,6 @@ public class DataLikelihood extends LikelihoodComponent {
 		
 		stateAccepted();
 		tree.acceptValue();
-		System.out.println("Initial DL : " + currentLogLikelihood);
 	}
 	
 	public void setChain(MCMC chain) {
