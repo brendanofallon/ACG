@@ -1,4 +1,7 @@
-<!--  Another example ACG input file  -->
+<!--  Another example ACG input file. This one showcases how to specify the discretized-gamma-distributed
+	rates model, with 4 categories and a shape parameter (alpha) that is estimated from the data. This also
+	places a Gamma-distribution prior on the alpha parameter. If no explicit rates model is defined a
+	simple one with a single category and rate of 1.0 is used. -->
 <ACG>
 
 <!-- A random number generator is essential and will be used by all classes. -->
@@ -87,15 +90,22 @@
 	</modifiers>
 </arg>
 
+<!---------------------- Mutation model and data likelihood ------------------------------> 
+
 <!-- A model of how evolutionary rate varies over sites. This particular version
  	 is the familiar discretized gamma distribution, here with 4 categories. Don't
  	 forget to include a reference to it in the DL calculator -->
 <siteRateModel class="dlCalculation.siteRateModels.GammaSiteRates" categories="4">
-	<!-- This site rate model also needs a parameter of type DoubleParameter that affects the shape of the distribution -->
+	<!-- This site rate model also needs a DoubleParameter that controls the shape of the distribution -->
 	<alphaParam class="parameter.DoubleParameter" name="alpha" frequency="10" value="1.0" lowerBound="0.01" upperBound="50">
 		<alphaMod class="modifier.ScaleModifier"/>
 	</alphaParam>
 </siteRateModel>
+
+<!-- A Gamma-distributed prior on the 'alpha' parameter of the site rates model -->
+<alphaPrior class="priors.GammaPrior" mean="1.0" stdev="2.0">
+	<alphaParam />
+</alphaPrior>
 
 <!-- The TN93 mutation model has one more free parameter than the F84 model  -->
 <mutationModel class="dlCalculation.substitutionModels.F84Matrix">
@@ -115,6 +125,9 @@
 	<arg />
 </DLCalculator>
 
+<!---------------------- Coalescent model ------------------------------> 
+
+
 <!--  Parameter specifying population size (theta / 2.0)  -->
 <constantPopSize class="coalescent.ConstantPopSize" frequency="1.0" value="1">
 	<popSizeScaler class="modifier.ScaleModifier"/>
@@ -125,12 +138,6 @@
 	<recRateScaler class="modifier.ScaleModifier"/>
 </constantRecRate>
 
-
-<!-- A Gamma-distributed prior on the 'alpha' parameter of the site rates model -->
-<alphaPrior class="priors.GammaPrior" mean="1.0" stdev="2.0">
-	<alphaParam />
-</alphaPrior>
-	
 <!-- Place an exponential prior on the recombination rate with a mean of 25 -->
 <!-- The prior helps to confine the ARGs with a reasonable number of recombinations -->
 <recPrior class="priors.ExponentialPrior" mean="25">
@@ -145,6 +152,9 @@
 </coalescentLikelihood>
 
 
+<!----------------------     Logging and output      ------------------------------> 
+
+
 <!-- A logger that tracks properties of the likelihoods and parameters in the MCMC -->
 <statelogger class="logging.StateLogger" filename="example3.log" frequency="5000" echoToScreen="true" />
 
@@ -157,6 +167,9 @@
 <rootHeightLogger class="logging.RootHeightDensity" filename="example3_rootHeight.txt" frequency="5000" burnin="10000">
 	<arg />
 </rootHeightLogger>
+
+
+<!----------------------     Markov chain      ------------------------------> 
 
 <mc class="mcmc.MCMC" length="2000000" run="true" verbose="false">
 	<parameters class="list">

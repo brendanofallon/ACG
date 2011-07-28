@@ -1,4 +1,15 @@
-<!--  An example ACG input file  -->
+<!-- A simple ACG input file. To run this file, choose it from the ACG window, or run it
+	 from the command line, like this:
+	
+	$ java -jar acg.jar example1.xml
+	
+	Each element below either creates a new object or references a previously created object. 
+	Together, they define all the various parts we'll need for the full analysis - the input 
+	data, subtitution models, features of the ARG, priors on parameters, etc. 
+	This file specifies an input alignment of 10 sequences, the F84 model of mutation with 
+	the transition / transversion ratio, and two additional parameters 	describing (scaled) 
+	population size and recombination rate. These parameters, along with the ARG thet defines
+	the (recombining) history of the sequences, are all estimated from the data.  -->
 <ACG>
 
 <!-- A random number generator is essential and will be used by all classes. -->
@@ -45,8 +56,9 @@
 
 <!--  The Ancestral Recombination Graph (ARG) that is the central feature of the analysis. 
  It's a type of Parameter, and so has a frequency specifying how often new values are 
- proposed by the MCMC machinery. It also has a list of modifiers (proposal kernels) that
- propose new values	 -->
+ proposed by the MCMC machinery.  It has to be linked with the alignment defined above,
+ and, since we'd like to propose new values for it, it needs a list of the the "modifiers" 
+ (proposal kernels) that we'd like to use. 	 -->
 <arg class="arg.ARG" frequency="30.0">
 	<alignment />
 	<modifiers class="list">
@@ -60,6 +72,9 @@
 	</modifiers>
 </arg>
 
+
+<!----------------------  Mutation model and data likelihood   ------------------------------> 
+
 <!-- A parameter used in the substitution model below. This parameter just takes on just single
  values, it is of class "DoubleParameter". The "name" attribute specifies the label that will
  appear in the logs  -->
@@ -67,9 +82,9 @@
 	<kappaMod class="modifier.SimpleModifier" />
 </kappa>
 
-
-<!-- A substitution model specifying the transition matrix for nucleotide evolution. If a modifiable
-  	 parameter is given as an argument it is interpreted as the transition to transversion ratio  -->
+<!-- A substitution model specifying the transition matrix for nucleotide evolution. Here we choose
+	the F84 model. This model also requires a reference to the parameter we defined above that it 
+	will use for the Ts / Tv ratio. -->
 <mutationModel class="dlCalculation.substitutionModels.F84Matrix" stationaries="0.25 0.25 0.25 0.25">
 	<kappa />
 </mutationModel>
@@ -80,6 +95,8 @@
 	<mutationModel />
 	<arg />
 </DLCalculator>
+
+<!----------------------  Coalescent model and likelihood   ------------------------------> 
 
 <!--  Parameter specifying population size (theta / 2.0)  -->
 <constantPopSize class="coalescent.ConstantPopSize" frequency="1.0" value="1">
@@ -97,13 +114,15 @@
 	<constantRecRate />
 </recPrior>
 
-<!-- A likelihood object specifying the probability of observing the ARG  -->
+<!-- A likelihood object specifying the probability of observing the ARG conditional on 
+	population size and recombination rate. -->
 <coalescentLikelihood class="coalescent.CoalescentLikelihood">
 	<constantPopSize />
 	<constantRecRate />
 	<arg />
 </coalescentLikelihood>
 
+<!----------------------     Logging and output      ------------------------------> 
 
 <!-- A logger that tracks properties of the likelihoods and parameters in the MCMC -->
 <statelogger class="logging.StateLogger" filename="example1.log" frequency="1000" echoToScreen="true" />
@@ -113,6 +132,21 @@
 	<arg />  <!-- This logger requires a reference to the ARG -->
 </bplogger>
 
+
+
+
+
+<!----------------------      Markov chain        ------------------------------> 
+
+<!-- Finally, we define the MCMC object that will perform the analysis. It needs references to three lists
+	First, it needs references to all of the Parameters we've defined (for our purposes, anything with a modifier 
+	is a parameter). 
+	Second, a list of all of the likelihood components is needed. If you forget to put one here, it won't
+	be used! So don't forget those priors.
+	Third, all of the various loggers that will collect data should be in the third list. 
+	
+	The run="true" attribute means that we should start the chain running as soon as we create this
+	object -->
 <mc class="mcmc.MCMC" length="5000000" run="true">
 	<parameters class="list">
 		<constantPopSize />

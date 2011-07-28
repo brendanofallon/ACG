@@ -1,4 +1,12 @@
-<!--  Another example ACG input file  -->
+<!--  Another example ACG input file. This one is very similar to the previous one, but instead
+ 	of containing the alignment, it references an external file, example2.fas, that stores
+ 	the sequences. It also uses the TN93 model of mutation, which includes two free
+ 	parameters, kappaR and kappaY, and estimates base frequencies from the data as well. 
+ 	
+ 	In addition to the usual 'StateLogger', which tracks parameter values, this file also
+ 	shows how you can define loggers that track the TMRCA along the length of the sequence
+ 	(via the rootHeightLogger, defined in the class logging.RootHeightDensity), and the 
+ 	positions of recombination breakpoints using the bpLocLogger in logging.BreakpointLocation. -->
 <ACG>
 
 <!-- A random number generator is essential and will be used by all classes. -->
@@ -28,6 +36,8 @@
 	</modifiers>
 </arg>
 
+<!----------------------  Mutation model and data likelihood   ------------------------------> 
+
 <!-- The TN93 mutation model has one more free parameter than the F84 model  -->
 <mutationModel class="dlCalculation.substitutionModels.TN93Matrix">
 	<stationaries class="dlCalculation.substitutionModels.BaseFrequencies" stationaries="0.25 0.25 0.25 0.25" >
@@ -47,6 +57,8 @@
 	<mutationModel />
 	<arg />
 </DLCalculator>
+
+<!----------------------  Coalescent model and likelihood   ------------------------------> 
 
 <!--  Parameter specifying population size (theta / 2.0)  -->
 <constantPopSize class="coalescent.ConstantPopSize" frequency="1.0" value="1.0">
@@ -71,6 +83,7 @@
 	<arg />
 </coalescentLikelihood>
 
+<!---------------------- 	 Logging and output	   ------------------------------> 
 
 <!-- A logger that tracks properties of the likelihoods and parameters in the MCMC -->
 <statelogger class="logging.StateLogger" filename="example2.log" frequency="5000" echoToScreen="true" />
@@ -84,6 +97,9 @@
 <rootHeightLogger class="logging.RootHeightDensity" filename="example2_rootHeight.txt" frequency="5000" burnin="100000">
 	<arg />
 </rootHeightLogger>
+
+
+<!----------------------  Markov chain   ------------------------------> 
 
 <mc class="mcmc.MCMC" length="20000000" run="true">
 	<parameters class="list">
