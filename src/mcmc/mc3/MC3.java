@@ -139,6 +139,10 @@ public class MC3 {
 		threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(numThreads);
 	}
 	
+	public int getRunLength() {
+		return runLength;
+	}
+	
 	public void addChain(MCMC chain) {
 		if (chains != null) {
 			throw new IllegalArgumentException("MC3 has already been initialized, can no longer add more chains");

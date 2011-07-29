@@ -19,21 +19,8 @@ public class ConstantRecombination extends DoubleParameter implements Recombinat
 	
 	
 	public ConstantRecombination(Map<String, String> attrs) {
-		super(1, "rec.rate", "Recombination rate", 0, Double.MAX_VALUE);
+		super(attrs);
 		
-		lowerBound = 0.0;
-		
-		String sizeStr = attrs.get("rate");
-		proposedValue = java.lang.Double.valueOf(0.1);
-		
-		if (sizeStr != null) {
-			try {
-				proposedValue = java.lang.Double.parseDouble(sizeStr);
-			}
-			catch (NumberFormatException nfe) {
-
-			}
-		}
 	}
 	
 	public ConstantRecombination(Map<String, String> attrs, Modifier mod) {

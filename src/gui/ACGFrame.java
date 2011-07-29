@@ -56,8 +56,8 @@ public class ACGFrame extends JFrame implements WindowListener {
 	}
 	
 	
-	public void initializeProgressBar(MCMC chain) {
-		progressBar.setMaximum(chain.getUserRunLength());
+	public void initializeProgressBar(MCMC chain, int maxValue) {
+		progressBar.setMaximum(maxValue);
 		chain.addListener(new MCMCListener() {
 			@Override
 			public void newState(int stateNumber) {

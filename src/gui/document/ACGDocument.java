@@ -116,6 +116,14 @@ public class ACGDocument {
 	}
 	
 	/**
+	 * Returns true if this document contains an MC3 object
+	 * @return
+	 */
+	public boolean hasMC3() {
+		return getLabelForClass(MC3.class).size() > 0;
+	}
+	
+	/**
 	 * Adds "run=false" as an attribute to all MCMC objects so they won't run right away when we create them
 	 */
 	private void turnOffMCMC() {

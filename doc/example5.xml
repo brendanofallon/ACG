@@ -1,7 +1,6 @@
-<!--  This ACG file uses an Exponential Growth model of population size change. The growth model
-	uses two new parameters, the Base Size and the the Growth Rate. Otherwise, we assume a simple F84
-	model of mutation with base frequencies and the Ts/Tv ratio estimated from the data, and a single
-	site rate class. -->
+<!--  This input file introduces the structure required for Metropolis-coupling (multiple
+ 	  chains with heating, aka MC3). A type of object (of class mcmc.mc3.MC3) is created 
+ 	  that wraps the usual MCMC object and runs multiple chains in parallel on seperate threads. -->
 <ACG>
 
 <!-- A random number generator is essential and will be used by all classes. -->
@@ -27,9 +26,12 @@
 	</modifiers>
 </arg>
 
+
+
+
 <!--  =====================  Mutation model and data likelihood   =====================  --> 
 
-<!-- The TN93 mutation model has one more free parameter than the F84 model  -->
+<!-- The F84 model of mutation  -->
 <mutationModel class="dlCalculation.substitutionModels.F84Matrix">
 	<stationaries class="dlCalculation.substitutionModels.BaseFrequencies" frequency="0.1" stationaries="0.25 0.25 0.25 0.25" >
 		<stationariesMod class="modifier.DirichletModifier" />
@@ -50,7 +52,7 @@
 
 <!--  =====================  Coalescent model and likelihood   =====================  --> 
 
-<!--  Parameter specifying population size (theta / 2.0)  -->
+<!--  Parameter specifying (constant) population size (theta / 2.0)  -->
 <constantPopSize class="coalescent.ConstantPopSize" frequency="1.0" value="1">
 	<popSizeScaler class="modifier.ScaleModifier"/>
 </constantPopSize>
@@ -61,7 +63,7 @@
 </constantRecRate>
 
 	
-<!-- Place an exponential prior on the recombination rate with a mean of 25 -->
+<!-- Exponential prior on the recombination rate with a mean of 25 -->
 <!-- The prior helps to confine the ARGs with a reasonable number of recombinations -->
 <recPrior class="priors.ExponentialPrior" mean="25">
 	<constantRecRate />
@@ -74,7 +76,11 @@
 	<arg />
 </coalescentLikelihood>
 
-<!--   =====================   Logging and output  =====================  --> 
+
+
+
+
+<!--   =========================   Logging and output  ==========================  --> 
 
 <!-- A logger that tracks properties of the likelihoods and parameters in the MCMC -->
 <statelogger class="logging.StateLogger" filename="example4.log" frequency="5000" echoToScreen="true" />
@@ -84,9 +90,12 @@
 	<arg />
 </rootHeightLogger>
 
-<!-- =====================    Markov chain and MCMCMC   =====================       --> 
+
+
+
+<!-- =========================      Markov chain and MCMCMC   =============================    --> 
 <!-- To use Metropolis-Coupling (multiple chains with heating), create a Markov chain with two
-	special differences. First, be sure to add the run="false" attribute to the element so the
+	new features. First, be sure to add the run="false" attribute to the element so the
 	chain won't begin to run right away. Second, don't add any loggers to the chain. All
 	loggers should be added to the next (mc3) element -->
 <mc class="mcmc.MCMC" length="2000000" run="false">
@@ -104,7 +113,7 @@
 	</likelihoodComponents>
 </mc>
 
-<!-- This object encapsulates wraps multiple chains in a Metropolis-Coupled Markov chain
+<!-- This object encapsulates multiple chains in a Metropolis-Coupled Markov chain
  	Monte Carlo (MCMCMC or MC3) analysis. It requires attributes describing the length of the run,
  	the number of simultaneous chains to use, and the number of CPU threads to utilize. -->
 <mc3 class="mcmc.mc3.MC3" length="1000000" chains="4" threads="4" >

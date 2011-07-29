@@ -36,6 +36,7 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 		chain.addListener(this);
 		this.frequency = frequency;
 		initComponents();
+		setMCMC(chain);
 	}
 	
 	public void addChart(AbstractParameter<?> param, String logKey) {		
@@ -72,6 +73,9 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 	@Override
 	public void setMCMC(MCMC chain) {
 		this.mcmc = chain;
+		for(MonitorPanel fig : figureList) {
+			fig.setChain(mcmc);
+		}
 	}
 
 	@Override
@@ -82,10 +86,10 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 		
 		if (stateNumber % frequency == 0) {
 			for(MonitorPanel fig : figureList) {
-				fig.update(stateNumber);
+				fig.updateMonitor(stateNumber);
 			}
 			
-			//If any figures have more than MAX_SERIES_SIZE data point, remove half of the data points from all
+			//If any figures have more than MAX_SERIES_SIZE data points, remove half of the data points from all
 			//series and multiply frequency by two (so we collect less frequently)
 			boolean needsThinning = false;
 			for(MonitorPanel fig : figureList) {

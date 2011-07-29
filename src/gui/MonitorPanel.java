@@ -20,6 +20,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
+import mcmc.MCMC;
+
 import component.LikelihoodComponent;
 import gui.figure.FigureElement;
 import gui.figure.series.HistogramSeries;
@@ -40,13 +42,52 @@ public abstract class MonitorPanel extends JPanel {
 	String[] titles;
 	String logKey = null;
 	Mode mode = Mode.TRACE;
-	
 
+	//A reference to the current (cold) chain. This will change over time in an MC3 analysis
+	private MCMC currentChain;
+	private boolean chainHasChanged = false;
+	
+	/**
+	 * Set the current chain for the analysis. Monitors will get their parameter values from this chain. 
+	 * @param currentChain
+	 */
+	public void setChain(MCMC chain) {
+		if (chain != currentChain) {
+			chainHasChanged = true;
+		}
+		this.currentChain = chain;
+	}
+	
+	
+	
+	/**
+	 * Returns the current chain of the analysis - this is the cold chain in an MC3 analysis or just
+	 * the single chain in a normal run. 
+	 * @return
+	 */
+	public MCMC getCurrentChain() {
+		return currentChain;
+	}
+	
+	public boolean getChainHasChanged() {
+		return chainHasChanged;
+	}
+	
+	/**
+	 * Called by the main output frame when we log a new value. The chainHasChanged field is set back to false after
+	 * this call. 
+	 * @param steps
+	 */
+	public void updateMonitor(int steps) {
+		update(steps);
+		chainHasChanged = false;
+	}
+	
 	/**
 	 * Called when object we're tracking changes so we can append a new values to the series
 	 * @param steps
 	 */
-	public abstract void update(int steps);
+	protected abstract void update(int steps);
 	
 	/**
 	 * Creates the figure and sets a few defaults for it

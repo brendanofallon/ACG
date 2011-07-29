@@ -23,7 +23,6 @@ public class ConstantPopSize extends DoubleParameter implements DemographicParam
 	
 	public ConstantPopSize(Map<String, String> attrs, Modifier<?> mod) {
 		this(attrs);
-		
 		addModifier(mod);
 	}
 	

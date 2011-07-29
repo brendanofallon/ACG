@@ -90,7 +90,11 @@
 	</modifiers>
 </arg>
 
-<!---------------------- Mutation model and data likelihood ------------------------------> 
+
+
+
+
+<!-- ==========================  Mutation model and data likelihood   ==========================--> 
 
 <!-- A model of how evolutionary rate varies over sites. This particular version
  	 is the familiar discretized gamma distribution, here with 4 categories. Don't
@@ -125,7 +129,12 @@
 	<arg />
 </DLCalculator>
 
-<!---------------------- Coalescent model ------------------------------> 
+
+
+
+
+
+<!-- =============================    Coalescent model    ============================ ---> 
 
 
 <!--  Parameter specifying population size (theta / 2.0)  -->
@@ -152,7 +161,11 @@
 </coalescentLikelihood>
 
 
-<!----------------------     Logging and output      ------------------------------> 
+
+
+
+
+<!-- =============================   Logging and output   ================================  --> 
 
 
 <!-- A logger that tracks properties of the likelihoods and parameters in the MCMC -->
@@ -169,7 +182,11 @@
 </rootHeightLogger>
 
 
-<!----------------------     Markov chain      ------------------------------> 
+
+
+
+
+<!-- =============================     Markov chain     =============================   --> 
 
 <mc class="mcmc.MCMC" length="2000000" run="true" verbose="false">
 	<parameters class="list">

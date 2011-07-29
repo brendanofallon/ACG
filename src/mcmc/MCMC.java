@@ -60,7 +60,7 @@ public class MCMC {
 	//Never accept the proposed state - just modify, test, and discard
 	final boolean neverAccept = false;
 	
-	MCDebug debugger = new MCDebug();
+	MCDebug debugger = null;
 	
 	Modifier<?> lastModifier = null;
 	AbstractParameter<?> lastParam = null;
@@ -284,6 +284,9 @@ public class MCMC {
 	 * @param param
 	 */
 	public void addParameter(AbstractParameter<?> param) {
+		if (param == null)
+			throw new IllegalArgumentException("Cannot add null parameter to MCMC");
+		
 		if (parameters.contains(param))
 			throw new IllegalArgumentException("Param " + param + " is already in the list of parameters");
 		
@@ -805,6 +808,14 @@ public class MCMC {
 	 */
 	public List<MCMCListener> getListeners() {
 		return listeners;
+	}
+	
+	/**
+	 * A reference to the list of likelihood components
+	 * @return
+	 */
+	public List<LikelihoodComponent> getLikelihoods() {
+		return components;
 	}
 
 	/**

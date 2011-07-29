@@ -90,7 +90,12 @@
 	</modifiers>
 </arg>
 
-<!----------------------  Mutation model and data likelihood   ------------------------------> 
+
+
+
+
+
+<!-- ===========================  Mutation model and data likelihood  ========================= --> 
 
 <!-- The TN93 mutation model has one more free parameter than the F84 model  -->
 <mutationModel class="dlCalculation.substitutionModels.F84Matrix">
@@ -112,7 +117,7 @@
 
 
 
-<!----------------------  Coalescent model and likelihood   ------------------------------> 
+<!-- ==========================   Coalescent model and likelihood  =========================== --> 
 
 <!--  Parameter specifying population size that is growing at an exponential rate. We 
  want to estimate two parameters, the current size ("baseSize") as well as the growth 
@@ -145,7 +150,11 @@
 	<arg />
 </coalescentLikelihood>
 
-<!----------------------  Logging and output   ------------------------------> 
+
+
+
+
+<!-- ===========================    Logging and output    =============================  --> 
 
 <!-- A logger that tracks properties of the likelihoods and parameters in the MCMC -->
 <statelogger class="logging.StateLogger" filename="example4.log" frequency="5000" echoToScreen="true" />
@@ -155,7 +164,10 @@
 	<arg />
 </rootHeightLogger>
 
-<!----------------------  Markov chain  ------------------------------> 
+
+
+
+<!-- ===========================     Markov chain  ============================== --> 
 
 <mc class="mcmc.MCMC" length="2000000" run="true">
 	<parameters class="list">

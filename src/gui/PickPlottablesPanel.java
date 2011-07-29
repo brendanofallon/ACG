@@ -25,6 +25,7 @@ import arg.ARG;
 
 import logging.StateLogger;
 import mcmc.MCMC;
+import mcmc.mc3.MC3;
 import parameter.AbstractParameter;
 import parameter.CompoundParameter;
 import parameter.DoubleParameter;
@@ -166,14 +167,28 @@ public class PickPlottablesPanel extends JPanel {
 
 
 	protected void startChain() {
-		List<String> mcLabels = file.getMCMCLabels();
 		MCMC chain;
 		try {
-			chain = (MCMC)file.getObjectForLabel(mcLabels.get(0));
-			int freq = chain.getUserRunLength() / 5000;
-			if (freq < 100)
-				freq = 100;
+			int freq;
+			int runMax;
+			
+			if (file.hasMC3()) {
+				List<String> mc3Labels = (file.getLabelForClass(MC3.class));
+				MC3 mc3 = (MC3)file.getObjectForLabel(mc3Labels.get(0));
+				chain = mc3.getColdChain();
+				runMax = mc3.getRunLength();
+				
+			}
+			else {
+				List<String> mcLabels = file.getMCMCLabels();
+				chain = (MCMC)file.getObjectForLabel(mcLabels.get(0));
+				runMax = chain.getUserRunLength();
 					
+			}
+			
+			freq = runMax / 4000;
+			if (freq < 100)
+				freq = 100;	
 			
 			MainOutputFrame outputPane = new MainOutputFrame(chain, freq);
 
@@ -196,7 +211,7 @@ public class PickPlottablesPanel extends JPanel {
 				}
 			}
 
-			acgParent.initializeProgressBar(chain);
+			acgParent.initializeProgressBar(chain, runMax);
 			acgParent.replaceCenterPanel(outputPane);
 
 			ExecutingChain runner = file.runMCMC();
