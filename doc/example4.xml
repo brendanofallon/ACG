@@ -111,7 +111,6 @@
 	  At minimum, it needs references to the mutation model, the ARG, and the data matrix -->
 <DLCalculator class="dlCalculation.DataLikelihood"> 
 	<mutationModel />
-	<siteRateModel />
 	<arg />
 </DLCalculator>
 

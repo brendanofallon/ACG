@@ -49,7 +49,7 @@ public class XYSeriesElement extends SeriesElement {
 	String currentMarkerType = markerTypes[2];
 	int markerSize = 6;
 	
-	Color boxOutlineColor = Color.DARK_GRAY;
+	Color boxOutlineColor = Color.GRAY;
 	
 	Rectangle2D lineRect; //Use to test if this series contains certain points
 	

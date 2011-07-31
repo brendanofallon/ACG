@@ -60,6 +60,11 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 		this.add(figure);
 	}
 	
+	public void addChart(MonitorPanel panel) {	
+		figureList.add(panel);
+		this.add(panel);
+	}
+	
 	
 	private void initComponents() {
 		//For reasons I don't understand at all, setting a layout here is required in order

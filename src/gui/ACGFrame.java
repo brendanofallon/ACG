@@ -200,41 +200,40 @@ public class ACGFrame extends JFrame implements WindowListener {
 
 	@Override
 	public void windowClosing(WindowEvent e) {  
-		if (runner != null) {
-			if (! runner.isDone()) {
-				Object[] options = {"Cancel",
-						"Continue in background",
-						"Abort run"};
-				int op = JOptionPane.showOptionDialog(this,
-						"Abort current run ? ",
-						"Abort run",
-						JOptionPane.YES_NO_CANCEL_OPTION,
-						JOptionPane.QUESTION_MESSAGE,
-						null,
-						options,
-						options[2]);
-				if (op == 0) {
-					return;
-				}
-				
-				if (op==1) {
-					this.setVisible(false);
-					this.dispose();
-				}
-				
-				if (op == 2) {
-					runner.cancel(true);
-					//wait for half a sec, then exit
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e1) {
-					}
-
-					this.setVisible(false);
-					this.dispose();
-					System.exit(0);
-				}
+		if (runner != null && (!runner.isDone())) {
+			Object[] options = {"Cancel",
+					"Continue in background",
+			"Abort run"};
+			int op = JOptionPane.showOptionDialog(this,
+					"Abort current run ? ",
+					"Abort run",
+					JOptionPane.YES_NO_CANCEL_OPTION,
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					options,
+					options[2]);
+			if (op == 0) {
+				return;
 			}
+
+			if (op==1) {
+				this.setVisible(false);
+				this.dispose();
+			}
+
+			if (op == 2) {
+				runner.cancel(true);
+				//wait for half a sec, then exit
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e1) {
+				}
+
+				this.setVisible(false);
+				this.dispose();
+				System.exit(0);
+			}
+
 		}
 		else {
 			this.setVisible(false);

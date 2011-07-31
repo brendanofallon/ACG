@@ -39,7 +39,7 @@ public class SimpleModifier extends AbstractModifier<DoubleParameter> {
 	
 	public Double modify() throws InvalidParameterValueException, IllegalModificationException, ModificationImpossibleException {
 		if (! param.isProposeable()) {
-			throw new IllegalModificationException("Parameter " + param.getName() + " is not in a valid state, cannot modify");	 
+			throw new IllegalModificationException("Parameter " + param + " is already proposed, cannot modify");	 
 		}
 		
 		double r = RandomSource.getNextUniform();

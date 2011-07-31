@@ -358,7 +358,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 		}
 		
 		
-		String fileStr = attrs.get("file");
+		String fileStr = attrs.get("filename");
 		CoalNode root = null;
 		if (fileStr != null ) {
 			

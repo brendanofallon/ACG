@@ -16,6 +16,7 @@ public class SpeedMonitor extends MonitorPanel {
 	private int lastState = 0;
 	
 	public SpeedMonitor() {
+		initializeFigure();
 		series = new XYSeries[1];
 		series[0] = new XYSeries("mc.rate");
 		titles = new String[1];
@@ -28,7 +29,7 @@ public class SpeedMonitor extends MonitorPanel {
 	@Override
 	protected void update(int state) {
 		long timeNow = System.currentTimeMillis();
-		double speed = (state - lastState)/(timeNow-lastTime)/1000.0 ;
+		double speed = (double)(state - lastState)/((double)(timeNow-lastTime)/1000.0) ;
 		lastState = state;
 		lastTime = timeNow;
 		

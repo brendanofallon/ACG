@@ -1,4 +1,4 @@
-<!--  Another example ACG input file. This one showcases how to specify the discretized-gamma-distributed
+<!--  Another example ACG input file. This one shows how to specify the discretized-gamma-distributed
 	rates model, with 4 categories and a shape parameter (alpha) that is estimated from the data. This also
 	places a Gamma-distribution prior on the alpha parameter. If no explicit rates model is defined a
 	simple one with a single category and rate of 1.0 is used. -->
@@ -111,7 +111,7 @@
 	<alphaParam />
 </alphaPrior>
 
-<!-- The TN93 mutation model has one more free parameter than the F84 model  -->
+<!-- The F84 model of nucletotide evolution  -->
 <mutationModel class="dlCalculation.substitutionModels.F84Matrix">
 	<stationaries class="dlCalculation.substitutionModels.BaseFrequencies" frequency="0.1" stationaries="0.25 0.25 0.25 0.25" >
 		<stationariesMod class="modifier.DirichletModifier" />
@@ -134,7 +134,7 @@
 
 
 
-<!-- =============================    Coalescent model    ============================ ---> 
+<!-- =============================    Coalescent model    ============================ --> 
 
 
 <!--  Parameter specifying population size (theta / 2.0)  -->

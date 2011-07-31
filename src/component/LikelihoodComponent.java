@@ -44,6 +44,14 @@ public abstract class LikelihoodComponent implements ParameterListener, AcceptRe
 	public LikelihoodComponent(Map<String, String> attrs) {
 		this.attrs = attrs;
 	}
+	
+	/**
+	 * Compute and return the log likelihood based on proposed parameter values. 
+	 */
+	public abstract Double computeProposedLikelihood();
+	
+	
+	
 		
 	public String getAttribute(String key) {
 		return attrs.get(key);
@@ -88,11 +96,6 @@ public abstract class LikelihoodComponent implements ParameterListener, AcceptRe
 		p.removeListener(this);
 	}
 	
-
-	/**
-	 * Compute and return the log likelihood based on proposed parameter values. 
-	 */
-	public abstract Double computeProposedLikelihood();
 	
 	/**
 	 * Obtain the current likelihood value of this component. 

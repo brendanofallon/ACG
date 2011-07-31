@@ -3,7 +3,6 @@ package priors;
 import java.util.Map;
 
 import math.RandomSource;
-import cern.jet.random.Exponential;
 import cern.jet.random.Gamma;
 
 import component.LikelihoodComponent;

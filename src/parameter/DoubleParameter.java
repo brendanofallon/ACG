@@ -105,7 +105,11 @@ public class DoubleParameter extends AbstractParameter<Double> {
 	}
 	
 	public String toString() {
-		return getName() + " value=" + currentValue;
+		if (this.isProposed() ) {
+			return getName() + " current value=" + currentValue + " proposed value=" + proposedValue;
+		}
+		else
+			return getName() + " value=" + currentValue;
 	}
 
 

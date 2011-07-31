@@ -77,6 +77,12 @@ public class PickPlottablesPanel extends JPanel {
 			plottables.addAll(items);
 		}
 		
+		//Add mc.speed plottable info to list as a special item
+		PlottableInfo speedInfo = new PlottableInfo();
+		speedInfo.label = "mc.speed";
+		speedInfo.descriptor = "Speed of chain (states / sec)";
+		plottables.add(speedInfo);
+		
 		PlottableInfo[] plotArr = new PlottableInfo[plottables.size()];
 		for(int i=0; i<plottables.size(); i++) {
 			plotArr[i] = plottables.get(i);
@@ -202,12 +208,17 @@ public class PickPlottablesPanel extends JPanel {
 			}
 			
 			for(PlottableInfo plottable : selectedPlottables) {
-				Object obj = file.getObjectForLabel(plottable.label);
-				if (obj instanceof AbstractParameter<?>) {
-					outputPane.addChart( (AbstractParameter<?>)obj, plottable.key);
+				if (plottable.label.equals("mc.speed")) {
+					outputPane.addChart(new SpeedMonitor());
 				}
-				if (obj instanceof LikelihoodComponent) {
-					outputPane.addChart( (LikelihoodComponent)obj);
+				else {
+					Object obj = file.getObjectForLabel(plottable.label);
+					if (obj instanceof AbstractParameter<?>) {
+						outputPane.addChart( (AbstractParameter<?>)obj, plottable.key);
+					}
+					if (obj instanceof LikelihoodComponent) {
+						outputPane.addChart( (LikelihoodComponent)obj);
+					}
 				}
 			}
 

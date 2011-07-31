@@ -374,7 +374,7 @@ public class TN93Matrix<Void> extends MutationModel<Void> {
 
 	@Override
 	protected void proposeNewValue(Parameter<?> source) {
-		//Nothing to do here, we've overridden parameterChanged so we always will recalculate intermediates
+		
 	}
 
 	
