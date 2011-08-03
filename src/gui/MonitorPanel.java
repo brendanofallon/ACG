@@ -140,7 +140,7 @@ public abstract class MonitorPanel extends JPanel {
 		topPanel = new JPanel();
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
 		topPanel.setBackground(traceFigure.getBackground());
-		topPanel.add(Box.createHorizontalStrut(10));
+		topPanel.add(Box.createHorizontalStrut(40));
 		topLabel = new JLabel("Mean: ?  Calls: ? (?)");
 		
 		topPanel.add(topLabel);

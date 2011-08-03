@@ -381,6 +381,7 @@ public class DataLikelihood extends LikelihoodComponent {
 		if (modified) { //It's important that we don't call accept on the compute core if we haven't modified anything
 			currentLogLikelihood = proposedLogLikelihood;
 			computeCore.accept();
+			super.stateAccepted(); //Keeps proposal /acceptance counting correct
 			
 			//Another periodically occurring validity check...propose all nodes and recompute the full DL to make
 			//sure it matches the DL we just accepted
@@ -419,6 +420,7 @@ public class DataLikelihood extends LikelihoodComponent {
 	public void stateRejected() {
 		if (modified) { //Don't call reject on the compute core if we haven't modified
 			proposedLogLikelihood = currentLogLikelihood;
+			super.stateRejected(); //Kepps proposal counting stuff correct
 			computeCore.reject();
 			modified = false;
 			
