@@ -14,6 +14,8 @@ public class SpeedMonitor extends MonitorPanel {
 
 	private long lastTime;
 	private int lastState = 0;
+	double[] means = new double[1];
+	int count = 0;
 	
 	public SpeedMonitor() {
 		initializeFigure();
@@ -35,13 +37,30 @@ public class SpeedMonitor extends MonitorPanel {
 		
 		Point2D.Double point = new Point2D.Double(state, speed);
 		series[0].addPointInOrder(point);
-
+		count++;
+		
 		if (histoSeries != null) {
 			createHistograms();
 			histoSeries[0].addValue(speed);
 		}
 		traceFigure.inferBoundsPolitely();
 		repaint();
+	}
+
+	@Override
+	public double[] getMean() {
+		means[0] = series[0].getYMean();
+		return means;
+	}
+
+	@Override
+	public int getCalls() {
+		return count;
+	}
+
+	@Override
+	public double getAcceptanceRate() {
+		return 1.0;
 	}
 
 }

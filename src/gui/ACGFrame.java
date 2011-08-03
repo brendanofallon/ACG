@@ -14,7 +14,6 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -24,6 +23,14 @@ import javax.swing.WindowConstants;
 import mcmc.MCMC;
 import mcmc.MCMCListener;
 
+/**
+ * The primary frame of the ACG UI. As the user goes through varios steps the central panel
+ * is replaced by different panels (StartFrame, PickPlottablesPanel, and MainOutputPane). 
+ * This thing also has the run and pause buttons and the progress bar along the bottom. 
+ * Right now, there are NO menu options!
+ * @author brendan
+ *
+ */
 public class ACGFrame extends JFrame implements WindowListener {
 	
 	public static final Color backgroundColor = new Color(140, 140, 140);

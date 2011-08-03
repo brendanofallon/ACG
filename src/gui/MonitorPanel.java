@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -13,6 +14,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -20,6 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
+import logging.StringUtils;
 import mcmc.MCMC;
 
 import component.LikelihoodComponent;
@@ -46,6 +50,9 @@ public abstract class MonitorPanel extends JPanel {
 	//A reference to the current (cold) chain. This will change over time in an MC3 analysis
 	private MCMC currentChain;
 	private boolean chainHasChanged = false;
+
+	int topLabelSize = 11;
+	Font topLabelFont = new Font("Sans", Font.PLAIN, topLabelSize);
 	
 	/**
 	 * Set the current chain for the analysis. Monitors will get their parameter values from this chain. 
@@ -81,7 +88,34 @@ public abstract class MonitorPanel extends JPanel {
 	public void updateMonitor(int steps) {
 		update(steps);
 		chainHasChanged = false;
+		
+		StringBuilder strB = new StringBuilder();
+		
+		
+		double[] means = getMean();
+		StringBuilder meanStr = new StringBuilder();
+		for(int i=0; i< means.length; i++) {
+			meanStr.append(StringUtils.format(means[i]) + " " );
+		}
+		topLabel.setText("Mean: " + meanStr + "     Calls: " + getCalls() + "(" + StringUtils.format( 100*getAcceptanceRate() ) + "%) ");
+		topLabel.revalidate();
 	}
+	
+	public abstract double[] getMean();
+	
+	/**
+	 * Get the number of times a new value has been proposed for this param / likelihood
+	 * @return
+	 */
+	public abstract int getCalls();
+	
+
+	/**
+	 * Get the fraction of accepted proposals for this param / likelihood
+	 * @return
+	 */
+	public abstract double getAcceptanceRate();
+	
 	
 	/**
 	 * Called when object we're tracking changes so we can append a new values to the series
@@ -102,6 +136,16 @@ public abstract class MonitorPanel extends JPanel {
 		traceFigure.getAxes().setNumYTicks(4);
 		initializePopup();
 		traceFigure.setYLabel(null);
+		
+		topPanel = new JPanel();
+		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+		topPanel.setBackground(traceFigure.getBackground());
+		topPanel.add(Box.createHorizontalStrut(10));
+		topLabel = new JLabel("Mean: ?  Calls: ? (?)");
+		
+		topPanel.add(topLabel);
+		this.add(topPanel, BorderLayout.NORTH);
+		
 	}
 	
 	/**
@@ -188,7 +232,7 @@ public abstract class MonitorPanel extends JPanel {
 	 * Called to switch between the Histogram and Trace modes
 	 */
 	protected void switchHistoTrace() {
-		if (mode == Mode.TRACE) {
+		if (mode == Mode.TRACE) { //Current mode is trace, so switch it to histogram
 			mode = Mode.HISTOGRAM; //We're now in histogram mode
 			traceFigure.removeAllSeries();
 			createHistograms();
@@ -203,7 +247,7 @@ public abstract class MonitorPanel extends JPanel {
 			switchItem.setText("Switch to trace");
 			traceFigure.setXLabel(titles[0]);
 		}
-		else {
+		else { //Current mode is histogram, so we're switching back to trace
 			mode = Mode.TRACE;
 			traceFigure.removeAllSeries();
 			for(int i=0; i<series.length; i++) {
@@ -227,7 +271,6 @@ public abstract class MonitorPanel extends JPanel {
 		
 		if (i==histoSeries.length) {
 			//Couldn't find series we're replacing...abort
-			System.out.println("Aggh! Couldn't find index for series!");
 			return;
 		}
 		
@@ -300,6 +343,8 @@ public abstract class MonitorPanel extends JPanel {
 	private JMenuItem histoOptions;
 	private JMenuItem switchItem;
 	private JPopupMenu popup;
+	private JPanel topPanel;
+	JLabel topLabel;
 
 	
 	protected float defaultLineWidth = 1.1f;

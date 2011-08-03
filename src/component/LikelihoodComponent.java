@@ -38,6 +38,9 @@ public abstract class LikelihoodComponent implements ParameterListener, AcceptRe
 	protected double currentLogLikelihood = Double.NaN;
 	protected double proposedLogLikelihood = Double.NaN;
 	
+	protected int proposalCount = 0;
+	protected int acceptanceCount = 0;
+	
 	//Attributes provided from xml elements, default is empty map
 	protected Map<String, String> attrs = new HashMap<String, String>();
 	
@@ -63,6 +66,8 @@ public abstract class LikelihoodComponent implements ParameterListener, AcceptRe
 	 */
 	public void stateAccepted() {
 		currentLogLikelihood = proposedLogLikelihood;
+		proposalCount++;
+		acceptanceCount++;
 	}
 	
 	/**
@@ -70,10 +75,23 @@ public abstract class LikelihoodComponent implements ParameterListener, AcceptRe
 	 */
 	public void stateRejected() {
 		proposedLogLikelihood = currentLogLikelihood;
+		proposalCount++;
 	}
 	
 	public void parameterChanged(Parameter<?> source) {
 		recalculateLikelihood = true;
+	}
+	
+	public double getAcceptanceRate() {
+		return (double)acceptanceCount / (double)proposalCount;
+	}
+	
+	/**
+	 * The number of times stateAccepted and stateRejected have been called
+	 * @return
+	 */
+	public int getProposalCount() {
+		return proposalCount;
 	}
 	
 	/**

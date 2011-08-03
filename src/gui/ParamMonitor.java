@@ -11,6 +11,7 @@ import xml.XMLLoader;
 public class ParamMonitor extends MonitorPanel {
 
 	private AbstractParameter<?> param;
+	private double[] means; //Stores means of series
 	
 	public ParamMonitor(AbstractParameter<?> param, String logKey) {
 		this.param = param;
@@ -33,6 +34,7 @@ public class ParamMonitor extends MonitorPanel {
 			XYSeriesElement serEl = traceFigure.addDataSeries(series[i]);
 			serEl.setLineWidth(defaultLineWidth);	
 		}
+		means = new double[series.length];
 	}
 	
 	public ParamMonitor(AbstractParameter<?> param) {
@@ -68,6 +70,8 @@ public class ParamMonitor extends MonitorPanel {
 				}
 			}
 		}
+
+		means = new double[series.length];
 	}
 	
 
@@ -111,14 +115,31 @@ public class ParamMonitor extends MonitorPanel {
 				if (histoSeries != null) {
 					histoSeries[i].addValue(val);
 				}
+				means[i] = series[i].getYMean();
 			}
 			catch (NumberFormatException nex) {
 				//don't worry about it
 			}
 		}
 
+		
 		traceFigure.inferBoundsPolitely();
 		repaint();
+	}
+
+	@Override
+	public double[] getMean() {
+		return means;
+	}
+
+	@Override
+	public int getCalls() {
+		return param.getCalls();
+	}
+
+	@Override
+	public double getAcceptanceRate() {
+		return param.getAcceptanceRatio();
 	}
 	
 }

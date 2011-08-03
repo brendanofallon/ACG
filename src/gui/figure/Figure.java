@@ -110,6 +110,21 @@ public abstract class Figure extends JPanel implements ComponentListener, KeyLis
 	}	
 	
 	/**
+	 * Get the background color (fill color) of this figure
+	 */
+	public Color getBackground() {
+		return backgroundColor;
+	}
+	
+	/**
+	 * Set the background color of this figure
+	 */
+	public void setBackground(Color backgroundColor) {
+		this.backgroundColor = backgroundColor;
+		repaint();
+	}
+	
+	/**
 	 * Add a new element to the list of FigureELements
 	 * @param ce
 	 */

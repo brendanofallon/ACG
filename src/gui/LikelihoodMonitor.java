@@ -68,4 +68,22 @@ public class LikelihoodMonitor extends MonitorPanel {
 		traceFigure.inferBoundsPolitely();
 		repaint();
 	}
+
+
+	@Override
+	public double[] getMean() {
+		return new double[]{ series[0].getYMean() };
+	}
+
+
+	@Override
+	public int getCalls() {
+		return comp.getProposalCount();
+	}
+
+
+	@Override
+	public double getAcceptanceRate() {
+		return comp.getAcceptanceRate();
+	}
 }
