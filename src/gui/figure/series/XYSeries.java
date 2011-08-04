@@ -23,6 +23,7 @@ import java.util.List;
 public class XYSeries extends AbstractSeries {
 
 	protected List<Point2D> pointList;
+	double ySum = 0; //Stores sum of y-values, useful for calculating mean
 
 	public XYSeries(List<Point2D> points, String name) {
 		this.name = name;
@@ -48,34 +49,17 @@ public class XYSeries extends AbstractSeries {
 	 */
 	public void clear() {
 		pointList.clear();
+		ySum = 0;
 	}
 	
-	/**
-	 * Assign y-values of the points from the given array. First 
-	 * @param values
-	 */
-//	public void assign(double[] values, double xmin, double spacing) {
-//		double x = xmin;
-//		if (pointList.size() != values.length) {
-//			pointList.clear();
-//			for(int i=0; i<values.length; i++) {
-//				pointList.add(new Point2D.Double(x, values[i]));
-//				x += spacing;
-//			}
-//		}
-//		else {
-//			for(int i=0; i<values.length; i++) {
-//				Point2D point = pointList.get(i);
-//				point.setLocation(x, values[i]);
-//				x += spacing;
-//			}
-//		}
-//	}
+	public double getYMean() {
+		return ySum / pointList.size();
+	}
 	
 	public void addPointInOrder(Point2D newPoint) {
 		if (pointList.size()>0 && newPoint.getX() < getMaxX())
 			throw new IllegalArgumentException("Non-increasing x value");
-		
+		ySum += newPoint.getY();
 		pointList.add(newPoint);
 	}
 	
@@ -256,7 +240,9 @@ public class XYSeries extends AbstractSeries {
 	 * @param i
 	 */
 	public void removePoint(int i) {
-		pointList.remove(i);
+		Point2D p = pointList.remove(i);
+		if (p != null)
+			ySum -= p.getY();
 	}
 	
 	/**

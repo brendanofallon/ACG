@@ -96,7 +96,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 	private int nextNodeNumber = 0;
 	
 	//Various properties that we can log
-	private String[] logKeys = new String[]{/*"root.height",*/ "site.height", "site.bps", "total.bps"}; 
+	private String[] logKeys = new String[]{/*"root.height",*/ "visible.height", "visible.bps", "total.bps", "num.patterns", "num.nodes"}; 
 	
 	final int rangePoolSize = 1000;
 	private Stack<SiteRangeList> rangePool = new Stack<SiteRangeList>();
@@ -1522,9 +1522,9 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 			return getMaxHeight();
 		if (key.equals("num.nodes"))
 			return computeCore != null ? computeCore.getNodeCount() : 0;
-		if (key.equals("site.height")) 
+		if (key.equals("visible.height")) 
 			return getMaxDLHeight();
-		if (key.equals("site.bps")) {
+		if (key.equals("visible.bps")) {
 			return getDLRecombNodes().size(); 
 		}
 		if (key.equals("total.bps")) {
