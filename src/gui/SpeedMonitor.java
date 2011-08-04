@@ -20,7 +20,7 @@ public class SpeedMonitor extends MonitorPanel {
 		series = new XYSeries[1];
 		series[0] = new XYSeries("mc.rate");
 		titles = new String[1];
-		titles[0] = "Log likelihood";
+		titles[0] = "mc.rate";
 		XYSeriesElement serEl = traceFigure.addDataSeries(series[0]);
 		serEl.setLineWidth(defaultLineWidth);
 		lastTime = System.currentTimeMillis();
