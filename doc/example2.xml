@@ -93,7 +93,7 @@
 
 
 
-<!-- ==============================    Logging and output	===============================--> 
+<!-- ==============================    Logging and output	=============================== --> 
 
 <!-- A logger that tracks properties of the likelihoods and parameters in the MCMC -->
 <statelogger class="logging.StateLogger" filename="example2.log" frequency="5000" echoToScreen="true" />
@@ -112,9 +112,9 @@
 
 
 
-<!-- =============================    Markov chain   ============================== ---> 
+<!-- =============================    Markov chain   ============================== --> 
 
-<mc class="mcmc.MCMC" length="20000000" run="true">
+<mc class="mcmc.MCMC" length="4000000" run="true">
 	<parameters class="list">
 		<constantPopSize />
 		<constantRecRate />

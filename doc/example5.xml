@@ -98,7 +98,7 @@
 	new features. First, be sure to add the run="false" attribute to the element so the
 	chain won't begin to run right away. Second, don't add any loggers to the chain. All
 	loggers should be added to the next (mc3) element -->
-<mc class="mcmc.MCMC" length="2000000" run="false">
+<mc class="mcmc.MCMC" length="1000000" run="false">
 	<parameters class="list">
 		<constantPopSize />
 		<constantRecRate />
