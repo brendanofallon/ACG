@@ -635,10 +635,16 @@ public class MultiRateCore extends AbstractComputeCore {
 				double siteProb = 0;
 				for(int j=0; j<rateCategories; j++) {
 					double[] sitePartials = partials[j][i];
+					if (siteRateModel.getProbForCategory(j)==0)
+						throw new IllegalStateException("Site prob is zero for category " + j);
 					siteProb +=  siteRateModel.getProbForCategory(j)*( sitePartials[0] * stat0
 										 + sitePartials[1] * stat1
 										 + sitePartials[2] * stat2
 										 + sitePartials[3] * stat3);
+					
+//					if (siteProb == 0) {
+//						throw new IllegalStateException("Site prob is zero for index " + i + " site partials: " + sitePartials + " prob: " + siteRateModel.getProbForCategory(j));
+//					}
 				}
 				logDL +=  Math.log(siteProb) * cardinality; 		
 			}

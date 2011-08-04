@@ -87,7 +87,7 @@ public class CoalNode extends ARGNode {
 		proposedState.coalescingSites.clear();
 		
 		//If neither child has any range info we know right away what the ranges are (they're both empty) 
-		if (activeState.leftChild.getActiveRanges().size()==0 && activeState.rightChild.getActiveRanges().size()==0) {
+		if ( activeState.leftChild.getActiveRanges().size()==0	&& activeState.rightChild.getActiveRanges().size()==0) {
 			activeState.coalescingSites = proposedState.coalescingSites;
 			activeState.descendingSites = proposedState.descendingSites;
 			return;

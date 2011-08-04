@@ -38,6 +38,7 @@ public class GammaSiteRates extends AbstractSiteRateModel {
 		alphaParam = new DoubleParameter(alpha, "siteRates.alpha", "alpha", 0, 1000);
 		try {
 			proposeRates();
+			acceptValue();
 		} catch (ModificationImpossibleException e) {
 			throw new IllegalArgumentException("Invalid initial value for alpha: " + alphaParam.getValue());
 		} //Set rates
@@ -64,6 +65,7 @@ public class GammaSiteRates extends AbstractSiteRateModel {
 		try {
 			proposeRates();
 			alphaParam.acceptValue();
+			acceptValue();
 		} catch (ModificationImpossibleException e) {
 			throw new IllegalArgumentException("Invalid initial value for alpha: " + alphaParam.getValue());
 		} //Set rates 
@@ -152,9 +154,6 @@ public class GammaSiteRates extends AbstractSiteRateModel {
 			throw new IllegalStateException("There was an error calculating the rate categories for the gamma distributed rates model, alpha: " + alphaParam.getValue() + " mean of rates: " + totalMean);
 		}
 		
-//		for(int i=0; i<categories; i++) {
-//			proposal.rates[i] = 1.0;
-//		}
 		proposeValue(proposal);
 	}
 	

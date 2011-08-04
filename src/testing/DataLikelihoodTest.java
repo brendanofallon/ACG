@@ -117,12 +117,12 @@ public class DataLikelihoodTest {
 		}
 		
 		
-		mc.run( 50000 );
+		mc.run( 2 );
 	}
 	
 	
 	@Test public void testTest() {
-		RandomSource.initialize( );
+		RandomSource.initialize( /*-1784465878 */ );
 		
 		//String homeDir = "/Users/brendano/workspace/ACG_exp/";
 		//String homeDir = "/home/brendan/workspace/ACG/";
@@ -159,7 +159,7 @@ public class DataLikelihoodTest {
 
 		List<Parameter<?>> params = new ArrayList<Parameter<?>>();
 
-		DoubleParameter alpha = new DoubleParameter(0.5, "siteRates.alpha", "siteRates.alpha", 0.01, 100.0);
+		DoubleParameter alpha = new DoubleParameter(1.0, "siteRates.alpha", "siteRates.alpha", 0.01, 100.0);
 		alpha.addModifier(new SimpleModifier());
 		alpha.setFrequency(4);
 		GammaSiteRates siteRates = new GammaSiteRates(4, alpha);
@@ -205,14 +205,14 @@ public class DataLikelihoodTest {
 		Modifier<ARG> wideSwapper = new WideSwap();
 		Modifier<ARG> trivialAdd = new TrivialAddRemove();
 	
-		arg.addModifier(swapModifier);
+		//arg.addModifier(swapModifier);
 		arg.addModifier(heightModifier);
 		arg.addModifier(rootHeightMod);
-		arg.addModifier(wideSwapper);
+		//arg.addModifier(wideSwapper);
 
-		arg.addModifier(bpShifter);
-		arg.addModifier(bpAddRemove);
-		arg.addModifier(bpSwapper);
+//		arg.addModifier(bpShifter);
+//		arg.addModifier(bpAddRemove);
+//		arg.addModifier(bpSwapper);
 		//arg.addModifier(trivialAdd); //This one is broken and sucks
 		
 		List<Object> likelihoods = new ArrayList<Object>();

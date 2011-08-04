@@ -52,15 +52,15 @@ public class SiteRangeMerger {
 
 		SiteRangeList a = listR;
 		SiteRangeList b = listL;
-
+		
+		final boolean anyA = a.size()>0;
+		final boolean anyB = b.size()>0;
+		
 		int aIndex = a.getFirstSiteIndex();
 		int bIndex = b.getFirstSiteIndex();
 
 		final int aMax = a.maxSiteIndex();
 		final int bMax = b.maxSiteIndex();
-		
-		final boolean anyA = a.size()>0;
-		final boolean anyB = b.size()>0;
 		
 		if (anyA) {
 			if (anyB)

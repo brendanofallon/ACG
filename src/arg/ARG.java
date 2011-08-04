@@ -96,7 +96,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 	private int nextNodeNumber = 0;
 	
 	//Various properties that we can log
-	private String[] logKeys = new String[]{/*"root.height",*/ "visible.height", "visible.bps", "total.bps", "num.patterns", "num.nodes"}; 
+	private String[] logKeys = new String[]{/*"root.height",*/ "visible.height", "visible.recombs", "total.recombs", "num.patterns", "num.nodes"}; 
 
 	
 	final int rangePoolSize = 1000;
@@ -1528,7 +1528,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 		if (key.equals("visible.recombs")) {
 			return getDLRecombNodes().size(); 
 		}
-		if (key.equals("total.bps")) {
+		if (key.equals("total.recombs")) {
 			return getRecombNodes().size();
 		}
 		if (key.equals("num.patterns")) {
@@ -1542,10 +1542,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 
 		@Override
 		public int compare(ARGNode nodeA, ARGNode nodeB) {
-			if (nodeA.getHeight()>nodeB.getHeight())
-				return 1;
-			else
-				return -1;
+			return nodeA.getHeight() < nodeB.getHeight() ? -1 : 1;
 		}
 		
 		
