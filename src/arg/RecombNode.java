@@ -98,7 +98,7 @@ public class RecombNode extends ARGNode {
 	public void computeProposedRanges(boolean force) {
 
 		//Skip all this if there's no compute core
-		if (parentARG != null && ! parentARG.hasComputeCore()  ) {
+		if (parentARG != null  && ! parentARG.hasComputeCore()  ) {
 			return;
 		}
 		

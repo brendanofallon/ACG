@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -147,6 +148,16 @@ public class AxesConfigFrame extends JFrame {
 		}
 		catch (NumberFormatException nfe) {
 			
+		}
+		
+		if (max <= min) {
+			JOptionPane.showMessageDialog(this, "Maximum value must be greater than minimum");
+			return;
+		}
+		
+		//Adjust tick spacing so there are always a few ticks showing
+		if (tickSpacing > (max-min)) {
+			tickSpacing = (max-min)/4.0;
 		}
 		
 		AxesOptions ops = new AxesOptions(min, max, tickSpacing, gridLinesBox.isSelected() );

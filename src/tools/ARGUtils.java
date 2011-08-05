@@ -15,6 +15,7 @@ import math.RandomSource;
 import arg.ARG;
 import arg.ARGNode;
 import arg.CoalNode;
+import arg.RecombNode;
 import arg.TreeUtils;
 import arg.argIO.ARGParseException;
 import arg.argIO.ARGParser;
@@ -173,6 +174,7 @@ public class ARGUtils {
 		str.append("  usage \n");
 		str.append(" --extract-trees [argfile.xml]         \n\t Emit all marginal trees in newick format \n");
 		str.append(" --extract-tree  [argfile.xml] [site]  \n\t Emit marginal tree at given site \n");
+		str.append(" --emit-bps 	 [argfile.xml]    \n\t Emit the locations of all recombination breakpoints \n");
 		str.append(" --emit-tmrca    [argfile.xml] 		  \n\t Emit root heights across sequence length \n");
 		str.append(" --scale [factor] [argfile.xml | treefile.tre] 		   \n\t Emit tree with branches scaled by factor \n");
 		str.append(" --genarg [tips] [theta] [rho] [sites]	   \n\t Generate random ARG with given parameters \n");
@@ -232,6 +234,34 @@ public class ARGUtils {
 			}
 			String filename = args[1];
 			emitTMRCA(filename, bins);
+			return;
+		}
+		
+		if (args[0].equals("--emit-bps")) {
+			if (args.length < 2) {
+				System.err.println("Please supply the name of the file to extract breakpionts");
+				return;
+			}
+			
+			String filename = args[1];
+			ARGParser parser = new ARGParser();
+			try {
+				ARG arg = parser.readARG(new File(filename));
+				List<RecombNode> rNodes = arg.getRecombNodes();
+				System.out.println("Number of breakpoints : " + rNodes.size());
+				System.out.println("Site \t Height");
+				for(RecombNode node : rNodes) {
+					System.out.println(node.getInteriorBP() + "\t" + node.getHeight());
+				}
+				
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ARGParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return;
 		}
 		

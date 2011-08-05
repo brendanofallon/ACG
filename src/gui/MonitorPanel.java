@@ -97,8 +97,8 @@ public abstract class MonitorPanel extends JPanel {
 		for(int i=0; i< means.length; i++) {
 			meanStr.append(StringUtils.format(means[i]) + " " );
 		}
-		topLabel.setText("Mean: " + meanStr + "     Calls: " + getCalls() + " (" + StringUtils.format( 100*getAcceptanceRate() ) + "%) ");
-		topLabel.revalidate();
+		topPanel.setText("Mean: " + meanStr + "     Calls: " + getCalls() + " (" + StringUtils.format( 100*getAcceptanceRate() ) + "%) ");
+		topPanel.revalidate();
 	}
 	
 	public abstract double[] getMean();
@@ -137,13 +137,11 @@ public abstract class MonitorPanel extends JPanel {
 		initializePopup();
 		traceFigure.setYLabel(null);
 		
-		topPanel = new JPanel();
+		topPanel = new MonitorHeader();
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
-		topPanel.setBackground(traceFigure.getBackground());
-		topPanel.add(Box.createHorizontalStrut(60));
-		topLabel = new JLabel("Mean: ?  Calls: ? (?)");
-		
-		topPanel.add(topLabel);
+		topPanel.setBackground(Color.LIGHT_GRAY);
+		topPanel.add(Box.createHorizontalStrut(100));
+		topPanel.setText("Mean : ?   Calls: ?");
 		this.add(topPanel, BorderLayout.NORTH);
 		
 	}
@@ -343,8 +341,7 @@ public abstract class MonitorPanel extends JPanel {
 	private JMenuItem histoOptions;
 	private JMenuItem switchItem;
 	private JPopupMenu popup;
-	private JPanel topPanel;
-	JLabel topLabel;
+	private MonitorHeader topPanel;
 
 	
 	protected float defaultLineWidth = 1.1f;

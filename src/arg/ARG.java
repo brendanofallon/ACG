@@ -688,7 +688,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 	}
 	
 	/**
-	 * Creates the partial- and pattern arrays for all nodes
+	 * Adds tip state information to all tip nodes
 	 * @param alignment
 	 * @param data
 	 */

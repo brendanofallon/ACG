@@ -127,8 +127,9 @@ public class SiteRangeMerger {
 							if (currentRangeIndex < currentRanges.rangeCount()) {
 								newRefID = currentRanges.getRefID(currentRangeIndex);
 							}
-							else
+							else {
 								newRefID = core.nextNumber();
+							}
 
 							boolean merged = coalescentRanges.appendRange(begin, end, newRefID, b.getRefID((bIndex-1)/2), a.getRefID((aIndex-1)/2));
 							

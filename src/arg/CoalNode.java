@@ -81,7 +81,6 @@ public class CoalNode extends ARGNode {
 		if (computeCore == null) {
 			return;
 		}	
-
 		
 		proposedState.descendingSites.clear();
 		proposedState.coalescingSites.clear();

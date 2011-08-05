@@ -83,10 +83,10 @@
 <!--   =========================   Logging and output  ==========================  --> 
 
 <!-- A logger that tracks properties of the likelihoods and parameters in the MCMC -->
-<statelogger class="logging.StateLogger" filename="example4.log" frequency="5000" echoToScreen="true" />
+<statelogger class="logging.StateLogger" filename="example5.log" frequency="5000" echoToScreen="true" />
 
 <!-- a logger that tracks the distribution of TMRCA (root height of marginal trees) along the sequence -->
-<rootHeightLogger class="logging.RootHeightDensity" filename="example4_rootHeight.txt" frequency="5000" burnin="100000">
+<rootHeightLogger class="logging.RootHeightDensity" filename="example5_rootHeight.txt" frequency="5000" burnin="100000">
 	<arg />
 </rootHeightLogger>
 

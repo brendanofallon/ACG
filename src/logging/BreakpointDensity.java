@@ -91,7 +91,7 @@ public class BreakpointDensity extends HistogramCollector  {
 	public String getSummaryString() {
 		StringBuilder strB = new StringBuilder();
 		
-		strB.append("\n Histogram of values for parameter " + param.getName() + " item: " + logKey + "\n");
+		strB.append("\n Breakpoint densities for parameter " + param.getName() + "\n");
 		if (histo.getCount()==0) {
 			strB.append("Histogram is empty, burnin (" + burnin + " states) has probably not been exceeded.");
 		}
