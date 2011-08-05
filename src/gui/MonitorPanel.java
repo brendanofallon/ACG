@@ -97,7 +97,7 @@ public abstract class MonitorPanel extends JPanel {
 		for(int i=0; i< means.length; i++) {
 			meanStr.append(StringUtils.format(means[i]) + " " );
 		}
-		topLabel.setText("Mean: " + meanStr + "     Calls: " + getCalls() + "(" + StringUtils.format( 100*getAcceptanceRate() ) + "%) ");
+		topLabel.setText("Mean: " + meanStr + "     Calls: " + getCalls() + " (" + StringUtils.format( 100*getAcceptanceRate() ) + "%) ");
 		topLabel.revalidate();
 	}
 	
@@ -140,7 +140,7 @@ public abstract class MonitorPanel extends JPanel {
 		topPanel = new JPanel();
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
 		topPanel.setBackground(traceFigure.getBackground());
-		topPanel.add(Box.createHorizontalStrut(40));
+		topPanel.add(Box.createHorizontalStrut(60));
 		topLabel = new JLabel("Mean: ?  Calls: ? (?)");
 		
 		topPanel.add(topLabel);

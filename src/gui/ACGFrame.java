@@ -34,11 +34,20 @@ import mcmc.MCMCListener;
 public class ACGFrame extends JFrame implements WindowListener {
 	
 	public static final Color backgroundColor = new Color(140, 140, 140);
-	
+	private final boolean onAMac; //This gets set to true if we're on a mac, and we do a couple things differently
 	
 	public ACGFrame( /* might be nice to get some properties here */ ) {
 		super("ACG");
-        try {
+
+		String os = System.getProperty("os.name");
+        if (os.contains("Mac") || os.contains("mac")) {
+        	onAMac = true;
+        }
+        else {
+        	onAMac = false;
+        }
+		
+		try {
         	String plaf = UIManager.getSystemLookAndFeelClassName();
         	String gtkLookAndFeel = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
         	//Attempt to avoid metal look and feel if possible
@@ -62,6 +71,13 @@ public class ACGFrame extends JFrame implements WindowListener {
 		
 	}
 	
+	/**
+	 * Returns true if we think we're on a mac platform
+	 * @return
+	 */
+	public boolean onAMac() {
+		return onAMac;
+	}
 	
 	public void initializeProgressBar(MCMC chain, int maxValue) {
 		progressBar.setMaximum(maxValue);
@@ -148,7 +164,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 		Container mainContainer = this.getContentPane();
 		mainContainer.setLayout(layout);
 		
-		centerPanel = new StartFrame(this);
+		centerPanel = new StartFrame(this, onAMac);
 		mainContainer.add(centerPanel, BorderLayout.CENTER);
 		
 		

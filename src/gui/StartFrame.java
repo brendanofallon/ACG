@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,9 +40,11 @@ import mcmc.MCMC;
 public class StartFrame extends JPanel {
 	
 	ACGFrame acgParent;
+	boolean macMode = false;
 	
-	public StartFrame(ACGFrame acgParentFrame) {
+	public StartFrame(ACGFrame acgParentFrame, boolean macMode) {
 		this.acgParent = acgParentFrame;
+		this.macMode = macMode;
 		initComponents();
 	}
 
@@ -180,12 +183,33 @@ public class StartFrame extends JPanel {
 	 * Called when user clicks 'Browse' button 
 	 */
 	protected void browseForFile() {
-		if (fileChooser == null)
-			fileChooser = new JFileChooser( System.getProperty("user.dir"));
+		//On macs, we'd like to use a file dialog, otherwise we use a JFileChooser
+		if (macMode) {
+			System.out.println("Mac mode true, showing dialog");
+			FileDialog fileDialog = new FileDialog(acgParent, "Choose a file");
+			fileDialog.setMode(FileDialog.LOAD);
+			String userDir = System.getProperty("user.dir");
+			if (userDir != null)
+				fileDialog.setDirectory(userDir);
+			
+			fileDialog.setVisible(true);
+			
+			String filename = fileDialog.getFile();
+			String path = fileDialog.getDirectory();
+			selectedFile = new File(path + filename);
+		}
+		else {
+			//Not on a mac, use a JFileChooser
+			if (fileChooser == null)
+				fileChooser = new JFileChooser( System.getProperty("user.dir"));
+
+			int option = fileChooser.showOpenDialog(getRootPane());
+			if (option == JFileChooser.APPROVE_OPTION) {
+				selectedFile = fileChooser.getSelectedFile();
+			}
+		}
 		
-		int option = fileChooser.showOpenDialog(getRootPane());
-		if (option == JFileChooser.APPROVE_OPTION) {
-			selectedFile = fileChooser.getSelectedFile();
+		if (selectedFile != null && selectedFile.exists()) {
 			filenameField.setText(selectedFile.getName());
 			runInGUIButton.setEnabled(true);
 			runNoGUIButton.setEnabled(true);

@@ -12,14 +12,17 @@ import org.xml.sax.SAXException;
 import xml.XMLLoader;
 
 /**
- * Container for some general info about the entire application, including version, a header string with credits, etc. 
+ * Main entry point for application. 
+ * This class is a container for some general info about the entire application, including version, a header string with credits, etc.
+ * It's main method does a small bit of argument parsing, if no args are given then the gui is launched. If args are present, we
+ * search for a) .jar or class files or directories to add to the plugin loader, and .xml files to run. 
  * @author brendano
  *
  */
 public class ApplicationHeader {
 
-	public final static String version = "0.1";
-	public final static String versionDate = "July 20, 2011";
+	public final static String version = "0.5";
+	public final static String versionDate = "August 4, 2011";
 	
 	public static String getHeader() {
 		StringBuilder header = new StringBuilder();
@@ -53,7 +56,9 @@ public class ApplicationHeader {
 			return;
 		}
 		
-
+		
+		//If some args are present, then assume we're running from the command line
+		//and print out the header
 		System.out.println(ApplicationHeader.getHeader());
 		
 		File inputFile = new File(args[0]);
@@ -62,6 +67,7 @@ public class ApplicationHeader {
 			System.exit(0);			
 		}
 		try {
+			
 			XMLLoader loader = new XMLLoader(inputFile);
 			String userDir = System.getProperty("user.dir");
 			if (userDir != null) {

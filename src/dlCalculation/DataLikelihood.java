@@ -475,7 +475,7 @@ public class DataLikelihood extends LikelihoodComponent {
 	@Override
 	public String getLogHeader() {
 		//return "treeLikelihood";
-		return "treeLikelihood";
+		return "dataLikelihood";
 	}
 	
 	public String getLogString() {
