@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,7 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 		//layout later (in initializeMatrix). Your guess is as good as mine. 
 		GridLayout layout = new GridLayout(rows, cols, 2, 2);
 		this.setLayout(layout);
-		this.setBackground(ACGFrame.backgroundColor);
+		this.setBackground(Color.LIGHT_GRAY);
 	}
 
 	@Override

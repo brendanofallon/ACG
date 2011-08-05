@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -30,7 +31,7 @@ public class MonitorHeader extends JPanel {
 		float fadeEnd = 1.0f;
 		for(int i=0; i<gradient.length; i++) {
 			float c = fadeStart + (fadeEnd-fadeStart)*(1.0f-(float)i/(float)(gradient.length-1));
-			gradient[i] = new Color(c, c, c, 0.099f);
+			gradient[i] = new Color(c, c, c, 0.6f);
 		}
 	}
 	
@@ -50,7 +51,10 @@ public class MonitorHeader extends JPanel {
 	
 	public void paintComponent(Graphics g) {
 		Graphics2D g2d = (Graphics2D)g;
-		g2d.setColor(getBackground());
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		g2d.setColor(Color.white);
 		g2d.fillRect(0, 0, getWidth(), getHeight());
 		
 		
@@ -68,7 +72,7 @@ public class MonitorHeader extends JPanel {
 		g2d.setColor(new Color(0.9f, 0.9f, 0.9f, 0.7f));		
 		g2d.drawString(text, textX+1, textY+1);
 		
-		g2d.setColor(Color.DARK_GRAY);
+		g2d.setColor(Color.black);
 		g2d.drawString(text, textX, textY);
 
 		

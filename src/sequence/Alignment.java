@@ -220,6 +220,18 @@ public class Alignment {
 		return false;
 	}
 	
+	/**
+	 * Returns true if there is a gap or unknown character at any site
+	 * @return
+	 */
+	public boolean hasGapOrUnknown() {
+		for(int i=0; i<seqs.get(0).getLength(); i++) {
+			if (hasGap(i) || hasUnknown(i))
+				return true;
+		}
+		return false;
+	}
+	
 	public int getSequenceCount() {
 		return seqs.size();
 	}

@@ -18,6 +18,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -29,6 +30,7 @@ import mcmc.mc3.MC3;
 import parameter.AbstractParameter;
 import parameter.CompoundParameter;
 import parameter.DoubleParameter;
+import sequence.Alignment;
 
 import component.LikelihoodComponent;
 
@@ -195,6 +197,19 @@ public class PickPlottablesPanel extends JPanel {
 			freq = runMax / 4000;
 			if (freq < 100)
 				freq = 100;	
+
+			List<String> alignmentLabels = file.getLabelForClass(Alignment.class);
+			for(String alnLabel : alignmentLabels) {
+				Object obj = file.getObjectForLabel(alnLabel);
+				if (obj instanceof Alignment) {
+					Alignment aln = (Alignment)obj;
+					if (aln.hasGapOrUnknown()) {
+						JOptionPane.showMessageDialog(this, "The alignment with label " + alnLabel + " has gaps (-) or unknown (N, ?). Please remove these columns before running the file.");
+						return;
+					}
+				}
+			}
+			
 			
 			MainOutputFrame outputPane = new MainOutputFrame(chain, freq);
 
