@@ -1,26 +1,31 @@
 package gui;
 
-import gui.PickPlottablesPanel.PlottableInfo;
+import gui.PickMonitorsPanel.PlottableInfo;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.Font;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeCellRenderer;
 
-public class PlottableItemRenderer extends JPanel implements ListCellRenderer {
+public class PlottableItemRenderer extends JPanel implements TreeCellRenderer {
 
 	Color stripeColor = new Color(220, 230, 240);
 	JCheckBox checkBox;
 	JLabel label;
 	JLabel prop;
+	
+	//For non-selectable items (ones that aren't leaves) we return this component instead
+	JPanel labelPanel;
+	JLabel mainLabel;
 	
 	public PlottableItemRenderer() {
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -34,27 +39,44 @@ public class PlottableItemRenderer extends JPanel implements ListCellRenderer {
 		this.add(prop);
 		setPreferredSize(new Dimension(200, 30));
 		setMaximumSize(new Dimension(200, 30));
-
-	}
-	
-	
-	@Override
-	public Component getListCellRendererComponent(JList arg0, Object value,
-			int index, boolean selected, boolean hasFocus) {
 		
-		if (index%2==0) {
-			setBackground(Color.white);
+		labelPanel = new JPanel();
+		mainLabel = new JLabel();
+		mainLabel.setFont( new Font("Sans", Font.BOLD, 12));
+		labelPanel.add(mainLabel);
+		labelPanel.setBackground(Color.white);
+		mainLabel.setBackground(Color.white);
+	}
+
+	@Override
+	public Component getTreeCellRendererComponent(JTree tree, Object item,
+			boolean selected, boolean expanded, boolean leaf, int row, boolean focus) {
+	
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode)item;
+		Object userObject = node.getUserObject();
+		PlottableInfo info = null;
+		if (userObject instanceof gui.PickMonitorsPanel.PlottableInfo) {
+			info = (PlottableInfo)userObject;
+		}
+		
+		if (info != null) {
+			checkBox.setSelected(info.selected);
+			label.setText(info.descriptor);
 		}
 		else {
-			setBackground(stripeColor);
+			label.setText(item.toString());
 		}
+		if (row%2==0)
+			this.setBackground(stripeColor);
+		else
+			this.setBackground(Color.white);
 		
-		
-		PlottableInfo info = (PlottableInfo)value;
-		label.setText(info.label);
-		prop.setText("<html><em> " + info.descriptor + "</em></html>");
-		checkBox.setSelected(info.selected);
-		return this;
+		if (leaf)
+			return this;
+		else {
+			mainLabel.setText(item.toString());
+			return labelPanel;
+		}
 	}
 
 }

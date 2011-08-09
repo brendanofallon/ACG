@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import xml.XMLLoader;
+
 import logging.LogItemProvider;
 import math.RandomSource;
 import modifier.AbstractModifier;
@@ -70,6 +72,19 @@ public abstract class AbstractParameter<T> implements Parameter<T>, LogItemProvi
 	 */
 	public String getAttribute(String key) {
 		return attrs.get(key);
+	}
+	
+	/**
+	 * Returns the NODE_ID of the element that was used to create this object from an input file (often referred to as the "label" for this object)
+	 * This is equivalent to getAttribute(XMLLoader.NODE_ID)
+	 * It may return null if we did not create this object from an XML input file and/or no attributes have been supplied 
+	 *  
+	 */
+	public String getName() {
+		if (attrs == null)
+			return null;
+		else
+			return attrs.get(XMLLoader.NODE_ID);
 	}
 	
 	public void setFrequency(double frequency) {

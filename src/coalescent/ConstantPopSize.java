@@ -25,11 +25,7 @@ public class ConstantPopSize extends DoubleParameter implements DemographicParam
 		this(attrs);
 		addModifier(mod);
 	}
-	
 
-	public String getName() {
-		return "popSize";
-	}
 	
 	public String getLogHeader() {
 		return "popSize";

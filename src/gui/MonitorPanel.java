@@ -97,7 +97,7 @@ public abstract class MonitorPanel extends JPanel {
 		for(int i=0; i< means.length; i++) {
 			meanStr.append(StringUtils.format(means[i]) + " " );
 		}
-		topPanel.setText("Mean: " + meanStr + "     Calls: " + getCalls() + " (" + StringUtils.format( 100*getAcceptanceRate() ) + "%) ");
+		topPanel.setText("Mean: " + meanStr + "     Proposals: " + getCalls() + " (" + StringUtils.format( 100*getAcceptanceRate() ) + "%) ");
 		topPanel.revalidate();
 	}
 	

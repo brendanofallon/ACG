@@ -1251,10 +1251,6 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 		proposedNodeRemoves.add(node);
 		this.queueChangeEvent(new ARGChangeEvent(ChangeType.NodeRemoved, new ARGNode[]{node}));
 	}
-
-	public String getName() {
-		return "ARG";
-	}
 	
 	public List<CoalNode> getCoalescentNodes() {
 		return coalNodes;

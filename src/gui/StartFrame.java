@@ -165,7 +165,8 @@ public class StartFrame extends JPanel {
 		
 		try {
 			ACGDocument acgDocument = new ACGDocument(inputFile);
-			PickPlottablesPanel pickPanel = new PickPlottablesPanel(acgParent, acgDocument);
+			//PickPlottablesPanel pickPanel = new PickPlottablesPanel(acgParent, acgDocument);
+			PickMonitorsPanel pickPanel = new PickMonitorsPanel(acgParent, acgDocument);
 			acgParent.replaceCenterPanel(pickPanel);
 		}
 		catch (InvalidInputFileException ex) {

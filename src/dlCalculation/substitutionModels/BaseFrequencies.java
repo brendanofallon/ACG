@@ -87,12 +87,6 @@ public class BaseFrequencies extends AbstractParameter<double[]> {
 		return getValue();
 	}
 
-
-	@Override
-	public String getName() {
-		return "base.frequencies";
-	}
-
 	public int getKeyCount() {
 		return 1;
 	}
