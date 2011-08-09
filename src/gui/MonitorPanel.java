@@ -17,12 +17,15 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import logging.StringUtils;
 import mcmc.MCMC;
@@ -64,6 +67,11 @@ public abstract class MonitorPanel extends JPanel {
 	
 	int topLabelSize = 11;
 	Font topLabelFont = new Font("Sans", Font.PLAIN, topLabelSize);
+	
+	//Determines whether or not we draw the value series, means, and errors
+	private boolean showValues = true;
+	private boolean showMeans = true;
+	private boolean showStdevs = true;
 	
 	/**
 	 * Create the arrays that store the data series
@@ -124,6 +132,38 @@ public abstract class MonitorPanel extends JPanel {
 		return addedSeriesCount-1;
 	}
 	
+	public void setShowMeans(boolean showMeans) {
+		this.showMeans = showMeans;
+		redrawSeries();
+	}
+	
+	public void setShowValues(boolean showVals) {
+		this.showValues = showVals;
+		redrawSeries();
+	}
+	
+	public void setShowStdevs(boolean showStds) {
+		this.showStdevs = showStds;
+		redrawSeries();
+	}
+	
+	private void redrawSeries() {
+		traceFigure.removeAllSeries();
+		if (mode==Mode.TRACE) {
+			for(int i=0; i<series.length; i++) {
+				if (showValues)
+					traceFigure.addSeriesElement(seriesEls[i]);
+				if (showMeans)
+					traceFigure.addSeriesElement(meansEls[i]);
+				if (showStdevs) { 
+					traceFigure.addSeriesElement(stdUpperEls[i]);
+					traceFigure.addSeriesElement(stdLowerEls[i]);
+				}
+			}
+		}
+		traceFigure.repaint();
+	}
+
 	protected void addPointToSeries(int index, int state, double val) {
 		Point2D.Double point = new Point2D.Double(state, val);
 		series[index].addPointInOrder(point);
@@ -259,6 +299,34 @@ public abstract class MonitorPanel extends JPanel {
 		 });
 		 
 		 popup.add(saveImage);
+		 
+		 final JCheckBoxMenuItem showValsItem =new JCheckBoxMenuItem("Show trace");
+		 showValsItem.setSelected(true);
+		 popup.add(showValsItem);
+		 showValsItem.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				setShowValues(showValsItem.isSelected());
+			} 
+		 });
+		 
+		 final JCheckBoxMenuItem showMeansItem =new JCheckBoxMenuItem("Show means");
+		 showMeansItem.setSelected(true);
+		 popup.add(showMeansItem);
+		 showMeansItem.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				setShowMeans(showMeansItem.isSelected());
+			} 
+		 });
+		 
+		 final JCheckBoxMenuItem showStdevsItem = new JCheckBoxMenuItem("Show std. devs.");
+		 showStdevsItem.setSelected(true);
+		 popup.add(showStdevsItem);
+		 showStdevsItem.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				setShowStdevs(showStdevsItem.isSelected());
+			} 
+		 });
+		 
 		 PopupListener popupListener = new PopupListener();
 		 this.addMouseListener(popupListener);
 		 traceFigure.addMouseListener(popupListener);
