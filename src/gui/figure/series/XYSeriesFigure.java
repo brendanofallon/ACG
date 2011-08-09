@@ -353,6 +353,20 @@ public class XYSeriesFigure extends SeriesFigure {
 	}
 	
 	/**
+	 * Add the given XYSeriesElement to the elements plotted in this figure
+	 * @param el
+	 */
+	public void addSeriesElement(XYSeriesElement el) {
+		if (!seriesElements.contains(el)) {
+			seriesElements.add(el);
+			addElement(el);
+		}
+		else {
+			System.err.println("Series list already contain element, not adding it");
+		}
+	}
+	
+	/**
 	 * Sets whether or not mouse dragging causes the selection region to appear in the axes
 	 * @param allowMouseDragSelection
 	 */

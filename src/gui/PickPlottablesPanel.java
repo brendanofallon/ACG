@@ -91,7 +91,7 @@ public class PickPlottablesPanel extends JPanel {
 		}
 		
 		plottableList = new JList(plotArr);
-		plottableList.setCellRenderer(new PlottableItemRenderer());
+		//plottableList.setCellRenderer(new PlottableItemRenderer());
 		plottableList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
 					flipSelection(me);	

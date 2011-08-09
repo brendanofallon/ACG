@@ -1,5 +1,7 @@
 package gui;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.util.List;
 
@@ -11,7 +13,7 @@ import xml.XMLLoader;
 public class ParamMonitor extends MonitorPanel {
 
 	private AbstractParameter<?> param;
-	private double[] means; //Stores means of series
+	//private double[] means; //Stores means of series
 	
 	public ParamMonitor(AbstractParameter<?> param, String logKey) {
 		this.param = param;
@@ -23,18 +25,43 @@ public class ParamMonitor extends MonitorPanel {
 		
 		String logStr = (param.getLogItem(logKey)).toString();
 		String[] logToks = logStr.split("\\t");
-		series = new XYSeries[logToks.length];
-		titles = new String[logToks.length];
+		initializeSeries(logToks.length);
+
 		for(int i=0; i<Math.min(logToks.length, logKeyItems.length); i++) {
 			String displayName = logKeyItems[i];
 			if (i>0)
 				displayName = logKeyItems[i] + "(" + i + ")";
-			titles[i] = displayName;
-			series[i] = new XYSeries(displayName);
-			XYSeriesElement serEl = traceFigure.addDataSeries(series[i]);
-			serEl.setLineWidth(defaultLineWidth);	
+			super.addSeries(displayName);
+//			titles[i] = displayName;
+//			series[i] = new XYSeries(displayName);
+//			XYSeriesElement serEl = traceFigure.addDataSeries(series[i]);
+//			serEl.setLineWidth(defaultLineWidth);
+//			
+//			seriesMeans[i] = new XYSeries(displayName + " (mean)");
+//			XYSeriesElement serMeanEl = traceFigure.addDataSeries(seriesMeans[i]);
+//			serMeanEl.setLineWidth(0.8f);
+//			serMeanEl.setLineColor(Color.RED);
+//			
+//			stdUpper[i] = new XYSeries(displayName + " (+stdev)");
+//			XYSeriesElement stdUpperEl = traceFigure.addDataSeries(stdUpper[i]);
+//			stdUpperEl.setLineWidth(0.8f);
+//			stdUpperEl.setLineColor(Color.RED);
+//			stdUpperEl.setStroke(new BasicStroke(1.0f,
+//                    BasicStroke.CAP_BUTT,
+//                    BasicStroke.JOIN_MITER,
+//                    10.0f, new float[]{10.0f}, 0.0f) );
+//			
+//			stdLower[i] = new XYSeries(displayName + " (-stdev)");
+//			XYSeriesElement stdLowerEl = traceFigure.addDataSeries(stdLower[i]);
+//			stdLowerEl.setLineWidth(0.8f);
+//			stdLowerEl.setLineColor(Color.RED);
+//			stdLowerEl.setStroke(new BasicStroke(1.0f,
+//                    BasicStroke.CAP_BUTT,
+//                    BasicStroke.JOIN_MITER,
+//                    10.0f, new float[]{10.0f}, 0.0f) );
+			
 		}
-		means = new double[series.length];
+	//	means = new double[series.length];
 	}
 	
 	public ParamMonitor(AbstractParameter<?> param) {
@@ -43,27 +70,48 @@ public class ParamMonitor extends MonitorPanel {
 		
 		initializeFigure();
 		if (t instanceof Double) {
-			series = new XYSeries[1];
-			series[0] = new XYSeries(param.getName());
-			XYSeriesElement serEl = traceFigure.addDataSeries(series[0]);
-			serEl.setLineWidth(defaultLineWidth);	
+			initializeSeries(1);
+//			series = new XYSeries[1];
+//			seriesMeans = new XYSeries[1];
+//			stdUpper = new XYSeries[1];
+//			stdLower = new XYSeries[1];
+			super.addSeries(param.getName());
+//			series[0] = new XYSeries(param.getName());
+//			XYSeriesElement serEl = traceFigure.addDataSeries(series[0]);
+//			serEl.setLineWidth(defaultLineWidth);	
+//			
+//			seriesMeans[0] = new XYSeries(param.getName() + " (mean)");
+//			XYSeriesElement serMeanEl = traceFigure.addDataSeries(seriesMeans[0]);
+//			serMeanEl.setLineWidth(0.8f);
+//			serMeanEl.setLineColor(Color.RED);
+//			
+//			stdUpper[0] = new XYSeries(param.getName() + " (+stdev)");
+//			XYSeriesElement stdUpperEl = traceFigure.addDataSeries(stdUpper[0]);
+//			stdUpperEl.setLineWidth(0.8f);
+//			stdUpperEl.setLineColor(Color.RED);
+//			
+//			stdLower[0] = new XYSeries(param.getName() + " (-stdev)");
+//			XYSeriesElement stdLowerEl = traceFigure.addDataSeries(stdLower[0]);
+//			stdLowerEl.setLineWidth(0.8f);
+//			stdLowerEl.setLineColor(Color.RED);
 		}
 		else {
 			if (t instanceof double[]) {
 				//also fine, but we'll draw multiple lines
 				double[] vals = (double[])t;
-				series = new XYSeries[ vals.length ];
+				initializeSeries(vals.length);
+//				series = new XYSeries[ vals.length ];
 				for(int i=0; i<vals.length; i++) {
-					series[i] = new XYSeries(param.getName() + "(" + i + ")");
-					XYSeriesElement serEl = traceFigure.addDataSeries(series[i]);
-					serEl.setLineWidth(defaultLineWidth);	
+					addSeries(param.getName() + "(" + i + ")");
+//					XYSeriesElement serEl = traceFigure.addDataSeries(series[i]);
+//					serEl.setLineWidth(defaultLineWidth);	
 				}
 			}
 			else {
 				if (t instanceof Integer) {
 					//OK
 					//We could theoretically do an array of integers?
-					series = new XYSeries[1];
+					addSeries(param.getName());
 				}
 				else {
 					throw new IllegalArgumentException("Can't create a Figure for parameter with type " + t.getClass());
@@ -71,7 +119,7 @@ public class ParamMonitor extends MonitorPanel {
 			}
 		}
 
-		means = new double[series.length];
+		//means = new double[series.length];
 	}
 	
 
@@ -110,12 +158,7 @@ public class ParamMonitor extends MonitorPanel {
 		for(int i=0; i<logToks.length; i++) {
 			try {
 				Double val = Double.parseDouble(logToks[i]);
-				Point2D.Double point = new Point2D.Double(state, val);
-				series[i].addPointInOrder(point);
-				if (histoSeries != null) {
-					histoSeries[i].addValue(val);
-				}
-				means[i] = series[i].getYMean();
+				super.addPointToSeries(i, state, val);
 			}
 			catch (NumberFormatException nex) {
 				//don't worry about it
@@ -125,11 +168,6 @@ public class ParamMonitor extends MonitorPanel {
 		
 		traceFigure.inferBoundsPolitely();
 		repaint();
-	}
-
-	@Override
-	public double[] getMean() {
-		return means;
 	}
 
 	@Override

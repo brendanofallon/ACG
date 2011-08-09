@@ -95,6 +95,14 @@ public class XYSeriesElement extends SeriesElement {
 	}
 	
 	
+	/**
+	 * Set the line stroke property to be the given stroke. The highlight stroke is automagically set to be something a bit wider
+	 * @param newStroke
+	 */
+	public void setStroke(BasicStroke newStroke) {
+		normalStroke = newStroke;
+		highlightStroke = new BasicStroke(newStroke.getLineWidth()+3.0f, newStroke.getEndCap(), newStroke.getLineJoin(), newStroke.getMiterLimit(), newStroke.getDashArray(), newStroke.getDashPhase());
+	}
 	
 	public XYSeries getSeries() {
 		return xySeries;

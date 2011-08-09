@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -37,23 +38,104 @@ import parameter.DoubleParameter;
 
 public abstract class MonitorPanel extends JPanel {
 
-	
 	enum Mode {TRACE, HISTOGRAM};
 	
 	XYSeriesFigure traceFigure;
-	XYSeries[] series;
+	private XYSeries[] series;
+	private XYSeries[] seriesMeans;
+	private XYSeries[] stdUpper;
+	private XYSeries[] stdLower;
+
+	private XYSeriesElement[] seriesEls;
+	private XYSeriesElement[] meansEls;
+	private XYSeriesElement[] stdUpperEls;
+	private XYSeriesElement[] stdLowerEls;
+	
 	HistogramSeries[] histoSeries;
 	String[] titles;
 	String logKey = null;
 	Mode mode = Mode.TRACE;
 
+	private int addedSeriesCount = 0; //The number of XYSeries that have been added via calls to addSeries.
+	
 	//A reference to the current (cold) chain. This will change over time in an MC3 analysis
 	private MCMC currentChain;
 	private boolean chainHasChanged = false;
-
+	
 	int topLabelSize = 11;
 	Font topLabelFont = new Font("Sans", Font.PLAIN, topLabelSize);
 	
+	/**
+	 * Create the arrays that store the data series
+	 * @param seriesCount
+	 */
+	protected void initializeSeries(int seriesCount) {
+		series = new XYSeries[seriesCount];
+		seriesMeans = new XYSeries[seriesCount];
+		stdLower = new XYSeries[seriesCount];
+		stdUpper = new XYSeries[seriesCount];
+		titles = new String[seriesCount];
+		//histoSeries = new HistogramSeries[seriesCount];
+		
+		seriesEls = new XYSeriesElement[seriesCount];
+		meansEls = new XYSeriesElement[seriesCount];
+		stdUpperEls = new XYSeriesElement[seriesCount];
+		stdLowerEls = new XYSeriesElement[seriesCount];
+	}
+	
+	public int addSeries(String seriesName) {
+		if (addedSeriesCount == series.length)
+			throw new IllegalArgumentException("Already added " + series.length + " series");
+		
+		titles[addedSeriesCount] = seriesName;
+		
+		series[addedSeriesCount] = new XYSeries(seriesName);
+		XYSeriesElement serEl = traceFigure.addDataSeries(series[addedSeriesCount]);
+		seriesEls[addedSeriesCount] = serEl;
+		serEl.setLineWidth(defaultLineWidth);
+		
+		seriesMeans[addedSeriesCount] = new XYSeries(seriesName + " (mean)");
+		XYSeriesElement serMeanEl = traceFigure.addDataSeries(seriesMeans[addedSeriesCount]);
+		meansEls[addedSeriesCount] = serMeanEl;
+		serMeanEl.setLineWidth(0.8f);
+		serMeanEl.setLineColor(Color.RED);
+		
+		stdUpper[addedSeriesCount] = new XYSeries(seriesName + " (+stdev)");
+		XYSeriesElement stdUpperEl = traceFigure.addDataSeries(stdUpper[addedSeriesCount]);
+		stdUpperEls[addedSeriesCount] = stdUpperEl;
+		stdUpperEl.setLineWidth(0.8f);
+		stdUpperEl.setLineColor(Color.RED);
+		stdUpperEl.setStroke(new BasicStroke(1.0f,
+                BasicStroke.CAP_BUTT,
+                BasicStroke.JOIN_MITER,
+                10.0f, new float[]{10.0f}, 0.0f) );
+		
+		stdLower[addedSeriesCount] = new XYSeries(seriesName + " (-stdev)");
+		XYSeriesElement stdLowerEl = traceFigure.addDataSeries(stdLower[addedSeriesCount]);
+		stdLowerEls[addedSeriesCount] = stdLowerEl;
+		stdLowerEl.setLineWidth(0.8f);
+		stdLowerEl.setLineColor(Color.RED);
+		stdLowerEl.setStroke(new BasicStroke(1.0f,
+                BasicStroke.CAP_BUTT,
+                BasicStroke.JOIN_MITER,
+                10.0f, new float[]{10.0f}, 0.0f) );
+		
+		addedSeriesCount++;
+		return addedSeriesCount-1;
+	}
+	
+	protected void addPointToSeries(int index, int state, double val) {
+		Point2D.Double point = new Point2D.Double(state, val);
+		series[index].addPointInOrder(point);
+		if (histoSeries != null) {
+			histoSeries[index].addValue(val);
+		}
+		
+		seriesMeans[index].addPointInOrder(new Point2D.Double(state, series[index].getYMean()));
+		
+		stdUpper[index].addPointInOrder(new Point2D.Double(state, series[index].getYMean()+series[index].getYStdev()));
+		stdLower[index].addPointInOrder(new Point2D.Double(state, series[index].getYMean()-series[index].getYStdev()));
+	}
 	/**
 	 * Set the current chain for the analysis. Monitors will get their parameter values from this chain. 
 	 * @param currentChain
@@ -64,7 +146,6 @@ public abstract class MonitorPanel extends JPanel {
 		}
 		this.currentChain = chain;
 	}
-	
 	
 	
 	/**
@@ -89,10 +170,13 @@ public abstract class MonitorPanel extends JPanel {
 		update(steps);
 		chainHasChanged = false;
 		
-		StringBuilder strB = new StringBuilder();
+		//StringBuilder strB = new StringBuilder();
 		
 		
-		double[] means = getMean();
+		double[] means = new double[series.length];
+		for(int i=0; i<means.length; i++)
+			means[i] = seriesMeans[i].lastYValue();
+		
 		StringBuilder meanStr = new StringBuilder();
 		for(int i=0; i< means.length; i++) {
 			meanStr.append(StringUtils.format(means[i]) + " " );
@@ -100,9 +184,7 @@ public abstract class MonitorPanel extends JPanel {
 		topPanel.setText("Mean: " + meanStr + "     Proposals: " + getCalls() + " (" + StringUtils.format( 100*getAcceptanceRate() ) + "%) ");
 		topPanel.revalidate();
 	}
-	
-	public abstract double[] getMean();
-	
+		
 	/**
 	 * Get the number of times a new value has been proposed for this param / likelihood
 	 * @return
@@ -248,13 +330,20 @@ public abstract class MonitorPanel extends JPanel {
 		else { //Current mode is histogram, so we're switching back to trace
 			mode = Mode.TRACE;
 			traceFigure.removeAllSeries();
+			System.out.println("Removed all previous series.. adding back old series elements");
 			for(int i=0; i<series.length; i++) {
-				traceFigure.addDataSeries(series[i]);
+				//traceFigure.addDataSeries(series[i]);
+				traceFigure.addSeriesElement(seriesEls[i]);
+				traceFigure.addSeriesElement(meansEls[i]);
+				traceFigure.addSeriesElement(stdUpperEls[i]);
+				traceFigure.addSeriesElement(stdLowerEls[i]);
 			}
+			traceFigure.inferBoundsFromCurrentSeries();
 			switchItem.setText("Switch to histogram");
 			traceFigure.setXLabel("MCMC State");
 		}
 		
+		System.out.println("Done.. repainting");
 		traceFigure.repaint();
 	}
 

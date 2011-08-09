@@ -24,6 +24,8 @@ public class XYSeries extends AbstractSeries {
 
 	protected List<Point2D> pointList;
 	double ySum = 0; //Stores sum of y-values, useful for calculating mean
+	double prevYSum; //Sum of y-values not including last-added item 
+	double m2n; //Running (online) sum of squares of differences from current mean, useful for computing stdev quickly without rescanning list
 
 	public XYSeries(List<Point2D> points, String name) {
 		this.name = name;
@@ -52,14 +54,44 @@ public class XYSeries extends AbstractSeries {
 		ySum = 0;
 	}
 	
+	/**
+	 * Returns mean of of y-values
+	 * @return
+	 */
 	public double getYMean() {
 		return ySum / pointList.size();
+	}
+	
+	
+	/**
+	 * Returns standard deviation of y-values
+	 * @return
+	 */
+	public double getYStdev() {
+		if (pointList.size()<2)
+			return 0.0;
+		return Math.sqrt( m2n / (pointList.size()-1.0) );
+	}
+	
+	/**
+	 * Returns the y-value of the point at the end of the list
+	 * @return
+	 */
+	public double lastYValue() {
+		if (pointList.size()==0)
+			return Double.NaN;
+		else
+			return pointList.get( pointList.size()-1).getY();
 	}
 	
 	public void addPointInOrder(Point2D newPoint) {
 		if (pointList.size()>0 && newPoint.getX() < getMaxX())
 			throw new IllegalArgumentException("Non-increasing x value");
-		ySum += newPoint.getY();
+		prevYSum = ySum;
+		double y = newPoint.getY();
+		ySum += y;
+		if (pointList.size()>1)
+			m2n += (y-ySum/(pointList.size()+1.0))*(y-prevYSum/(pointList.size()));
 		pointList.add(newPoint);
 	}
 	
