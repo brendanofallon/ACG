@@ -134,7 +134,7 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 			cols = 3;
 		}
 		
-		GridLayout layout = new GridLayout(rows, cols, 2, 2);
+		GridLayout layout = new GridLayout(rows, cols, 1, 1);
 		this.setLayout(layout);
 		for(MonitorPanel fig : figureList) {
 			this.add(fig);

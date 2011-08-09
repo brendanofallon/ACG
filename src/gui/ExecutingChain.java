@@ -36,10 +36,16 @@ public class ExecutingChain extends SwingWorker implements MCMCListener {
 	 * Begin execution of MCMC / MC3
 	 */
 	protected Object doInBackground() throws Exception {
-		if (mc3 != null)
-			mc3.run();
-		else
-			chain.run();
+		
+		try {
+			if (mc3 != null)
+				mc3.run();
+			else
+				chain.run();
+		}
+		catch (Exception ex) {
+			ErrorWindow.showErrorWindow(ex);
+		}
 		return null;
 	}
 

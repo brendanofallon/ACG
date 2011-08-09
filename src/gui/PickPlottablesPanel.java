@@ -243,11 +243,12 @@ public class PickPlottablesPanel extends JPanel {
 			ExecutingChain runner = file.runMCMC();
 			acgParent.setRunner(runner);
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErrorWindow.showErrorWindow(e);
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErrorWindow.showErrorWindow(e);
+		}
+		catch (RuntimeException rex) {
+			ErrorWindow.showErrorWindow(rex);
 		}
 	}
 	

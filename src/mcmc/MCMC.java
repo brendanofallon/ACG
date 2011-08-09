@@ -381,6 +381,7 @@ public class MCMC {
 	 * Run the chains for a number of steps equal to the userRunLength field
 	 */
 	public void run() {
+		
 		run(userRunLength);
 	}
 	
@@ -390,7 +391,9 @@ public class MCMC {
 	 * @param states
 	 */
 	public void run(int states) {
-
+		if (RandomSource.getEngine() == null)
+			throw new IllegalStateException("Random number source not initialized");
+		
 		try {
 						
 			advance(states);
@@ -409,8 +412,14 @@ public class MCMC {
 			System.out.flush();
 			System.err.println("Runtime Exception encountered");
 			System.err.println("MCMC state : " + getCurrentState());
-			System.err.println("Last parameter : " + lastParam.getName());
-			System.err.println("Last modifier : " + lastModifier);
+			if (lastParam != null)
+				System.err.println("Last parameter : " + lastParam.getName());
+			else 
+				System.err.println("Last parameter : none");
+			if (lastModifier != null)
+				System.err.println("Last modifier : " + lastModifier);
+			else
+				System.err.println("Last modifier : none");
 			System.err.println("Random seed: " + RandomSource.getSeed());
 			rex.printStackTrace();
 			// could print stack trace to an error log file? rex.printStackTrace( errorLog )

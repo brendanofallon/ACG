@@ -334,6 +334,8 @@ public class ARGUtils {
 				System.out.println("\t</sequences" + i +">");
 				System.out.println("</alignment" + i +">");
 			}
+			
+			return;
 		}
 		
 		System.err.println("Unknown option : " + args[0]);
