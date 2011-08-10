@@ -12,6 +12,7 @@ public class SpeedMonitor extends MonitorPanel {
 	int count = 0;
 	
 	public SpeedMonitor() {
+		super(0);
 		initializeFigure();		
 		initializeSeries(1);
 		super.addSeries("mc.rate");
@@ -27,8 +28,6 @@ public class SpeedMonitor extends MonitorPanel {
 		lastState = state;
 		lastTime = timeNow;
 		addPointToSeries(0, state, speed);
-		traceFigure.inferBoundsPolitely();
-		repaint();
 	}
 
 	@Override

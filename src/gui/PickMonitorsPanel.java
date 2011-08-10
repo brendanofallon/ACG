@@ -22,7 +22,9 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTree;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
@@ -216,8 +218,9 @@ public class PickMonitorsPanel extends JPanel {
 		centerPanel.add(likesScrollPane);
 		
 		JPanel infoPanel = new JPanel();
-		infoPanel.setBorder(BorderFactory.createEmptyBorder(2, 4, 2, 2));
+		infoPanel.setBorder(BorderFactory.createEmptyBorder(2, 8, 2, 2));
 		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+		infoPanel.setAlignmentX(LEFT_ALIGNMENT);
 		infoPanel.setPreferredSize(new Dimension(250, 400));
 		infoPanel.add(new JLabel("Analysis properties :"));
 		
@@ -257,14 +260,27 @@ public class PickMonitorsPanel extends JPanel {
 		
 		infoPanel.add(Box.createVerticalGlue());
 		
+		JPanel bottomInfoPanel = new JPanel();
+		bottomInfoPanel.setLayout(new BoxLayout(bottomInfoPanel, BoxLayout.X_AXIS));
+		bottomInfoPanel.setPreferredSize(new Dimension(250, 30));
+		bottomInfoPanel.setMaximumSize(new Dimension(1050, 30));
 		
+		SpinnerNumberModel model = new SpinnerNumberModel((int)(chainLength*0.10), 0, chainLength, 1000);
+		burninSpinner = new JSpinner(model);
+		bottomInfoPanel.add(new JLabel("Burnin :"));
+		bottomInfoPanel.add(burninSpinner);
+		burninSpinner.setPreferredSize(new Dimension(100, 30));
+		bottomInfoPanel.setAlignmentX(LEFT_ALIGNMENT);
+		bottomInfoPanel.add(Box.createGlue());
 		JButton startButton = new JButton("Start");
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				startChain();
 			}
 		});
-		infoPanel.add(startButton);
+		
+		bottomInfoPanel.add(startButton);
+		infoPanel.add(bottomInfoPanel);
 		centerPanel.add(infoPanel);
 		this.add(centerPanel, BorderLayout.CENTER);	
 	}
@@ -436,7 +452,8 @@ public class PickMonitorsPanel extends JPanel {
 			}
 			
 			
-			MainOutputFrame outputPane = new MainOutputFrame(chain, freq);
+			int burnin = (Integer)burninSpinner.getValue();
+			MainOutputFrame outputPane = new MainOutputFrame(chain, freq, burnin);
 
 			//Attempt to turn off System.out writing for state loggers...
 			List<String> stateLoggerLabels = file.getLabelForClass(StateLogger.class);
@@ -485,7 +502,7 @@ public class PickMonitorsPanel extends JPanel {
 		String descriptor;
 	}
 		
-	
+	private JSpinner burninSpinner;
 	private JTree paramTree;
 	private JTree likeTree;
 }

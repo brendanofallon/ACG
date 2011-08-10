@@ -186,7 +186,6 @@ public class StartFrame extends JPanel {
 	protected void browseForFile() {
 		//On macs, we'd like to use a file dialog, otherwise we use a JFileChooser
 		if (macMode) {
-			System.out.println("Mac mode true, showing dialog");
 			FileDialog fileDialog = new FileDialog(acgParent, "Choose a file");
 			fileDialog.setMode(FileDialog.LOAD);
 			String userDir = System.getProperty("user.dir");

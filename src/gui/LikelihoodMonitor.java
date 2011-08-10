@@ -1,14 +1,8 @@
-package gui;
+	package gui;
 
-import java.awt.Color;
-import java.awt.geom.Point2D;
 import java.util.List;
 
-import parameter.AbstractParameter;
 import xml.XMLLoader;
-
-import gui.figure.series.XYSeries;
-import gui.figure.series.XYSeriesElement;
 
 import component.LikelihoodComponent;
 
@@ -16,7 +10,8 @@ public class LikelihoodMonitor extends MonitorPanel {
 
 	private LikelihoodComponent comp;
 	
-	public LikelihoodMonitor(LikelihoodComponent comp) {
+	public LikelihoodMonitor(LikelihoodComponent comp, int burnin) {
+		super(burnin);
 		this.comp = comp;
 		initializeFigure();
 		initializeSeries(1);
@@ -56,9 +51,7 @@ public class LikelihoodMonitor extends MonitorPanel {
 		}
 
 		Double val = comp.getCurrentLogLikelihood();
-		super.addPointToSeries(0, state, val);
-		traceFigure.inferBoundsPolitely();
-		repaint();
+		addPointToSeries(0, state, val);
 	}
 
 

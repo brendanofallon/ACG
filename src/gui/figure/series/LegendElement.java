@@ -28,7 +28,7 @@ public class LegendElement extends FigureElement {
 	Stroke highlightStroke;
 	
 	LegendConfigFrame configFrame;
-	Color backgroundColor = new Color(0.99f, 0.99f, 0.99f, 0.9f);
+	Color backgroundColor = new Color(0.99f, 0.99f, 0.99f, 0.85f);
 	
 	public LegendElement(SeriesFigure fig) {
 		super(fig);
@@ -46,7 +46,7 @@ public class LegendElement extends FigureElement {
 			return;
 		}
 		
-		g.setClip(0, 0, round(xFactor), round(yFactor));
+		
 		g.setColor(backgroundColor);
 		g.setFont(font);
 		int markerSpace = 20;
@@ -57,17 +57,25 @@ public class LegendElement extends FigureElement {
 		yPosn.clear();
 		//Calculate the positions
 		g.setColor(Color.green);
+		int count = 0;
 		for(SeriesElement el : seriesParent.getSeriesElements()) {
-			Rectangle2D rect = fm.getStringBounds(el.getName(), 0, el.getName().length(), g);
-			yPosn.add(round(bounds.y*yFactor+pos+rect.getHeight()) );
+			if (el.getSeries().size()>0) {
+				Rectangle2D rect = fm.getStringBounds(el.getName(), 0, el.getName().length(), g);
+				yPosn.add(round(bounds.y*yFactor+pos+rect.getHeight()) );
 
-			pos += rect.getHeight()+5;
-			if (round(rect.getWidth())>maxWidth)
-				maxWidth = round(rect.getWidth());
-			totHeight += rect.getHeight();
+				pos += rect.getHeight()+5;
+				if (round(rect.getWidth())>maxWidth)
+					maxWidth = round(rect.getWidth());
+				totHeight += rect.getHeight();
+				count++;
+			}
 		}
 		
+		//No elements have size > 0, so abort drawing the legend
+		if (count == 0)
+			return;
 		
+		g.setClip(0, 0, round(xFactor), round(yFactor));
 		bounds.width = (maxWidth+markerSpace+10)/xFactor;
 		bounds.x = Math.min((double)parent.getWidth()/(double)xFactor-bounds.width-0.01, bounds.x);
 		bounds.height = (yPosn.get( yPosn.size()-1)+5)/yFactor-bounds.y;
@@ -75,6 +83,8 @@ public class LegendElement extends FigureElement {
 		if (isSelected()) {
 			g.setColor(highlightColor);
 			g.fillRect(round(bounds.x*xFactor-2.0), round(bounds.y*yFactor-2.0), round(bounds.width*xFactor+5.0), round(bounds.height*yFactor+5.0));
+			g.setColor(Color.white);
+			g.fillRect(round(bounds.x*xFactor), round(bounds.y*yFactor), round(bounds.width*xFactor), round(bounds.height*yFactor));			
 		}
 		
 		//Draw the background
@@ -84,29 +94,31 @@ public class LegendElement extends FigureElement {
 		
 		int i = 0;
 		for(SeriesElement el : seriesParent.getSeriesElements()) {
-			g.setColor(el.getLineColor());
-			if (el.getType() == XYSeriesElement.LINES)
-				g.drawLine(round(bounds.x*xFactor+4), yPosn.get(i)-5, round(bounds.x*xFactor+markerSpace-4), yPosn.get(i)-5);
-			
-			if (el.getType() == XYSeriesElement.POINTS_AND_LINES) {
-				g.drawLine(round(bounds.x*xFactor+4), yPosn.get(i)-5, round(bounds.x*xFactor+markerSpace-4), yPosn.get(i)-5);
-				el.drawMarker(g, round(bounds.x*xFactor+10), yPosn.get(i)-5);
-			}
-			
-			if (el.getType() == XYSeriesElement.POINTS) {
-				//g.drawLine(round(bounds.x*xFactor+4), yPosn.get(i)-5, round(bounds.x*xFactor+markerSpace-4), yPosn.get(i)-5);
-				el.drawMarker(g, round(bounds.x*xFactor+10), yPosn.get(i)-5);
-			}
-			
-			if (el.getType() == XYSeriesElement.BOXES) {
+			if (el.getSeries().size()>0) {
 				g.setColor(el.getLineColor());
-				g.fillRect(round(bounds.x*xFactor+3), yPosn.get(i)-6, round(markerSpace/2.0-3), 6);
-				g.fillRect(round(bounds.x*xFactor+1+markerSpace/2.0), yPosn.get(i)-10, round(markerSpace/2.0-4), 10);
+				if (el.getType() == XYSeriesElement.LINES)
+					g.drawLine(round(bounds.x*xFactor+4), yPosn.get(i)-5, round(bounds.x*xFactor+markerSpace-4), yPosn.get(i)-5);
+
+				if (el.getType() == XYSeriesElement.POINTS_AND_LINES) {
+					g.drawLine(round(bounds.x*xFactor+4), yPosn.get(i)-5, round(bounds.x*xFactor+markerSpace-4), yPosn.get(i)-5);
+					el.drawMarker(g, round(bounds.x*xFactor+10), yPosn.get(i)-5);
+				}
+
+				if (el.getType() == XYSeriesElement.POINTS) {
+					//g.drawLine(round(bounds.x*xFactor+4), yPosn.get(i)-5, round(bounds.x*xFactor+markerSpace-4), yPosn.get(i)-5);
+					el.drawMarker(g, round(bounds.x*xFactor+10), yPosn.get(i)-5);
+				}
+
+				if (el.getType() == XYSeriesElement.BOXES) {
+					g.setColor(el.getLineColor());
+					g.fillRect(round(bounds.x*xFactor+3), yPosn.get(i)-6, round(markerSpace/2.0-3), 6);
+					g.fillRect(round(bounds.x*xFactor+1+markerSpace/2.0), yPosn.get(i)-10, round(markerSpace/2.0-4), 10);
+				}
+
+				g.setColor(Color.black);
+				g.drawString(el.getName(), round(bounds.x*xFactor) + markerSpace, yPosn.get(i));
+				i++;
 			}
-		
-			g.setColor(Color.black);
-			g.drawString(el.getName(), round(bounds.x*xFactor) + markerSpace, yPosn.get(i));
-			i++;
 		}
 		
 

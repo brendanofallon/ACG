@@ -44,15 +44,17 @@ public abstract class MonitorPanel extends JPanel {
 	enum Mode {TRACE, HISTOGRAM};
 	
 	XYSeriesFigure traceFigure;
+	private XYSeries[] burnins;
 	private XYSeries[] series;
 	private XYSeries[] seriesMeans;
 	private XYSeries[] stdUpper;
 	private XYSeries[] stdLower;
 
+	private XYSeriesElement[] burninEls;
 	private XYSeriesElement[] seriesEls;
 	private XYSeriesElement[] meansEls;
-	private XYSeriesElement[] stdUpperEls;
 	private XYSeriesElement[] stdLowerEls;
+	private XYSeriesElement[] stdUpperEls;
 	
 	
 	HistogramSeries[] histoSeries;
@@ -70,21 +72,34 @@ public abstract class MonitorPanel extends JPanel {
 	Font topLabelFont = new Font("Sans", Font.PLAIN, topLabelSize);
 	
 	//Determines whether or not we draw the value series, means, and errors
+	private boolean showBurnin = true;
 	private boolean showValues = true;
 	private boolean showMeans = true;
 	private boolean showStdevs = true;
+	
+	//Initial fraction of values in series to ignore
+	private final int burnin;
+	private boolean burninReached = false;
+	
+	public static final Color[] seriesColors = new Color[]{Color.blue, Color.green, Color.orange, Color.cyan, Color.magenta, Color.YELLOW, Color.black};
+	
+	public MonitorPanel(int burnin) {
+		this.burnin = burnin;
+	}
 	
 	/**
 	 * Create the arrays that store the data series
 	 * @param seriesCount
 	 */
 	protected void initializeSeries(int seriesCount) {
+		burnins = new XYSeries[seriesCount];
 		series = new XYSeries[seriesCount];
 		seriesMeans = new XYSeries[seriesCount];
 		stdLower = new XYSeries[seriesCount];
 		stdUpper = new XYSeries[seriesCount];
 		titles = new String[seriesCount];
 		
+		burninEls = new XYSeriesElement[seriesCount];
 		seriesEls = new XYSeriesElement[seriesCount];
 		meansEls = new XYSeriesElement[seriesCount];
 		stdUpperEls = new XYSeriesElement[seriesCount];
@@ -97,10 +112,17 @@ public abstract class MonitorPanel extends JPanel {
 		
 		titles[addedSeriesCount] = seriesName;
 		
+		burnins[addedSeriesCount] = new XYSeries(seriesName + " (burnin)");
+		XYSeriesElement burnEl = traceFigure.addDataSeries(burnins[addedSeriesCount]);
+		burninEls[addedSeriesCount] = burnEl;
+		burnEl.setLineWidth(defaultLineWidth);
+		burnEl.setLineColor(Color.gray);
+		
 		series[addedSeriesCount] = new XYSeries(seriesName);
 		XYSeriesElement serEl = traceFigure.addDataSeries(series[addedSeriesCount]);
 		seriesEls[addedSeriesCount] = serEl;
 		serEl.setLineWidth(defaultLineWidth);
+		serEl.setLineColor(seriesColors[addedSeriesCount % (seriesColors.length)]);
 		
 		seriesMeans[addedSeriesCount] = new XYSeries(seriesName + " (mean)");
 		XYSeriesElement serMeanEl = traceFigure.addDataSeries(seriesMeans[addedSeriesCount]);
@@ -164,6 +186,8 @@ public abstract class MonitorPanel extends JPanel {
 		traceFigure.removeAllSeries();
 		if (mode==Mode.TRACE) {
 			for(int i=0; i<series.length; i++) {
+				if (showBurnin)
+					traceFigure.addSeriesElement(burninEls[i]);
 				if (showValues)
 					traceFigure.addSeriesElement(seriesEls[i]);
 				if (showMeans)
@@ -179,15 +203,22 @@ public abstract class MonitorPanel extends JPanel {
 
 	protected void addPointToSeries(int index, int state, double val) {
 		Point2D.Double point = new Point2D.Double(state, val);
-		series[index].addPointInOrder(point);
-		if (histoSeries != null) {
-			histoSeries[index].addValue(val);
+		if (state < burnin) {
+			burnins[index].addPointInOrder(point);
+		}
+		else {
+			series[index].addPointInOrder(point);
+			if (histoSeries != null) {
+				histoSeries[index].addValue(val);
+			}
+
+			seriesMeans[index].addPointInOrder(new Point2D.Double(state, series[index].getYMean()));
+			stdUpper[index].addPointInOrder(new Point2D.Double(state, series[index].getYMean()+series[index].getYStdev()));
+			stdLower[index].addPointInOrder(new Point2D.Double(state, series[index].getYMean()-series[index].getYStdev()));
 		}
 		
-		seriesMeans[index].addPointInOrder(new Point2D.Double(state, series[index].getYMean()));
-		
-		stdUpper[index].addPointInOrder(new Point2D.Double(state, series[index].getYMean()+series[index].getYStdev()));
-		stdLower[index].addPointInOrder(new Point2D.Double(state, series[index].getYMean()-series[index].getYStdev()));
+		traceFigure.inferBoundsPolitely();
+		traceFigure.repaint();
 	}
 	/**
 	 * Set the current chain for the analysis. Monitors will get their parameter values from this chain. 
@@ -232,7 +263,6 @@ public abstract class MonitorPanel extends JPanel {
 				meanStr.append(StringUtils.format(means[i]) + " " );
 			}
 			topPanel.setText("Mean: " + meanStr + "     Proposals: " + getCalls() + " (" + StringUtils.format( 100*getAcceptanceRate() ) + "%) ");
-
 			topPanel.revalidate();
 		}
 	}
@@ -321,7 +351,6 @@ public abstract class MonitorPanel extends JPanel {
 			} 
 		 });
 		
-		 
 		 
 		 final JCheckBoxMenuItem showValsItem =new JCheckBoxMenuItem("Show trace");
 		 showValsItem.setSelected(true);
@@ -423,7 +452,7 @@ public abstract class MonitorPanel extends JPanel {
 			traceFigure.removeAllSeries();
 			System.out.println("Removed all previous series.. adding back old series elements");
 			for(int i=0; i<series.length; i++) {
-				//traceFigure.addDataSeries(series[i]);
+				traceFigure.addSeriesElement(burninEls[i]);
 				traceFigure.addSeriesElement(seriesEls[i]);
 				traceFigure.addSeriesElement(meansEls[i]);
 				traceFigure.addSeriesElement(stdUpperEls[i]);
@@ -434,7 +463,6 @@ public abstract class MonitorPanel extends JPanel {
 			traceFigure.setXLabel("MCMC State");
 		}
 		
-		System.out.println("Done.. repainting");
 		traceFigure.repaint();
 	}
 

@@ -31,21 +31,23 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 	private boolean initialized = false;
 	
 	private List<MonitorPanel> figureList = new ArrayList<MonitorPanel>();
+	final int burnin;
 	
-	public MainOutputFrame(MCMC chain, int frequency) {
+	public MainOutputFrame(MCMC chain, int frequency, int burnin) {
 		this.mcmc = chain;
 		chain.addListener(this);
 		this.frequency = frequency;
 		initComponents();
 		setMCMC(chain);
+		this.burnin = burnin;
 	}
 	
 	public void addChart(AbstractParameter<?> param, String logKey) {		
 		MonitorPanel figure;
 		if (logKey != null)
-			 figure = new ParamMonitor(param, logKey);
+			 figure = new ParamMonitor(param, logKey, burnin);
 		else
-			 figure = new ParamMonitor(param);
+			 figure = new ParamMonitor(param, burnin);
 		
 		figureList.add(figure);
 		this.add(figure);
@@ -56,7 +58,7 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 	}
 	
 	public void addChart(LikelihoodComponent comp) {
-		MonitorPanel figure = new LikelihoodMonitor(comp);	
+		MonitorPanel figure = new LikelihoodMonitor(comp, burnin);	
 		figureList.add(figure);
 		this.add(figure);
 	}
@@ -129,7 +131,13 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 			rows = 2;
 			cols = 3;
 		}
-		if (numFigs >=7 && numFigs < 10) {
+		
+		if (numFigs == 7 || numFigs == 8) {
+			rows = 2;
+			cols = 4;
+		}
+		
+		if (numFigs == 9) {
 			rows = 3;
 			cols = 3;
 		}

@@ -77,6 +77,27 @@ public class Histogram {
 		currentStdev = 0;
 	}
 	
+	
+	public void removeValue(double val) {
+		double prevMean = getMean(); //Needed to compute running stdev
+		count--;		
+		currentSum -= val;
+		
+		if (count>1)
+			currentStdev += (val-prevMean)*(val-getMean());
+		if (val<minValue) {
+			lessThanMin--;
+			return;
+		}
+		if (val>=maxValue) {
+			moreThanMax--;
+			return;
+		}
+		
+		int bin = getBin(val);
+		hist[ bin ]--;
+	}
+	
 	public void addValue(double val) {
 		double prevMean = getMean(); //Needed to compute running stdev
 		count++;		

@@ -14,7 +14,8 @@ public class ParamMonitor extends MonitorPanel {
 
 	private AbstractParameter<?> param;
 	
-	public ParamMonitor(AbstractParameter<?> param, String logKey) {
+	public ParamMonitor(AbstractParameter<?> param, String logKey, int burnin) {
+		super(burnin);
 		this.param = param;
 		this.logKey = logKey;
 		initializeFigure();
@@ -39,7 +40,8 @@ public class ParamMonitor extends MonitorPanel {
 		}
 	}
 	
-	public ParamMonitor(AbstractParameter<?> param) {
+	public ParamMonitor(AbstractParameter<?> param, int burnin) {
+		super(burnin);
 		this.param = param;
 		Object t = param.getValue();
 		
@@ -108,16 +110,12 @@ public class ParamMonitor extends MonitorPanel {
 		for(int i=0; i<logToks.length; i++) {
 			try {
 				Double val = Double.parseDouble(logToks[i]);
-				super.addPointToSeries(i, state, val);
+				addPointToSeries(i, state, val);
 			}
 			catch (NumberFormatException nex) {
 				//don't worry about it
 			}
 		}
-
-		
-		traceFigure.inferBoundsPolitely();
-		repaint();
 	}
 
 	@Override

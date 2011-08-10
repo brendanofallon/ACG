@@ -45,7 +45,7 @@ public class XYSeries extends AbstractSeries {
 	public XYSeries(List<Point2D> points) {
 		this(points, "Untitled series");
 	}
-
+	
 	/**
 	 * Remove all values from point list
 	 */
@@ -271,10 +271,11 @@ public class XYSeries extends AbstractSeries {
 	 * Remove the point at the given index
 	 * @param i
 	 */
-	public void removePoint(int i) {
+	public Point2D removePoint(int i) {
 		Point2D p = pointList.remove(i);
 		if (p != null)
 			ySum -= p.getY();
+		return p;
 	}
 	
 	/**

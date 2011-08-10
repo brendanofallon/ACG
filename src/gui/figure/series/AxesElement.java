@@ -352,15 +352,20 @@ public class AxesElement extends FigureElement {
 	
 	public void setXAxisOptions(AxesOptions ops) {
 		if (ops.min != Double.NaN) {
+			if (ops.min!=minXVal)
+				hasUserX = true;
 			minXVal = ops.min;
 		}
-		if (ops.max != Double.NaN)
+		if (ops.max != Double.NaN) {
+			if (ops.max!=maxXVal)
+				hasUserX = true;
 			maxXVal = ops.max;
+		}
 		if (ops.tickSpacing > 0) {
 			this.xTickSpacing = ops.tickSpacing;
 		}
 
-		hasUserX = true;
+		
 		drawXGrid = ops.drawAxis;
 		recalculateBounds = true;
 		setFontSize(ops.fontSize);
@@ -368,16 +373,20 @@ public class AxesElement extends FigureElement {
 	}
 	
 	public void setYAxisOptions(AxesOptions ops) {
-		if (ops.min != Double.NaN)
+		if (ops.min != Double.NaN) {
+			if (ops.min!=minYVal)
+				hasUserY = true;
 			minYVal = ops.min;
-		if (ops.max != Double.NaN)
+		}
+		if (ops.max != Double.NaN) {
+			if (ops.max!=maxYVal)
+				hasUserY = true;
 			maxYVal = ops.max;
+		}
 		if (ops.tickSpacing > 0) {
 			this.yTickSpacing = ops.tickSpacing;
 		}
 		
-
-		hasUserY = true;
 		drawYGrid = ops.drawAxis;
 		recalculateBounds = true;
 		setFontSize(ops.fontSize);
