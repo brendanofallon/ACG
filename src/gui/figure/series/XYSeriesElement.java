@@ -101,7 +101,7 @@ public class XYSeriesElement extends SeriesElement {
 	 */
 	public void setStroke(BasicStroke newStroke) {
 		normalStroke = newStroke;
-		highlightStroke = new BasicStroke(newStroke.getLineWidth()+3.0f, newStroke.getEndCap(), newStroke.getLineJoin(), newStroke.getMiterLimit(), newStroke.getDashArray(), newStroke.getDashPhase());
+		highlightStroke = new BasicStroke(newStroke.getLineWidth()+highlightWidthIncrease, newStroke.getEndCap(), newStroke.getLineJoin(), newStroke.getMiterLimit(), newStroke.getDashArray(), newStroke.getDashPhase());
 	}
 	
 	public XYSeries getSeries() {
@@ -201,8 +201,14 @@ public class XYSeriesElement extends SeriesElement {
 
 		xySeries.setName( ops.name );
 		setLineColor(ops.lineColor);
-		normalStroke = new BasicStroke((float)ops.lineWidth);
-		highlightStroke = new BasicStroke((float)ops.lineWidth+highlightWidthIncrease);
+		
+//		normalStroke = new BasicStroke((float)ops.lineWidth);
+//		highlightStroke = new BasicStroke((float)ops.lineWidth+highlightWidthIncrease);
+		
+		normalStroke =  new BasicStroke((float)ops.lineWidth, normalStroke.getEndCap(), normalStroke.getLineJoin(), normalStroke.getMiterLimit(), normalStroke.getDashArray(), normalStroke.getDashPhase());;
+		highlightStroke = new BasicStroke(normalStroke.getLineWidth()+highlightWidthIncrease, normalStroke.getEndCap(), normalStroke.getLineJoin(), normalStroke.getMiterLimit(), normalStroke.getDashArray(), normalStroke.getDashPhase());
+
+		
 		currentMarkerType = ops.markerType;
 		markerSize = ops.markerSize;
 		//Make sure lines are painted on top of boxes

@@ -54,6 +54,7 @@ public abstract class MonitorPanel extends JPanel {
 	private XYSeriesElement[] stdUpperEls;
 	private XYSeriesElement[] stdLowerEls;
 	
+	
 	HistogramSeries[] histoSeries;
 	String[] titles;
 	String logKey = null;
@@ -83,7 +84,6 @@ public abstract class MonitorPanel extends JPanel {
 		stdLower = new XYSeries[seriesCount];
 		stdUpper = new XYSeries[seriesCount];
 		titles = new String[seriesCount];
-		//histoSeries = new HistogramSeries[seriesCount];
 		
 		seriesEls = new XYSeriesElement[seriesCount];
 		meansEls = new XYSeriesElement[seriesCount];
@@ -132,6 +132,14 @@ public abstract class MonitorPanel extends JPanel {
 		return addedSeriesCount-1;
 	}
 	
+	/**
+	 * Get the number of series that have been added to this monitor so far
+	 * @return
+	 */
+	public int getSeriesCount() {
+		return addedSeriesCount;
+	}
+	
 	public void setShowMeans(boolean showMeans) {
 		this.showMeans = showMeans;
 		redrawSeries();
@@ -145,6 +153,11 @@ public abstract class MonitorPanel extends JPanel {
 	public void setShowStdevs(boolean showStds) {
 		this.showStdevs = showStds;
 		redrawSeries();
+	}
+	
+	public void setShowLegend(boolean showLegend) {
+		traceFigure.setShowLegend(showLegend);
+		traceFigure.repaint();
 	}
 	
 	private void redrawSeries() {
@@ -209,20 +222,19 @@ public abstract class MonitorPanel extends JPanel {
 	public void updateMonitor(int steps) {
 		update(steps);
 		chainHasChanged = false;
-		
-		//StringBuilder strB = new StringBuilder();
-		
-		
-		double[] means = new double[series.length];
-		for(int i=0; i<means.length; i++)
-			means[i] = seriesMeans[i].lastYValue();
-		
-		StringBuilder meanStr = new StringBuilder();
-		for(int i=0; i< means.length; i++) {
-			meanStr.append(StringUtils.format(means[i]) + " " );
+		if (series != null && series.length > 0) {
+			double[] means = new double[seriesMeans.length];
+			for(int i=0; i<seriesMeans.length; i++)
+				means[i] = seriesMeans[i].lastYValue();
+
+			StringBuilder meanStr = new StringBuilder();
+			for(int i=0; i< seriesMeans.length; i++) {
+				meanStr.append(StringUtils.format(means[i]) + " " );
+			}
+			topPanel.setText("Mean: " + meanStr + "     Proposals: " + getCalls() + " (" + StringUtils.format( 100*getAcceptanceRate() ) + "%) ");
+
+			topPanel.revalidate();
 		}
-		topPanel.setText("Mean: " + meanStr + "     Proposals: " + getCalls() + " (" + StringUtils.format( 100*getAcceptanceRate() ) + "%) ");
-		topPanel.revalidate();
 	}
 		
 	/**
@@ -299,6 +311,17 @@ public abstract class MonitorPanel extends JPanel {
 		 });
 		 
 		 popup.add(saveImage);
+		 
+		 final JCheckBoxMenuItem showLegendItem =new JCheckBoxMenuItem("Show legend");
+		 showLegendItem.setSelected(true);
+		 popup.add(showLegendItem);
+		 showLegendItem.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				setShowLegend(showLegendItem.isSelected());
+			} 
+		 });
+		
+		 
 		 
 		 final JCheckBoxMenuItem showValsItem =new JCheckBoxMenuItem("Show trace");
 		 showValsItem.setSelected(true);

@@ -38,6 +38,8 @@ public class AxesConfigFrame extends JFrame {
 	
 	JCheckBox gridLinesBox;
 	
+	JSpinner fontSizeSpinner;
+	
 	JTextField tickXField;
 	JTextField maxXField;
 	JTextField minXField;
@@ -96,8 +98,13 @@ public class AxesConfigFrame extends JFrame {
 		
 		
 
-		//SpinnerModel model = new SpinnerNumberModel(11, 0, 50, 1 );
-		
+		SpinnerModel model = new SpinnerNumberModel(11, 0, 50, 1 );
+		fontSizeSpinner = new JSpinner(model);
+		JPanel panel35 = new JPanel();
+		panel35.setLayout(new FlowLayout(FlowLayout.LEFT));
+		panel35.add(fontSizeSpinner);
+		panel35.add(new JLabel("Font size"));
+		mainPanel.add(panel35);
 		
 		panel4 = new JPanel();
 		panel4.setLayout(new BorderLayout());
@@ -160,7 +167,15 @@ public class AxesConfigFrame extends JFrame {
 			tickSpacing = (max-min)/4.0;
 		}
 		
-		AxesOptions ops = new AxesOptions(min, max, tickSpacing, gridLinesBox.isSelected() );
+		Integer fontSize = 12;
+		try {
+			fontSize = (Integer)fontSizeSpinner.getValue();
+		}
+		catch (Exception ex) {
+			//Probably will never happen
+		}
+		
+		AxesOptions ops = new AxesOptions(min, max, tickSpacing, gridLinesBox.isSelected(), fontSize );
 		
 		if (changingXAxis)
 			currentAxes.setXAxisOptions(ops);
@@ -176,7 +191,7 @@ public class AxesConfigFrame extends JFrame {
 		currentAxes = null;
 	}
 	
-	public void display(AxesElement axes, double min, double max, double num, java.awt.Point pos, String axis) {
+	public void display(AxesElement axes, double min, double max, double num, int fontSize, java.awt.Point pos, String axis) {
 		setLocationRelativeTo(parentFig);
 		if (axis.equals(X_AXIS)) {
 			this.setTitle("Configure X Axis");
@@ -199,6 +214,9 @@ public class AxesConfigFrame extends JFrame {
 			gridLinesBox.setSelected( axes.showYGrid() );
 		}
 		tickXField.setText(StringUtils.format(num,4));
+		
+		fontSizeSpinner.setValue(new Integer(fontSize));
+		
 		setVisible(true);
 	}
 	
@@ -208,16 +226,19 @@ public class AxesConfigFrame extends JFrame {
 		public double min;
 		public double tickSpacing;
 		public boolean drawAxis;
+		public int fontSize;
 		
 		public AxesOptions(double min, 
 							double max, 
 							double tickSpacing,
-							boolean axis) 
+							boolean axis,
+							int fontSize) 
 		{
 			this.max = max;
 			this.min = min;
 			this.tickSpacing = tickSpacing;
 			this.drawAxis = axis;
+			this.fontSize = fontSize;
 		}
 		
 	}

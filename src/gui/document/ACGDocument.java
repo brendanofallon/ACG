@@ -102,7 +102,6 @@ public class ACGDocument {
 				ExecutingChain runner = new ExecutingChain(mcmc);
 				runner.execute();
 				return runner;
-				
 			} catch (InstantiationException e) {
 				throw new InvalidInputFileException("Could not create mcmc object : " + e.getMessage());
 			} catch (IllegalAccessException e) {

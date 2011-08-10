@@ -132,7 +132,7 @@ public class AxesElement extends FigureElement {
 	public AxesElement(Figure parent) {
 		super(parent);
 		labelFormatter  = new DecimalFormat("###.##");
-		mantissaFormatter  = new DecimalFormat("#.##");
+		mantissaFormatter  = new DecimalFormat("#.###");
 		scientificFormatter = new DecimalFormat("0.0##E0##");
 		xLabelFont = new Font("Sans", Font.PLAIN, fontSize);
 		exponentFont = new Font("Sans", Font.PLAIN, round(fontSize/1.3));
@@ -143,6 +143,15 @@ public class AxesElement extends FigureElement {
 		mousePos = new java.awt.Point(0,0);
 	}
 	
+	/**
+	 * Set the point size of the font used to draw the axes labels
+	 * @param fontSize
+	 */
+	public void setFontSize(int fontSize) {
+		this.fontSize = fontSize;
+		xLabelFont = new Font("Sans", Font.PLAIN, fontSize);
+		exponentFont = new Font("Sans", Font.PLAIN, round(fontSize/1.3));
+	}
 	
 	protected void mouseMoved(Point2D pos) {
 		if (bounds.contains(pos)) {
@@ -281,13 +290,13 @@ public class AxesElement extends FigureElement {
 		if (xAxisContains(pos.x, pos.y) )  {
 			isXSelected = true;
 			isYSelected = false;
-			configFrame.display(this, minXVal, maxXVal, xTickSpacing, pos, AxesConfigFrame.X_AXIS);
+			configFrame.display(this, minXVal, maxXVal, xTickSpacing, fontSize, pos, AxesConfigFrame.X_AXIS);
 		}
 		else {
 			if (yAxisContains(pos.x, pos.y) ) {
 				isXSelected = false;
 				isYSelected = true;
-				configFrame.display(this, minYVal, maxYVal, yTickSpacing, pos, AxesConfigFrame.Y_AXIS);
+				configFrame.display(this, minYVal, maxYVal, yTickSpacing, fontSize, pos, AxesConfigFrame.Y_AXIS);
 			}
 
 		}
@@ -354,6 +363,7 @@ public class AxesElement extends FigureElement {
 		hasUserX = true;
 		drawXGrid = ops.drawAxis;
 		recalculateBounds = true;
+		setFontSize(ops.fontSize);
 		parent.repaint();
 	}
 	
@@ -370,6 +380,7 @@ public class AxesElement extends FigureElement {
 		hasUserY = true;
 		drawYGrid = ops.drawAxis;
 		recalculateBounds = true;
+		setFontSize(ops.fontSize);
 		parent.repaint();
 	}
 	

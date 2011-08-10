@@ -281,6 +281,19 @@ public class XYSeriesFigure extends SeriesFigure {
 	}
 	
 	/**
+	 * Add / remove the legend element from the figure 
+	 * @param showLegend
+	 */
+	public void setShowLegend(boolean showLegend) {
+		if (showLegend && !elements.contains(legend)) {
+			addElement(legend);
+		}
+		if ( (!showLegend) ) {
+			elements.remove(legend);
+		}
+	}
+	
+	/**
 	 * Set the distance (in data units) between y ticks on the axes element
 	 * @param spacing
 	 */

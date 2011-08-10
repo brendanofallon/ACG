@@ -21,6 +21,7 @@ public class LikelihoodMonitor extends MonitorPanel {
 		initializeFigure();
 		initializeSeries(1);
 		addSeries("Log likelihood");
+		setShowStdevs(false);
 	}
 	
 	

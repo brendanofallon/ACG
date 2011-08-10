@@ -37,9 +37,9 @@ public abstract class SeriesElement extends FigureElement {
 	public static final String[] styleTypes = {XYSeriesElement.LINES, XYSeriesElement.POINTS, XYSeriesElement.POINTS_AND_LINES, XYSeriesElement.BOXES };
 	
 	//The strokes used to paint the line and the highlighted line
-	Stroke normalStroke;
-	Stroke highlightStroke;
-	protected float highlightWidthIncrease = 4.0f; //Width increase of highlight stroke over normal stroke
+	BasicStroke normalStroke;
+	BasicStroke highlightStroke;
+	protected float highlightWidthIncrease = 3.25f; //Width increase of highlight stroke over normal stroke
 	
 	//If we want to display multiple series with box shapes, then we divide their 
 	//size by a certain factor, and offset them by a certain amount
