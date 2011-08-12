@@ -3,6 +3,7 @@ package gui.document;
 import gui.ExecutingChain;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +69,9 @@ public class ACGDocument {
 			turnOffMCMC(); //Find all mcmc objects and make sure they're not set to run right away
 			loader.instantiateAll();
 			
+		} catch (InvocationTargetException ex) {
+			doc = null;
+			throw new InvalidInputFileException(ex.getTargetException().getMessage());
 		} catch (Exception e) {
 			doc = null;
 			throw new InvalidInputFileException(e.getMessage());
@@ -92,6 +96,8 @@ public class ACGDocument {
 				throw new InvalidInputFileException("Could not create mc3 object : " + e.getMessage());
 			} catch (IllegalAccessException e) {
 				throw new InvalidInputFileException("Could not create mc3 object : " + e.getMessage());
+			} catch (InvocationTargetException e) {
+				throw new InvalidInputFileException("Could not create mc3 object : " + e.getMessage());
 			}
 			
 		}
@@ -105,6 +111,8 @@ public class ACGDocument {
 			} catch (InstantiationException e) {
 				throw new InvalidInputFileException("Could not create mcmc object : " + e.getMessage());
 			} catch (IllegalAccessException e) {
+				throw new InvalidInputFileException("Could not create mcmc object : " + e.getMessage());
+			} catch (InvocationTargetException e) {
 				throw new InvalidInputFileException("Could not create mcmc object : " + e.getMessage());
 			}
 			
@@ -145,9 +153,9 @@ public class ACGDocument {
 	/**
 	 * Instantiate all objects in this document
 	 */
-	public void createAllObjects() {
-		loader.instantiateAll();
-	}
+//	public void createAllObjects() {
+//		loader.instantiateAll();
+//	}
 	
 	/**
 	 * Put the key=value pair into the attribute list for the object with the given label. This will
@@ -183,8 +191,9 @@ public class ACGDocument {
 	 * @return
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
+	 * @throws InvocationTargetException 
 	 */
-	public Object getObjectForLabel(String label) throws InstantiationException, IllegalAccessException {
+	public Object getObjectForLabel(String label) throws InstantiationException, IllegalAccessException, InvocationTargetException {
 		return loader.getObjectForLabel(label);
 	}
 	

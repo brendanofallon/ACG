@@ -21,10 +21,14 @@ import mcmc.MCMCListener;
 public class MarginalTreeLogger implements MCMCListener {
 
 	public static final String XML_SITE = "site";
+	public static final String XML_FILENAME = "filename";
+	public static final String XML_FREQUENCY = "frequency";
+	public static final String XML_BURNIN = "burnin";
+	
 	ARG arg;
 	int site;
-	int logFrequency = 20000;
-	int burnin = 5000000;
+	int logFrequency = 10000;
+	int burnin = 1000000;
 	BufferedWriter writer;
 	
 	
@@ -46,7 +50,7 @@ public class MarginalTreeLogger implements MCMCListener {
 			throw new IllegalArgumentException("You must specify a ('site=X') to construct a marginal tree logger");
 		}
 		
-		String filename = attrs.get("filename");
+		String filename = attrs.get(XML_FILENAME);
 		if (filename != null) {
 			try {
 				File file = new File(filename);
@@ -61,11 +65,18 @@ public class MarginalTreeLogger implements MCMCListener {
 			throw new IllegalArgumentException("You must specify a file name ('filename=X') to construct a marginal tree logger");
 		}
 				
-		String freqStr = attrs.get("frequency");
+		String freqStr = attrs.get(XML_FREQUENCY);
 		if (freqStr != null) {
 			Integer freq = Integer.parseInt(freqStr);
 			if (freq != null)
 				logFrequency = freq;
+		}
+		
+		String burnStr = attrs.get(XML_BURNIN);
+		if (burnStr != null) {
+			Integer burnParsed = Integer.parseInt(freqStr);
+			if (burnParsed != null)
+				burnin = burnParsed;
 		}
 		
 	}

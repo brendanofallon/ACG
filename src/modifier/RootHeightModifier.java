@@ -59,19 +59,7 @@ public class RootHeightModifier extends ARGModifier {
 		
 		double minHeight = Math.max(leftChild.getHeight(), rightChild.getHeight() );
 
-		double ratio = 0.5; //Fraction of scale moves to sliding moves
-
-		double hr = 1.0;
-		
-		Double newHeight;
-		if (RandomSource.getNextUniform() < ratio) {
-			double multiplier = Math.exp( RandomSource.getNextUniform()-0.5); 
-			newHeight = rootHeight*multiplier;
-			hr = multiplier;
-		}
-		else {
-			newHeight = rootHeight + (RandomSource.getNextUniform()-0.5)*windowSize;
-		}
+		Double newHeight = rootHeight + (RandomSource.getNextUniform()-0.5)*windowSize;
 
 
 		int count = 0;
@@ -101,7 +89,7 @@ public class RootHeightModifier extends ARGModifier {
 			changeTuning();
 		}
 
-		return hr;
+		return 1.0;
 	}
 	
 	

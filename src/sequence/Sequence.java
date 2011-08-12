@@ -83,7 +83,7 @@ public class Sequence {
 	public void checkValidity() throws BadSequenceException {
 		for(int i=0; i<seq.length(); i++) {
 			char c = Character.toUpperCase( seq.charAt(i) ); 
-			if (c != 'A' && c != 'G' && c != 'T' && c != 'C') {
+			if (c != 'A' && c != 'G' && c != 'T' && c != 'C' && c != GAP && c != UNKNOWN && c != UNKNOWN2) {
 				throw new BadSequenceException("Sequence contains invalid characters.");
 			}
 		}

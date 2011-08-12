@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,6 +131,9 @@ public class PickMonitorsPanel extends JPanel {
 			} catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			
 		}
@@ -186,6 +190,9 @@ public class PickMonitorsPanel extends JPanel {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}	
@@ -303,14 +310,9 @@ public class PickMonitorsPanel extends JPanel {
 			try {
 				mc3 = (MC3)file.getObjectForLabel(mc3Labels.get(0));
 				return mc3.getRunLength();
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
+			} catch (Exception e) {
+				ErrorWindow.showErrorWindow(e);
+			} 
 			
 		}
 		else {
@@ -319,10 +321,8 @@ public class PickMonitorsPanel extends JPanel {
 			try {
 				chain = (MCMC)file.getObjectForLabel(mcLabels.get(0));
 				return chain.getUserRunLength();
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				ErrorWindow.showErrorWindow(e);
 			}
 			
 		}
@@ -362,11 +362,9 @@ public class PickMonitorsPanel extends JPanel {
 					if (param.getModifierCount()>0)
 						sum++;
 				}
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			}
+			} catch (Exception e) {
+				ErrorWindow.showErrorWindow(e);
+			} 
 			
 		}
 		return sum;
@@ -491,6 +489,8 @@ public class PickMonitorsPanel extends JPanel {
 		}
 		catch (RuntimeException rex) {
 			ErrorWindow.showErrorWindow(rex);
+		} catch (Exception e) {
+			ErrorWindow.showErrorWindow(e);
 		}
 	}
 	

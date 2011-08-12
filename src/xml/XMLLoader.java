@@ -317,8 +317,11 @@ public class XMLLoader {
 
 	/**
 	 * Traverse all elements in the xml file and create all objects 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public void instantiateAll() {
+	public void instantiateAll() throws InstantiationException, IllegalAccessException, InvocationTargetException {
 		NodeList nodeLst = doc.getDocumentElement().getChildNodes();
 
 		for (int s = 0; s < nodeLst.getLength(); s++) {
@@ -329,13 +332,7 @@ public class XMLLoader {
 				Element el = (Element) node;
 				String label = el.getNodeName();
 
-				try {
-					Object obj = getObjectForLabel(label);
-				} catch (InstantiationException e) {
-					System.out.println("Could not instantiate object with label : " + label + "\n" + e);
-				} catch (IllegalAccessException e) {
-					System.out.println("Could not instantiate object with label : " + label + "\n " + e);
-				}
+				Object obj = getObjectForLabel(label);
 			}
 
 		}	
@@ -412,8 +409,9 @@ public class XMLLoader {
 	 * @return The object found / created
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException 
 	 */
-	public Object getObjectForLabel(String label) throws InstantiationException, IllegalAccessException {
+	public Object getObjectForLabel(String label) throws InstantiationException, IllegalAccessException, InvocationTargetException {
 		Object obj = objMap.get(label);
 
 		if (obj == null) {
@@ -462,16 +460,10 @@ public class XMLLoader {
 							args[j] = getObjectForLabel( consItems.refLabels[j-1]);
 						}
 						
-						try {
-							if (verbose)
-								System.out.println("Creating object of class " + clazz + " with label " + label);
-							obj = cons.newInstance(args);
-						}
-						catch (Exception ex) {
-							System.out.println("Error while trying to create object with label " + label + " : \n" + ex.toString());
-							ex.printStackTrace();
-							System.exit(0);
-						}
+						if (verbose)
+							System.out.println("Creating object of class " + clazz + " with label " + label);
+						obj = cons.newInstance(args);
+						
 					}
 					
 
@@ -480,7 +472,7 @@ public class XMLLoader {
 					System.exit(0);
 				} catch (IllegalArgumentException e) {
 					System.out.println("\n Illegal arg exception when trying to instantiate : " + label + "\n" + e);
-					System.exit(0);
+					//System.exit(0);
 				} 
 			}
 

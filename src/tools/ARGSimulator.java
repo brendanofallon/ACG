@@ -22,12 +22,12 @@ import arg.argIO.ARGParser;
 public class ARGSimulator {
 
 	public static void generateHistograms() {
-		double N = 100;
-		double rho = 2.0 / 2.0;
-		int trials = 50000;
+		double N = 1;
+		double rho = 0.0 / (2.0);
+		int trials = 100000;
 		int tips = 10;
 
-		Histogram rootHeightHistoT = new Histogram(0, 500, 100);		
+		Histogram rootHeightHistoT = new Histogram(0, 10, 100);		
 		Histogram bpHisto = new Histogram(0, 35, 35);
 		
 		for(int i=0; i<trials; i++) {
