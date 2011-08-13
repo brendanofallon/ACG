@@ -102,7 +102,7 @@ public class PickMonitorsPanel extends JPanel {
 		
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
-		JLabel topLabel = new JLabel("Choose some properties to monitor from the lists below");
+		JLabel topLabel = new JLabel("Choose properties to monitor from the lists below");
 		topPanel.add(topLabel);
 		add(topPanel, BorderLayout.NORTH);
 		
@@ -125,11 +125,9 @@ public class PickMonitorsPanel extends JPanel {
 					addPropertiesToTree(paramTree, paramRoot, (AbstractParameter<?>)obj);
 				}
 			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				ErrorWindow.showErrorWindow(e);
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				ErrorWindow.showErrorWindow(e);
 			}
 			
 		}
@@ -156,9 +154,11 @@ public class PickMonitorsPanel extends JPanel {
 		paramTree.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
 				TreePath path = paramTree.getPathForLocation(me.getX(), me.getY());
-				Object obj = path.getLastPathComponent();
-				if (obj != null && obj instanceof DefaultMutableTreeNode) {
-					toggleSelectedParam( (DefaultMutableTreeNode)obj);
+				if (path != null) {
+					Object obj = path.getLastPathComponent();
+					if (obj != null && obj instanceof DefaultMutableTreeNode) {
+						toggleSelectedParam( (DefaultMutableTreeNode)obj);
+					}
 				}
 			}
 		});
@@ -166,9 +166,14 @@ public class PickMonitorsPanel extends JPanel {
 		
 		//plottables.add(speedInfo);
 		
+		JPanel paramPanel = new JPanel();
+		paramPanel.setLayout(new BorderLayout());
 		JScrollPane paramScrollPane = new JScrollPane(paramTree);
 		paramScrollPane.setPreferredSize(new Dimension(200, 400));
-		centerPanel.add(paramScrollPane);
+		JLabel paramTopLabel = new JLabel("<html><b>Parameter properties:</b><html>");
+		paramPanel.add(paramTopLabel, BorderLayout.NORTH);
+		paramPanel.add(paramScrollPane, BorderLayout.CENTER);
+		centerPanel.add(paramPanel);
 		
 		
 		DefaultMutableTreeNode likeRoot = new DefaultMutableTreeNode("Root");
@@ -183,11 +188,9 @@ public class PickMonitorsPanel extends JPanel {
 					addPropertiesToTree(likeTree, likeRoot, (LikelihoodComponent)obj);
 				}
 			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				ErrorWindow.showErrorWindow(e);
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				ErrorWindow.showErrorWindow(e);
 			}	
 		}
 		
@@ -201,50 +204,60 @@ public class PickMonitorsPanel extends JPanel {
 		likeTree.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
 				TreePath path = likeTree.getPathForLocation(me.getX(), me.getY());
-				Object obj = path.getLastPathComponent();
-				if (obj != null && obj instanceof DefaultMutableTreeNode) {
-					toggleSelectedLikelihood( (DefaultMutableTreeNode)obj);
+				if (path != null) {
+					Object obj = path.getLastPathComponent();
+					if (obj != null && obj instanceof DefaultMutableTreeNode) {
+						toggleSelectedLikelihood( (DefaultMutableTreeNode)obj);
+					}
 				}
 			}
 		});
 		
 
 
-
-
+		JPanel likesPanel = new JPanel();
+		likesPanel.setLayout(new BorderLayout());
 		
 		JScrollPane likesScrollPane = new JScrollPane(likeTree);
 		likesScrollPane.setPreferredSize(new Dimension(200, 400));
-		centerPanel.add(likesScrollPane);
+		JLabel likeTopLabel = new JLabel("<html><b>Likelihood components:</b><html>");
+		likesPanel.add(likeTopLabel, BorderLayout.NORTH);
+		likesPanel.add(likesScrollPane, BorderLayout.CENTER);
+		centerPanel.add(Box.createHorizontalStrut(4));
+		centerPanel.add(likesPanel);
 		
 		JPanel infoPanel = new JPanel();
 		infoPanel.setBorder(BorderFactory.createEmptyBorder(2, 8, 2, 2));
 		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
 		infoPanel.setAlignmentX(LEFT_ALIGNMENT);
 		infoPanel.setPreferredSize(new Dimension(250, 400));
-		infoPanel.add(new JLabel("Analysis properties :"));
+		infoPanel.add(new JLabel("<html><b>Analysis properties :</b></html>"));
 		
 		int modParamCount = countModifiableParameters();
 		int likelihoodCount = countLikelihoods();
 		int loggerCount = countLoggers();
 		int chainLength = findChainLength();
 		
-
-		JLabel totParams = new JLabel("Total parameter count : " + countAllParameters());
+		infoPanel.add(Box.createVerticalStrut(6));
+		JLabel totParams = new JLabel("Total parameters: " + countAllParameters());
 		infoPanel.add(totParams);
 		
-		JLabel modParams = new JLabel("Modifiable parameter count : " + modParamCount);
+		JLabel modParams = new JLabel("Modifiable parameters : " + modParamCount);
+		infoPanel.add(Box.createVerticalStrut(2));
 		infoPanel.add(modParams);
 		
-		JLabel totLikes = new JLabel("Total likelihood count : " + likelihoodCount);
+		JLabel totLikes = new JLabel("Total likelihoods : " + likelihoodCount);
+		infoPanel.add(Box.createVerticalStrut(2));
 		infoPanel.add(totLikes);
 		
 		JLabel chainLengthLabel = new JLabel("Chain length : " + chainLength);
+		infoPanel.add(Box.createVerticalStrut(2));
 		infoPanel.add(chainLengthLabel);
 		
 		infoPanel.add(Box.createVerticalStrut(20));
-		JLabel loggerLabel = new JLabel("Total logger count : " + loggerCount);
+		JLabel loggerLabel = new JLabel("Total loggers : " + loggerCount);
 		infoPanel.add(loggerLabel);
+		infoPanel.add(Box.createVerticalStrut(2));
 		
 		List<String> loggerLabels = (file.getLabelForClass(PropertyLogger.class));
 		List<String> stateLoggers = (file.getLabelForClass(StateLogger.class));
@@ -464,9 +477,10 @@ public class PickMonitorsPanel extends JPanel {
 				}
 			}
 			
+			
 			for(PlottableInfo plottable : selectedPlottables) {
 				if (plottable.label.equals("mc.speed")) {
-					outputPane.addChart(new SpeedMonitor());
+					outputPane.addMonitor(new SpeedMonitor());
 				}
 				else {
 					Object obj = file.getObjectForLabel(plottable.label);
@@ -474,14 +488,33 @@ public class PickMonitorsPanel extends JPanel {
 						outputPane.addChart( (AbstractParameter<?>)obj, plottable.key);
 					}
 					if (obj instanceof LikelihoodComponent) {
-						outputPane.addChart( (LikelihoodComponent)obj);
+						outputPane.addMonitor( (LikelihoodComponent)obj);
 					}
 				}
 			}
 
 			acgParent.initializeProgressBar(chain, runMax);
 			acgParent.replaceCenterPanel(outputPane);
-
+			
+			int charts = outputPane.getMonitorCount();
+			if (charts == 0) {
+				acgParent.setPreferredSize(new Dimension(350, 70));
+				acgParent.setSize(new Dimension(350, 70));
+			}
+			else {
+				if (charts < 4) {
+					acgParent.setPreferredSize(new Dimension(1000, 500));
+					acgParent.setSize(new Dimension(1000, 500));
+				}
+				else {
+					acgParent.setPreferredSize(new Dimension(1000, 600));
+					acgParent.setSize(new Dimension(1000, 800));
+				}
+			}
+			acgParent.pack();
+			acgParent.validate();
+			
+			
 			ExecutingChain runner = file.runMCMC();
 			acgParent.setRunner(runner);
 		} catch (InstantiationException e) {

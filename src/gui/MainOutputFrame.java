@@ -53,17 +53,31 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 		this.add(figure);
 	}
 	
-	public void addChart(AbstractParameter<?> param) {
+	/**
+	 * Create and add a new MonitorPanel to this component that displays information
+	 * from the given parameter
+	 * @param param
+	 */
+	public void addMonitor(AbstractParameter<?> param) {
 		addChart(param, null);
 	}
 	
-	public void addChart(LikelihoodComponent comp) {
+	/**
+	 * Create and add a new MonitorPanel to this component that displays information
+	 * from the given Likelihood
+	 * @param param
+	 */
+	public void addMonitor(LikelihoodComponent comp) {
 		MonitorPanel figure = new LikelihoodMonitor(comp, burnin);	
 		figureList.add(figure);
 		this.add(figure);
 	}
 	
-	public void addChart(MonitorPanel panel) {	
+	/**
+	 * Add a the given MonitorPanel to this component 
+	 * @param param
+	 */
+	public void addMonitor(MonitorPanel panel) {	
 		figureList.add(panel);
 		this.add(panel);
 	}
@@ -155,5 +169,13 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 	@Override
 	public void chainIsFinished() {
 		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * Return the number of (Monitors) that have been added to this pane
+	 * @return
+	 */
+	public int getMonitorCount() {
+		return figureList.size();
 	}
 }

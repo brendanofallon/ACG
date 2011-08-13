@@ -1,7 +1,7 @@
 <!--  Another example ACG input file. This one is very similar to the previous one, but instead
  	of containing the alignment, it references an external file, example2.fas, that stores
  	the sequences. It also uses the TN93 model of mutation, which includes two free
- 	parameters, kappaR and kappaY, and estimates base frequencies from the data as well. 
+ 	parameters, KappaR and KappaY, and estimates base frequencies from the data as well. 
  	
  	In addition to the usual 'StateLogger', which tracks parameter values, this file also
  	shows how you can define loggers that track the TMRCA along the length of the sequence
@@ -23,7 +23,7 @@
  It's a type of Parameter, and so has a frequency specifying how often new values are 
  proposed by the MCMC machinery. It also has a list of modifiers (proposal kernels) that
  propose new values	 -->
-<arg class="arg.ARG" frequency="30.0">
+<ARG class="arg.ARG" frequency="30.0">
 	<alignment />
 	<modifiers class="list">
 		<recombAddRemove class="modifier.RecombAddRemove"/>
@@ -34,7 +34,7 @@
 		<shifter class="modifier.BreakpointShifter" />
 		<bpSwap class="modifier.BreakpointSwapper" />
 	</modifiers>
-</arg>
+</ARG>
 
 
 
@@ -46,20 +46,20 @@
 	<stationaries class="dlCalculation.substitutionModels.BaseFrequencies" stationaries="0.25 0.25 0.25 0.25" >
 		<stationariesMod class="modifier.DirichletModifier" />
 	</stationaries>
-	<kappaR class="parameter.DoubleParameter" name="kappaR" value="2.0" lowerBound="0.5" upperBound="500">
-		<kappaRMod class="modifier.SimpleModifier" />
-	</kappaR>
-	<kappaY class="parameter.DoubleParameter" name="kappaY" value="2.0" lowerBound="0.5" upperBound="500">
-		<kappaYMod class="modifier.SimpleModifier" />
-	</kappaY>
+	<KappaR class="parameter.DoubleParameter" name="KappaR" value="2.0" lowerBound="0.5" upperBound="500">
+		<KappaRMod class="modifier.SimpleModifier" />
+	</KappaR>
+	<KappaY class="parameter.DoubleParameter" name="KappaY" value="2.0" lowerBound="0.5" upperBound="500">
+		<KappaYMod class="modifier.SimpleModifier" />
+	</KappaY>
 </mutationModel>
 
 <!--  A likelihood component that computes the probability of observing the data conditional on the ARG
 	  At minimum, it needs references to the mutation model, the ARG, and the data matrix -->
-<DLCalculator class="dlCalculation.DataLikelihood"> 
+<DataLikelihood class="dlCalculation.DataLikelihood"> 
 	<mutationModel />
-	<arg />
-</DLCalculator>
+	<ARG />
+</DataLikelihood>
 
 
 
@@ -78,15 +78,15 @@
 
 <!-- Place an exponential prior on the recombination rate with a mean of 25 -->
 <!-- The prior helps to confine the ARGs with a reasonable number of recombinations -->
-<recPrior class="priors.ExponentialPrior" mean="25">
+<RecRatePrior class="priors.ExponentialPrior" mean="25">
 	<constantRecRate />
-</recPrior>
+</RecRatePrior>
 
 <!-- A likelihood object specifying the probability of observing the ARG  -->
 <coalescentLikelihood class="coalescent.CoalescentLikelihood">
 	<constantPopSize />
 	<constantRecRate />
-	<arg />
+	<ARG />
 </coalescentLikelihood>
 
 
@@ -100,12 +100,12 @@
 
 <!-- A logger that tracks the position of recombination breakpoints along the sequence -->
 <bpLocLogger class="logging.BreakpointLocation" filename="example2_bp.txt" frequency="5000" burnin="100000">
-	<arg />  
+	<ARG />  
 </bpLocLogger>
 
-<!-- a logger that tracks the distribution of TMRCA (root height of marginal trees) along the sequence -->
+<!-- a logger that tracks the distribution of TMRCA (root height of mARGinal trees) along the sequence -->
 <rootHeightLogger class="logging.RootHeightDensity" filename="example2_rootHeight.txt" frequency="5000" burnin="100000">
-	<arg />
+	<ARG />
 </rootHeightLogger>
 
 
@@ -119,14 +119,14 @@
 		<constantPopSize />
 		<constantRecRate />
 		<stationaries />
-		<kappaR />
-		<kappaY />
-		<arg />  
+		<KappaR />
+		<KappaY />
+		<ARG />  
 	</parameters>
 	<likelihoodComponents class="list">
-		<recPrior />
+		<RecRatePrior />
 		<coalescentLikelihood />
-		<DLCalculator />
+		<DataLikelihood />
 	</likelihoodComponents>
 	<loggers class="list">
 		<statelogger />

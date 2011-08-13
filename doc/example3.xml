@@ -77,7 +77,7 @@
 
 
 <!--  The Ancestral Recombination Graph (ARG) that is the central feature of the analysis -->
-<arg class="arg.ARG" frequency="30.0">
+<ARG class="arg.ARG" frequency="30.0">
 	<alignment />
 	<modifiers class="list">
 		<recombAddRemove class="modifier.RecombAddRemove"/>
@@ -88,7 +88,7 @@
 		<shifter class="modifier.BreakpointShifter" />
 		<bpSwap class="modifier.BreakpointSwapper" />
 	</modifiers>
-</arg>
+</ARG>
 
 
 
@@ -123,11 +123,11 @@
 
 <!--  A likelihood component that computes the probability of observing the data conditional on the ARG
 	  At minimum, it needs references to the mutation model, the ARG, and the data matrix -->
-<DLCalculator class="dlCalculation.DataLikelihood"> 
+<DataLikelihood class="dlCalculation.DataLikelihood"> 
 	<mutationModel />
 	<siteRateModel />
-	<arg />
-</DLCalculator>
+	<ARG />
+</DataLikelihood>
 
 
 
@@ -147,15 +147,15 @@
 
 <!-- Place an exponential prior on the recombination rate with a mean of 25 -->
 <!-- The prior helps to confine the ARGs with a reasonable number of recombinations -->
-<recPrior class="priors.ExponentialPrior" mean="25">
+<RecRatePrior class="priors.ExponentialPrior" mean="25">
 	<constantRecRate />
-</recPrior>
+</RecRatePrior>
 
 <!-- A likelihood object specifying the probability of observing the ARG  -->
 <coalescentLikelihood class="coalescent.CoalescentLikelihood">
 	<constantPopSize />
 	<constantRecRate />
-	<arg />
+	<ARG />
 </coalescentLikelihood>
 
 
@@ -171,12 +171,12 @@
 
 <!-- A logger that tracks the position of recombination breakpoints along the sequence -->
 <bpLocLogger class="logging.BreakpointLocation" filename="example3_bp.txt" frequency="5000" burnin="10000">
-	<arg />  
+	<ARG />  
 </bpLocLogger>
 
-<!-- a logger that tracks the distribution of TMRCA (root height of marginal trees) along the sequence -->
+<!-- a logger that tracks the distribution of TMRCA (root height of mARGinal trees) along the sequence -->
 <rootHeightLogger class="logging.RootHeightDensity" filename="example3_rootHeight.txt" frequency="5000" burnin="10000">
-	<arg />
+	<ARG />
 </rootHeightLogger>
 
 
@@ -193,13 +193,13 @@
 		<stationaries />
 		<alpha />
 		<kappaY />
-		<arg />  
+		<ARG />  
 	</parameters>
 	<likelihoodComponents class="list">
-		<recPrior />
+		<RecRatePrior />
 		<alphaPrior />
 		<coalescentLikelihood />
-		<DLCalculator />
+		<DataLikelihood />
 	</likelihoodComponents>
 	<loggers class="list">
 		<statelogger />

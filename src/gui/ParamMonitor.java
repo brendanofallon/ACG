@@ -79,8 +79,6 @@ public class ParamMonitor extends MonitorPanel {
 				}
 			}
 		}
-
-		//means = new double[series.length];
 	}
 	
 

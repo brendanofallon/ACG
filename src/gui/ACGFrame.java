@@ -67,8 +67,8 @@ public class ACGFrame extends JFrame implements WindowListener {
 		//We handle things from a listener of our own design
 		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(this);
+		this.setLocationByPlatform(true);
 		pack();
-		
 	}
 	
 	/**
@@ -166,18 +166,19 @@ public class ACGFrame extends JFrame implements WindowListener {
 		
 		centerPanel = new StartFrame(this, onAMac);
 		mainContainer.add(centerPanel, BorderLayout.CENTER);
-		//mainContainer.add(new BuildPanel(), BorderLayout.CENTER);
 		
 		bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
 		progressBar = new JProgressBar(0, 1000);
 		progressBar.setPreferredSize(new Dimension(400, 24));
+		progressBar.setMaximumSize(new Dimension(4000, 26));
 		
 		bottomPanel.add(Box.createHorizontalStrut(20));
 		bottomPanel.add(progressBar);
 		runButton = new JButton();
 		runButton.setBorder(null);
 		runButton.setPreferredSize(new Dimension(40, 40));
+		runButton.setMaximumSize(new Dimension(40, 40));
 		ImageIcon runIcon = getIcon("icons/runButton.png");
 		runButton.setIcon(runIcon);
 		runButton.setToolTipText("Resume run");
@@ -190,6 +191,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 		
 		pauseButton = new JButton();
 		pauseButton.setPreferredSize(new Dimension(41, 40));
+		pauseButton.setMaximumSize(new Dimension(41, 40));
 		ImageIcon pauseIcon = getIcon("icons/pauseButton.png");
 		pauseButton.setToolTipText("Pause run");
 		pauseButton.setIcon(pauseIcon);
