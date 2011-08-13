@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 public class MonitorHeader extends JPanel {
 
 	protected String text = "";
+	protected String label = "";
 	protected Font font = new Font("Sans", Font.PLAIN, 12);
 	
 	
@@ -40,6 +41,11 @@ public class MonitorHeader extends JPanel {
 		repaint();
 	}
 	
+	public void setLabel(String label) {
+		this.label = label;
+		repaint();
+	}
+	
 	public void setFont(Font font) {
 		this.font = font;
 	}
@@ -63,25 +69,17 @@ public class MonitorHeader extends JPanel {
 			g2d.drawLine(0, i, getWidth(), i);
 		}
 		
-		int textX = Math.min(getWidth()/4, 80);
+		int textX = Math.min(getWidth()/4, 20);
 		int textY = getHeight()-4;
 		
 		g2d.setFont(font);
 		
 		//Text and shadow
 		g2d.setColor(new Color(0.9f, 0.9f, 0.9f, 0.7f));		
-		g2d.drawString(text, textX+1, textY+1);
+		g2d.drawString(label + "  " + text, textX+1, textY+1);
 		
 		g2d.setColor(Color.black);
-		g2d.drawString(text, textX, textY);
-
-		
-//		g2d.setColor(bottomLight);
-//		g2d.drawLine(0, getHeight()-2, getWidth(), getHeight()-2);
-//		
-//		g2d.setColor(bottomDark);
-//		g2d.drawLine(0, getHeight()-1, getWidth(), getHeight()-1);
-		
+		g2d.drawString(label + "  " + text, textX, textY);
 		
 	}
 	

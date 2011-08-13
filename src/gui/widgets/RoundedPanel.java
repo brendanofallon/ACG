@@ -20,13 +20,14 @@ public class RoundedPanel extends JPanel {
 
 	private Color borderColor = Color.gray;
 	private BasicStroke borderStroke = new BasicStroke(1.2f);
-	private Color gradientBottom = new Color(0.7f, 0.7f, 0.7f);
+	private Color gradientBottom = new Color(0.75f, 0.75f, 0.75f);
 	private Color gradientTop = new Color(0.95f, 0.95f, 0.95f);
 	private GradientPaint gradient = null;
 	
 	public RoundedPanel() {
-		this.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+		this.setBorder(BorderFactory.createEmptyBorder(8, 4, 4, 4));
 		this.setAlignmentY(CENTER_ALIGNMENT);
+		this.setAlignmentX(CENTER_ALIGNMENT);
 	}
 	
 	public void paintComponent(Graphics g) {

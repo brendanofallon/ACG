@@ -157,6 +157,8 @@ public class StartFrame extends JPanel {
 			inputFile = new File( filenameField.getText() );
 		}
 		
+		acgParent.setTitle("ACG : " + inputFile.getName() );
+		
 		if (inputFile == null || (! inputFile.exists())) {
 			String filename = inputFile == null ? "(empty)" : inputFile.getName();
 			JOptionPane.showMessageDialog(getRootPane(), "The file " + filename + " cannot be found.");

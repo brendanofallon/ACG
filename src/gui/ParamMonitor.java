@@ -37,14 +37,23 @@ public class ParamMonitor extends MonitorPanel {
 		if (getSeriesCount() > 2) {
 			setShowMeans(false);
 			setShowStdevs(false);
+			setHeaderLabel(param.getAttribute(XMLLoader.NODE_ID));
 		}
+		else {
+			String paramLabel = param.getAttribute(XMLLoader.NODE_ID);
+			if (logKey.equals(paramLabel))
+				setHeaderLabel(paramLabel );
+			else
+				setHeaderLabel(paramLabel + " : " + logKey);
+		}
+		
 	}
 	
 	public ParamMonitor(AbstractParameter<?> param, int burnin) {
 		super(burnin);
 		this.param = param;
 		Object t = param.getValue();
-		
+		setHeaderLabel(param.getAttribute(XMLLoader.NODE_ID));
 		initializeFigure();
 		if (t instanceof Double) {
 			initializeSeries(1);

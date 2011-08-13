@@ -101,14 +101,14 @@
  	 forget to include a reference to it in the DL calculator -->
 <siteRateModel class="dlCalculation.siteRateModels.GammaSiteRates" categories="4">
 	<!-- This site rate model also needs a DoubleParameter that controls the shape of the distribution -->
-	<alphaParam class="parameter.DoubleParameter" name="alpha" frequency="10" value="1.0" lowerBound="0.01" upperBound="50">
+	<alpha class="parameter.DoubleParameter" frequency="10" value="1.0" lowerBound="0.01" upperBound="50">
 		<alphaMod class="modifier.ScaleModifier"/>
-	</alphaParam>
+	</alpha>
 </siteRateModel>
 
 <!-- A Gamma-distributed prior on the 'alpha' parameter of the site rates model -->
 <alphaPrior class="priors.GammaPrior" mean="1.0" stdev="2.0">
-	<alphaParam />
+	<alpha />
 </alphaPrior>
 
 <!-- The F84 model of nucletotide evolution  -->
@@ -128,8 +128,6 @@
 	<siteRateModel />
 	<arg />
 </DLCalculator>
-
-
 
 
 
@@ -193,7 +191,7 @@
 		<constantPopSize />
 		<constantRecRate />
 		<stationaries />
-		<alphaParam />
+		<alpha />
 		<kappaY />
 		<arg />  
 	</parameters>

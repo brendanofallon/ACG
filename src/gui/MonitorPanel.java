@@ -106,6 +106,14 @@ public abstract class MonitorPanel extends JPanel {
 		stdLowerEls = new XYSeriesElement[seriesCount];
 	}
 	
+	/**
+	 * Set the header string drawn on the top panel
+	 * @param label
+	 */
+	public void setHeaderLabel(String label) {
+		topPanel.setLabel(label);
+	}
+	
 	public int addSeries(String seriesName) {
 		if (addedSeriesCount == series.length)
 			throw new IllegalArgumentException("Already added " + series.length + " series");
@@ -262,7 +270,7 @@ public abstract class MonitorPanel extends JPanel {
 			for(int i=0; i< seriesMeans.length; i++) {
 				meanStr.append(StringUtils.format(means[i]) + " " );
 			}
-			topPanel.setText("Mean: " + meanStr + "     Proposals: " + getCalls() + " (" + StringUtils.format( 100*getAcceptanceRate() ) + "%) ");
+			topPanel.setText("Mean: " + meanStr + "    Proposals: " + getCalls() + " (" + StringUtils.format( 100*getAcceptanceRate() ) + "%) ");
 			topPanel.revalidate();
 		}
 	}

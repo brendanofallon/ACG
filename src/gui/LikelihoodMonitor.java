@@ -16,6 +16,7 @@ public class LikelihoodMonitor extends MonitorPanel {
 		initializeFigure();
 		initializeSeries(1);
 		addSeries("Log likelihood");
+		setHeaderLabel(comp.getAttribute(XMLLoader.NODE_ID));
 		setShowStdevs(false);
 	}
 	
