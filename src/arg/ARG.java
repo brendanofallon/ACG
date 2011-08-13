@@ -36,6 +36,7 @@ import sequence.Alignment;
 import sequence.CharacterColumn;
 import sequence.DNAUtils;
 import sequence.DataMatrix;
+import xml.InvalidInputFileException;
 
 /**
  * A collection of nodes joined by edges. Nodes are of 3 types, CoalNodes, RecombNodes, and TipNodes.  
@@ -400,16 +401,14 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 
 			}
 			catch (Exception ex) {
-				System.err.println("Could not read tree from file : " + fileStr);
-				System.err.println("Reason : " + ex);
-				System.exit(0);
+
+				throw new InvalidInputFileException("Could not read initial ARG from file, reason: " + ex.getMessage());
 			}
 		}
 		else {
 
 			if (!hasTips && alignment == null) {
-				System.err.println("No tree file, newick string, or number of tips has been specified, please supply at least one to build an initial tree.");
-				System.exit(0);
+				throw new InvalidInputFileException("No tree file, theta, or tip number has been specified, cannot build initial tree");
 			}
 			
 			String sitesStr = attrs.get("sites");
@@ -423,8 +422,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 					}
 				}
 				catch (NumberFormatException ex) {
-					System.out.println("Could not parse a number for the number of sites in ARG from : " + sitesStr + "\n please supply sites=X");
-					System.exit(1);
+					throw new InvalidInputFileException("Could not parse a number for the number of sites in ARG from : " + sitesStr + "\n please supply sites=X");
 				}
 				
 			}
@@ -433,8 +431,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 					siteCount = alignment.getSiteCount();
 				}
 				else {
-					System.out.println("You must specify a number of sites to generate an initial ARG");
-					System.exit(1);
+					throw new InvalidInputFileException("You must specify a number of sites to generate an initial ARG");
 				}
 			}
 			
@@ -453,7 +450,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 				useUPGMA = Boolean.parseBoolean(upgmaStr);
 			}
 			
-			if (useUPGMA) {
+			if (alignment != null && useUPGMA) {
 				//Default is now to build a upgma tree to start searching. This really seems to help reduce
 				//convergence time
 

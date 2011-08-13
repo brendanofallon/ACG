@@ -38,7 +38,7 @@ public class NodeHeightModifier extends ARGModifier {
 		super(attributes);
 		modStr = "Node height";
 		if (! attributes.containsKey("frequency"))
-			frequency = 4.0;
+			frequency = 10.0;
 	}
 	
 	public NodeHeightModifier() {

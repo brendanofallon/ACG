@@ -35,7 +35,7 @@ public class RecombAddRemove extends ARGModifier {
 	
 	final double jacobian = 2.0;
 	
-	final double rScaleFactor = 3.0;
+	final double rScaleFactor = 2.0;
 	final double cScaleFactor = 5.0;
 	
 	//Used to select new node heights
@@ -61,10 +61,6 @@ public class RecombAddRemove extends ARGModifier {
 		this.frequency = freq;
 	}
 	
-	public RecombAddRemove copy() {
-		RecombAddRemove copy = new RecombAddRemove(getFrequency());
-		return copy;
-	}
 
 	@Override
 	public Double modifyARG() throws InvalidParameterValueException,
@@ -297,8 +293,12 @@ public class RecombAddRemove extends ARGModifier {
 	private double removeBranch(ARG arg) throws ModificationImpossibleException {
 		List<Branch> branches = collectRemoveableBranches();
 	
-		if (branches.size()==0)
-			throw new ModificationImpossibleException("No branches can be removed");
+		if (branches.size()==0) {
+			//FIX 8/11/2011 Returning -inf here fixes a minor inconsistency in the ARG prior, with
+			//a bit too much mass in the low end of the distribution of the number recombination breakpoints
+			return Double.NEGATIVE_INFINITY;
+			//throw new ModificationImpossibleException("No branches can be removed"); Old version, not as accurate
+		}
 		
 		//Select a branch to remove at random from all branches that can be removed
 		Branch branchToRemove = branches.get( RandomSource.getNextIntFromTo(0, branches.size()-1));
@@ -315,10 +315,7 @@ public class RecombAddRemove extends ARGModifier {
 			
 		boolean rootRemoved = false; //This gets set if we remove the root node, which we must know for hastings ratio calculation
 		
-		//Prob this move is the probability that we pick this branch to remove. This is the same as the probability that
-		//we pick the given recomb node toRemove and it's parent parentToRemove
-		double probThisMove = 1.0 / ((double)branches.size()); //This may be altered below
-				
+					
 		
 		double recNodeHeight = toRemove.getHeight(); 
 		double coalNodeHeight = parentToRemove.getHeight();
@@ -388,6 +385,10 @@ public class RecombAddRemove extends ARGModifier {
 		if (rangeUpdateNode != null)
 			propogateRangeProposals(rangeUpdateNode);
 		
+		//Prob this move is the probability that we pick this branch to remove. This is the same as the probability that
+		//we pick the given recomb node toRemove and it's parent parentToRemove
+		double probThisMove = 1.0 / ((double)branches.size()); //This may be altered below
+		
 		//The probability that this move is reversed is the probability that we add a new branch at exactly the
 		//spots where we removed it. This must take into account both the height of the nodes we removed as well
 		//as the number of lineages that crossed those heights
@@ -404,8 +405,7 @@ public class RecombAddRemove extends ARGModifier {
 			lineagesFactor *= 1.0/arg.getBranchesCrossingTime(parentToRemove.getHeight()).size();
 			
 		probReverseMove *= lineagesFactor;
-		
-		
+				
 		//Try seeing if this removal would create an "Extraneous node group", and if so disallow it. 
 		double hastingsRatio = probReverseMove / probThisMove;
 		return 1.0/jacobian*hastingsRatio;

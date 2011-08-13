@@ -59,7 +59,9 @@ public class CoalescentLikelihoodTest {
 		loggerProps.put("logFile", "coal_test.log");
 		StateLogger logger = new StateLogger(loggerProps);
 
-		MCMC mc = new MCMC(parameters, likelihoods);
+		Map<String, String> mcAttrs = new HashMap<String, String>();
+		mcAttrs.put("length", "100");
+		MCMC mc = new MCMC(mcAttrs, parameters, likelihoods);
 		logger.setMCMC(mc);
 		mc.addListener(logger);
 		
@@ -68,7 +70,7 @@ public class CoalescentLikelihoodTest {
 				mc.addListener(l);
 		}
 		
-		mc.run(10000000);
+		mc.run(5000000);
 	}
 	
 	/**
@@ -78,8 +80,8 @@ public class CoalescentLikelihoodTest {
 		RandomSource.initialize( );
 
 		int tips = 10;
-		double genN = 100; 
-		double genRho = 1.0;
+		double genN = 1; 
+		double genRho = 0.0;
 		int sites = 10000;
 				
 		ARG arg = TreeUtils.generateRandomARG(tips, genN, genRho, sites); 
@@ -104,16 +106,16 @@ public class CoalescentLikelihoodTest {
 		arg.addModifier(new WideSwap());
 		arg.addModifier(heightModifier);
 		//arg.addModifier(bpShifter);
-		arg.addModifier(bpSwapper);
+		//arg.addModifier(bpSwapper);
 		arg.addModifier(rootHeight);
-		arg.addModifier(addRemove);
+		//arg.addModifier(addRemove);
 		//arg.addModifier(trivialRec);
 		
 		List<Object> likelihoods = new ArrayList<Object>();
 		List<Object> parameters = new ArrayList<Object>();
 		
 		double N = genN;
-		double rho = 2.0 /(2*N);
+		double rho = 0.0 /(2*N);
 		
 		ConstantPopSize popSize = new ConstantPopSize(N);
 		
@@ -124,17 +126,20 @@ public class CoalescentLikelihoodTest {
 		parameters.add(arg);
 		likelihoods.add(coalLikelihood);
 				
-		HistogramCollector bpHist = new HistogramCollector(arg, "num.breakpoints", 500, 0, 35, 35);
+		HistogramCollector bpHist = new HistogramCollector(arg, "total.recombs", 500, 0, 35, 35);
 		bpHist.setBurnin(1000);
 		List<MCMCListener> listeners = new ArrayList<MCMCListener>();
 		listeners.add(bpHist);
 		
-		HistogramCollector rootHeightHist = new HistogramCollector(arg, "root.height", 500, 0, 500, 100);
+		HistogramCollector rootHeightHist = new HistogramCollector(arg, "root.height", 500, 0, 10, 100);
 		rootHeightHist.setBurnin(1000);
 		listeners.add(rootHeightHist);
 		
-		//listeners.add(new BreakpointDensity(arg, 1000, 100+));
-		//listeners.add(new RootHeightDensity(arg, 1000, 100));
+		
+		//listeners.add(new BreakpointDensity(arg, 1000, 100, System.out));
+		RootHeightDensity rhDist = new RootHeightDensity(arg);
+		rhDist.setBurnin(1000);
+		listeners.add(rhDist);
 		
 		//HistogramCollector condRootHeight = new RootHeightCollector(arg, 5, 25, 0, 500, 100);
 		//listeners.add(condRootHeight);

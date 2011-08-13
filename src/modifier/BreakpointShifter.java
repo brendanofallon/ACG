@@ -87,7 +87,7 @@ public class BreakpointShifter extends ARGModifier {
 		node.proposeRecombRange(newRange);
 		
 		//Don't bother recalculating range info from here if no sites go through this node
-		if (node.getActiveRanges().size()>0)
+		if (node.getActiveRanges()!= null && node.getActiveRanges().size()>0)
 			propogateRangeProposals(node);
 		
 		if (getCallsSinceReset() > 100 && getTotalCalls() % 100 == 0) {

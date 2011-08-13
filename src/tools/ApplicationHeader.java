@@ -4,6 +4,7 @@ import gui.ACGFrame;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -96,6 +97,15 @@ public class ApplicationHeader {
 			System.out.println("An XML-parsing exception was encountered : " + e);
 		} catch (IOException e) {
 			System.out.println("An IO Exception was encountered: \n " + e);
+		} catch (InstantiationException e) {
+			System.out.println("An instantiation exception was encountered: \n " + e);
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			System.out.println("An illegal access exception was encountered: \n " + e);
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			System.out.println("An invocation target exception was encountered: \n " + e);
+			e.printStackTrace();
 		}
 		
 	}

@@ -53,7 +53,7 @@ public class XYSeriesFigure extends SeriesFigure {
 		yLabelElement.setCanConfigure(true);
 		yLabelElement.setMobile(true);
 		axes = new AxesElement(this);
-		axes.setBounds(0.04, 0.05, 0.9, 0.85);
+		axes.setBounds(0.05, 0.05, 0.86, 0.85);
 		axes.setCanConfigure(true);
 		addMouseListeningElement(axes);
 		//Note that is is probably necessary to have the axes element as first in this list
@@ -171,7 +171,7 @@ public class XYSeriesFigure extends SeriesFigure {
 	
 			}
 			
-			if (xmin>0 && (xmax-xmin)/xmin>3 )
+			if (xmin>0 && (xmax-xmin)/xmin>10 )
 				xmin = 0;
 			
 	

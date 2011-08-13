@@ -5,8 +5,10 @@
  	
  	In addition to the usual 'StateLogger', which tracks parameter values, this file also
  	shows how you can define loggers that track the TMRCA along the length of the sequence
- 	(via the rootHeightLogger, defined in the class logging.RootHeightDensity), and the 
- 	positions of recombination breakpoints using the bpLocLogger in logging.BreakpointLocation. -->
+ 	(via the rootHeightLogger, defined in the class logging.RootHeightDensity), the 
+ 	positions of recombination breakpoints using the bpLocLogger in logging.BreakpointLocation, 
+ 	and the "marginal trees" - the trees ancestral to a single site, using the MarginalTreeLogger
+ 	located in logging.MarginalTreeLogger -->
 <ACG>
 
 <!-- A random number generator is essential and will be used by all classes. -->
@@ -108,8 +110,11 @@
 	<ARG />
 </rootHeightLogger>
 
-
-
+<!-- This logger produces a file containing the (newick-formatted) list of trees sampled at
+ 	a given site, in this case site 100 -->
+<siteTreeLogger class="logging.MarginalTreeLogger" filename="example2_site100.trees" site="100" frequency="5000" burnin="100000"> 
+	<arg />
+</siteTreeLogger>
 
 
 <!-- =============================    Markov chain   ============================== --> 
@@ -132,6 +137,7 @@
 		<statelogger />
 		<bpLocLogger />
 		<rootHeightLogger />
+		<siteTreeLogger />
 	</loggers>
 </mc>
 

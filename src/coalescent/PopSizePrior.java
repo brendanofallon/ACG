@@ -36,7 +36,6 @@ public class PopSizePrior extends LikelihoodComponent {
 	
 	double changePointMean = 3.0; //Mean of poisson distribution describing expected number of change points
 	
-	
 	PiecewiseLinearPopSize popSize;
 
 	public PopSizePrior(Map<String, String> attrs, PiecewiseLinearPopSize popSize) {
@@ -63,7 +62,7 @@ public class PopSizePrior extends LikelihoodComponent {
 		//return Math.log( cpPrior.pdf( popSize.getChangePointCount()) );
 		
 		return Math.log(cpPrior.pdf( popSize.getChangePointCount()));
-	}
+	} 
 
 	private double calculateArea() {
 		PiecewiseLinearFunction func = popSize.getFunction();

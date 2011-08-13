@@ -91,7 +91,6 @@ public class PiecewiseLinearFunction {
 			i++;
 		}
 		
-		
 
 		double newY;
 		if (i==changePoints+1)

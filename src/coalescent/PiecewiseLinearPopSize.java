@@ -127,7 +127,6 @@ public class PiecewiseLinearPopSize extends AbstractParameter<PiecewiseLinearFun
 		if (y1==y0) {
 			return (x1-x0)/y1;
 		} else {
-
 			double a = (y1-y0)/(x1-x0);
 			double b = y1-a*x1; 
 

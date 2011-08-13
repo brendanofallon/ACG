@@ -93,7 +93,9 @@ public class Alignment {
 		//System.out.println("Read in " + seqs.size() + " sequences of length " + getSiteCount() + " from file : " + fileToRead.getPath());
 	}
 	
-	public void addSequence(Sequence seqToAdd) {
+	public void addSequence(Sequence seqToAdd) throws BadSequenceException {
+		seqToAdd.checkValidity();
+		
 		if (seqs.size()==0) {
 			//try {
 				//seqToAdd.checkValidity();
@@ -303,7 +305,11 @@ public class Alignment {
 
 				seq = new Sequence(label, sq.toString().toUpperCase());
 				//System.out.println("Adding sequence " + label + " : " + sq.toString().toUpperCase());
-				addSequence(seq);
+				try {
+					addSequence(seq);
+				} catch (BadSequenceException e) {
+					throw new FileParseException("Invalid characters found in sequence with label: " + label);
+				}
 
 			}//else line was not null
 		}//while reading new sequences
@@ -391,7 +397,11 @@ public class Alignment {
             
             for(int i=0; i<numSequences; i++) {
             	Sequence seq = new Sequence(seqNames[i], newSeqs[i].toString().toUpperCase());
-            	addSequence( seq );
+            	try {
+					addSequence(seq);
+				} catch (BadSequenceException e) {
+					throw new FileParseException("Invalid characters found in sequence with label: " + seq.label);
+				}
             }
 	}
 
