@@ -131,21 +131,21 @@
 </expGrowth>
 
 <!-- Simple, constant recombination rate across sites -->
-<constantRecRate class="coalescent.ConstantRecombination" value="1">
+<RecRate class="coalescent.ConstantRecombination" value="1">
 	<recRateScaler class="modifier.ScaleModifier"/>
-</constantRecRate>
+</RecRate>
 
 	
 <!-- Place an exponential prior on the recombination rate with a mean of 25 -->
 <!-- The prior helps to confine the ARGs with a reasonable number of recombinations -->
 <RecRatePrior class="priors.ExponentialPrior" mean="25">
-	<constantRecRate />
+	<RecRate />
 </RecRatePrior>
 
 <!-- A likelihood object specifying the probability of observing the ARG  -->
 <coalescentLikelihood class="coalescent.CoalescentLikelihood">
 	<expGrowth />
-	<constantRecRate />
+	<RecRate />
 	<ARG />
 </coalescentLikelihood>
 
@@ -173,7 +173,7 @@
 		<expGrowth />
 		<baseSize />
 		<growthRate />
-		<constantRecRate />
+		<RecRate />
 		<stationaries />
 		<kappaY />
 		<ARG />  

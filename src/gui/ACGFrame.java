@@ -170,9 +170,9 @@ public class ACGFrame extends JFrame implements WindowListener {
 		bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
 		progressBar = new JProgressBar(0, 1000);
-		progressBar.setPreferredSize(new Dimension(400, 24));
-		progressBar.setMaximumSize(new Dimension(4000, 26));
-		
+		progressBar.setPreferredSize(new Dimension(400, 12));
+		progressBar.setMaximumSize(new Dimension(4000, 18));
+		progressBar.setStringPainted(true);
 		bottomPanel.add(Box.createHorizontalStrut(20));
 		bottomPanel.add(progressBar);
 		runButton = new JButton();
@@ -216,9 +216,6 @@ public class ACGFrame extends JFrame implements WindowListener {
 
 
 
-
-
-
 	@Override
 	public void windowClosed(WindowEvent e) { }
 
@@ -248,7 +245,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 
 			if (op == 2) {
 				runner.cancel(true);
-				//wait for half a sec, then exit
+				//wait half a sec, then exit
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e1) {

@@ -70,7 +70,7 @@ public class StartFrame extends JPanel {
 		centerPanel.setMaximumSize(new Dimension(400, 200));
 		
 		
-		filenameField = new JTextField("Enter name of file");
+		filenameField = new JTextField("Enter name of input file");
 		filenameField.setPreferredSize(new Dimension(150, 24));
 		filenameField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

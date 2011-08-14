@@ -3,7 +3,13 @@ package gui;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -85,6 +91,7 @@ public abstract class MonitorPanel extends JPanel {
 	
 	public MonitorPanel(int burnin) {
 		this.burnin = burnin;
+		this.setOpaque(false);
 	}
 	
 	/**
@@ -314,6 +321,17 @@ public abstract class MonitorPanel extends JPanel {
 		topPanel.setBackground(Color.LIGHT_GRAY);
 		topPanel.add(Box.createHorizontalStrut(100));
 		topPanel.setText("Mean : ?   Calls: ?");
+		JPanel emptyPanel1 = new JPanel();
+		emptyPanel1.setLayout(new BoxLayout(emptyPanel1, BoxLayout.X_AXIS));
+		emptyPanel1.add(Box.createRigidArea(new Dimension(5, 5)));
+		emptyPanel1.setOpaque(false);
+		this.add(emptyPanel1, BorderLayout.EAST);
+
+		JPanel emptyPanel2 = new JPanel();
+		emptyPanel2.setLayout(new BoxLayout(emptyPanel2, BoxLayout.X_AXIS));
+		emptyPanel2.add(Box.createRigidArea(new Dimension(5, 5)));
+		emptyPanel2.setOpaque(false);
+		this.add(emptyPanel2, BorderLayout.SOUTH);
 		this.add(topPanel, BorderLayout.NORTH);
 		
 	}
@@ -551,6 +569,24 @@ public abstract class MonitorPanel extends JPanel {
 	                       e.getX(), e.getY());
 	        }
 	    }
+	}
+	
+	
+	public void paintComponent(Graphics g) {
+		Graphics2D g2d = (Graphics2D)g;
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+
+		super.paintComponent(g);
+		
+		GradientPaint paint1 = new GradientPaint(new Point2D.Double(getWidth()-5, 5), Color.gray, new Point2D.Double(getWidth()-1, 5), new Color(0.9f, 0.9f, 0.9f, 0.5f));
+		g2d.setPaint(paint1);
+		g2d.fillRoundRect(getWidth()-5, 6, 5, getHeight()-8, 4, 4);
+		
+		GradientPaint paint2 = new GradientPaint(new Point2D.Double(5, getHeight()-5), Color.gray, new Point2D.Double(5, getHeight()), new Color(0.9f, 0.9f, 0.9f, 0.5f));
+		g2d.setPaint(paint2);
+		g2d.fillRoundRect(3, getHeight()-5, getWidth()-6, 5, 4, 4);
+
 	}
 	
 	static JFileChooser fileChooser;

@@ -69,25 +69,25 @@
 <!-- ============================   Coalescent model and likelihood  ======================== --> 
 
 <!--  Parameter specifying population size (theta / 2.0)  -->
-<constantPopSize class="coalescent.ConstantPopSize" frequency="1.0" value="1.0">
+<PopSize class="coalescent.ConstantPopSize" frequency="1.0" value="1.0">
 	<popSizeScaler class="modifier.ScaleModifier"/>
-</constantPopSize>
+</PopSize>
 
 <!-- Simple, constant recombination rate across sites -->
-<constantRecRate class="coalescent.ConstantRecombination" value="1.0">
+<RecRate class="coalescent.ConstantRecombination" value="1.0">
 	<recRateScaler class="modifier.ScaleModifier"/>
-</constantRecRate>
+</RecRate>
 
 <!-- Place an exponential prior on the recombination rate with a mean of 25 -->
 <!-- The prior helps to confine the ARGs with a reasonable number of recombinations -->
 <RecRatePrior class="priors.ExponentialPrior" mean="25">
-	<constantRecRate />
+	<RecRate />
 </RecRatePrior>
 
 <!-- A likelihood object specifying the probability of observing the ARG  -->
 <coalescentLikelihood class="coalescent.CoalescentLikelihood">
-	<constantPopSize />
-	<constantRecRate />
+	<PopSize />
+	<RecRate />
 	<ARG />
 </coalescentLikelihood>
 
@@ -121,8 +121,8 @@
 
 <mc class="mcmc.MCMC" length="4000000" run="true">
 	<parameters class="list">
-		<constantPopSize />
-		<constantRecRate />
+		<PopSize />
+		<RecRate />
 		<stationaries />
 		<KappaR />
 		<KappaY />
