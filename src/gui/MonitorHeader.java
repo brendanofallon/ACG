@@ -15,7 +15,7 @@ public class MonitorHeader extends JPanel {
 
 	protected String text = "";
 	protected String label = "";
-	protected Font font = new Font("Sans", Font.PLAIN, 12);
+	protected Font font = new Font("Sans", Font.PLAIN, 11);
 	
 	
 	Color[] gradient = new Color[25];

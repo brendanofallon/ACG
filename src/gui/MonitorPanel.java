@@ -42,10 +42,11 @@ import gui.figure.series.HistogramSeries;
 import gui.figure.series.XYSeries;
 import gui.figure.series.XYSeriesElement;
 import gui.figure.series.XYSeriesFigure;
+import gui.widgets.FloatingPanel;
 import parameter.AbstractParameter;
 import parameter.DoubleParameter;
 
-public abstract class MonitorPanel extends JPanel {
+public abstract class MonitorPanel extends FloatingPanel {
 
 	enum Mode {TRACE, HISTOGRAM};
 	
@@ -91,9 +92,10 @@ public abstract class MonitorPanel extends JPanel {
 	
 	public MonitorPanel(int burnin) {
 		this.burnin = burnin;
-		this.setOpaque(false);
+		setOpaque(false);
 	}
 	
+
 	/**
 	 * Create the arrays that store the data series
 	 * @param seriesCount
@@ -306,9 +308,9 @@ public abstract class MonitorPanel extends JPanel {
 	 * Creates the figure and sets a few defaults for it
 	 */
 	protected void initializeFigure() {
-		this.setLayout(new BorderLayout());
+		setLayout(new BorderLayout());
 		traceFigure = new XYSeriesFigure();
-		this.add(traceFigure, BorderLayout.CENTER);
+		add(traceFigure, BorderLayout.CENTER);
 		traceFigure.setAllowMouseDragSelection(false);
 		traceFigure.setXLabel("MCMC state");
 		traceFigure.getAxes().setNumXTicks(4);
@@ -321,18 +323,20 @@ public abstract class MonitorPanel extends JPanel {
 		topPanel.setBackground(Color.LIGHT_GRAY);
 		topPanel.add(Box.createHorizontalStrut(100));
 		topPanel.setText("Mean : ?   Calls: ?");
-		JPanel emptyPanel1 = new JPanel();
-		emptyPanel1.setLayout(new BoxLayout(emptyPanel1, BoxLayout.X_AXIS));
-		emptyPanel1.add(Box.createRigidArea(new Dimension(5, 5)));
-		emptyPanel1.setOpaque(false);
-		this.add(emptyPanel1, BorderLayout.EAST);
-
-		JPanel emptyPanel2 = new JPanel();
-		emptyPanel2.setLayout(new BoxLayout(emptyPanel2, BoxLayout.X_AXIS));
-		emptyPanel2.add(Box.createRigidArea(new Dimension(5, 5)));
-		emptyPanel2.setOpaque(false);
-		this.add(emptyPanel2, BorderLayout.SOUTH);
 		this.add(topPanel, BorderLayout.NORTH);
+		
+//		JPanel emptyPanel1 = new JPanel();
+//		emptyPanel1.setLayout(new BoxLayout(emptyPanel1, BoxLayout.X_AXIS));
+//		emptyPanel1.add(Box.createRigidArea(new Dimension(5, 5)));
+//		emptyPanel1.setOpaque(false);
+//		this.add(emptyPanel1, BorderLayout.EAST);
+//
+//		JPanel emptyPanel2 = new JPanel();
+//		emptyPanel2.setLayout(new BoxLayout(emptyPanel2, BoxLayout.X_AXIS));
+//		emptyPanel2.add(Box.createRigidArea(new Dimension(5, 5)));
+//		emptyPanel2.setOpaque(false);
+//		this.add(emptyPanel2, BorderLayout.SOUTH);
+
 		
 	}
 	
@@ -572,22 +576,22 @@ public abstract class MonitorPanel extends JPanel {
 	}
 	
 	
-	public void paintComponent(Graphics g) {
-		Graphics2D g2d = (Graphics2D)g;
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-
-		super.paintComponent(g);
-		
-		GradientPaint paint1 = new GradientPaint(new Point2D.Double(getWidth()-5, 5), Color.gray, new Point2D.Double(getWidth()-1, 5), new Color(0.9f, 0.9f, 0.9f, 0.5f));
-		g2d.setPaint(paint1);
-		g2d.fillRoundRect(getWidth()-5, 6, 5, getHeight()-8, 4, 4);
-		
-		GradientPaint paint2 = new GradientPaint(new Point2D.Double(5, getHeight()-5), Color.gray, new Point2D.Double(5, getHeight()), new Color(0.9f, 0.9f, 0.9f, 0.5f));
-		g2d.setPaint(paint2);
-		g2d.fillRoundRect(3, getHeight()-5, getWidth()-6, 5, 4, 4);
-
-	}
+//	public void paintComponent(Graphics g) {
+//		Graphics2D g2d = (Graphics2D)g;
+//		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+//                RenderingHints.VALUE_ANTIALIAS_ON);
+//
+//		super.paintComponent(g);
+//		
+//		GradientPaint paint1 = new GradientPaint(new Point2D.Double(getWidth()-5, 5), Color.gray, new Point2D.Double(getWidth()-1, 5), new Color(0.9f, 0.9f, 0.9f, 0.5f));
+//		g2d.setPaint(paint1);
+//		g2d.fillRoundRect(getWidth()-5, 6, 5, getHeight()-8, 4, 4);
+//		
+//		GradientPaint paint2 = new GradientPaint(new Point2D.Double(5, getHeight()-5), Color.gray, new Point2D.Double(5, getHeight()), new Color(0.9f, 0.9f, 0.9f, 0.5f));
+//		g2d.setPaint(paint2);
+//		g2d.fillRoundRect(3, getHeight()-5, getWidth()-6, 5, 4, 4);
+//
+//	}
 	
 	static JFileChooser fileChooser;
 	private JMenuItem histoOptions;
@@ -596,7 +600,5 @@ public abstract class MonitorPanel extends JPanel {
 	private MonitorHeader topPanel;
 
 	
-	protected float defaultLineWidth = 1.1f;
-
-	
+	protected float defaultLineWidth = 1.1f;	
 }

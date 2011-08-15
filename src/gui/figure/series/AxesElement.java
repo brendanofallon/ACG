@@ -132,7 +132,7 @@ public class AxesElement extends FigureElement {
 	public AxesElement(Figure parent) {
 		super(parent);
 		labelFormatter  = new DecimalFormat("###.##");
-		mantissaFormatter  = new DecimalFormat("#.###");
+		mantissaFormatter  = new DecimalFormat("#.##");
 		scientificFormatter = new DecimalFormat("0.0##E0##");
 		xLabelFont = new Font("Sans", Font.PLAIN, fontSize);
 		exponentFont = new Font("Sans", Font.PLAIN, round(fontSize/1.3));
@@ -965,6 +965,12 @@ public class AxesElement extends FigureElement {
 			g.setFont(exponentFont);
 			fm = g.getFontMetrics();
 			Rectangle2D expRect = fm.getStringBounds(expLabel, 0, expLabel.length(), g);
+
+			//Fill rectangle behind label so overlapping labels don't look horrible, just bad
+			g.setColor(parent.getBackground());
+			mantissaRect.setRect(round(xPos-mantissaRect.getWidth()-2), yPos-2, mantissaRect.getWidth(), mantissaRect.getHeight());
+			g.fill(mantissaRect);
+			g.setColor(Color.black);
 			
 			g.setFont(xLabelFont);
 			g.drawString(mantissaLabel, round(xPos-mantissaRect.getWidth()-expRect.getWidth()), round(yPos+mantissaRect.getHeight()/2.0));
@@ -978,6 +984,10 @@ public class AxesElement extends FigureElement {
 			FontMetrics fm = g.getFontMetrics();
 			String label = StringUtils.format(val); //labelFormatter.format(val);
 			Rectangle2D rect = fm.getStringBounds(label, 0, label.length(), g);
+			rect.setRect(round(xPos-rect.getWidth()), yPos-rect.getHeight()*0.67, rect.getWidth(), rect.getHeight());
+			g.setColor(parent.getBackground());
+			g.fill(rect);
+			g.setColor(Color.black);
 			g.drawString(label, round(xPos-rect.getWidth()), round(yPos+rect.getHeight()/3.0));
 		} //number didn't need to be converted to scientific notation
 
@@ -1015,11 +1025,20 @@ public class AxesElement extends FigureElement {
 			fm = g.getFontMetrics();
 			Rectangle2D expRect = fm.getStringBounds(expLabel, 0, expLabel.length(), g);
 			
+			//Fill rectangle behind label so overlapping labels don't look horrible, just bad
+			g.setColor(parent.getBackground());
+			mantissaRect.setRect(round(xPos-mantissaRect.getWidth()/2.0-2), yPos, mantissaRect.getWidth(), mantissaRect.getHeight());
+			g.fill(mantissaRect);
+			g.setColor(Color.black);
+			
+			int xLeft = round(xPos-(mantissaRect.getWidth()+expRect.getWidth())/2.0);
+			int top = round(yPos+mantissaRect.getHeight()/2.0);
+			
 			g.setFont(xLabelFont);
-			g.drawString(mantissaLabel, round(xPos-(mantissaRect.getWidth()+expRect.getWidth())/2.0), round(yPos+mantissaRect.getHeight()));
+			g.drawString(mantissaLabel, xLeft, round(yPos+mantissaRect.getHeight()));
 			
 			g.setFont(exponentFont);
-			g.drawString(expLabel, round(xPos-(mantissaRect.getWidth()+expRect.getWidth())/2.0+mantissaRect.getWidth()), round(yPos+mantissaRect.getHeight()/2.0));
+			g.drawString(expLabel, round(xPos-(mantissaRect.getWidth()+expRect.getWidth())/2.0+mantissaRect.getWidth()), top);
 			return;
 		}
 		else {
@@ -1029,6 +1048,10 @@ public class AxesElement extends FigureElement {
 			FontMetrics fm = g.getFontMetrics();
 			String label = StringUtils.format(val); // labelFormatter.format(val);
 			Rectangle2D rect = fm.getStringBounds(label, 0, label.length(), g);
+			rect.setRect(round(xPos-rect.getWidth()/2.0), yPos, rect.getWidth(), rect.getHeight());
+			g.setColor(parent.getBackground());
+			g.fill(rect);
+			g.setColor(Color.black);
 			g.drawString(label, round(xPos-rect.getWidth()/2.0), round(yPos+rect.getHeight()));
 		}
 		
