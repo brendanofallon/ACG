@@ -70,7 +70,7 @@ public class StartFrame extends JPanel {
 		centerPanel.setMaximumSize(new Dimension(400, 200));
 		
 		
-		filenameField = new JTextField("Enter name of file");
+		filenameField = new JTextField("Enter name of input file");
 		filenameField.setPreferredSize(new Dimension(150, 24));
 		filenameField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -156,6 +156,8 @@ public class StartFrame extends JPanel {
 		else {
 			inputFile = new File( filenameField.getText() );
 		}
+		
+		acgParent.setTitle("ACG : " + inputFile.getName() );
 		
 		if (inputFile == null || (! inputFile.exists())) {
 			String filename = inputFile == null ? "(empty)" : inputFile.getName();

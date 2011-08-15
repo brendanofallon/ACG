@@ -24,8 +24,8 @@ import mcmc.MCMC;
 import mcmc.MCMCListener;
 
 /**
- * The primary frame of the ACG UI. As the user goes through varios steps the central panel
- * is replaced by different panels (StartFrame, PickPlottablesPanel, and MainOutputPane). 
+ * The primary frame of the ACG UI. As the user goes through various steps the central panel
+ * is replaced by different panels (StartFrame, PickMonitorsPanel, and MainOutputPane). 
  * This thing also has the run and pause buttons and the progress bar along the bottom. 
  * Right now, there are NO menu options!
  * @author brendan
@@ -67,8 +67,8 @@ public class ACGFrame extends JFrame implements WindowListener {
 		//We handle things from a listener of our own design
 		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(this);
+		this.setLocationByPlatform(true);
 		pack();
-		
 	}
 	
 	/**
@@ -164,20 +164,23 @@ public class ACGFrame extends JFrame implements WindowListener {
 		Container mainContainer = this.getContentPane();
 		mainContainer.setLayout(layout);
 		
-		//centerPanel = new StartFrame(this, onAMac);
-		//mainContainer.add(centerPanel, BorderLayout.CENTER);
-		mainContainer.add(new BuildPanel(), BorderLayout.CENTER);
+		//JPanel testPanel = new BuildPanel();
+		//mainContainer.add(testPanel, BorderLayout.CENTER);
+		centerPanel = new StartFrame(this, onAMac);
+		mainContainer.add(centerPanel, BorderLayout.CENTER);
 		
 		bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
 		progressBar = new JProgressBar(0, 1000);
-		progressBar.setPreferredSize(new Dimension(400, 24));
-		
+		progressBar.setPreferredSize(new Dimension(400, 12));
+		progressBar.setMaximumSize(new Dimension(4000, 18));
+		progressBar.setStringPainted(true);
 		bottomPanel.add(Box.createHorizontalStrut(20));
 		bottomPanel.add(progressBar);
 		runButton = new JButton();
 		runButton.setBorder(null);
 		runButton.setPreferredSize(new Dimension(40, 40));
+		runButton.setMaximumSize(new Dimension(40, 40));
 		ImageIcon runIcon = getIcon("icons/runButton.png");
 		runButton.setIcon(runIcon);
 		runButton.setToolTipText("Resume run");
@@ -190,6 +193,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 		
 		pauseButton = new JButton();
 		pauseButton.setPreferredSize(new Dimension(41, 40));
+		pauseButton.setMaximumSize(new Dimension(41, 40));
 		ImageIcon pauseIcon = getIcon("icons/pauseButton.png");
 		pauseButton.setToolTipText("Pause run");
 		pauseButton.setIcon(pauseIcon);
@@ -208,9 +212,6 @@ public class ACGFrame extends JFrame implements WindowListener {
 		
 		mainContainer.add(bottomPanel, BorderLayout.SOUTH);
 	}
-
-
-
 
 
 
@@ -246,7 +247,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 
 			if (op == 2) {
 				runner.cancel(true);
-				//wait for half a sec, then exit
+				//wait half a sec, then exit
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e1) {

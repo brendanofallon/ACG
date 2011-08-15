@@ -20,12 +20,13 @@ import javax.swing.event.ChangeListener;
 public class SeriesConfigFrame extends javax.swing.JFrame {
 
 		XYSeriesElement seriesOwner;
-		SeriesFigure parent;
+		XYSeriesFigure parent;
 		
 		SeriesOptions initialOptions = null;
 		
-	    public SeriesConfigFrame(XYSeriesElement ser, SeriesFigure parent) {
+	    public SeriesConfigFrame(XYSeriesElement ser, XYSeriesFigure parent) {
 	        this.seriesOwner = ser;
+	        
 	        this.parent = parent;
 	        
 	        initComponents();
@@ -209,6 +210,7 @@ public class SeriesConfigFrame extends javax.swing.JFrame {
 	    
 	    protected void removeButtonActionPerformed(ActionEvent evt) {
 			parent.removeSeries(seriesOwner.getSeries());
+			parent.inferBoundsPolitely();
 			doneButtonActionPerformed(null);
 			repaint();
 		}

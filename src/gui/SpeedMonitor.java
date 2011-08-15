@@ -19,6 +19,7 @@ public class SpeedMonitor extends MonitorPanel {
 		lastTime = System.currentTimeMillis();
 		setShowMeans(false);
 		setShowStdevs(false);
+		setHeaderLabel("MC.Rate");
 	}
 	
 	@Override

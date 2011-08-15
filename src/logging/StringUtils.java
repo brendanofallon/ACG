@@ -8,6 +8,10 @@ public class StringUtils {
 	static NumberFormat formatter = new DecimalFormat("0.0###");
 	
 	public static String format(double val) {
+		if (Double.isNaN(val)) {
+			return "?";
+		}
+		
 		double absVal = Math.abs(val);
 		
 		if (absVal>1)

@@ -224,7 +224,7 @@ public class PickPlottablesPanel extends JPanel {
 			
 			for(PlottableInfo plottable : selectedPlottables) {
 				if (plottable.label.equals("mc.speed")) {
-					outputPane.addChart(new SpeedMonitor());
+					outputPane.addMonitor(new SpeedMonitor());
 				}
 				else {
 					Object obj = file.getObjectForLabel(plottable.label);
@@ -232,7 +232,7 @@ public class PickPlottablesPanel extends JPanel {
 						outputPane.addChart( (AbstractParameter<?>)obj, plottable.key);
 					}
 					if (obj instanceof LikelihoodComponent) {
-						outputPane.addChart( (LikelihoodComponent)obj);
+						outputPane.addMonitor( (LikelihoodComponent)obj);
 					}
 				}
 			}
