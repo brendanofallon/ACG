@@ -36,9 +36,9 @@ public class HistogramSeries extends XYSeries {
 		histo.addValue(x);
 	}
 	
-	public void removeValue(double x) {
-		histo.removeValue(x);
-	}
+//	public void removeValue(double x) {
+//		histo.removeValue(x);
+//	}
 	
 	public void replace(List<Point2D> points, int bins, double min, double max) {
 		histo = new Histogram(min, max, bins);

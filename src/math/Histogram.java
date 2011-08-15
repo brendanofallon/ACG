@@ -7,7 +7,8 @@ import java.text.NumberFormat;
 /**
  * A list of bins of values. The number of bins, bin spacing, histogram minimum and maximum are all set once
  * when the histogram is created. addValue(...) increases the count of the appropriate bin, and toString() emits
- * a decently formatted summary. 
+ * a decently formatted summary. This also tracks the number of values added, their sum (so that the true mean can
+ * be computed), and the current running standard deviation of the values
  * 
  * @author brendan
  *
@@ -78,25 +79,25 @@ public class Histogram {
 	}
 	
 	
-	public void removeValue(double val) {
-		double prevMean = getMean(); //Needed to compute running stdev
-		count--;		
-		currentSum -= val;
-		
-		if (count>1)
-			currentStdev += (val-prevMean)*(val-getMean());
-		if (val<minValue) {
-			lessThanMin--;
-			return;
-		}
-		if (val>=maxValue) {
-			moreThanMax--;
-			return;
-		}
-		
-		int bin = getBin(val);
-		hist[ bin ]--;
-	}
+//	public void removeValue(double val) {
+//		double prevMean = getMean(); //Needed to compute running stdev
+//		count--;		
+//		currentSum -= val;
+//		
+//		if (count>1)
+//			currentStdev += (val-prevMean)*(val-getMean());
+//		if (val<minValue) {
+//			lessThanMin--;
+//			return;
+//		}
+//		if (val>=maxValue) {
+//			moreThanMax--;
+//			return;
+//		}
+//		
+//		int bin = getBin(val);
+//		hist[ bin ]--;
+//	}
 	
 	public void addValue(double val) {
 		double prevMean = getMean(); //Needed to compute running stdev
@@ -115,7 +116,6 @@ public class Histogram {
 		}
 		
 		int bin = getBin(val);
-		//int bin = (int)Math.floor( (val-minValue)/(maxValue-minValue)*(double)hist.length );
 		hist[ bin ]++;
 	}
 	

@@ -13,8 +13,11 @@ import java.util.Map;
 
 import logging.BreakpointDensity;
 import logging.HistogramCollector;
+import logging.MarginalRootHeightLogger;
+import logging.MarginalTreeLogger;
 import logging.RootHeightDensity;
 import logging.StateLogger;
+import math.Histogram;
 import math.RandomSource;
 import mcmc.MCMC;
 import mcmc.MCMCListener;
@@ -70,7 +73,7 @@ public class CoalescentLikelihoodTest {
 				mc.addListener(l);
 		}
 		
-		mc.run(5000000);
+		mc.run(40000000);
 	}
 	
 	/**
@@ -105,17 +108,18 @@ public class CoalescentLikelihoodTest {
 		arg.addModifier(swapModifier);
 		arg.addModifier(new WideSwap());
 		arg.addModifier(heightModifier);
-		//arg.addModifier(bpShifter);
-		//arg.addModifier(bpSwapper);
+		arg.addModifier(bpShifter);
+		arg.addModifier(bpSwapper);
 		arg.addModifier(rootHeight);
-		//arg.addModifier(addRemove);
+		arg.addModifier(addRemove);
 		//arg.addModifier(trivialRec);
 		
 		List<Object> likelihoods = new ArrayList<Object>();
 		List<Object> parameters = new ArrayList<Object>();
+				
 		
 		double N = genN;
-		double rho = 0.0 /(2*N);
+		double rho = 1.0 /(2*N);
 		
 		ConstantPopSize popSize = new ConstantPopSize(N);
 		
@@ -135,6 +139,13 @@ public class CoalescentLikelihoodTest {
 		rootHeightHist.setBurnin(1000);
 		listeners.add(rootHeightHist);
 		
+		MarginalTreeLogger siteTrees = new MarginalTreeLogger(arg, 1, 1000, 1000, "coaltest1.trees");
+		listeners.add(siteTrees);
+		
+		MarginalRootHeightLogger rhLogger = new MarginalRootHeightLogger(arg, 1000, 1000, 100);
+		listeners.add(rhLogger);
+		
+		//Histogram margHist = new Histogram(0, 10, 100);
 		
 		//listeners.add(new BreakpointDensity(arg, 1000, 100, System.out));
 		RootHeightDensity rhDist = new RootHeightDensity(arg);

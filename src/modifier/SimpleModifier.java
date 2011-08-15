@@ -43,8 +43,8 @@ public class SimpleModifier extends AbstractModifier<DoubleParameter> {
 		}
 		
 		double r = RandomSource.getNextUniform();
-		Double val = param.getValue();
-		Double newVal = val + windowWidth*(r-0.5);
+		double val = param.getValue();
+		double newVal = val + windowWidth*(r-0.5);
 		
 		if (newVal < param.getLowerBound()) {
 			double dif = param.getLowerBound() - newVal;

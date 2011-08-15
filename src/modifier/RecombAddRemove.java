@@ -36,7 +36,8 @@ public class RecombAddRemove extends ARGModifier {
 	final double jacobian = 2.0;
 	
 	final double rScaleFactor = 2.0;
-	final double cScaleFactor = 5.0;
+	final double cScaleFactor = 2.0;
+	private final double rDivisor = 1.0-Math.exp(-rScaleFactor);
 	
 	//Used to select new node heights
 	Exponential rExpRng; //For the recomb node
@@ -53,7 +54,7 @@ public class RecombAddRemove extends ARGModifier {
 		cExpRng = new Exponential(1.0, RandomSource.getEngine());// same here
 
 		if (! attributes.containsKey("frequency"))
-			frequency = 5.0;
+			frequency = 2.0;
 	}
 	
 	private RecombAddRemove(double freq) {
@@ -113,7 +114,7 @@ public class RecombAddRemove extends ARGModifier {
 		double rNodeHeight = rExpRng.nextDouble(); 
 		while (rNodeHeight > argHeight)
 			rNodeHeight = rExpRng.nextDouble();
-		double cNodeHeight = rNodeHeight + rExpRng.nextDouble();
+		double cNodeHeight = rNodeHeight + cExpRng.nextDouble();
 				
 		List<ARGNode> rNodeBottoms = arg.getBranchesCrossingTime(rNodeHeight);
 		List<ARGNode> cNodeBottoms = arg.getBranchesCrossingTime(cNodeHeight); 
@@ -261,7 +262,7 @@ public class RecombAddRemove extends ARGModifier {
 		//propogateRangeProposals(cNode); //Not actually necessary since cNode is a parent of rNode
 		
 		double probThisMove;
-		probThisMove = rExpRng.pdf(rNodeHeight) * rExpRng.pdf(cNodeHeight-rNodeHeight) / ((1.0-Math.exp(-rScaleFactor)));
+		probThisMove = rExpRng.pdf(rNodeHeight) * cExpRng.pdf(cNodeHeight-rNodeHeight) / rDivisor;
 		
 		double probReverseMove = 1.0/ (double)countRemoveableBranches();
 		
@@ -274,6 +275,7 @@ public class RecombAddRemove extends ARGModifier {
 		double lineagesFactor = 1.0/(rNodeBottoms.size());
 		if (cNodeHeight < argHeight)
 			lineagesFactor *= 1.0/(cNodeBottoms.size());
+		
 		
 		probThisMove *= lineagesFactor;
 		
@@ -315,8 +317,7 @@ public class RecombAddRemove extends ARGModifier {
 			
 		boolean rootRemoved = false; //This gets set if we remove the root node, which we must know for hastings ratio calculation
 		
-					
-		
+
 		double recNodeHeight = toRemove.getHeight(); 
 		double coalNodeHeight = parentToRemove.getHeight();
 		
@@ -397,7 +398,7 @@ public class RecombAddRemove extends ARGModifier {
 		rExpRng.setState(1.0/(newHeight/rScaleFactor));
 		cExpRng.setState(1.0/(newHeight/cScaleFactor));
 		
-		double probReverseMove = rExpRng.pdf(recNodeHeight) * rExpRng.pdf(coalNodeHeight-recNodeHeight) / ( (1.0-Math.exp(-rScaleFactor)));		
+		double probReverseMove = rExpRng.pdf(recNodeHeight) * cExpRng.pdf(coalNodeHeight-recNodeHeight) / rDivisor;		
 
 		double rLineageCount = arg.getBranchesCrossingTime(toRemove.getHeight()).size();
 		double lineagesFactor = 1.0/rLineageCount;

@@ -42,15 +42,6 @@ public class SubtreeSwap extends WideSwap {
 		this(new HashMap<String, String>());
 		modStr = "Subtree swapper";
 	}
-	
-	private SubtreeSwap(double frequency) {
-		this();
-		this.frequency = frequency;
-	}
-	
-	public SubtreeSwap copy() {
-		return new SubtreeSwap( getFrequency() );
-	}
 
 	
 	/**
@@ -59,15 +50,13 @@ public class SubtreeSwap extends WideSwap {
 	 * @return The hastings ratio of this term
 	 * @throws ModificationImpossibleException
 	 */
-	protected double swapRecombNode(RecombNode node) throws ModificationImpossibleException {
-		
-		//Avoid trivial coalescent cases...
-		if (node.getParent(0)== node.getParent(1)) {
-			throw new ModificationImpossibleException("Cannot perform swap on trivial coalescent ");	
-		}
-		
+	protected double swapRecombNode(RecombNode node) throws ModificationImpossibleException {	
 		ARGNode higherNode;
 		ARGNode lowerNode; //This is the one that gets moved
+		
+		if (node.getParent(0) == node.getParent(1)) {
+			throw new ModificationImpossibleException("Cannot swap on trivial recomb");
+		}
 		
 		if (node.getParent(0).getHeight() > node.getParent(1).getHeight()) {
 			higherNode = node.getParent(0);
@@ -111,9 +100,13 @@ public class SubtreeSwap extends WideSwap {
 	protected double swapCoalNode(CoalNode node) throws ModificationImpossibleException, IllegalModificationException {
 		//If we've selected a node that is above two tips, or that where both offspring are the same (recombination) node,
 		//then we cannot use this operator. 
-		if ( (node.getLeftOffspring().getNumOffspring()==0) && (node.getRightOffspring().getNumOffspring()==0) 
-				|| node.getLeftOffspring() == node.getRightOffspring() ) {
+		if ( (node.getLeftOffspring().getNumOffspring()==0) && (node.getRightOffspring().getNumOffspring()==0) ) {
 			throw new ModificationImpossibleException("Cannot perform swap on node " + node);			
+		}
+		
+		//If we're above a trivial coalescent, no changes are made but we still accept the state
+		if (node.getLeftOffspring() == node.getRightOffspring()) {
+			throw new ModificationImpossibleException("Cannot swap on trivial recomb");
 		}
 		
 		

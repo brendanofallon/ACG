@@ -1,20 +1,12 @@
 package modifier;
 
-import java.io.File;
-
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import arg.ARG;
 import arg.ARGNode;
 import arg.CoalNode;
-import arg.Newick;
 import arg.RecombNode;
-import arg.TreeUtils;
-import arg.argIO.ARGParser;
-
 import math.RandomSource;
 
 import parameter.InvalidParameterValueException;
@@ -85,10 +77,6 @@ public class WideSwap extends ARGModifier {
 		ARGNode newChild = branches.get(RandomSource.getNextIntFromTo(0, branches.size()-1)); //This will be new child of coal node
 		ARGNode newParent = findDisplaceableParent(newChild, node.getHeight()); //New parent of node
 		
-		if (newChild == node.getParent(0) || newChild == node.getParent(1)) {
-			throw new ModificationImpossibleException("Picked same branch for wide coal swap");
-		}
-		
 		int oldParentIndex = RandomSource.getNextIntFromTo(0, 1);
 		ARGNode oldParent = node.getParent(oldParentIndex);
 		ARGNode oldChild = node.getOffspring(0);
@@ -125,10 +113,6 @@ public class WideSwap extends ARGModifier {
 		int oldChildIndex = RandomSource.getNextIntFromTo(0, 1);
 		ARGNode oldChild = node.getOffspring(oldChildIndex); //Child that will be attached to node's parent
 		ARGNode oldParent = node.getParent();
-		
-		if (newChild == node.getOffspring(0) || newChild == node.getOffspring(1)) {
-			throw new ModificationImpossibleException("Picked same branch for wide coal swap");
-		}
 		
 		//Attach the old child we are leaving to the old parent
 		int pIndex = whichChild(node, oldParent);
