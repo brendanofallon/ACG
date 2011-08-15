@@ -71,7 +71,7 @@ public class XYSeriesElement extends SeriesElement {
 	int[] xvals;
 	int[] yvals;
 	
-	public XYSeriesElement(XYSeries series, AxesElement axes, SeriesFigure parent) {
+	public XYSeriesElement(XYSeries series, AxesElement axes, XYSeriesFigure parent) {
 		super(parent, series);
 		this.xySeries = series;
 		this.axes = axes;

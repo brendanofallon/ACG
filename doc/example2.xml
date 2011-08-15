@@ -113,7 +113,7 @@
 <!-- This logger produces a file containing the (newick-formatted) list of trees sampled at
  	a given site, in this case site 100 -->
 <siteTreeLogger class="logging.MarginalTreeLogger" filename="example2_site100.trees" site="100" frequency="5000" burnin="100000"> 
-	<arg />
+	<ARG />
 </siteTreeLogger>
 
 

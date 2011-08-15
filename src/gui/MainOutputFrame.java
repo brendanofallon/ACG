@@ -22,7 +22,7 @@ import parameter.AbstractParameter;
 public class MainOutputFrame extends JPanel implements MCMCListener {
 	
 	//Maximum size we allow data series to get before they're thinned
-	public final int MAX_SERIES_SIZE = 1000;
+	public final int MAX_SERIES_SIZE = 8000;
 	
 	private int rows = 2;
 	private int cols = 2;

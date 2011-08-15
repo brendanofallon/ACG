@@ -24,8 +24,8 @@ import mcmc.MCMC;
 import mcmc.MCMCListener;
 
 /**
- * The primary frame of the ACG UI. As the user goes through varios steps the central panel
- * is replaced by different panels (StartFrame, PickPlottablesPanel, and MainOutputPane). 
+ * The primary frame of the ACG UI. As the user goes through various steps the central panel
+ * is replaced by different panels (StartFrame, PickMonitorsPanel, and MainOutputPane). 
  * This thing also has the run and pause buttons and the progress bar along the bottom. 
  * Right now, there are NO menu options!
  * @author brendan
@@ -164,6 +164,8 @@ public class ACGFrame extends JFrame implements WindowListener {
 		Container mainContainer = this.getContentPane();
 		mainContainer.setLayout(layout);
 		
+		//JPanel testPanel = new BuildPanel();
+		//mainContainer.add(testPanel, BorderLayout.CENTER);
 		centerPanel = new StartFrame(this, onAMac);
 		mainContainer.add(centerPanel, BorderLayout.CENTER);
 		

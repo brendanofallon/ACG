@@ -323,21 +323,7 @@ public abstract class MonitorPanel extends FloatingPanel {
 		topPanel.setBackground(Color.LIGHT_GRAY);
 		topPanel.add(Box.createHorizontalStrut(100));
 		topPanel.setText("Mean : ?   Calls: ?");
-		this.add(topPanel, BorderLayout.NORTH);
-		
-//		JPanel emptyPanel1 = new JPanel();
-//		emptyPanel1.setLayout(new BoxLayout(emptyPanel1, BoxLayout.X_AXIS));
-//		emptyPanel1.add(Box.createRigidArea(new Dimension(5, 5)));
-//		emptyPanel1.setOpaque(false);
-//		this.add(emptyPanel1, BorderLayout.EAST);
-//
-//		JPanel emptyPanel2 = new JPanel();
-//		emptyPanel2.setLayout(new BoxLayout(emptyPanel2, BoxLayout.X_AXIS));
-//		emptyPanel2.add(Box.createRigidArea(new Dimension(5, 5)));
-//		emptyPanel2.setOpaque(false);
-//		this.add(emptyPanel2, BorderLayout.SOUTH);
-
-		
+		this.add(topPanel, BorderLayout.NORTH);		
 	}
 	
 	/**
