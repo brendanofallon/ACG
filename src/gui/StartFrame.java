@@ -186,7 +186,7 @@ public class StartFrame extends JPanel {
 	 * Called when user clicks 'Browse' button 
 	 */
 	protected void browseForFile() {
-		//On macs, we'd like to use a file dialog, otherwise we use a JFileChooser
+		//If we're on a mac then a FileDialog looks better and supports a few mac-specific options 
 		if (macMode) {
 			FileDialog fileDialog = new FileDialog(acgParent, "Choose a file");
 			fileDialog.setMode(FileDialog.LOAD);
@@ -201,16 +201,21 @@ public class StartFrame extends JPanel {
 			selectedFile = new File(path + filename);
 		}
 		else {
-			//Not on a mac, use a JFileChooser
+			//Not on a mac, use a JFileChooser instead of a FileDialog
+			
+			//Construct a new file choose whose default path is the path to this executable, which 
+			//is returned by System.getProperty("user.dir")
 			if (fileChooser == null)
 				fileChooser = new JFileChooser( System.getProperty("user.dir"));
 
+			
 			int option = fileChooser.showOpenDialog(getRootPane());
 			if (option == JFileChooser.APPROVE_OPTION) {
 				selectedFile = fileChooser.getSelectedFile();
 			}
 		}
 		
+		//If we found a valid selected file, set the info in the text field (a a couple other things)
 		if (selectedFile != null && selectedFile.exists()) {
 			filenameField.setText(selectedFile.getName());
 			runInGUIButton.setEnabled(true);

@@ -22,6 +22,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -35,6 +36,7 @@ import javax.swing.event.DocumentListener;
 public class LegendConfigFrame extends JFrame {
 
 	JPanel contentPanel;
+	JScrollPane mainScrollPane;
 	XYSeriesFigure figParent;
 	List<JPanel> seriesPanels = new ArrayList<JPanel>();
 	
@@ -48,13 +50,13 @@ public class LegendConfigFrame extends JFrame {
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
 		this.add(mainPanel);
-		mainPanel.setPreferredSize(new Dimension(600, 200));
-		setPreferredSize(new Dimension(600, 200) );
+		mainPanel.setPreferredSize(new Dimension(650, 200));
+		setPreferredSize(new Dimension(650, 200) );
 		
 		JPanel headerPanel = new JPanel();
 		headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.X_AXIS));
 		headerPanel.setAlignmentX(RIGHT_ALIGNMENT);
-		headerPanel.setMinimumSize(new Dimension(600, 10));
+		headerPanel.setMinimumSize(new Dimension(650, 10));
 		headerPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
 		JLabel area = new JLabel("Color");
 		area.setFont(bFont);
@@ -77,7 +79,8 @@ public class LegendConfigFrame extends JFrame {
 		contentPanel = new JPanel();
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
-		mainPanel.add(contentPanel);
+		mainScrollPane = new JScrollPane(contentPanel);
+		mainPanel.add(mainScrollPane);
 		mainPanel.add(Box.createVerticalGlue());
 		
 		JPanel panel4 = new JPanel();

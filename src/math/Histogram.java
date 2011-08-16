@@ -233,6 +233,7 @@ public class Histogram {
 				str.append(formatter.format(i*binSpacing+minValue) + "\t" + formatter.format(hist[i]/(double)count) + "\n");
 			}
 			str.append(" > " + maxValue + " : " + formatter.format((double)moreThanMax/(double)count) + "\n");
+			
 		}
 		return str.toString();
 	}
