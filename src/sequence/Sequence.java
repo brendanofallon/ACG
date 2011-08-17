@@ -1,6 +1,5 @@
 package sequence;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +8,7 @@ import xml.XMLUtils;
 
 /**
  * A sequence of ambiguous type (just a string of characters) with a label (also just a string of characters).
- * Not really any funtionality here. 
+ * Not really any functionality here. 
  * @author brendano
  *
  */

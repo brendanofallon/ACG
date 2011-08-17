@@ -4,6 +4,7 @@ import java.util.BitSet;
 
 /**
  * A column of nucleotides. Each character has only 4 possible states. These are immutable.  
+ * This version doesn't allow for gap or unknown characters, and is thus deprecated. Use GappedNucColumn instead
  * @author brendan
  *
  */
@@ -65,24 +66,16 @@ public class NucColumn implements CharacterColumn {
 
 
 	public boolean isEqualBetween(CharacterColumn col, int start, int end) {
-		BitSet otherBits = col.getBits(); 
-		int i = bits.nextSetBit(start);
-		int j = otherBits.nextSetBit(start);
-		while (i==j && i>=0 && i<end) {
-			i = bits.nextSetBit(i+1);
-			j = otherBits.nextSetBit(j+1);	
+		for(int i=start; i<end; i++) {
+			if (! isEqualAt(col, i)) {
+				return false;
+			}
 		}
-		
-		return i==j;
+		return true;
 	}
 
 	public boolean isEqualAt(CharacterColumn col, int row) {
-		return (col.getBits().get(row)==bits.get(row)) && (col.getBits().get(row+size)==bits.get(row+size) ); 
-	}
-	
-
-	public BitSet getBits() {
-		return bits;
+		return (getSymbol(row) == col.getSymbol(row) ); 
 	}
 
 	@Override

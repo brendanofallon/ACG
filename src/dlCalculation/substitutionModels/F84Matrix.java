@@ -18,7 +18,6 @@ public class F84Matrix extends TN93Matrix<Void> {
 	
 	private double piR; 
 	private double piY;
-
 	
 	double piTOverPiY;
 	double piCOverPiY;
@@ -210,7 +209,7 @@ public class F84Matrix extends TN93Matrix<Void> {
 		double expA = Math.exp(-alpha*t);
 		
 		double er0 = expA*eb;
-		double er1 = eb * (1.0- expA); //This is bigger for smaller t
+		double er1 = eb * (1.0- expA); 
 		double er2 = 1.0- eb;
 
 		double exPiT = er2*pi[T];
@@ -232,29 +231,31 @@ public class F84Matrix extends TN93Matrix<Void> {
 		tMatrix[T][A] = 						exPiA;
 		tMatrix[T][G] =  					exPiG;
 		
-		tMatrix[C][T] = 		 eyPiTOverPiY + exPiT;
+		tMatrix[C][T] = 	  eyPiTOverPiY + exPiT;
 		tMatrix[C][C] = er0 + eyPiCOverPiY + exPiC;
-		tMatrix[C][A] = 						exPiA;
-		tMatrix[C][G] = 						exPiG;
+		tMatrix[C][A] = 					 exPiA;
+		tMatrix[C][G] = 					 exPiG;
 
 		tMatrix[A][T] =                       exPiT;  //Purine to pyrimidine
 		tMatrix[A][C] =                       exPiC;
 		tMatrix[A][A] =  er0 + eyPiAOverPiR + exPiA;
 		tMatrix[A][G] =        eyPiGOverPiR + exPiG;
 		
-		tMatrix[G][T] = 						exPiT;
+		tMatrix[G][T] = 					 exPiT;
 		tMatrix[G][C] =                      exPiC;
 		tMatrix[G][A] =       eyPiAOverPiR + exPiA;
 		tMatrix[G][G] = er0 + eyPiGOverPiR + exPiG;
+		
+		
 	}
 
 	
 	/**
 	 * Returns a new F84 matrix with the current stationaries and parameter
 	 */
-	public MutationModel getNew() {
-		return new F84Matrix(stationaries, kappaParam);
-	}
+//	public MutationModel getNew() {
+//		return new F84Matrix(stationaries, kappaParam);
+//	}
 
 
 	public void parameterChanged(Parameter<?> source) throws ModificationImpossibleException {

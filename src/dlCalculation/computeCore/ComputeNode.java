@@ -1,14 +1,15 @@
 package dlCalculation.computeCore;
 
-import dlCalculation.IntegerStore;
-import dlCalculation.PartialsStore;
-
 /**
- * A contiguous range of sites over which the partial 'data likelihood' can be calculated. Used by CompressionCore2 only. 
+ * A contiguous range of sites over which the partial 'data likelihood' can be calculated.  
  * @author brendano
  *
  */
 public class ComputeNode {
+	
+	static final int dimension = 4;
+	
+	//A unique, immutable number identifying this node
 	final int refID;
 	
 	NodeState activeState = new NodeState();
@@ -22,15 +23,34 @@ public class ComputeNode {
 	public ComputeNode(int id, int mapSize, int rateCategories, int partialsSize) {
 		this.refID = id;
 
-		currentState.partials = new double[rateCategories][partialsSize][4];
-		proposedState.partials = new double[rateCategories][partialsSize][4];
+		currentState.partials = new double[rateCategories][partialsSize][dimension];
+		proposedState.partials = new double[rateCategories][partialsSize][dimension];
 		
-		currentState.lMatrices = new double[rateCategories][4][4];
-		currentState.rMatrices = new double[rateCategories][4][4];
+		currentState.lMatrices = new double[rateCategories][dimension+1][dimension+1];
+		currentState.rMatrices = new double[rateCategories][dimension+1][dimension+1];
 
-		proposedState.lMatrices = new double[rateCategories][4][4];
-		proposedState.rMatrices = new double[rateCategories][4][4];
+		proposedState.lMatrices = new double[rateCategories][dimension+1][dimension+1];
+		proposedState.rMatrices = new double[rateCategories][dimension+1][dimension+1];
 		
+		//Another speed/memory tradeoff taking place here, and we're opting for speed. 
+		//Gapped sites are given a state index of 5, and their tip probabilities are {1.0, 1.0, 1.0, 1.0}
+		//When we're computing partials we'll sometimes come across sites with stateIndex=5, and we can either
+		// a) Throw in an if/else to do something special at those sites. or
+		// b) Change the transition matrix so that it handles that case appropriately. 
+		// Right now we're choosing b, and we fill the 5th column of all transition matrices with ones
+//		for(int j=0; j<rateCategories; j++) {
+//			for(int i=0; i<(dimension+1); i++) {
+//				currentState.lMatrices[j][i][dimension] = 1.0;
+//				currentState.lMatrices[j][i][dimension] = 1.0;
+//				currentState.rMatrices[j][dimension][i] = 1.0;
+//				currentState.rMatrices[j][dimension][i] = 1.0;
+//				
+//				proposedState.lMatrices[j][i][dimension] = 1.0;
+//				proposedState.lMatrices[j][i][dimension] = 1.0;
+//				proposedState.rMatrices[j][dimension][i] = 1.0;
+//				proposedState.rMatrices[j][dimension][i] = 1.0;
+//			}
+//		}
 		currentState.invariantPartials = new double[rateCategories][4][4];
 		proposedState.invariantPartials = new double[rateCategories][4][4];
 		
@@ -46,21 +66,6 @@ public class ComputeNode {
 		return "ID=" + refID + " active: " + activeState.toString();
 	}
 	
-	/**
-	 * Return all buffers to a store we we're not constantly reallocating them
-	 */
-//	public void disposeArrays(IntegerStore intStore, PartialsStore partialsStore) {
-//		intStore.add(currentState.subtreePatternIndices);
-//		intStore.add(proposedState.subtreePatternIndices);
-//		intStore.add(currentState.subtreePatternMap);
-//		intStore.add(proposedState.subtreePatternMap);
-//		intStore.add(currentState.partialsMap);
-//		intStore.add(proposedState.partialsMap);
-//		if (currentState.partials != null)
-//			partialsStore.add(currentState.partials);
-//		if (proposedState.partials != null)
-//			partialsStore.add(proposedState.partials);
-//	}
 }
 
 class NodeState {

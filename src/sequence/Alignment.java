@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -97,13 +96,8 @@ public class Alignment {
 		seqToAdd.checkValidity();
 		
 		if (seqs.size()==0) {
-			//try {
-				//seqToAdd.checkValidity();
-				seqs.add(seqToAdd);
-//			} catch (BadSequenceException e) {
-//				System.out.println("Error adding sequence " + seqToAdd.label + " :\n" + e);
-//				System.exit(0);
-//			}
+			//seqToAdd.checkValidity();
+			seqs.add(seqToAdd);
 		}
 		else {
 			if ( containsLabel(seqToAdd.label) ) {

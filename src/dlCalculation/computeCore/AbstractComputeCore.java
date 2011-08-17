@@ -272,7 +272,6 @@ public abstract class AbstractComputeCore implements ComputeCore {
 			resultProbs[1] = m11[ index1] * m21[index2];
 			resultProbs[2] = m12[ index1] * m22[index2];
 			resultProbs[3] = m13[ index1] * m23[index2];
-
 		}
 	}
 }

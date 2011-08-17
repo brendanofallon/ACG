@@ -2,11 +2,8 @@ package dlCalculation.computeCore;
 
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntIntHashMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -54,7 +51,8 @@ public class MultiRateCore extends AbstractComputeCore {
 	//Used to store results from a pattern collection
 	private CollectionResult collectionResult = new CollectionResult();
 
-        private final int rateCategories;
+	//Number of categories in rate model
+    private final int rateCategories;
 	
 	//Description of how branch rate varies over sites
 	SiteRateModel siteRateModel;	
@@ -81,9 +79,9 @@ public class MultiRateCore extends AbstractComputeCore {
         invariantCAccumulator = dataMatrix.getInvariantCumulator('C');
         invariantTAccumulator = dataMatrix.getInvariantCumulator('T');
         
-        if (polymorphicSites.length < (dataMatrix.getNumberOfPatterns()-4)) {
-        	throw new IllegalArgumentException("There can't be fewer polymorphic sites (" + polymorphicSites.length + ") than patterns (" + dataMatrix.getNumberOfPatterns() +") ");
-        }
+//        if (polymorphicSites.length < (dataMatrix.getNumberOfPatterns()-4)) {
+//        	throw new IllegalArgumentException("There can't be fewer polymorphic sites (" + polymorphicSites.length + ") than patterns (" + dataMatrix.getNumberOfPatterns() +") ");
+//        }
         
         this.siteRateModel = siteRateModel;
                 

@@ -32,7 +32,6 @@ public abstract class MutationModel<Void> extends CompoundParameter<Void> {
 		this.stationaries = stationaries;
 	}
 	
-	public abstract void setBranchLength(double t);
 	
 	/**
 	 * Write the transition matrix into the matrix provided

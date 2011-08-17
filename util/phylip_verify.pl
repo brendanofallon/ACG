@@ -138,7 +138,8 @@ Y
 $cats
 $rates
 $probs
-R";
+R
+";
 
 close tmpfile;
 
@@ -222,10 +223,11 @@ close tmpfile;
 				print "Category rates : $rates \n";
 				
 				if ($tree =~ /E-7/ || $tree =~ /E-8/) {
-					print " ** Tree contains at least one short branch **\n";
+					print " ** Tree contains at least one short branch, ignoring **\n";
 				}
-				
-				exit(0);
+				else {			
+					exit(0);
+				}
 				$count++;
 			}
 		}
@@ -236,6 +238,6 @@ close tmpfile;
 	 print "\n All likelihoods appear to be valid. \n";
   }
   else {
-  	print "Found errors on $count lines!\n";
+  	print "Found errors on $count lines\n";
   }
 
