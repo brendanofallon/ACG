@@ -23,8 +23,8 @@ import javax.swing.JPanel;
  */
 public class FloatingPanel extends JPanel {
 	
-	private int shadowXDepth = 4;
-	private int shadowYDepth = 4;
+	private int shadowXDepth = 3;
+	private int shadowYDepth = 3;
 	private JPanel mainPanel;
 	private JPanel rightPanel;
 	private JPanel bottomPanel;

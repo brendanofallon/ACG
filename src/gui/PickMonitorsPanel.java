@@ -476,7 +476,7 @@ public class PickMonitorsPanel extends JPanel {
 			
 			for(PlottableInfo plottable : selectedPlottables) {
 				if (plottable.label.equals("mc.speed")) {
-					outputPane.addMonitor(new SpeedMonitor());
+					outputPane.addMonitor(new SpeedMonitor(burnin));
 				}
 				else {
 					Object obj = file.getObjectForLabel(plottable.label);

@@ -119,7 +119,7 @@ public class CoalescentLikelihoodTest {
 				
 		
 		double N = genN;
-		double rho = 1.0 /(2*N);
+		double rho = 2.0 /(2*N);
 		
 		ConstantPopSize popSize = new ConstantPopSize(N);
 		

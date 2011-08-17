@@ -214,22 +214,25 @@ public abstract class MonitorPanel extends FloatingPanel {
 	
 	private void redrawSeries() {
 		traceFigure.removeAllSeries();
-		//System.out.println("Redrawing series: Show burn in is : " + showBurnin);
 		if (mode==Mode.TRACE) {
 			for(int i=0; i<series.length; i++) {
-				if (showBurnin)
+				if (showBurnin) {
 					traceFigure.addSeriesElement(burninEls[i]);
-				if (showValues)
+				}
+				if (showValues) {
 					traceFigure.addSeriesElement(seriesEls[i]);
-				if (showMeans)
+				}
+				if (showMeans) {
 					traceFigure.addSeriesElement(meansEls[i]);
+				}
 				if (showStdevs) { 
 					traceFigure.addSeriesElement(stdUpperEls[i]);
 					traceFigure.addSeriesElement(stdLowerEls[i]);
 				}
 			}
 		}
-		traceFigure.repaint();
+		//System.out.println("Repainting (or not)");
+		//traceFigure.repaint();
 	}
 
 	protected void addPointToSeries(int index, int state, double val) {
@@ -474,7 +477,7 @@ public abstract class MonitorPanel extends FloatingPanel {
 			mode = Mode.HISTOGRAM; //We're now in histogram mode
 			traceFigure.removeAllSeries();
 			createHistograms();
-			
+
 			for(int i=0; i<series.length; i++) {
 				XYSeriesElement el = traceFigure.addDataSeries(histoSeries[i]);
 				el.setMode(XYSeriesElement.BOXES);				
@@ -487,6 +490,7 @@ public abstract class MonitorPanel extends FloatingPanel {
 		else { //Current mode is histogram, so we're switching back to trace
 			if (switchItem.getText().contains("trace")) {
 				mode = Mode.TRACE;
+				System.out.println("Switching to trace");
 				redrawSeries();
 				switchItem.setText("Switch to histogram");
 				traceFigure.setXLabel("MCMC State");

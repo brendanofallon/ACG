@@ -11,8 +11,8 @@ public class SpeedMonitor extends MonitorPanel {
 	private int lastState = 0;
 	int count = 0;
 	
-	public SpeedMonitor() {
-		super(0);
+	public SpeedMonitor(int burnin) {
+		super(burnin);
 		initializeFigure();		
 		initializeSeries(1);
 		super.addSeries("mc.rate");

@@ -1,7 +1,7 @@
 <!--  Another example ACG input file. This one shows how to specify the discretized-gamma-distributed
 	rates model, with 4 categories and a shape parameter (alpha) that is estimated from the data. This also
-	places a Gamma-distribution prior on the alpha parameter. If no explicit rates model is defined a
-	simple one with a single category and rate of 1.0 is used. -->
+	places a Gamma-distribution prior on the alpha parameter. (When no explicit rates model is defined a
+	simple one with a single category and rate of 1.0 is used.) -->
 <ACG>
 
 <!-- A random number generator is essential and will be used by all classes. -->
@@ -122,10 +122,10 @@
 </mutationModel>
 
 <!--  A likelihood component that computes the probability of observing the data conditional on the ARG
-	  At minimum, it needs references to the mutation model, the ARG, and the data matrix -->
+	  At minimum, it needs references to the mutation model and the ARG -->
 <DataLikelihood class="dlCalculation.DataLikelihood"> 
 	<mutationModel />
-	<siteRateModel />
+	<siteRateModel />  <!-- Reference to site model must be included here -->
 	<ARG />
 </DataLikelihood>
 

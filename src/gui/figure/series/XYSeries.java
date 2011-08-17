@@ -27,6 +27,10 @@ public class XYSeries extends AbstractSeries {
 	double prevYSum; //Sum of y-values not including last-added item 
 	double m2n; //Running (online) sum of squares of differences from current mean, useful for computing stdev quickly without rescanning list
 
+	//To prevent repeated scans of the list we store the max and min y-values here
+	private double maxY = Double.NaN;
+	private double minY = Double.NaN;
+	
 	public XYSeries(List<Point2D> points, String name) {
 		this.name = name;
 		this.pointList = points;
@@ -88,6 +92,13 @@ public class XYSeries extends AbstractSeries {
 		if (pointList.size()>0 && newPoint.getX() < getMaxX())
 			throw new IllegalArgumentException("Non-increasing x value");
 		prevYSum = ySum;
+		if (Double.isNaN(maxY) || newPoint.getY() > maxY)
+			maxY = newPoint.getY();
+
+		if (Double.isNaN(minY) || newPoint.getY() < minY)
+			minY = newPoint.getY();
+
+		//System.out.println("Adding point " + newPoint.getY() + " to series");
 		double y = newPoint.getY();
 		ySum += y;
 		if (pointList.size()>1)
@@ -233,6 +244,19 @@ public class XYSeries extends AbstractSeries {
 	}
 	
 	public double getMinY() {
+		if (Double.isNaN(minY))
+			minY = findMinY();
+		
+		return minY;
+		
+
+	}
+	
+	/**
+	 * Find minimum y-value in list
+	 * @return
+	 */
+	private double findMinY() {
 		if (pointList.size()==0) {
 			return 0;
 		}
@@ -257,8 +281,19 @@ public class XYSeries extends AbstractSeries {
 	}
 	
 	public double getMaxY() {
+		if (Double.isNaN(maxY)) 
+			maxY = findMaxY();
+		
+		return maxY;
+	}
+	
+	/**
+	 * Find maximym y-value in list
+	 * @return
+	 */
+	private double findMaxY() {
 		if (pointList.size()==0) {
-			return 0;
+			return Double.NaN;
 		}
 		double max = pointList.get(0).getY();
 		for(int i=0; i<pointList.size(); i++)
@@ -273,8 +308,11 @@ public class XYSeries extends AbstractSeries {
 	 */
 	public Point2D removePoint(int i) {
 		Point2D p = pointList.remove(i);
-		if (p != null)
+		if (p != null) {
 			ySum -= p.getY();
+			minY = Double.NaN;
+			maxY = Double.NaN;
+		}
 		return p;
 	}
 	

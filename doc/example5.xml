@@ -42,7 +42,7 @@
 </mutationModel>
 
 <!--  A likelihood component that computes the probability of observing the data conditional on the ARG
-	  At minimum, it needs references to the mutation model, the ARG, and the data matrix -->
+	  At minimum, it needs references to the mutation model and the ARG -->
 <DataLikelihood class="dlCalculation.DataLikelihood"> 
 	<mutationModel />
 	<ARG />
