@@ -444,9 +444,10 @@ public class PickMonitorsPanel extends JPanel {
 				runMax = chain.getUserRunLength();
 			}
 			
-			freq = runMax / 4000;
-			if (freq < 100)
-				freq = 100;	
+			freq = runMax / 2500;
+			System.out.println("Runlength is : " + runMax + " \n Frequency is : " + freq);
+			if (freq < 1000)
+				freq = 1000;	
 
 			List<String> alignmentLabels = file.getLabelForClass(Alignment.class);
 			for(String alnLabel : alignmentLabels) {

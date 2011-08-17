@@ -231,8 +231,6 @@ public abstract class MonitorPanel extends FloatingPanel {
 				}
 			}
 		}
-		//System.out.println("Repainting (or not)");
-		//traceFigure.repaint();
 	}
 
 	protected void addPointToSeries(int index, int state, double val) {
@@ -242,7 +240,10 @@ public abstract class MonitorPanel extends FloatingPanel {
 		}
 		else {
 			series[index].addPointInOrder(point);
+			System.out.println("Adding point, series size is : " + series[index].size());
 			if (histoSeries != null) {
+				if (histoSeries[index] == null)
+					createHistograms();
 				histoSeries[index].addValue(val);
 			}
 
@@ -483,20 +484,20 @@ public abstract class MonitorPanel extends FloatingPanel {
 				el.setMode(XYSeriesElement.BOXES);				
 			}
 
-			traceFigure.repaint();
 			switchItem.setText("Switch to trace");
 			traceFigure.setXLabel(titles[0]);
 		}
 		else { //Current mode is histogram, so we're switching back to trace
 			if (switchItem.getText().contains("trace")) {
 				mode = Mode.TRACE;
-				System.out.println("Switching to trace");
 				redrawSeries();
 				switchItem.setText("Switch to histogram");
 				traceFigure.setXLabel("MCMC State");
 			}
 		}
 		
+
+		traceFigure.inferBoundsPolitely();
 		traceFigure.repaint();
 	}
 
