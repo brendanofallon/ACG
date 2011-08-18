@@ -17,7 +17,6 @@ public class JC69Matrix extends MutationModel<Void> {
 	/**
 	 * Compute a new JC69 matrix based on the given branch length
 	 */
-	@Override 
 	public void setBranchLength(double length) {
 		if (length != currentBranchLength) {
 			Double ex = Math.exp(-4.0*length);

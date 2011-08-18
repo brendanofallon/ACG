@@ -111,7 +111,7 @@ public class XYSeriesElement extends SeriesElement {
 	public void setSeries(XYSeries newSeries) {
 		super.series = newSeries;
 		this.xySeries = newSeries;
-		regenerateShape();
+		dataBoundsSet = false;
 	}
 	
 
@@ -263,14 +263,13 @@ public class XYSeriesElement extends SeriesElement {
 				
 				boolean connect = true;
 				
-				//System.out.println("Name : " + this.getName() + " First point " + y1 + " second point : " + y2);
-				
+				Point2D p;
 				for(int i=1; i<xySeries.size(); i++) {
-					x1 = axes.dataXtoBoundsX( xySeries.getX(i) );
-					y1 = axes.dataYtoBoundsY( xySeries.getY(i) );
+					p = xySeries.get(i);
+					x1 = axes.dataXtoBoundsX( p.getX() );
+					y1 = axes.dataYtoBoundsY( p.getY() );
 					
-					
-					//We've moved from a undrawn region into an OK one, so just move the 'pointer
+					//We've moved from a undrawn region into an OK one, so just move the 'pointer'
 					//to the new site
 					if (!connect && !(Double.isNaN(y1))) {
 						pathShape.moveTo(x1, y1);
@@ -290,12 +289,12 @@ public class XYSeriesElement extends SeriesElement {
 		}
 				
 		
-		if (currentMode == BOXES) {
-			// Currently there is no pathShape that defines the boundaries for BOXES mode. We use getboxForIndex(...)
-			// to calculate a rectangle corresponding to the box for a particular index in the seiries, and that same
-			// rectangle is used in the contains(x, y) method. 
-		}
-		
+//		if (currentMode == BOXES) {
+//			// Currently there is no pathShape that defines the boundaries for BOXES mode. We use getboxForIndex(...)
+//			// to calculate a rectangle corresponding to the box for a particular index in the seiries, and that same
+//			// rectangle is used in the contains(x, y) method. 
+//		}
+	
 	}
 	
 	/**
@@ -453,10 +452,10 @@ public class XYSeriesElement extends SeriesElement {
 	}
 	
 	public void paint(Graphics2D g) {
-		if (! scaleHasBeenSet) {
-			System.out.println(" Calling paint, but scale has not been set! ");
-		}
-			
+//		if (! scaleHasBeenSet) {
+//			System.out.println(" Calling paint, but scale has not been set! ");
+//		}
+		
 		if (! dataBoundsSet )
 			setDataBounds();
 	
@@ -510,6 +509,8 @@ public class XYSeriesElement extends SeriesElement {
 		
 		g.setStroke(normalStroke);
 		g.setClip(0, 0, parent.getWidth(), parent.getHeight()); //return clip to usual bounds
+		
+
 	}
 
 

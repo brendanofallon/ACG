@@ -59,7 +59,7 @@ public class RootHeightDensity extends PropertyLogger {
 	}
 	
 	public RootHeightDensity(ARG arg, int collectionFrequency, int bins, PrintStream stream) {
-		super(5000000, collectionFrequency);
+		super(1000000, collectionFrequency);
 		this.bins = bins;
 		this.binStep = arg.getSiteCount() / bins;
 		this.arg = arg;
@@ -71,7 +71,7 @@ public class RootHeightDensity extends PropertyLogger {
 	}
 	
 	public RootHeightDensity(ARG arg, int collectionFrequency, int bins, File outputFile) {
-		super(5000000, collectionFrequency);
+		super(1000000, collectionFrequency);
 		this.bins = bins;
 		this.binStep = arg.getSiteCount() / bins;
 		this.arg = arg;
@@ -146,7 +146,7 @@ public class RootHeightDensity extends PropertyLogger {
 			int mappedSite = site;
 			if (siteMap != null)
 				mappedSite = siteMap.getOriginalSite(site);
-			strB.append(mappedSite + "\t" + heightHistos[i].lowerHPD(0.025) + "\t" + heightHistos[i].lowerHPD(0.05)+ "\t" + heightHistos[i].lowerHPD(0.1)  + "\t" + heightHistos[i].getMean() + "\t" + heightHistos[i].upperHPD(0.1) + "\t" + heightHistos[i].upperHPD(0.05) + "\t" + heightHistos[i].upperHPD(0.025) + "\n");
+			strB.append(mappedSite + "\t" + heightHistos[i].lowerHPD(0.025) + "\t" + heightHistos[i].lowerHPD(0.05)+ "\t" + heightHistos[i].lowerHPD(0.1)  + "\t" + heightHistos[i].getMedian() + "\t" + heightHistos[i].upperHPD(0.1) + "\t" + heightHistos[i].upperHPD(0.05) + "\t" + heightHistos[i].upperHPD(0.025) + "\n");
 			site += binStep;
 		}
 		
@@ -158,7 +158,7 @@ public class RootHeightDensity extends PropertyLogger {
 			if (siteMap != null)
 				mappedSite = siteMap.getOriginalSite(site);
 			
-			strB.append(mappedSite + "\t" + heightHistos[i].getMean() + "\n");
+			strB.append(mappedSite + "\t" + heightHistos[i].getMean() + " max: " + heightHistos[i].getMax() + " more than max: " + heightHistos[i].getMoreThanMax() + "\n");
 			site += binStep;
 		}
 		

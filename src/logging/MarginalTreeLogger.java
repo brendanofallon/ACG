@@ -2,8 +2,10 @@ package logging;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Map;
 
 import parameter.AbstractParameter;
@@ -29,8 +31,24 @@ public class MarginalTreeLogger implements MCMCListener {
 	int site;
 	int logFrequency = 10000;
 	int burnin = 1000000;
-	BufferedWriter writer;
+	PrintStream writer;
 	
+	public MarginalTreeLogger(ARG arg, int site, int burnin, int frequency, String filename) {
+		this.arg = arg;
+		this.site = site;
+		this.burnin = burnin;
+		this.logFrequency = frequency;
+		if (filename == null)
+			writer = System.out;
+		else {
+			try {
+				writer = new PrintStream(new File(filename));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	public MarginalTreeLogger(Map<String, String> attrs, ARG arg) {
 		this.arg = arg;
@@ -54,7 +72,7 @@ public class MarginalTreeLogger implements MCMCListener {
 		if (filename != null) {
 			try {
 				File file = new File(filename);
-				writer = new BufferedWriter( new FileWriter(file));
+				writer = new PrintStream( file);
 			}
 			catch (IOException ex) {
 				System.err.println("Could not create output stream for file : " + filename);
@@ -87,7 +105,7 @@ public class MarginalTreeLogger implements MCMCListener {
 		this.site = site;
 		File file = new File(filename);
 		try {
-			writer = new BufferedWriter( new FileWriter(file));
+			writer = new PrintStream(file);
 		} catch (IOException e) {
 			System.err.println("Could not create marginal tree writer with file name: " + filename);
 		}
@@ -104,22 +122,13 @@ public class MarginalTreeLogger implements MCMCListener {
 
 	private void logTree(int state) {
 		String newick = TreeUtils.getMarginalNewickTree(arg, site);
-		try {
-			writer.write(" [ state= " + state + "] \t " + newick + "\n");
-			writer.flush();
-		} catch (IOException e) {
-			System.err.println("Error writing marginal newick tree: " + e);
-		}
-		
+		writer.println(" [ state= " + state + "] \t " + newick);
+		writer.flush();
 	}
 
 	@Override
 	public void chainIsFinished() {
-		try {
-			writer.close();
-		} catch (IOException e) {
-			//Don't care
-		}
+		writer.close();
 	}
 
 	

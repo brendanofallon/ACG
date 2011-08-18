@@ -3,13 +3,6 @@ package sequence;
 import java.util.BitSet;
 
 public interface CharacterColumn {
-
-	/**
-	 * OK.. not really clear if this should be here, but we need a way to get the bits that describe the character col
-	 * for speedy access
-	 * @return
-	 */
-	public BitSet getBits();
 	
 	/**
 	 * Return the number of symbols in this row. 

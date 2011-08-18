@@ -122,11 +122,31 @@ public class ComputeNodePool {
 		newNode.currentState.partials = new double[rateCategories][partialsSize][4];
 		newNode.proposedState.partials = new double[rateCategories][partialsSize][4];
 		
-		newNode.currentState.lMatrices = new double[rateCategories][4][4];
-		newNode.currentState.rMatrices = new double[rateCategories][4][4];
+		newNode.currentState.lMatrices = new double[rateCategories][5][5];
+		newNode.currentState.rMatrices = new double[rateCategories][5][5];
 
-		newNode.proposedState.lMatrices = new double[rateCategories][4][4];
-		newNode.proposedState.rMatrices = new double[rateCategories][4][4];
+		newNode.proposedState.lMatrices = new double[rateCategories][5][5];
+		newNode.proposedState.rMatrices = new double[rateCategories][5][5];
+		
+		//Another speed/memory tradeoff taking place here, and we're opting for speed. 
+		//Gapped sites are given a state index of 5, and their tip probabilities are {1.0, 1.0, 1.0, 1.0}
+		//When we're computing partials we'll sometimes come across sites with stateIndex=5, and we can either
+		// a) Throw in an if/else to do something special at those sites. or
+		// b) Change the transition matrix so that it handles that case appropriately. 
+		// Right now we're choosing b, and we fill the 5th column of all transition matrices with ones
+		for(int j=0; j<rateCategories; j++) {
+			for(int i=0; i<5; i++) {
+				newNode.currentState.lMatrices[j][i][4] = 1.0;
+				newNode.currentState.rMatrices[j][i][4] = 1.0;
+				newNode.currentState.lMatrices[j][4][i] = 1.0;
+				newNode.currentState.rMatrices[j][4][i] = 1.0;
+				
+				newNode.proposedState.lMatrices[j][i][4] = 1.0;
+				newNode.proposedState.rMatrices[j][i][4] = 1.0;
+				newNode.proposedState.lMatrices[j][4][i] = 1.0;
+				newNode.proposedState.rMatrices[j][4][i] = 1.0;
+			}
+		}
 		
 		newNode.currentState.invariantPartials = new double[rateCategories][4][4];
 		newNode.proposedState.invariantPartials = new double[rateCategories][4][4];

@@ -37,8 +37,8 @@ public class PlottableItemRenderer extends JPanel implements TreeCellRenderer {
 		this.add(label);
 		this.add(Box.createHorizontalStrut(30));
 		this.add(prop);
-		setPreferredSize(new Dimension(250, 26));
-		setMaximumSize(new Dimension(2000, 26));
+		setPreferredSize(new Dimension(250, 30));
+		setMaximumSize(new Dimension(2000, 30));
 		
 		labelPanel = new JPanel();
 		mainLabel = new JLabel();

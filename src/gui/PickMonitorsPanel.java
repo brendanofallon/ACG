@@ -443,10 +443,10 @@ public class PickMonitorsPanel extends JPanel {
 				chain = (MCMC)file.getObjectForLabel(mcLabels.get(0));
 				runMax = chain.getUserRunLength();
 			}
-			
+		
 			freq = runMax / 2000;
-			if (freq < 100)
-				freq = 100;	
+			if (freq < 1000)
+				freq = 1000;	
 
 			List<String> alignmentLabels = file.getLabelForClass(Alignment.class);
 			for(String alnLabel : alignmentLabels) {
@@ -476,7 +476,7 @@ public class PickMonitorsPanel extends JPanel {
 			
 			for(PlottableInfo plottable : selectedPlottables) {
 				if (plottable.label.equals("mc.speed")) {
-					outputPane.addMonitor(new SpeedMonitor());
+					outputPane.addMonitor(new SpeedMonitor(burnin));
 				}
 				else {
 					Object obj = file.getObjectForLabel(plottable.label);

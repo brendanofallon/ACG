@@ -179,19 +179,32 @@ public abstract class MonitorPanel extends FloatingPanel {
 		return addedSeriesCount;
 	}
 	
+	public void setShowBurnin(boolean showBurnin) {
+		if (this.showBurnin != showBurnin) {
+			this.showBurnin = showBurnin;
+			redrawSeries();
+		}
+	}
+	
 	public void setShowMeans(boolean showMeans) {
-		this.showMeans = showMeans;
-		redrawSeries();
+		if (this.showMeans != showMeans) {
+			this.showMeans = showMeans;
+			redrawSeries();
+		}
 	}
 	
 	public void setShowValues(boolean showVals) {
-		this.showValues = showVals;
-		redrawSeries();
+		if (this.showValues != showVals) {
+			this.showValues = showVals;
+			redrawSeries();
+		}
 	}
 	
 	public void setShowStdevs(boolean showStds) {
-		this.showStdevs = showStds;
-		redrawSeries();
+		if (this.showStdevs != showStds) {
+			this.showStdevs = showStds;
+			redrawSeries();
+		}
 	}
 	
 	public void setShowLegend(boolean showLegend) {
@@ -203,19 +216,21 @@ public abstract class MonitorPanel extends FloatingPanel {
 		traceFigure.removeAllSeries();
 		if (mode==Mode.TRACE) {
 			for(int i=0; i<series.length; i++) {
-				if (showBurnin)
+				if (showBurnin) {
 					traceFigure.addSeriesElement(burninEls[i]);
-				if (showValues)
+				}
+				if (showValues) {
 					traceFigure.addSeriesElement(seriesEls[i]);
-				if (showMeans)
+				}
+				if (showMeans) {
 					traceFigure.addSeriesElement(meansEls[i]);
+				}
 				if (showStdevs) { 
 					traceFigure.addSeriesElement(stdUpperEls[i]);
 					traceFigure.addSeriesElement(stdLowerEls[i]);
 				}
 			}
 		}
-		traceFigure.repaint();
 	}
 
 	protected void addPointToSeries(int index, int state, double val) {
@@ -225,6 +240,7 @@ public abstract class MonitorPanel extends FloatingPanel {
 		}
 		else {
 			series[index].addPointInOrder(point);
+			System.out.println("Adding point, series size is : " + series[index].size());
 			if (histoSeries != null) {
 				if (histoSeries[index] == null)
 					createHistograms();
@@ -369,6 +385,14 @@ public abstract class MonitorPanel extends FloatingPanel {
 			} 
 		 });
 		
+		 final JCheckBoxMenuItem showBurninItem =new JCheckBoxMenuItem("Show burn in");
+		 showBurninItem.setSelected(true);
+		 popup.add(showBurninItem);
+		 showBurninItem.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				setShowBurnin(showBurninItem.isSelected());
+			} 
+		 });
 		 
 		 final JCheckBoxMenuItem showValsItem =new JCheckBoxMenuItem("Show trace");
 		 showValsItem.setSelected(true);
@@ -450,37 +474,30 @@ public abstract class MonitorPanel extends FloatingPanel {
 	 * Called to switch between the Histogram and Trace modes
 	 */
 	protected void switchHistoTrace() {
-		if (mode == Mode.TRACE) { //Current mode is trace, so switch it to histogram
+		if (mode == Mode.TRACE && switchItem.getText().contains("histogram")) { //Current mode is trace, so switch it to histogram
 			mode = Mode.HISTOGRAM; //We're now in histogram mode
 			traceFigure.removeAllSeries();
 			createHistograms();
-			
-			
+
 			for(int i=0; i<series.length; i++) {
 				XYSeriesElement el = traceFigure.addDataSeries(histoSeries[i]);
 				el.setMode(XYSeriesElement.BOXES);				
 			}
 
-			traceFigure.repaint();
 			switchItem.setText("Switch to trace");
 			traceFigure.setXLabel(titles[0]);
 		}
 		else { //Current mode is histogram, so we're switching back to trace
-			mode = Mode.TRACE;
-			traceFigure.removeAllSeries();
-			System.out.println("Removed all previous series.. adding back old series elements");
-			for(int i=0; i<series.length; i++) {
-				traceFigure.addSeriesElement(burninEls[i]);
-				traceFigure.addSeriesElement(seriesEls[i]);
-				traceFigure.addSeriesElement(meansEls[i]);
-				traceFigure.addSeriesElement(stdUpperEls[i]);
-				traceFigure.addSeriesElement(stdLowerEls[i]);
+			if (switchItem.getText().contains("trace")) {
+				mode = Mode.TRACE;
+				redrawSeries();
+				switchItem.setText("Switch to histogram");
+				traceFigure.setXLabel("MCMC State");
 			}
-			traceFigure.inferBoundsFromCurrentSeries();
-			switchItem.setText("Switch to histogram");
-			traceFigure.setXLabel("MCMC State");
 		}
 		
+
+		traceFigure.inferBoundsPolitely();
 		traceFigure.repaint();
 	}
 

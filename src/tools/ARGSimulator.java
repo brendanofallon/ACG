@@ -23,7 +23,7 @@ public class ARGSimulator {
 
 	public static void generateHistograms() {
 		double N = 1;
-		double rho = 0.0 / (2.0);
+		double rho = 2.0 / (2.0);
 		int trials = 100000;
 		int tips = 10;
 

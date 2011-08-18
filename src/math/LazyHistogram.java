@@ -49,6 +49,14 @@ public class LazyHistogram {
 	}
 
 	
+	/**
+	 * Return the point at the (approximate) middle of the probability mass
+	 * @return
+	 */
+	public double getMedian() {
+		return lowerHPD(0.4999);
+	}
+	
 	public double getMean() {
 		if (vals.size()>0) {
 			double sum = 0;
@@ -65,6 +73,20 @@ public class LazyHistogram {
 			return "Lazy histogram has not been reached the trigger value yet (size is " + vals.size() + ")";
 		else
 			return histo.toString();
+	}
+	
+	public double getMax() {
+		if (histo == null)
+			return Double.NaN; //Trigger not reached
+		else 
+			return histo.getMax();
+	}
+	
+	public double getMoreThanMax() {
+		if (histo == null)
+			return Double.NaN; //Trigger not reached
+		else 
+			return histo.moreThanMax;
 	}
 	
 	/**
@@ -111,4 +133,8 @@ public class LazyHistogram {
 		
 		return histo.upperHPD(hpd);
 	}
+
+
+
+
 }

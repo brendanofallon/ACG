@@ -28,6 +28,9 @@ public class RootHeightModifier extends ARGModifier {
 		super(attributes);
 		setHighRatio(0.50);
 		setLowRatio(0.30);
+		if (!attributes.containsKey("frequency")) {
+			frequency = 2.0;
+		}
 	}
 	
 	public RootHeightModifier() {
@@ -59,27 +62,14 @@ public class RootHeightModifier extends ARGModifier {
 		
 		double minHeight = Math.max(leftChild.getHeight(), rightChild.getHeight() );
 
-		Double newHeight = rootHeight + (RandomSource.getNextUniform()-0.5)*windowSize;
+		double newHeight = rootHeight + (RandomSource.getNextUniform()-0.5)*windowSize;
 
-
-		int count = 0;
-		while (newHeight < minHeight || newHeight > maxHeight) {
-
-			//Reflect over lower boundary
-			if (newHeight < minHeight) {
-				newHeight = 2.0*minHeight - newHeight; // = min + (min-newHeight)
-			}
-
-			if (newHeight > maxHeight) {
-				newHeight = maxHeight - newHeight + maxHeight;
-			}
-			count++;
-			if (count > 100) {
-				throw new ModificationImpossibleException("Could not find appropriate value for root height");
-			}
+		//Reflect over lower boundary
+		//Seems like this should create an upward bias in node height, but it doesn't appear to
+		if (newHeight < minHeight) {
+			newHeight = 2.0*minHeight - newHeight; // = min + (min-newHeight)
 		}
-		
-		
+			
 		if (verbose)
 			System.out.println("Proposing root height: " + newHeight);
 		

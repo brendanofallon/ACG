@@ -58,12 +58,12 @@ public class DataLikelihood extends LikelihoodComponent {
 	
 	//Field for writing the 'verification log', which emits trees and their likelihoods to a 
 	//stream, so they can be verified with external tools
-	private final boolean writeVerificationLog = false;
+	private final boolean writeVerificationLog = true;
 	private final boolean writeARGs = false;
 	//Call to start log on
 	private final int verificationStart = 0;
 	//Frequency with which we write verification log stuff, if at all
-	private final int verificationFrequency = 10;
+	private final int verificationFrequency = 1;
 	private BufferedWriter vLog;
 	
 	//Debugging, used to write comments into the verification file
@@ -305,8 +305,12 @@ public class DataLikelihood extends LikelihoodComponent {
 		
 		DecimalFormat formatter = new DecimalFormat("##.#######");
 		String rateStr = null;
-		double alpha = ((GammaSiteRates)siteRateModel).getAlpha();
-		StringBuilder rateBldr = new StringBuilder(" rates=" + siteRateModel.getCategoryCount() + " alph=" + alpha);
+		StringBuilder rateBldr = new StringBuilder("rates=" + siteRateModel.getCategoryCount() + " ");
+		if (siteRateModel instanceof GammaSiteRates) {
+			double alpha = ((GammaSiteRates)siteRateModel).getAlpha();
+			rateBldr = new StringBuilder(" rates=" + siteRateModel.getCategoryCount() + " alph=" + alpha);
+		}
+		
 		for(int i=0; i<siteRateModel.getCategoryCount(); i++) {
 			rateBldr.append(" rate" + i + "=" + formatter.format(siteRateModel.getRateForCategory(i)) + " prob" + i + "=" + siteRateModel.getProbForCategory(i));
 		}

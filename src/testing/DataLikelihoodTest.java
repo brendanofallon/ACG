@@ -117,7 +117,7 @@ public class DataLikelihoodTest {
 		}
 		
 		
-		mc.run( 2 );
+		mc.run( 5000 );
 	}
 	
 	
@@ -134,13 +134,13 @@ public class DataLikelihoodTest {
 		//File file = new File(homeDir + "test/test_arg_3tip_R1_L100.fas");
 		//File file = new File(homeDir + "test/10tips_N100_L250_1bigrecomb.fas");
 		File file = new File(homeDir + "test/10tips_t01_L1K.fas");
-		//File file = new File(homeDir + "verification_data/N500_mu2e6_R002/20tips_N500_mu2e6_r0_L10K_23.fas");
+		//File file = new File(homeDir + "gapTest.fas");
 		
 		
 		//Newick newick = new Newick("(one:1.0, two:1.0);");
 		
 		Alignment alignment = new Alignment(file);
-        alignment.removeGapsAndUnknowns();
+        //alignment.removeGapsAndUnknowns();
 		DataMatrix data = new DataMatrix(alignment);
 
 		Map<String, String> argAttrs = new HashMap<String, String>();
@@ -159,14 +159,14 @@ public class DataLikelihoodTest {
 
 		List<Parameter<?>> params = new ArrayList<Parameter<?>>();
 
-		DoubleParameter alpha = new DoubleParameter(1.0, "siteRates.alpha", "siteRates.alpha", 0.01, 100.0);
-		alpha.addModifier(new SimpleModifier());
-		alpha.setFrequency(4);
-		GammaSiteRates siteRates = new GammaSiteRates(4, alpha);
-		params.add(siteRates);
-		params.add(alpha);
+//		DoubleParameter alpha = new DoubleParameter(1.0, "siteRates.alpha", "siteRates.alpha", 0.01, 100.0);
+//		alpha.addModifier(new SimpleModifier());
+//		alpha.setFrequency(4);
+//		GammaSiteRates siteRates = new GammaSiteRates(4, alpha);
+//		params.add(siteRates);
+//		params.add(alpha);
 		
-		//ConstantSiteRates siteRates = new ConstantSiteRates();
+		ConstantSiteRates siteRates = new ConstantSiteRates();
 		
 		
 		DoubleParameter kappa = new DoubleParameter(1.25, "kappa", "kappa", 0, 1000);
@@ -205,14 +205,14 @@ public class DataLikelihoodTest {
 		Modifier<ARG> wideSwapper = new WideSwap();
 		Modifier<ARG> trivialAdd = new TrivialAddRemove();
 	
-		//arg.addModifier(swapModifier);
+		arg.addModifier(swapModifier);
 		arg.addModifier(heightModifier);
 		arg.addModifier(rootHeightMod);
-		//arg.addModifier(wideSwapper);
+		arg.addModifier(wideSwapper);
 
-//		arg.addModifier(bpShifter);
-//		arg.addModifier(bpAddRemove);
-//		arg.addModifier(bpSwapper);
+		arg.addModifier(bpShifter);
+		arg.addModifier(bpAddRemove);
+		arg.addModifier(bpSwapper);
 		//arg.addModifier(trivialAdd); //This one is broken and sucks
 		
 		List<Object> likelihoods = new ArrayList<Object>();

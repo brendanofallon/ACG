@@ -23,13 +23,13 @@ import javax.swing.JPanel;
  */
 public class FloatingPanel extends JPanel {
 	
-	private int shadowXDepth = 4;
-	private int shadowYDepth = 4;
+	private int shadowXDepth = 3;
+	private int shadowYDepth = 3;
 	private JPanel mainPanel;
 	private JPanel rightPanel;
 	private JPanel bottomPanel;
 	
-	private Color darkShadowColor = new Color(0.4f, 0.4f, 0.4f, 0.8f);
+	private Color darkShadowColor = new Color(0.4f, 0.4f, 0.4f, 0.7f);
 	private Color lightShadowColor = new Color(0.7f, 0.7f, 0.7f, 0.2f);
 	private Color transparentColor = new Color(0.5f, 0.5f, 0.5f, 0.0f);
 	private GradientPaint gradientX = null;
@@ -97,11 +97,11 @@ public class FloatingPanel extends JPanel {
 	
 		gradientX = new GradientPaint(new Point2D.Double(getWidth()-shadowXDepth-2, 5), darkShadowColor, new Point2D.Double(getWidth()-1, 5), lightShadowColor);
 		g2d.setPaint(gradientX);
-		g2d.fillRoundRect(getWidth()-shadowXDepth-2, 4, shadowXDepth, getHeight()-8, 2, 2);
+		g2d.fillRoundRect(getWidth()-shadowXDepth-2, 4, shadowXDepth, getHeight()-7, 4, 4);
 		
 		gradientY = new GradientPaint(new Point2D.Double(5, getHeight()-shadowYDepth-2), darkShadowColor, new Point2D.Double(5, getHeight()), lightShadowColor);
 		g2d.setPaint(gradientY);
-		g2d.fillRoundRect(3, getHeight()-shadowYDepth-1, getWidth()-7, shadowYDepth, 2, 2);
+		g2d.fillRoundRect(3, getHeight()-shadowYDepth-1, getWidth()-6, shadowYDepth, 4, 4);
 		
 		super.paintComponent(g);
 	}

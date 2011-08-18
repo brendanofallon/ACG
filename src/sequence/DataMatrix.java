@@ -1,7 +1,6 @@
 package sequence;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +44,7 @@ public class DataMatrix {
 	 */
 	public DataMatrix(Alignment data) {
 		for(int i=0; i<data.getSiteCount(); i++) {
-			CharacterColumn col = new NucColumn( data.getColumn(i) );
+			CharacterColumn col = new GappedNucColumn( data.getColumn(i) );
 			addColumn(col);
 		}
 		
@@ -60,14 +59,14 @@ public class DataMatrix {
 //		System.out.println();
 		int sum = 0;
 		for(int i=0; i<patterns.size(); i++) {
-			//System.out.println("Count of pattern #" + i + " : " + patternCardinality.get(i));
+			System.out.println("Count of pattern #" + i + " : " + patternCardinality.get(i));
 			sum += patternCardinality.get(i);
 		}
 
-//		System.out.println("Sites with unique patterns : ");
-//		for(int i=0; i<patterns.size(); i++) {
-//			System.out.println("Site #" + i + " : " + uniqueSiteList.get(i));
-//		}
+		System.out.println("Sites with unique patterns : ");
+		for(int i=0; i<patterns.size(); i++) {
+			System.out.println("Site #" + i + " : " + uniqueSiteList.get(i));
+		}
 		
 		if (sum != totalColsAdded) {
 			throw new IllegalStateException("Uh oh, the sum of pattern cardinalities did not match the total number of sites!");

@@ -7,6 +7,7 @@ public class DNAUtils implements Alphabet {
 	public static final int C = 1;
 	public static final int A = 0;
 	public static final int G = 2;
+	public static final int GAP = 4;
 	
 	public static int intForBase(char base) {
 		switch(base) {
@@ -14,6 +15,9 @@ public class DNAUtils implements Alphabet {
 		case 'C' : return C;
 		case 'T' : return T;
 		case 'G' : return G;
+		case '-' : return GAP;
+		case '?' : return GAP;
+		case 'N' : return GAP;
 		}
 		throw new IllegalArgumentException("Invalid base : " + base);
 	}
@@ -23,6 +27,7 @@ public class DNAUtils implements Alphabet {
 		if (i==C) return 'C';
 		if (i==T) return 'T';
 		if (i==G) return 'G';
+		if (i==GAP) return '?';
 		throw new IllegalArgumentException("Invalid state number : " + i);
 	}
 
@@ -38,6 +43,6 @@ public class DNAUtils implements Alphabet {
 
 
 	public int getSymbolCount() {
-		return 4;
+		return 5;
 	}
 }

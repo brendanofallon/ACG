@@ -32,7 +32,7 @@ import gui.figure.series.AxesElement;
 /**
  * Figure is the superclass of objects that use custom painting, that can be stretched to fill a 
  * component of almost any size, and whose painted elements listen to and respond to mouse events
- * such as clicks. 
+ * such as clicks and drags.
  *   The Figure itself doesn't do any drawing, but instead calls .paint for each of a maintained list
  * of FigureElements. Each FigureElement knows how to paint itself, and different types of FigureElements
  * look different (for instance text, chart axes, annotation boxes, etc). 

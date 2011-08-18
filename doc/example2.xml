@@ -1,4 +1,4 @@
-<!--  Another example ACG input file. This one is very similar to the previous one, but instead
+<!--  Another example ACG input file. This one is very similar to the example1, but instead
  	of containing the alignment, it references an external file, example2.fas, that stores
  	the sequences. It also uses the TN93 model of mutation, which includes two free
  	parameters, KappaR and KappaY, and estimates base frequencies from the data as well. 
@@ -57,7 +57,7 @@
 </mutationModel>
 
 <!--  A likelihood component that computes the probability of observing the data conditional on the ARG
-	  At minimum, it needs references to the mutation model, the ARG, and the data matrix -->
+	  At minimum, it needs references to the mutation model and the ARG-->
 <DataLikelihood class="dlCalculation.DataLikelihood"> 
 	<mutationModel />
 	<ARG />
@@ -101,7 +101,7 @@
 <statelogger class="logging.StateLogger" filename="example2.log" frequency="5000" echoToScreen="true" />
 
 <!-- A logger that tracks the position of recombination breakpoints along the sequence -->
-<bpLocLogger class="logging.BreakpointLocation" filename="example2_bp.txt" frequency="5000" burnin="100000">
+<bpLocLogger class="logging.BreakpointDensity" filename="example2_bp.txt" frequency="5000" burnin="100000">
 	<ARG />  
 </bpLocLogger>
 
