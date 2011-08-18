@@ -226,6 +226,8 @@ public abstract class MonitorPanel extends FloatingPanel {
 		else {
 			series[index].addPointInOrder(point);
 			if (histoSeries != null) {
+				if (histoSeries[index] == null)
+					createHistograms();
 				histoSeries[index].addValue(val);
 			}
 

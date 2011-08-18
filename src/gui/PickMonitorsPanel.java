@@ -444,7 +444,7 @@ public class PickMonitorsPanel extends JPanel {
 				runMax = chain.getUserRunLength();
 			}
 			
-			freq = runMax / 4000;
+			freq = runMax / 2000;
 			if (freq < 100)
 				freq = 100;	
 
