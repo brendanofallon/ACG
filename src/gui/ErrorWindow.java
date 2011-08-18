@@ -104,6 +104,7 @@ public class ErrorWindow extends JFrame implements PropertyChangeListener {
 			
 			pack();
 		}
+
 		
 		protected void showButtonPressed() {
 			fillerPanel.add(stackScrollPane);
@@ -129,12 +130,19 @@ public class ErrorWindow extends JFrame implements PropertyChangeListener {
 				logger.warning(e.getMessage());
 		}
 		
+		public static void showErrorWindow(Exception e, String extraMessage) {
+			ErrorWindow window = new ErrorWindow(e);
+			window.mainMessageLabel.setText(extraMessage);
+			window.setLocationRelativeTo(null);
+			window.setVisible(true);	
+		}
+		
 		/**
 		 * Pop open an error window and write the exception to the usual logger
 		 * @param e
 		 */
 		public static void showErrorWindow(Exception e) {
-			showErrorWindow(e, null);	
+			showErrorWindow(e, "Sorry, but an error occurred :");	
 		}
 
 

@@ -19,7 +19,7 @@ public class DNAUtils implements Alphabet {
 		case '?' : return GAP;
 		case 'N' : return GAP;
 		}
-		throw new IllegalArgumentException("Invalid base : " + base);
+		throw new IllegalArgumentException("Invalid base : '" + base + "'");
 	}
 	
 	public static char baseForInt(int i) {

@@ -140,10 +140,13 @@ public class StartFrame extends JPanel {
 		
 
 		ACGDocument acgDocument = new ACGDocument(inputFile);
+		acgDocument.instantiateAll();
 		ExecutingChain runner = acgDocument.runMCMC();
 		this.setVisible(false);
 		acgParent.dispose();
 	}
+	
+	
 	/**
 	 * Called when the user has clicked on the 'Done' button. We see if a valid input file has been selected, and
 	 * then attempt to install some hooks and run it
@@ -167,12 +170,16 @@ public class StartFrame extends JPanel {
 		
 		try {
 			ACGDocument acgDocument = new ACGDocument(inputFile);
-			//PickPlottablesPanel pickPanel = new PickPlottablesPanel(acgParent, acgDocument);
+			
+			//In the future we may want to do a few other things before instantiating the objects... but for now
+			//we just create 'em right away...
+			acgDocument.instantiateAll();
+			
 			PickMonitorsPanel pickPanel = new PickMonitorsPanel(acgParent, acgDocument);
 			acgParent.replaceCenterPanel(pickPanel);
 		}
 		catch (InvalidInputFileException ex) {
-			JOptionPane.showMessageDialog(acgParent, "Error reading input file : " + ex.getMessage() );
+			ErrorWindow.showErrorWindow(ex, "Error encountered while reading input file :");
 		}
 
 	}

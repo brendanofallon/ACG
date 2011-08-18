@@ -40,16 +40,16 @@ public class DataMatrix {
 	
 	/**
 	 * Create a new data matrix from the specified alignment assuming we have nucleotide data
-	 * @param data
+	 * @param aln
 	 */
-	public DataMatrix(Alignment data) {
-		for(int i=0; i<data.getSiteCount(); i++) {
-			CharacterColumn col = new GappedNucColumn( data.getColumn(i) );
+	public DataMatrix(Alignment aln) {
+		for(int i=0; i<aln.getSiteCount(); i++) {
+			CharacterColumn col = new GappedNucColumn( aln.getColumn(i) );
 			addColumn(col);
 		}
 		
-		for(int i=0; i<data.getSequenceCount(); i++) {
-			rowLabels.add( data.getSequenceLabel(i) );
+		for(int i=0; i<aln.getSequenceCount(); i++) {
+			rowLabels.add( aln.getSequenceLabel(i) );
 		}
 		
 		//System.out.println("Constructed a new data matrix with " + totalColsAdded + " total sites and " + patterns.size() + " unique patterns.");
@@ -59,14 +59,14 @@ public class DataMatrix {
 //		System.out.println();
 		int sum = 0;
 		for(int i=0; i<patterns.size(); i++) {
-			System.out.println("Count of pattern #" + i + " : " + patternCardinality.get(i));
+			//System.out.println("Count of pattern #" + i + " : " + patternCardinality.get(i));
 			sum += patternCardinality.get(i);
 		}
 
-		System.out.println("Sites with unique patterns : ");
-		for(int i=0; i<patterns.size(); i++) {
-			System.out.println("Site #" + i + " : " + uniqueSiteList.get(i));
-		}
+//		System.out.println("Sites with unique patterns : ");
+//		for(int i=0; i<patterns.size(); i++) {
+//			System.out.println("Site #" + i + " : " + uniqueSiteList.get(i));
+//		}
 		
 		if (sum != totalColsAdded) {
 			throw new IllegalStateException("Uh oh, the sum of pattern cardinalities did not match the total number of sites!");
@@ -155,6 +155,7 @@ public class DataMatrix {
 		for(int site=0; site<states.length; site++) {
 			CharacterColumn col = getPatternForSite(site);
 			char state = col.getSymbol(row);
+			//System.out.println("Seq. label: " + seqLabel + " site: " + site + " symbol: "+ state);
 			states[site] = dna.symbolToInt(state);
 		}
 		

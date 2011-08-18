@@ -170,7 +170,7 @@
 <statelogger class="logging.StateLogger" filename="example3.log" frequency="5000" echoToScreen="true" />
 
 <!-- A logger that tracks the position of recombination breakpoints along the sequence -->
-<bpLocLogger class="logging.BreakpointLocation" filename="example3_bp.txt" frequency="5000" burnin="10000">
+<bpLocLogger class="logging.BreakpointDensity" filename="example3_bp.txt" frequency="5000" burnin="10000">
 	<ARG />  
 </bpLocLogger>
 

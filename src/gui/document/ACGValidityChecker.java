@@ -44,7 +44,7 @@ public class ACGValidityChecker implements ValidityChecker {
 				
 				
 				if (!getsReferredTo) {
-					throw new StructureWarningException("Parameter with label " + param + " is not used in any MCMC object!");
+					throw new StructureWarningException("Parameter with label " + param + " was declared, but not referred by to an MCMC object");
 				}
 			}
 		}
@@ -64,7 +64,7 @@ public class ACGValidityChecker implements ValidityChecker {
 				}
 				
 				if (!getsReferredTo) {
-					throw new StructureWarningException("Likelihood with label " + likeLabel + " is not used in any MCMC object!");
+					throw new StructureWarningException("Likelihood with label " + likeLabel + " was declared but not referred to by an MCMC object.");
 				}
 			}
 		}

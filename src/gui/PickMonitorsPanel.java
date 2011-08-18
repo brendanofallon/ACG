@@ -449,17 +449,18 @@ public class PickMonitorsPanel extends JPanel {
 			if (freq < 1000)
 				freq = 1000;	
 
-			List<String> alignmentLabels = file.getLabelForClass(Alignment.class);
-			for(String alnLabel : alignmentLabels) {
-				Object obj = file.getObjectForLabel(alnLabel);
-				if (obj instanceof Alignment) {
-					Alignment aln = (Alignment)obj;
-					if (aln.hasGapOrUnknown()) {
-						JOptionPane.showMessageDialog(this, "The alignment with label " + alnLabel + " has gaps (-) or unknown (N, ?). Please remove these columns before running the file.");
-						return;
-					}
-				}
-			}
+			//It's OK to have gaps now!
+//			List<String> alignmentLabels = file.getLabelForClass(Alignment.class);
+//			for(String alnLabel : alignmentLabels) {
+//				Object obj = file.getObjectForLabel(alnLabel);
+//				if (obj instanceof Alignment) {
+//					Alignment aln = (Alignment)obj;
+//					if (aln.hasGapOrUnknown()) {
+//						JOptionPane.showMessageDialog(this, "The alignment with label " + alnLabel + " has gaps (-) or unknown (N, ?). Please remove these columns before running the file.");
+//						return;
+//					}
+//				}
+//			}
 			
 			
 			int burnin = (Integer)burninSpinner.getValue();

@@ -232,7 +232,10 @@ public class XMLLoader {
 			clz = loader.getClassForName(className);
 
 			if (clz == null) {
-				throw new InvalidInputFileException("Could not find class for object with label: " + label + " and class : " + className);
+				if (className == null || className.trim().length()==0)
+					throw new InvalidInputFileException("No class attribute specified for object with label: " + label);
+				else
+					throw new InvalidInputFileException("Could not find class '" + className + "' for object with label: " + label);
 			}
 			classMap.put(label, clz);
 		}
