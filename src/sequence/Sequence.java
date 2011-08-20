@@ -28,11 +28,11 @@ public class Sequence {
 	 */
 	public Sequence(Map<String, String> attrs) {
 		this.label = XMLUtils.getStringOrFail(LABEL, attrs);
-		this.seq = XMLUtils.getStringOrFail("content", attrs);
+		this.seq = XMLUtils.getStringOrFail("content", attrs).trim();
 	}
 	
 	public Sequence(String label, String seq) {
-		this.seq = seq;
+		this.seq = seq.trim();
 		this.label = label;
 	}
 	

@@ -2,10 +2,12 @@ package logging;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import org.w3c.dom.ranges.RangeException;
 
 import parameter.AbstractParameter;
+import xml.XMLUtils;
 
 import arg.ARG;
 import arg.argIO.ARGParser;
@@ -28,6 +30,18 @@ public class LastARGLogger implements MCMCListener {
 	public LastARGLogger(ARG arg, String fileName, int frequency) {
 		this(arg, fileName);
 		this.frequency = frequency;
+	}
+	
+	
+	public LastARGLogger(Map<String, String> attrs, ARG arg) {
+		this.arg = arg;
+		this.filename = XMLUtils.getStringOrFail("filename", attrs);
+		if (!filename.endsWith(".xml")) 
+			filename = filename + ".xml";
+		
+		Integer freq = XMLUtils.getOptionalInteger("frequency", attrs);
+		if (freq != null)
+			frequency = freq;
 	}
 	
 	public LastARGLogger(ARG arg, String fileName) {

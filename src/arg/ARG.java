@@ -97,7 +97,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 	private int nextNodeNumber = 0;
 	
 	//Various properties that we can log
-	private String[] logKeys = new String[]{/*"root.height",*/ "visible.height", "visible.recombs", "total.recombs", "num.patterns", "num.nodes"}; 
+	private String[] logKeys = new String[]{"root.height", "visible.height", "visible.recombs", "total.recombs", "num.patterns", "num.nodes"}; 
 
 	
 	final int rangePoolSize = 1000;
@@ -1330,12 +1330,13 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 	 * @return
 	 */
 	public double getMaxDLHeight() {
-		List<CoalNode> cNodes = getDLCoalNodes();
-		Collections.sort(cNodes, getNodeHeightComparator());
-		if (cNodes.size()==0)
-			return 0;
+		double max = 0;
+		for(CoalNode node : coalNodes) {
+			if (node.getHeight() > max && node.getCoalescingSites() != null && node.getCoalescingSites().size()>0)
+				max = node.getHeight();
+		}
 		
-		return cNodes.get( cNodes.size()-1).getHeight();
+		return max;
 	}
 	
 	public String getLogString() {

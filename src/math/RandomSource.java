@@ -72,18 +72,15 @@ public class RandomSource {
 	}
 	
 	private void initiateFromSeed(int seed, boolean verbose) {
-		if (globalSource == null) {
-			globalSource = this;
-			RandomSource.seed = seed;
-			if (verbose)
-				System.out.println("Initiating random source with seed: " + seed);
+		if (globalSource != null) {
+			System.out.println("Warning: Multiple initializations of random number generator. Initializing again with seed: " + seed);
 		}
-		else {
-			throw new IllegalStateException("There is already a random number generator in existence");
-		}
+		globalSource = this;
+		RandomSource.seed = seed;
+		if (verbose)
+			System.out.println("Initiating random source with seed: " + seed);
 		
 		rng = new MersenneTwister(seed);
-		
 		uniGenerator = new Uniform(rng);
 	}
 	

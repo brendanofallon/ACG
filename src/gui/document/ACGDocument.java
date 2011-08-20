@@ -67,14 +67,28 @@ public class ACGDocument {
 			loader.loadAllClasses(); //Attempt to load all of the classes referenced by the document
 			checkValidity(); //Must come after class loading
 			turnOffMCMC(); //Find all mcmc objects and make sure they're not set to run right away
-			loader.instantiateAll();
 			
 		} catch (InvocationTargetException ex) {
-			doc = null;
 			throw new InvalidInputFileException(ex.getTargetException().getMessage());
 		} catch (Exception e) {
-			doc = null;
 			throw new InvalidInputFileException(e.getMessage());
+		}
+	}
+	
+	/**
+	 * Instantiate all of the objects described by the document. All exceptions are caught and
+	 * wrapped into an InvalidInputFileException  
+	 * @throws InvalidInputFileException
+	 */
+	public void instantiateAll()  {
+		try {
+			loader.instantiateAll();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+			throw new InvalidInputFileException(e.getTargetException().getMessage());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new InvalidInputFileException(ex.getMessage());
 		}
 	}
 	

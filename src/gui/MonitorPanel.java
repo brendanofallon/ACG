@@ -240,7 +240,6 @@ public abstract class MonitorPanel extends FloatingPanel {
 		}
 		else {
 			series[index].addPointInOrder(point);
-			System.out.println("Adding point, series size is : " + series[index].size());
 			if (histoSeries != null) {
 				if (histoSeries[index] == null)
 					createHistograms();
