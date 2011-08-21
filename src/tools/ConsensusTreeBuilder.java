@@ -195,6 +195,7 @@ public class ConsensusTreeBuilder {
 		TreeItem cladeInfo = majorityClades.get(0);
 		root.addAnnotation("tips", cladeInfo.clade);
 		root.addAnnotation("height", new Double(cladeInfo.height).toString());
+		root.setHeight(cladeInfo.height);
 		double var = cladeInfo.M2/(double)(cladeInfo.count-1.0);
 		//System.out.println("Root node var : " + var);
 		if (var>0) {
@@ -203,11 +204,8 @@ public class ConsensusTreeBuilder {
 		}
 		for(int i=1; i<majorityClades.size(); i++) {
 			addClade(tree, root, majorityClades.get(i));
-			//System.out.println("Adding clade to tree root node.. : " + majorityClades.get(i).clade);
 		}
 
-		//Tree simpleTree = new Tree(root);
-		//System.out.println("Newick tree: " + simpleTree.getNewick());
 		if (root.getNumOffspring()<2) {
 			System.out.println("Root has only one or two offspring, merge clades must have failed somehow");
 		}
