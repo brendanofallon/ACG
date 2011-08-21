@@ -1,0 +1,80 @@
+package gui.document;
+
+import java.io.File;
+import java.io.StringWriter;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+/**
+ * A class to aid in the creation of create an ACG document. Not really much functionality here...
+ * we can just add nodes at the root level and then obtain the dom Document or a String
+ * representation
+ *  
+ * @author brendan
+ *
+ */
+public class ACGDocumentBuilder {
+
+	Document doc  = null;
+	Element rootElement = null;
+	
+	public ACGDocumentBuilder() throws ParserConfigurationException {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		doc = builder.newDocument();
+		rootElement = doc.createElement("ACG");
+		doc.appendChild(rootElement);
+	}
+
+	/**
+	 * Append this node to the root element of the document
+	 * @param node
+	 */
+	public void appendNode(Node node) {
+		rootElement.appendChild(node);
+	}
+	
+//	public Node getNodeForLabel() {
+//		
+//	}
+	
+	/**
+	 * Obtain the primary XML Document created by this DocumentBuilder
+	 * @return
+	 */
+	public Document getDocument() {
+		return doc;
+	}
+	
+	/**
+	 * Obtain an xml-style String representation of the document 
+	 * @return
+	 * @throws TransformerException
+	 */
+	public String getString() throws TransformerException {
+		
+		TransformerFactory transfac = TransformerFactory.newInstance();
+		Transformer trans = transfac.newTransformer();
+		trans.setOutputProperty(OutputKeys.INDENT, "yes");
+		//create string from xml tree
+		StringWriter sw = new StringWriter();
+		StreamResult result = new StreamResult(sw);
+		DOMSource source = new DOMSource(doc);
+		trans.transform(source, result);
+		String xmlString = sw.toString();
+		return xmlString;
+	}
+}
