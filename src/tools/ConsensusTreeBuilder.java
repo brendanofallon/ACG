@@ -5,13 +5,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import tools.Tree.Node;
 
 public class ConsensusTreeBuilder {
 
-	final String labelSep = ", "; 	// Just for debugging! Use this later :"%#&"; //Something unlikely to ever appear in a real label
+	final String labelSep = "&@&"; 	// Just for debugging! Use this later :"%#&"; //Something unlikely to ever appear in a real label
 	private final String emptyString = "";
 	int maxTrees = 100000;
 	int subsampleRate = 1;
@@ -22,7 +23,7 @@ public class ConsensusTreeBuilder {
 								   //representation in the consensus. This must be at least 0.50
 
 	StringBuilder merge  = new StringBuilder(); //working object for clade counting
-	private boolean DEBUG = true;
+	private boolean DEBUG = false;
 	TreeReader reader;
 	
 	Tree consensusTree = null; //Gets created when we call buildConsensus();
@@ -37,6 +38,10 @@ public class ConsensusTreeBuilder {
 		ArrayList<TreeItem> majorityClades = buildMajorityCladeList(clades);
 		consensusTree = new Tree(); 
 		mergeClades(consensusTree, majorityClades);
+		List<Node> nodes = consensusTree.getAllNodes();
+		for(Node node : nodes) {
+			node.removeAnnotation("tips");
+		}
 		return consensusTree;
 	}
 
@@ -199,7 +204,7 @@ public class ConsensusTreeBuilder {
 		double var = cladeInfo.M2/(double)(cladeInfo.count-1.0);
 		//System.out.println("Root node var : " + var);
 		if (var>0) {
-			System.out.println("Root node error : " + Math.sqrt(var));
+			//System.out.println("Root node error : " + Math.sqrt(var));
 			root.addAnnotation("error", new Double(Math.sqrt(var)).toString());
 		}
 		for(int i=1; i<majorityClades.size(); i++) {
@@ -312,18 +317,18 @@ public class ConsensusTreeBuilder {
 		}
 	}
 	
-	public static void main(String[] args) {
-		File input = new File("consensusTest.trees");
-		ConsensusTreeBuilder builder;
-		try {
-			builder = new ConsensusTreeBuilder(input);
-			builder.buildConsensus();
-			String newick = builder.getConsensusNewick();
-			System.out.println("Got newick : \n" + newick);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
+//	public static void main(String[] args) {
+//		File input = new File("badTree.trees");
+//		ConsensusTreeBuilder builder;
+//		try {
+//			builder = new ConsensusTreeBuilder(input);
+//			builder.buildConsensus();
+//			String newick = builder.getConsensusNewick();
+//			System.out.println("Got newick : \n" + newick);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//	}
 }
