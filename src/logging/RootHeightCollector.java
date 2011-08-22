@@ -20,7 +20,7 @@ public class RootHeightCollector extends HistogramCollector {
 	
 	public RootHeightCollector(ARG arg, int breakpoints,
 			int collectionFrequency, double histMin, double histMax, int bins) {
-		super(arg, "root.height", collectionFrequency, histMin, histMax, bins);
+		super(arg, "root.height", 1000000, collectionFrequency, histMin, histMax, bins);
 		
 		this.arg = arg;
 		this.bps = breakpoints;

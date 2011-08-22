@@ -31,6 +31,7 @@ public class MarginalTreeLogger implements MCMCListener {
 	int site;
 	int logFrequency = 10000;
 	int burnin = 1000000;
+	MCMC chain = null;
 	PrintStream writer;
 	
 	public MarginalTreeLogger(ARG arg, int site, int burnin, int frequency, String filename) {
@@ -117,7 +118,11 @@ public class MarginalTreeLogger implements MCMCListener {
 		if (stateNumber>burnin && stateNumber % logFrequency == 0) {
 			logTree(stateNumber);
 		}
-		
+	
+		double heat = chain.getTemperature();
+		if (heat != 1.0) {
+			throw new IllegalStateException("Chain heat is not 1.0, BreakpointDensity is collecting data from the wrong chain");
+		}
 	}
 
 	private void logTree(int state) {
@@ -134,6 +139,7 @@ public class MarginalTreeLogger implements MCMCListener {
 	
 	@Override
 	public void setMCMC(MCMC chain) {
+		this.chain = chain;
 		ARG newARG = findARG(chain);
 		if (newARG == null) {
 			throw new IllegalArgumentException("Cannot listen to a chain without an arg  parameter");

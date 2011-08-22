@@ -27,6 +27,7 @@ public abstract class PropertyLogger implements MCMCListener {
 	public static final String FREQUENCY = "frequency";
 	public static final String BURNIN = "burnin";
 	public static final String FILENAME = "filename";
+	public static final String WRITE_TEMP_DATA = "write.temp.data";
 	
 	MCMC chain = null;
 	int collectionFrequency;
@@ -48,7 +49,7 @@ public abstract class PropertyLogger implements MCMCListener {
 	public PropertyLogger(Map<String, String> attrs) {
 		Integer burn = XMLUtils.getOptionalInteger(BURNIN, attrs);
 		if (burn == null)
-			this.burnin = 5000000;
+			this.burnin = 1000000;
 		else
 			this.burnin = burn;
 		
@@ -66,6 +67,12 @@ public abstract class PropertyLogger implements MCMCListener {
 			System.out.println("Could not open output file for logging : " + filename);
 			//Shouldn't happen, right?
 			e.printStackTrace();
+		}
+		
+		Boolean writeTempData = XMLUtils.getOptionalBoolean(WRITE_TEMP_DATA, attrs);
+		if (writeTempData != null) {
+			this.writeTempData = writeTempData;
+			tempFileName = filename;
 		}
 	}
 	
@@ -140,7 +147,7 @@ public abstract class PropertyLogger implements MCMCListener {
 	}
 	
 	/**
-	 * If true write 
+	 * If true write data periodically to the given file
 	 * @param write
 	 */
 	public void setWriteTempData(boolean write, int frequency, String filename) {
@@ -159,5 +166,6 @@ public abstract class PropertyLogger implements MCMCListener {
 	public void chainIsFinished() {
 		String str = getSummaryString();
 		outputStream.println(str);
+		outputStream.close();
 	}
 }

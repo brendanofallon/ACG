@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import parameter.Parameter;
+import xml.XMLUtils;
 
 import component.LikelihoodComponent;
 
@@ -33,7 +34,7 @@ public class StateLogger implements MCMCListener {
 	long lastTime = 0;
 	int lastState = 0;
 	
-	int logFrequency = 100;
+	int logFrequency = 1000;
 	
 	DecimalFormat bigFormatter = new DecimalFormat("###0.0###");
 	DecimalFormat smallFormatter = new DecimalFormat("###0.0#####");
@@ -44,17 +45,18 @@ public class StateLogger implements MCMCListener {
 	
 	public StateLogger(Map<String, String> attrs) {
 		lastTime = System.currentTimeMillis();
-		String filename = attrs.get("filename");
+		String filename = XMLUtils.getOptionalString("filename", attrs);
 		if (filename != null) {
 			try {
 				File file = new File(filename);
 				addStream( new PrintStream(new FileOutputStream(file)));
-				//System.out.println("Writing state log file to " + filename);
+				System.out.println("Writing state log file to " + filename);
 			}
 			catch (IOException ex) {
 				System.err.println("Could not create output stream for file : " + filename);
 			}
 		}
+		
 		
 		String writeStdout = attrs.get("echoToScreen");
 		if (writeStdout != null) {

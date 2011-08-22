@@ -58,7 +58,7 @@ public class DataLikelihood extends LikelihoodComponent {
 	
 	//Field for writing the 'verification log', which emits trees and their likelihoods to a 
 	//stream, so they can be verified with external tools
-	private final boolean writeVerificationLog = true;
+	private final boolean writeVerificationLog = false;
 	private final boolean writeARGs = false;
 	//Call to start log on
 	private final int verificationStart = 0;
@@ -154,6 +154,8 @@ public class DataLikelihood extends LikelihoodComponent {
 		}
 		
 		proposedLogLikelihood = computeProposedLikelihood();
+		
+		System.out.println("Likelihood of initial ARG: " + proposedLogLikelihood);
 		
 		stateAccepted();
 		tree.acceptValue();
@@ -289,12 +291,16 @@ public class DataLikelihood extends LikelihoodComponent {
 		return logProb;
 	}
 	
+	public void writeVerificationLogLine(double logDL) {
+		writeVerificationLogLine(logDL, vLog);
+	}
+	
 	
 	/**
-	 * Writes an addition line to the verification log, which is can be used by 
+	 * Writes an additional line to the verification log, which is can be used by 
 	 * outside tools (phylip) to double-check the calculated likelihood
 	 */
-	public void writeVerificationLogLine(double logDL) {
+	public void writeVerificationLogLine(double logDL, BufferedWriter writer) {
 		double kappa = ((F84Matrix)mutationModel).getKappa();
 		double[] stats = mutationModel.getStationaries();
 		double aFreq = stats[DNAUtils.A];
@@ -317,7 +323,7 @@ public class DataLikelihood extends LikelihoodComponent {
 		rateStr = rateBldr.toString();
 	
 		
-		if (vLog != null && calls > 0) {
+		if (writer != null && calls > 0) {
 			try {
 				double recomputedDL = 0;
 				
@@ -327,8 +333,8 @@ public class DataLikelihood extends LikelihoodComponent {
 						String newick = TreeUtils.getNewick( TreeUtils.createMarginalTree(arg, 0)); //Creates marginal newick at site 0
 						double dl = computeCore.computeRootLogDLForRange(0, arg.getSiteCount());
 						recomputedDL += dl;
-						vLog.write(dl + "\t[ state=" + chain.getCurrentState() + rateStr + freqStr + " kappa=" + kappa + " start=0 end=" + arg.getSiteCount() + " ]\t" + newick + "\n");
-						vLog.flush();
+						writer.write(dl + "\t[ state=" + chain.getCurrentState() + rateStr + freqStr + " kappa=" + kappa + " start=0 end=" + arg.getSiteCount() + " ]\t" + newick + "\n");
+						writer.flush();
 
 						//System.out.println("Verification range " + 0 + " .. " +  dataMatrix.getTotalColumnCount() + " : " + dl);
 						return;
@@ -347,18 +353,18 @@ public class DataLikelihood extends LikelihoodComponent {
 							continue;
 						String newick = TreeUtils.getNewick( TreeUtils.createMarginalTree(arg, breakpoints[i])); //Creates marginal newick at site 0
 						double dl = computeCore.computeRootLogDLForRange(breakpoints[i], breakpoints[i+1]);
-						vLog.write(dl + "\t[ state=" + chain.getCurrentState() + rateStr + freqStr + " kappa=" + kappa + " start=" + breakpoints[i] + " end=" + breakpoints[i+1] + " ]\t" + newick + "\n");
+						writer.write(dl + "\t[ state=" + chain.getCurrentState() + rateStr + freqStr + " kappa=" + kappa + " start=" + breakpoints[i] + " end=" + breakpoints[i+1] + " ]\t" + newick + "\n");
 						recomputedDL += dl;
 
 						//System.out.println("Verification range " + breakpoints[i] + " .. " +  breakpoints[i+1] + " : " + dl);
-						vLog.flush();
+						writer.flush();
 					}
 
 					int lastSite = arg.getSiteCount();
 					String newick = TreeUtils.getNewick( TreeUtils.createMarginalTree(arg, lastSite-1)); //Creates marginal newick at site 0
 					double dl = computeCore.computeRootLogDLForRange(breakpoints[ breakpoints.length-1], lastSite);
-					vLog.write(dl + "\t[ state=" + chain.getCurrentState() + rateStr + freqStr + " kappa=" + kappa + " start=" + breakpoints[ breakpoints.length-1] + " end=" + lastSite + " ]\t" + newick + "\n");
-					vLog.flush();
+					writer.write(dl + "\t[ state=" + chain.getCurrentState() + rateStr + freqStr + " kappa=" + kappa + " start=" + breakpoints[ breakpoints.length-1] + " end=" + lastSite + " ]\t" + newick + "\n");
+					writer.flush();
 
 					//System.out.println("Verification range " + breakpoints[ breakpoints.length-1] + " .. " +  lastSite + " : " + dl);
 					recomputedDL += dl;
@@ -367,7 +373,9 @@ public class DataLikelihood extends LikelihoodComponent {
 
 				if (Math.abs(recomputedDL - logDL) > 1e-6) {
 					throw new IllegalStateException("Uh-oh, verification DLs did not add up to proposed DL. \n Verification DL sum : " + recomputedDL + " prop DL : " + logDL);
-
+				}
+				else {
+					System.out.println("Recomputed dl: " + recomputedDL + " matches dl provided");
 				}
 			} catch (IOException e) {
 				System.out.println("Error writing tree dl log line..");

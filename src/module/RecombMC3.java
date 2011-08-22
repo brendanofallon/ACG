@@ -110,6 +110,7 @@ public class RecombMC3 {
 		}
 		
 		String logFileName = fileStem + ".log";
+		System.out.println("Log file name : " + logFileName);
 		
 		//Create the summary 'stream' to capture output written by various listeners
 		File summaryFile = new File(fileStem + "_summary.txt");
@@ -120,19 +121,18 @@ public class RecombMC3 {
 			System.out.println("Could not open output stream " + summaryFile + " for summary file, defaulting to System.out");
 		}
 		
-		//Create the logger to be used for the cold chain
-		Map<String, String> loggerProps = new HashMap<String, String>();
-		loggerProps.put("echoToScreen", "true");
-		loggerProps.put("frequency", "" + sampleFrequency);
-		loggerProps.put("filename", logFileName);
+		
+		
 		
 
 		//Temporarily make alignment to we can build the site map
 		aln = new Alignment(filename);
-		RemovedColumnsMap siteMap = new RemovedColumnsMap( aln.getSiteCount() );
-		List<Integer> removedCols = aln.removeGapsAndUnknowns();
-		System.out.println("Removed " + removedCols.size() + " gapped and unknown columns from alignment");
-		siteMap.setRemovedColumns(removedCols);
+		//RemovedColumnsMap siteMap = new RemovedColumnsMap( aln.getSiteCount() );
+		//List<Integer> removedCols = aln.removeGapsAndUnknowns();
+		//System.out.println("Removed " + removedCols.size() + " gapped and unknown columns from alignment");
+		//siteMap.setRemovedColumns(removedCols);
+		System.out.println("NOT removing columns fmor alignment, using new gap-calculation method");
+		
 		
 		if (initARGfilename == null && useLastARG) {
 			this.initARGfilename = fileStem + "_mpe_arg.xml";
@@ -154,41 +154,55 @@ public class RecombMC3 {
 		DataMatrix data = dl.getDataMatrix();
 		System.out.println("Read in " + data.getSequenceCount() + " sequences with " + data.getTotalColumnCount() + " total sites, " + data.getPolymorphicSites().length + " polymorphic sites, and " + data.getNumberOfPatterns() + " data patterns");
 		
+		//Create the loggers to be used for the cold chain
 		List<MCMCListener> listeners = new ArrayList<MCMCListener>();
+		
+		Map<String, String> loggerProps = new HashMap<String, String>();
+		loggerProps.put("echoToScreen", "true");
+		loggerProps.put("frequency", "" + sampleFrequency);
+		loggerProps.put("filename", logFileName);
 		listeners.add(new StateLogger(loggerProps));
+		
 		listeners.add(new LastARGLogger(arg, fileStem + "_lastARG.xml"));
 		
 		BreakpointDensity bpDensity = new BreakpointDensity(arg, sampleFrequency, 500, summaryStream);
 		bpDensity.setWriteTempData(true, 100000, fileStem + "breakpoint_density_tmp.txt");
 		bpDensity.setBurnin(runLength / 2);
-		bpDensity.setSiteMap(siteMap);
+		//bpDensity.setSiteMap(siteMap);
+		bpDensity.setMCMC(chain0);
 		listeners.add(bpDensity);
 		
 		BreakpointLocation bpLocation =  new BreakpointLocation(arg, sampleFrequency, summaryStream);
 		bpLocation.setWriteTempData(true, 100000, fileStem + "breakpoint_location_tmp.txt");
 		bpLocation.setBurnin(runLength / 2);
-		bpLocation.setSiteMap(siteMap);
+		//bpLocation.setSiteMap(siteMap);
 		bpLocation.setMaxHeight(0.001);
+		bpLocation.setMCMC(chain0);
 		listeners.add(bpLocation);
 		
 		RootHeightDensity rhDensity = new RootHeightDensity(arg, sampleFrequency, 500, summaryStream);
 		rhDensity.setWriteTempData(true, 100000, fileStem + "treeHeight_density_tmp.txt");
 		rhDensity.setBurnin(runLength / 2);
-		rhDensity.setSiteMap(siteMap);
+		//rhDensity.setSiteMap(siteMap);
+		rhDensity.setMCMC(chain0);
 		listeners.add(rhDensity);	
 		
 		MPEARG mpeARG = new MPEARG(dl, fileStem + "_mpe_arg.xml", sampleFrequency);
+		mpeARG.setMCMC(chain0);
 		listeners.add(mpeARG);
 		
 		int maxSite = arg.getSiteCount();
 		MarginalTreeLogger margLog0 = new MarginalTreeLogger(arg, 0, fileStem + "_site0.trees");
+		margLog0.setMCMC(chain0);
 		listeners.add(margLog0);
 		
 		MarginalTreeLogger margLog10 = new MarginalTreeLogger(arg, maxSite-1, fileStem + "_site" + maxSite + ".trees");
+		margLog10.setMCMC(chain0);
 		listeners.add(margLog10);
 		
 		int middleSite = maxSite / 2;
 		MarginalTreeLogger margLog20 = new MarginalTreeLogger(arg, middleSite, fileStem + "_site" + middleSite + ".trees");
+		margLog20.setMCMC(chain0);
 		listeners.add(margLog20);
 		
 		
@@ -244,10 +258,10 @@ public class RecombMC3 {
 		Map<String, String> argAttrs = new HashMap<String, String>();
 		//If an initial arg has been supplied tell the ARG to start with it
 		if (initARGfilename != null)
-			argAttrs.put("file", initARGfilename);
+			argAttrs.put("filename", initARGfilename);
 		ARG arg = new ARG(argAttrs, aln);
 		
-		arg.setFrequency(20.0);
+		arg.setFrequency(30.0);
 		parameters.add(arg);
 		
 		Modifier<ARG> swapModifier = new SubtreeSwap();
@@ -268,7 +282,7 @@ public class RecombMC3 {
 		arg.addModifier(addRemove);
 		
 		
-		DoubleParameter kappa = new DoubleParameter(1.0, "kappa", "kappa", 0, 1000);
+		DoubleParameter kappa = new DoubleParameter(2.0, "kappa", "kappa", 0, 1000);
 		kappa.addModifier(new SimpleModifier());
 		parameters.add(kappa);
 		
@@ -287,7 +301,7 @@ public class RecombMC3 {
 		likelihoods.add(dl);
 	
 		
-		ConstantPopSize popSize = new ConstantPopSize(0.01);
+		ConstantPopSize popSize = new ConstantPopSize(0.001);
 		popSize.setFrequency(0.05);
 		popSize.addModifier(new ScaleModifier());
 		popSize.acceptValue();
@@ -307,7 +321,9 @@ public class RecombMC3 {
 		
 		HashMap<String, String> mcAttrs = new HashMap<String, String>();
 		mcAttrs.put("length", "" + runLength); //Without this attr the run won't initialize
-		return new MCMC(mcAttrs, parameters, likelihoods, null);
+		MCMC chain = new MCMC(mcAttrs, parameters, likelihoods, null);
+		dl.setChain(chain);
+		return chain;
 	}
 	
 	public void run() {

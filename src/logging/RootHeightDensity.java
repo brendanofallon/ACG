@@ -109,6 +109,12 @@ public class RootHeightDensity extends PropertyLogger {
 			site += binStep;
 		}
 		calls++;
+		
+		
+		double heat = chain.getTemperature();
+		if (heat != 1.0) {
+			throw new IllegalStateException("Chain heat is not 1.0, RootHeightDensity is collecting data from the wrong chain");
+		}
 	}
 
 

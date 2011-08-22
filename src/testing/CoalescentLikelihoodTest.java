@@ -130,12 +130,12 @@ public class CoalescentLikelihoodTest {
 		parameters.add(arg);
 		likelihoods.add(coalLikelihood);
 				
-		HistogramCollector bpHist = new HistogramCollector(arg, "total.recombs", 500, 0, 35, 35);
+		HistogramCollector bpHist = new HistogramCollector(arg, "total.recombs", 1000, 500, 0, 35, 35);
 		bpHist.setBurnin(1000);
 		List<MCMCListener> listeners = new ArrayList<MCMCListener>();
 		listeners.add(bpHist);
 		
-		HistogramCollector rootHeightHist = new HistogramCollector(arg, "root.height", 500, 0, 10, 100);
+		HistogramCollector rootHeightHist = new HistogramCollector(arg, "root.height", 1000, 500, 0, 10, 100);
 		rootHeightHist.setBurnin(1000);
 		listeners.add(rootHeightHist);
 		
@@ -215,10 +215,10 @@ public class CoalescentLikelihoodTest {
 		likelihoods.add(coalLikelihood);
 		
 		
-		HistogramCollector rhoHist = new HistogramCollector(rec, "rho", 50, 0, 0.025, 50);
+		HistogramCollector rhoHist = new HistogramCollector(rec, "rho", 1000, 50, 0, 0.025, 50);
 		listeners.add(rhoHist);
 		
-		HistogramCollector popSizeHist = new HistogramCollector(popSize, "pop.size", 50, 0, 500, 50);
+		HistogramCollector popSizeHist = new HistogramCollector(popSize, "pop.size", 1000, 50, 0, 500, 50);
 		listeners.add(popSizeHist);
 		
 		runMCMC(likelihoods, parameters, listeners);

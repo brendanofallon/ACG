@@ -202,7 +202,7 @@ public class MC3 {
 		run(runLength, swapSteps, chainHeats);
 	}
 	
-	private void run(int steps, int swapSteps, ChainHeats cHeats) {
+	public void run(int steps, int swapSteps, ChainHeats cHeats) {
 		if (cHeats.getHeatCount() != protoChains.size()) {
 			throw new IllegalStateException("Same number of chains and heats is required");
 		}

@@ -302,7 +302,7 @@ public class Alignment {
 				try {
 					addSequence(seq);
 				} catch (BadSequenceException e) {
-					throw new FileParseException("Invalid characters found in sequence with label: " + label);
+					throw new FileParseException("Invalid characters found in sequence : " + label + e.getMessage());
 				}
 
 			}//else line was not null

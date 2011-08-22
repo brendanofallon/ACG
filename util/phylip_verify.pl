@@ -43,7 +43,8 @@ system("cp $seqfile infile");
 #Store all sequences in a list so we can write subsequences to a file easily
 my @seqs;
 my $count = 0;
-my $inseq = Bio::SeqIO->new(-file => "<$seqfile", -format => 'fasta' );
+my $inseq = Bio::SeqIO->new(-file => "<$seqfile", -format => 'fasta', -verbose => -1 );
+$inseq->verbose(-1);
 while (my $seq = $inseq->next_seq) {
 	push(@seqs, $seq);
 } 
@@ -69,6 +70,7 @@ open loghandle, $logfile or die "Could not open log file $logfile \n";
 my $linenum = 0;
 
 my $count = 0;
+my $shortBranchErrors = 0;
 
 for my $line (<loghandle>) {
 	$linenum++;
@@ -162,16 +164,16 @@ close tmpfile;
 		open tmpfas, ">.tmp.fas" or die "Could not open temporary fasta file";
 		for my $seq (@seqs) {
 			my $truncSeq = substr($seq->seq, $startsite, $endsite - $startsite);
-			my $newSeq = Bio::Seq->new( -seq=>$truncSeq, -display_id=>$seq->display_id );
+			my $newSeq = Bio::Seq->new( -seq=>$truncSeq, -display_id=>$seq->display_id, -verbose => -1);
 			print tmpfas ">" . $seq->display_id . "\n" . $truncSeq . "\n";
 		}
 		close tmpfas;
 	
 		#uggh...now read in fasta alignment we just wrote, and write it as phylip
 		my $in  = Bio::AlignIO->new(-file   => "<.tmp.fas" ,
-								 -format => 'fasta');
+								 -format => 'fasta', -verbose => -1);
 		my $out = Bio::AlignIO->new(-file   => ">infile" ,
-								 -format => 'phylip');
+								 -format => 'phylip', -verbose => -1);
 		while ( my $aln = $in->next_aln() ) {
 			$out->write_aln($aln);
 		}
@@ -224,6 +226,7 @@ close tmpfile;
 				
 				if ($tree =~ /E-7/ || $tree =~ /E-8/) {
 					print " ** Tree contains at least one short branch, ignoring **\n";
+					$shortBranchErrors++;
 				}
 				else {			
 					exit(0);
@@ -239,5 +242,6 @@ close tmpfile;
   }
   else {
   	print "Found errors on $count lines\n";
+  	print "Errors ostensibly due to very short branches: $shortBranchErrors \n";
   }
 

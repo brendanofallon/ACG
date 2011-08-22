@@ -279,6 +279,14 @@ public class MCMC {
 	}
 	
 	/**
+	 * Returns the heating / temperature parameter of this chain
+	 * @return
+	 */
+	public double getTemperature() {
+		return heat;
+	}
+	
+	/**
 	 * Add a new parameter to the list of params to choose from. This checks to make
 	 * sure the parameter is not already in the list. 
 	 * @param param

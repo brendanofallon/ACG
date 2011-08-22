@@ -335,6 +335,10 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 			
 		}
 		
+		if (alignment != null && alignment.getSequenceCount()==0) {
+			throw new InvalidInputFileException("No sequences in alignment, please remove the alignment or add sequences to it.");
+		}
+		
 		String tipsStr = attrs.get("tips");
 		double tipNumber = 0;
 		if (tipsStr != null) {

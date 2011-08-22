@@ -111,6 +111,7 @@ public class BreakpointLocation extends PropertyLogger {
 	
 	@Override
 	public void setMCMC(MCMC chain) {
+		this.chain = chain;
 		ARG newARG = findARG(chain);
 		if (newARG == null) {
 			throw new IllegalArgumentException("Cannot listen to a chain without an arg  parameter");

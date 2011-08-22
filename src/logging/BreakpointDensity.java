@@ -43,7 +43,7 @@ public class BreakpointDensity extends HistogramCollector  {
 	}
 	
 	public BreakpointDensity(ARG arg, int collectionFrequency, int bins, PrintStream stream)  {
-		super(arg, "Breakpoint density", collectionFrequency, 0, arg.getSiteCount(), bins);
+		super(arg, "Breakpoint density", 1000000, collectionFrequency, 0, arg.getSiteCount(), bins);
 		this.arg = arg;
 		if (stream != null) {
 			setPrintStream(stream);
@@ -52,7 +52,7 @@ public class BreakpointDensity extends HistogramCollector  {
 	
 	
 	public BreakpointDensity(ARG arg, int collectionFrequency, int bins, File outputFile)  {
-		super(arg, "Breakpoint density", collectionFrequency, 0, arg.getSiteCount(), bins);
+		super(arg, "Breakpoint density", 1000000, collectionFrequency, 0, arg.getSiteCount(), bins);
 		this.arg = arg;
 		if (outputFile != null) {
 			try {
@@ -68,10 +68,16 @@ public class BreakpointDensity extends HistogramCollector  {
 		for(int i=0; i<rNodes.size(); i++) {
 			histo.addValue(rNodes.get(i).getInteriorBP());
 		}
+		
+		double heat = chain.getTemperature();
+		if (heat != 1.0) {
+			throw new IllegalStateException("Chain heat is not 1.0, BreakpointDensity is collecting data from the wrong chain");
+		}
 	}
 
 	@Override
 	public void setMCMC(MCMC chain) {
+		this.chain = chain;
 		ARG newARG = findARG(chain);
 		if (newARG == null) {
 			throw new IllegalArgumentException("Cannot listen to a chain without an arg  parameter");

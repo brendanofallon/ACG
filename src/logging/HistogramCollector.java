@@ -24,8 +24,8 @@ public class HistogramCollector extends PropertyLogger {
 	AbstractParameter<?> param;
 	String logKey;
 
-	public HistogramCollector( AbstractParameter<?> param, String itemName, int collectionFrequency, double histMin, double histMax, int bins) {
-		super(5000000, collectionFrequency);
+	public HistogramCollector( AbstractParameter<?> param, String itemName, int burnin, int collectionFrequency, double histMin, double histMax, int bins) {
+		super(burnin, collectionFrequency);
 		histo = new Histogram(histMin, histMax, bins);
 		this.param = param;
 		this.logKey = itemName;
