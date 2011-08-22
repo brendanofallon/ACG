@@ -24,18 +24,24 @@ public class ConsensusTreeBuilder {
 
 	StringBuilder merge  = new StringBuilder(); //working object for clade counting
 	private boolean DEBUG = false;
-	TreeReader reader;
+
+	Map<String, TreeItem> clades = new HashMap<String, TreeItem>();
 	
 	Tree consensusTree = null; //Gets created when we call buildConsensus();
 	
-	public ConsensusTreeBuilder(File file) throws IOException {
-		reader = new TreeReader(file);
+	public ConsensusTreeBuilder()  {
 	}
 	
-	public Tree buildConsensus() throws IOException {
-		Map<String, TreeItem> clades = new HashMap<String, TreeItem>();
-		numInputTrees = tabulateTrees(clades);
-		ArrayList<TreeItem> majorityClades = buildMajorityCladeList(clades);
+	public void clear() {
+		consensusTree = null;
+		clades = new HashMap<String, TreeItem>();
+		merge = new StringBuilder();
+	}
+	
+	public Tree buildConsensusFromFile(File file) throws IOException {
+		TreeReader reader = new TreeReader(file);
+		numInputTrees = tabulateTrees(reader);
+		ArrayList<TreeItem> majorityClades = buildMajorityCladeList();
 		consensusTree = new Tree(); 
 		mergeClades(consensusTree, majorityClades);
 		List<Node> nodes = consensusTree.getAllNodes();
@@ -60,14 +66,11 @@ public class ConsensusTreeBuilder {
 	 * @return Number of trees counted
 	 * @throws IOException
 	 */
-	private int tabulateTrees(Map<String, TreeItem> clades) throws IOException {
-
+	private int tabulateTrees(TreeReader reader) throws IOException {
 		int countedTrees = 0;
 		int examinedTrees =0;
 
 		Node treeRoot = reader.getNextTreeRoot(); //This is the slow part and we do it for every single tree, regardless of subSampleRate
-										//We should make a DelayedDrawableTree class that just reads in the string but doesn't do any parsing
-										//or allocating until necessary.. this would probably be 100x faster
 		
 		while(treeRoot!=null && countedTrees < maxTrees) {
 			examinedTrees++;
@@ -80,7 +83,7 @@ public class ConsensusTreeBuilder {
 				else {
 					if (DEBUG)
 						System.out.println("Counting tree #" + examinedTrees);
-					countClades(treeRoot, clades);
+					countClades(treeRoot);
 					countedTrees++;
 				}
 				
@@ -101,15 +104,15 @@ public class ConsensusTreeBuilder {
 	 * @param clades
 	 * @return
 	 */
-	protected ArrayList<String> countClades(Node root, Map<String, TreeItem> clades) {
+	public ArrayList<String> countClades(Node root) {
 		ArrayList<String> tipLabels = new ArrayList<String>();
 		if (root.getNumOffspring()==0) {
 			tipLabels.add(root.getLabel());
 		}
 		else {
-			tipLabels = countClades(root.getOffspring(0), clades);
+			tipLabels = countClades(root.getOffspring(0));
 			for (int i=1; i<2; i++) {
-				tipLabels.addAll(countClades((Node)root.getOffspring(i), clades));
+				tipLabels.addAll(countClades((Node)root.getOffspring(i)));
 			}
 		}
 							
@@ -127,26 +130,18 @@ public class ConsensusTreeBuilder {
 		if (hashItem==null) {
 			TreeItem newItem = new TreeItem();
 			newItem.count = 1;
-			//newItem.distToParent = (root.getParent().getHeight() - root.getHeight());
 			newItem.cardinality = tipLabels.size();
 			newItem.height = root.getHeight();
 			newItem.M2 = 0;	//Running total of variance in dist to parent
 			newItem.clade = key;
 			clades.put(key, newItem);
-			//System.out.println("Hash item for key " + key + " was null, putting new item with count : " + newItem.count);
 		}
 		else {
 			hashItem.count++;
-			//double delta = (root.getParent().getHeight()-root.getHeight())-hashItem.distToParent;
-			//hashItem.distToParent += delta/(double)hashItem.count;
-			
-			//hashItem.M2 += delta*(root.getDistToParent()-hashItem.distToParent);
-			
 			double height = root.getHeight();
 			double delta = height-hashItem.height;
 			hashItem.height += delta/(double)hashItem.count;
 			hashItem.M2 += delta*(height-hashItem.height);
-			//System.out.println("Found item with key " + key + " increasing count to : " + hashItem.count);
 		}
 		return tipLabels;
 	}
@@ -158,12 +153,12 @@ public class ConsensusTreeBuilder {
 	 * @param clades
 	 * @return
 	 */
-	private ArrayList<TreeItem> buildMajorityCladeList(Map<String, TreeItem> clades) {
+	public ArrayList<TreeItem> buildMajorityCladeList() {
 		ArrayList<TreeItem> cladeList = new ArrayList<TreeItem>();
 		int numKeys = clades.size();
 		int currentKey = 0;
 		
-		for(String key : clades.keySet()) { //; key.hasMoreElements() && (!cancel); ) {
+		for(String key : clades.keySet()) {
 			TreeItem cladeInfo = clades.get(key);
 			//System.out.println("Clade : " + clade + " frequency : " + cladeInfo.count/(double)numInputTrees);
 			if ((double)cladeInfo.count/(double)numInputTrees > targetFraction) {
@@ -186,7 +181,7 @@ public class ConsensusTreeBuilder {
 	 * @param majorityClades
 	 * @return
 	 */
-	protected Node mergeClades(Tree tree, ArrayList<TreeItem> majorityClades) {
+	public Node mergeClades(Tree tree, ArrayList<TreeItem> majorityClades) {
 		Node root = tree.createNode();
 		tree.setRoot(root);
 		if (majorityClades.size()==0) {
@@ -228,7 +223,6 @@ public class ConsensusTreeBuilder {
 	 * @param cladeInfo
 	 */
 	private void addClade(Tree tree, Node root, TreeItem cladeInfo) {
-		//boolean add = false;
 		//We traverse the tree and look for a node that contains this clade, but
 		//that does not have any children that contain this clade
 		
@@ -304,7 +298,7 @@ public class ConsensusTreeBuilder {
 	 * @author brendan
 	 *
 	 */
-	class TreeItem implements Comparable<TreeItem> {
+	public class TreeItem implements Comparable<TreeItem> {
 		
 		public int count = 0;
 		public double height = 0;

@@ -166,8 +166,8 @@ public class ACGFrame extends JFrame implements WindowListener {
 		
 		JPanel testPanel = new BuildPanel(this);
 		mainContainer.add(testPanel, BorderLayout.CENTER);
-		//centerPanel = new StartFrame(this, onAMac);
-		//mainContainer.add(centerPanel, BorderLayout.CENTER);
+		centerPanel = new StartFrame(this, onAMac);
+		mainContainer.add(centerPanel, BorderLayout.CENTER);
 		
 		bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));

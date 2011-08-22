@@ -225,9 +225,9 @@ public class ARGUtils {
 			}
 			String filename = args[1];
 			try {
-				ConsensusTreeBuilder builder = new ConsensusTreeBuilder(new File(filename));
-				builder.buildConsensus();
-				String newick = builder.getConsensusNewick();
+				ConsensusTreeBuilder builder = new ConsensusTreeBuilder();
+				Tree tree = builder.buildConsensusFromFile(new File(filename));
+				String newick = tree.getNewick();
 				System.out.println(newick);
 			} catch (IOException e) {
 				System.out.println("Error building consensus tree : \n");
