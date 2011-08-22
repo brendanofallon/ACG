@@ -175,6 +175,7 @@ public class ARGUtils {
 		str.append(" --extract-trees [argfile.xml]         \n\t Emit all marginal trees in newick format \n");
 		str.append(" --extract-tree  [argfile.xml] [site]  \n\t Emit marginal tree at given site \n");
 		str.append(" --emit-bps 	 [argfile.xml]    \n\t Emit the locations of all recombination breakpoints \n");
+		str.append(" --consense 	 [treesfile.trees]  \n\t Build consensus tree from tree log file \n");
 		str.append(" --emit-tmrca    [argfile.xml] 		  \n\t Emit root heights across sequence length \n");
 		str.append(" --scale [factor] [argfile.xml | treefile.tre] 		   \n\t Emit tree with branches scaled by factor \n");
 		str.append(" --genarg [tips] [theta] [rho] [sites]	   \n\t Generate random ARG with given parameters \n");
@@ -214,6 +215,25 @@ public class ARGUtils {
 			for(int i=0; i<trees.length; i++) {
 				System.out.println(trees[i]);
 			}
+			return;
+		}
+		
+		if (args[0].equals("--consense") || args[0].equals("--consensus")) {
+			if (args.length != 2) {
+				System.err.println("Please supply the name of the file to build consensus tree from");
+				return;
+			}
+			String filename = args[1];
+			try {
+				ConsensusTreeBuilder builder = new ConsensusTreeBuilder();
+				Tree tree = builder.buildConsensusFromFile(new File(filename));
+				String newick = tree.getNewick();
+				System.out.println(newick);
+			} catch (IOException e) {
+				System.out.println("Error building consensus tree : \n");
+				e.printStackTrace();
+			}
+			
 			return;
 		}
 		

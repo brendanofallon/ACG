@@ -4,7 +4,8 @@ import dlCalculation.computeCore.ComputeNode;
 
 /**
  * A list of ranges of coalescing sites, stored in a manner very similar to SiteRangeList, where
- * we track the beginning and end of ranges as entries in an array of ints. We also track 
+ * we track the beginning and end of ranges as entries in an array of ints. We also track the
+ * indices of the left and right nodes here
  * @author brendano
  *
  */

@@ -443,9 +443,8 @@ public class PickMonitorsPanel extends JPanel {
 				chain = (MCMC)file.getObjectForLabel(mcLabels.get(0));
 				runMax = chain.getUserRunLength();
 			}
-			
-			freq = runMax / 2500;
-			System.out.println("Runlength is : " + runMax + " \n Frequency is : " + freq);
+		
+			freq = runMax / 2000;
 			if (freq < 1000)
 				freq = 1000;	
 
