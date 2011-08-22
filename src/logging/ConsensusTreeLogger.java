@@ -29,6 +29,7 @@ public class ConsensusTreeLogger extends PropertyLogger {
 	public static final String XML_SITE = "site";
 	Integer site;
 	ARG arg;
+	int count = 0;
 	private ConsensusTreeBuilder builder = new ConsensusTreeBuilder();
 	
 	public ConsensusTreeLogger(Map<String, String> attrs, ARG arg) {
@@ -39,9 +40,10 @@ public class ConsensusTreeLogger extends PropertyLogger {
 
 	@Override
 	public String getSummaryString() {
-		ArrayList<TreeItem> majorityClades = builder.buildMajorityCladeList();
 		Tree tree = new Tree();
-		builder.mergeClades(tree, majorityClades);
+		count++;
+		ArrayList<TreeItem> majorityClades = builder.buildMajorityCladeList(count);
+		builder.mergeClades(tree, majorityClades, count);
 		List<Node> nodes = tree.getAllNodes();
 		for(Node node : nodes) {
 			node.removeAnnotation("tips");

@@ -18,7 +18,7 @@ public class ConsensusTreeBuilder {
 	int subsampleRate = 1;
 	int burninTrees = 0;
 	int totalClades = 0;
-	int numInputTrees = 0;
+	//int numInputTrees = 0;
 	double targetFraction = 0.50; 	//Specifies the fraction of input trees containing clade required for 
 								   //representation in the consensus. This must be at least 0.50
 
@@ -40,10 +40,10 @@ public class ConsensusTreeBuilder {
 	
 	public Tree buildConsensusFromFile(File file) throws IOException {
 		TreeReader reader = new TreeReader(file);
-		numInputTrees = tabulateTrees(reader);
-		ArrayList<TreeItem> majorityClades = buildMajorityCladeList();
+		int numInputTrees = tabulateTrees(reader);
+		ArrayList<TreeItem> majorityClades = buildMajorityCladeList(numInputTrees);
 		consensusTree = new Tree(); 
-		mergeClades(consensusTree, majorityClades);
+		mergeClades(consensusTree, majorityClades, numInputTrees);
 		List<Node> nodes = consensusTree.getAllNodes();
 		for(Node node : nodes) {
 			node.removeAnnotation("tips");
@@ -153,7 +153,7 @@ public class ConsensusTreeBuilder {
 	 * @param clades
 	 * @return
 	 */
-	public ArrayList<TreeItem> buildMajorityCladeList() {
+	public ArrayList<TreeItem> buildMajorityCladeList(int inputTreeCount) {
 		ArrayList<TreeItem> cladeList = new ArrayList<TreeItem>();
 		int numKeys = clades.size();
 		int currentKey = 0;
@@ -161,7 +161,7 @@ public class ConsensusTreeBuilder {
 		for(String key : clades.keySet()) {
 			TreeItem cladeInfo = clades.get(key);
 			//System.out.println("Clade : " + clade + " frequency : " + cladeInfo.count/(double)numInputTrees);
-			if ((double)cladeInfo.count/(double)numInputTrees > targetFraction) {
+			if ((double)cladeInfo.count/(double)inputTreeCount > targetFraction) {
 				cladeList.add(cladeInfo);
 			}
 
@@ -181,7 +181,7 @@ public class ConsensusTreeBuilder {
 	 * @param majorityClades
 	 * @return
 	 */
-	public Node mergeClades(Tree tree, ArrayList<TreeItem> majorityClades) {
+	public Node mergeClades(Tree tree, ArrayList<TreeItem> majorityClades, int inputTreeCount) {
 		Node root = tree.createNode();
 		tree.setRoot(root);
 		if (majorityClades.size()==0) {
@@ -203,7 +203,7 @@ public class ConsensusTreeBuilder {
 			root.addAnnotation("error", new Double(Math.sqrt(var)).toString());
 		}
 		for(int i=1; i<majorityClades.size(); i++) {
-			addClade(tree, root, majorityClades.get(i));
+			addClade(tree, root, majorityClades.get(i), inputTreeCount);
 		}
 
 		if (root.getNumOffspring()<2) {
@@ -222,7 +222,7 @@ public class ConsensusTreeBuilder {
 	 * @param root
 	 * @param cladeInfo
 	 */
-	private void addClade(Tree tree, Node root, TreeItem cladeInfo) {
+	private void addClade(Tree tree, Node root, TreeItem cladeInfo, int inputTreeCount) {
 		//We traverse the tree and look for a node that contains this clade, but
 		//that does not have any children that contain this clade
 		
@@ -232,7 +232,7 @@ public class ConsensusTreeBuilder {
 				if (containsClade(kid, cladeInfo.clade)) {
 					found = true;
 					
-					addClade(tree, kid, cladeInfo);
+					addClade(tree, kid, cladeInfo, inputTreeCount);
 				}
 			}
 			if (!found) {
@@ -240,7 +240,7 @@ public class ConsensusTreeBuilder {
 				//System.out.println("Clade " + cladeInfo.clade + " was not found in any kids, but was contained in this node, so adding here");
 				Node newNode = tree.createNode(cladeInfo.clade);
 				newNode.addAnnotation("tips", cladeInfo.clade);
-				newNode.addAnnotation("support", new Double((double)cladeInfo.count/(double)numInputTrees).toString());
+				newNode.addAnnotation("support", new Double((double)cladeInfo.count/(double)inputTreeCount).toString());
 				double height = cladeInfo.height;
 				newNode.addAnnotation("height", new Double(height).toString());
 				double var = cladeInfo.M2/(double)(cladeInfo.count-1.0);
