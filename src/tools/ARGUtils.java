@@ -219,16 +219,34 @@ public class ARGUtils {
 		}
 		
 		if (args[0].equals("--consense") || args[0].equals("--consensus")) {
-			if (args.length != 2) {
+			if (args.length < 2) {
 				System.err.println("Please supply the name of the file to build consensus tree from");
 				return;
 			}
+			int burnin = 0;
+			if (args.length>=4 && args[2].equals("-b")) {
+				try {
+					burnin = Integer.parseInt(args[3]);
+				}
+				catch(NumberFormatException nfe) {
+					System.out.println("Could not parse an integer for burnin, got :" + args[3]);
+					System.exit(0);
+				}
+			}
+			boolean writeAnnos = true;
+			if (args.length==5 && args[4].equals("--no-annotations")) {
+				writeAnnos = false;
+			}
+			
 			String filename = args[1];
 			try {
+				TreeReader reader = new TreeReader(new File(filename));
+				reader.setStripAnnotations(true);
+				reader.setBurnin(burnin);
 				ConsensusTreeBuilder builder = new ConsensusTreeBuilder();
-				Tree tree = builder.buildConsensusFromFile(new File(filename));
-				String newick = tree.getNewick();
-				System.out.println(newick);
+				Tree tree = builder.buildConsensus(reader);
+				String newick = tree.getNewick(writeAnnos);
+				System.out.println(newick + "\n");
 			} catch (IOException e) {
 				System.out.println("Error building consensus tree : \n");
 				e.printStackTrace();

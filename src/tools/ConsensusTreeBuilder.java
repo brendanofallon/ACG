@@ -12,13 +12,13 @@ import tools.Tree.Node;
 
 public class ConsensusTreeBuilder {
 
-	final String labelSep = "&@&"; 	// Just for debugging! Use this later :"%#&"; //Something unlikely to ever appear in a real label
+	final static String labelSep = "&@&"; 	// Just for debugging! Use this later :"%#&"; //Something unlikely to ever appear in a real label
 	private final String emptyString = "";
 	int maxTrees = 100000;
 	int subsampleRate = 1;
 	int burninTrees = 0;
 	int totalClades = 0;
-	//int numInputTrees = 0;
+	int numInputTrees = 0;
 	double targetFraction = 0.50; 	//Specifies the fraction of input trees containing clade required for 
 								   //representation in the consensus. This must be at least 0.50
 
@@ -26,6 +26,9 @@ public class ConsensusTreeBuilder {
 	private boolean DEBUG = false;
 
 	Map<String, TreeItem> clades = new HashMap<String, TreeItem>();
+	
+	//Used to store a list of all clades that are represented in >targetFraction percantage of the trees we've seen
+	List<TreeItem> majorityClades = null;
 	
 	Tree consensusTree = null; //Gets created when we call buildConsensus();
 	
@@ -35,18 +38,20 @@ public class ConsensusTreeBuilder {
 	public void clear() {
 		consensusTree = null;
 		clades = new HashMap<String, TreeItem>();
+		majorityClades.clear();
 		merge = new StringBuilder();
 	}
 	
-	public Tree buildConsensusFromFile(File file) throws IOException {
-		TreeReader reader = new TreeReader(file);
-		int numInputTrees = tabulateTrees(reader);
-		ArrayList<TreeItem> majorityClades = buildMajorityCladeList(numInputTrees);
+	public Tree buildConsensus(TreeReader reader) throws IOException {
+		reader.setStripAnnotations(true);
 		consensusTree = new Tree(); 
-		mergeClades(consensusTree, majorityClades, numInputTrees);
+		tabulateTrees(reader);
+		buildMajorityCladeList();
+		mergeClades(consensusTree);
 		List<Node> nodes = consensusTree.getAllNodes();
 		for(Node node : nodes) {
 			node.removeAnnotation("tips");
+			node.removeAnnotation("height");
 		}
 		return consensusTree;
 	}
@@ -69,7 +74,7 @@ public class ConsensusTreeBuilder {
 	private int tabulateTrees(TreeReader reader) throws IOException {
 		int countedTrees = 0;
 		int examinedTrees =0;
-
+		
 		Node treeRoot = reader.getNextTreeRoot(); //This is the slow part and we do it for every single tree, regardless of subSampleRate
 		
 		while(treeRoot!=null && countedTrees < maxTrees) {
@@ -83,7 +88,7 @@ public class ConsensusTreeBuilder {
 				else {
 					if (DEBUG)
 						System.out.println("Counting tree #" + examinedTrees);
-					countClades(treeRoot);
+					addTree(treeRoot);
 					countedTrees++;
 				}
 				
@@ -98,20 +103,30 @@ public class ConsensusTreeBuilder {
 	}
 	
 	/**
-	 * This recursive function is responsible for adding all of the nodes in a tree to the growing 
-	 * hash table. 
+	 * Add the tree descending from the root node to the growing consensus (via a call to .countClades(root) )
+	 * @param root Root of the tree to add
+	 */
+	public void addTree(Node root) {
+		numInputTrees++;
+		countClades(root);
+	}
+	
+	/**
+	 * This recursive function is responsible for adding all of the nodes in a tree to the 'clades' field,
+	 * which is then used as input to .buildMajorityCladeList()
 	 * @param root
 	 * @param clades
 	 * @return
 	 */
-	public ArrayList<String> countClades(Node root) {
+	private ArrayList<String> countClades(Node root) {
+		
 		ArrayList<String> tipLabels = new ArrayList<String>();
 		if (root.getNumOffspring()==0) {
 			tipLabels.add(root.getLabel());
 		}
 		else {
 			tipLabels = countClades(root.getOffspring(0));
-			for (int i=1; i<2; i++) {
+			for (int i=1; i<root.getNumOffspring(); i++) {
 				tipLabels.addAll(countClades((Node)root.getOffspring(i)));
 			}
 		}
@@ -153,23 +168,26 @@ public class ConsensusTreeBuilder {
 	 * @param clades
 	 * @return
 	 */
-	public ArrayList<TreeItem> buildMajorityCladeList(int inputTreeCount) {
-		ArrayList<TreeItem> cladeList = new ArrayList<TreeItem>();
-		int numKeys = clades.size();
-		int currentKey = 0;
+	public void buildMajorityCladeList() {
+		majorityClades = new ArrayList<TreeItem>();
+		if (numInputTrees == 0) {
+			throw new IllegalArgumentException("No input trees");
+		}
 		
 		for(String key : clades.keySet()) {
 			TreeItem cladeInfo = clades.get(key);
-			//System.out.println("Clade : " + clade + " frequency : " + cladeInfo.count/(double)numInputTrees);
-			if ((double)cladeInfo.count/(double)inputTreeCount > targetFraction) {
-				cladeList.add(cladeInfo);
+			if (cladeInfo.count==0) {
+				throw new IllegalArgumentException("Huh? Count for this clade is zero? Clade is : \n" + cladeInfo.clade);
+			}
+			
+			double support = (double)cladeInfo.count / (double)numInputTrees;
+			if (support > targetFraction) {
+				majorityClades.add(cladeInfo);
 			}
 
-			currentKey++;
 		}
 		
-		Collections.sort(cladeList);
-		return cladeList;
+		Collections.sort(majorityClades);
 	}
 
 
@@ -181,7 +199,7 @@ public class ConsensusTreeBuilder {
 	 * @param majorityClades
 	 * @return
 	 */
-	public Node mergeClades(Tree tree, ArrayList<TreeItem> majorityClades, int inputTreeCount) {
+	public Node mergeClades(Tree tree) {
 		Node root = tree.createNode();
 		tree.setRoot(root);
 		if (majorityClades.size()==0) {
@@ -203,15 +221,9 @@ public class ConsensusTreeBuilder {
 			root.addAnnotation("error", new Double(Math.sqrt(var)).toString());
 		}
 		for(int i=1; i<majorityClades.size(); i++) {
-			addClade(tree, root, majorityClades.get(i), inputTreeCount);
+			addClade(tree, root, majorityClades.get(i), numInputTrees);
 		}
 
-		if (root.getNumOffspring()<2) {
-			System.out.println("Root has only one or two offspring, merge clades must have failed somehow");
-		}
-		if (root==null) {
-			System.out.println("merge clades is returning a null node");
-		}
 		return root;
 	}
 	
@@ -222,7 +234,7 @@ public class ConsensusTreeBuilder {
 	 * @param root
 	 * @param cladeInfo
 	 */
-	private void addClade(Tree tree, Node root, TreeItem cladeInfo, int inputTreeCount) {
+	private static void addClade(Tree tree, Node root, TreeItem cladeInfo, int inputTreeCount) {
 		//We traverse the tree and look for a node that contains this clade, but
 		//that does not have any children that contain this clade
 		
@@ -271,7 +283,7 @@ public class ConsensusTreeBuilder {
 	
 
 
-	private boolean containsClade(Node root, String clade) {
+	private static boolean containsClade(Node root, String clade) {
 		String[] rootTips = root.getAnnotation("tips").split(labelSep);
 		String[] cladeTips = clade.split(labelSep);
 
@@ -311,18 +323,18 @@ public class ConsensusTreeBuilder {
 		}
 	}
 	
-//	public static void main(String[] args) {
-//		File input = new File("badTree.trees");
-//		ConsensusTreeBuilder builder;
-//		try {
-//			builder = new ConsensusTreeBuilder(input);
-//			builder.buildConsensus();
-//			String newick = builder.getConsensusNewick();
-//			System.out.println("Got newick : \n" + newick);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//	}
+	public static void main(String[] args) {
+		File input = new File("consenseTest.trees");
+		ConsensusTreeBuilder builder;
+		try {
+			builder = new ConsensusTreeBuilder();
+			TreeReader reader = new TreeReader(input);
+			builder.buildConsensus(reader);
+			String newick = builder.getConsensusNewick();
+			System.out.println("Got newick : \n" + newick);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
 }

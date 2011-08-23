@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import tools.Tree;
+import tools.Tree.Node;
+
 import math.RandomSource;
 import cern.jet.random.Exponential;
 
@@ -45,6 +48,33 @@ public class TreeUtils {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Construct a multifurcating tree (tools.Tree, not an ARG) from the given String
+	 * @param treeStr Newick-style string, potentially with multifurcations, to construct tree from 
+	 * @return New tools.Tree object constructed from the argument
+	 */
+	public static Tree buildMultiTreeFromNewick(String treeStr) {
+		Tree tree = new Tree();
+		Node root = tree.createNode();
+		tree.setRoot(root);
+		root.setHeight(0.0); //Arbitrary number, but we need something concrete here. This will get changed to correct value below
+		buildSubtreeFromNewick(root, treeStr, tree);
+		List<Node> nodes = tree.getAllNodes();
+		
+		//Subtract minimum height from all nodes so farthest tip will have height of zero
+		double minHeight = nodes.get(0).getHeight();
+		for(Node node : nodes) {
+			if (node.getHeight() < minHeight)
+				minHeight = node.getHeight();
+		}
+		
+		for(Node node : nodes) {
+			node.setHeight( node.getHeight() - minHeight);
+		}
+		
+		return tree;
 	}
 	
 	/**
@@ -147,6 +177,39 @@ public class TreeUtils {
 		}
 	}
 
+	/**
+	 * Helper function for constructing an multifurcating tree (not an ARG-style tree) from a newick string, this constructs a subtree
+	 * based on the partial newick string provided. 
+	 * @param root
+	 * @param treestr
+	 */
+	protected static void buildSubtreeFromNewick(Node root, String treestr, Tree tree) {
+		if (treestr==null || treestr.equals("") || !hasKids(treestr)) {
+			return;
+		}
+		
+		
+		List<String> kidStrs = getOffspringStrings(0, treestr);
+		for(String kidStr : kidStrs) {
+			Node kid = tree.createNode();
+			
+			double dist = subTreeDistFromParent(kidStr);
+			kid.setParent(root);
+			kid.setHeight(root.getHeight() - dist);
+			root.addOffspring(kid);
+			String label = subTreeLabel(kidStr);
+			if (label.trim().length()>0) {
+				kid.setLabel( label );
+			}
+			
+			if (hasKids(kidStr))
+				buildSubtreeFromNewick(kid, kidStr, tree);
+			
+		}
+		
+		
+	}
+	
 	/**
 	 * Helper function for constructing an ARG from a newick string, this constructs a subtree
 	 * based on the partial newick string provided. 

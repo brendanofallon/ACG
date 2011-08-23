@@ -27,6 +27,28 @@ public class Tree {
 		cloneFromARG(cRoot);
 	}
 	
+	/**
+	 * Returns the number of nodes in the tree with zero offspring
+	 * @return
+	 */
+	public int getTipCount() {
+		int count = 0;
+		Stack<Node> stack = new Stack<Node>();
+		stack.push(root);
+		
+		while(! stack.isEmpty()) {
+			Node n = stack.pop();
+			if (n.getNumOffspring()==0)
+				count++;
+			for(int i=0; i<n.getNumOffspring(); i++) {
+				stack.push(n.getOffspring(i));
+			}
+		}
+		
+		
+		return count;
+	}
+	
 	public Node getRoot() {
 		return root;
 	}
@@ -98,28 +120,33 @@ public class Tree {
 	 * @return
 	 */
 	public String getNewick() {
+		return getNewick(true);
+	}
+	
+	/**
+	 * Return a newick representation of this tree
+	 * @return
+	 */
+	public String getNewick(boolean includeAnnotations) {
 		StringBuffer str = new StringBuffer("(");
 		for (int i=0; i<root.getNumOffspring()-1; i++) {
-			String cStr = getNewickSubtree( root.getOffspring(i), true, 1.0) + ", ";
+			String cStr = getNewickSubtree( root.getOffspring(i), includeAnnotations, 1.0) + ", ";
 			str.append(cStr);
 		}
 		
-		String cStr = getNewickSubtree( root.getOffspring(root.getNumOffspring()-1), true, 1.0);
+		String cStr = getNewickSubtree( root.getOffspring(root.getNumOffspring()-1), includeAnnotations, 1.0);
 		str.append(cStr);
 
 		str.append(");");
 		return str.toString();		
 	}
 	
-	private static String getNewickSubtree(Node n, boolean includeBranchLengths, double scaleFactor) {
-		String branchLengthStr  = "";
-		if (includeBranchLengths) {
-			branchLengthStr = ":" + ((n.getParent().getHeight() - n.getHeight())*scaleFactor);
-		}
-		
+	private static String getNewickSubtree(Node n, boolean includeAnnotations, double scaleFactor) {
+		String branchLengthStr  = "" + ((n.getParent().getHeight() - n.getHeight())*scaleFactor);
+				
 		if (n.getNumOffspring()==0) {
 			if (n.getLabel() != null) {
-				return new String(n.getLabel() + branchLengthStr );
+				return new String(n.getLabel() + ":" + branchLengthStr );
 			}
 			else {
 				return new String("ind?:" + branchLengthStr );
@@ -134,15 +161,18 @@ public class Tree {
 			StringBuffer str = new StringBuffer("(");
 						
 			for (int i=0; i<n.getNumOffspring()-1; i++) {
-				String cStr = getNewickSubtree( n.getOffspring(i), includeBranchLengths, scaleFactor) + ", ";
+				String cStr = getNewickSubtree( n.getOffspring(i), includeAnnotations, scaleFactor) + ", ";
 				str.append(cStr);
 			}
 			
-			String cStr = getNewickSubtree( n.getOffspring(n.getNumOffspring()-1), includeBranchLengths, scaleFactor);
+			String cStr = getNewickSubtree( n.getOffspring(n.getNumOffspring()-1), includeAnnotations, scaleFactor);
 			str.append(cStr);
 
-			String annotations = "[" + n.getAnnotationString() + "]";
-			str.append(")" + annotations +  branchLengthStr);
+			String annotations = "";
+			if (includeAnnotations)
+				annotations = "[&" + n.getAnnotationString() + "]";
+			
+			str.append(")" + ":" + annotations +  branchLengthStr);
 			return str.toString();
 		}	
 	}
@@ -226,9 +256,16 @@ public class Tree {
 		 */
 		public String getAnnotationString() {
 			StringBuilder strB = new StringBuilder();
+			List<String> keys = new ArrayList<String>();
 			for(String key : annos.keySet()) {
-				strB.append(key + "=" + annos.get(key) + " ");
+				keys.add(key);
 			}
+			for(int i=0; i<keys.size()-1; i++) {
+				String key = keys.get(i);
+				strB.append(key + "=" + annos.get(key) + ", ");
+			}
+			String key = keys.get(keys.size()-1);
+			strB.append(key + "=" + annos.get(key));
 			return strB.toString();
 		}
 		

@@ -38,17 +38,14 @@ public class ConsensusTreeLogger extends PropertyLogger {
 		site = XMLUtils.getIntegerOrFail(XML_SITE, attrs);
 	}
 
-	@Override
-	public String getSummaryString() {
-		Tree tree = new Tree();
-		count++;
-		ArrayList<TreeItem> majorityClades = builder.buildMajorityCladeList(count);
-		builder.mergeClades(tree, majorityClades, count);
-		List<Node> nodes = tree.getAllNodes();
-		for(Node node : nodes) {
-			node.removeAnnotation("tips");
+	
+	private void tabulateNewTree() {
+		CoalNode coalRoot = TreeUtils.createMarginalTree(arg, site);
+		Tree tree = new Tree(coalRoot);
+		if (tree.getTipCount() != arg.getTips().size()) {
+			System.out.println("Ahh! tree has " + tree.getTipCount() + " tips!");
 		}
-		return tree.getNewick();
+		builder.addTree(tree.getRoot());
 	}
 
 	@Override
@@ -57,12 +54,25 @@ public class ConsensusTreeLogger extends PropertyLogger {
 			tabulateNewTree();
 		}
 	}
-
-	private void tabulateNewTree() {
-		CoalNode coalRoot = TreeUtils.createMarginalTree(arg, site);
-		Tree tree = new Tree(coalRoot);
-		builder.countClades(tree.getRoot());
+	
+	@Override
+	public String getSummaryString() {
+		Tree tree = new Tree();
+		count++;
+		builder.buildMajorityCladeList();
+		builder.mergeClades(tree);
+		List<Node> nodes = tree.getAllNodes();
+		for(Node node : nodes) {
+			node.removeAnnotation("tips");
+			node.removeAnnotation("height");
+		}
+		
+		return tree.getNewick();
 	}
+	
+
+
+
 
 	public void setMCMC(MCMC chain) {
 		ARG newARG = findARG(chain);
