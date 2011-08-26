@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import priors.AbstractPrior;
+
 import logging.StateLogger;
 import math.RandomSource;
 import mcmc.MCMC;
@@ -24,7 +26,7 @@ import component.LikelihoodComponent;
  * @author brendano
  *
  */
-public class PopSizePrior extends LikelihoodComponent {
+public class PopSizePrior extends AbstractPrior {
 	
 	double smoothness = 1.0;
 
@@ -36,17 +38,20 @@ public class PopSizePrior extends LikelihoodComponent {
 	
 	double changePointMean = 3.0; //Mean of poisson distribution describing expected number of change points
 	
-	PiecewiseLinearPopSize popSize;
+	PiecewiseLinearPopSize popSize = null;
 
 	public PopSizePrior(Map<String, String> attrs, PiecewiseLinearPopSize popSize) {
-		super(attrs);
+		super(attrs, popSize);
 
 		this.popSize = popSize;
-		addParameter(popSize);
 		double variance = stdev*stdev;
+		
 		
 		gamDist = new Gamma(mean*mean/variance, variance/mean, null); //Has mean 1.0, 
 		cpPrior = new Poisson(changePointMean, null);
+		
+		proposedLogLikelihood = computeProposedLikelihood();
+		this.stateAccepted();
 	}
 	
 	public PopSizePrior(PiecewiseLinearPopSize popSize) {
@@ -55,22 +60,24 @@ public class PopSizePrior extends LikelihoodComponent {
 	
 	@Override
 	public Double computeProposedLikelihood() {
+		if (popSize == null)
+			return Double.NaN;
 		
 		//First find the mean value
-		double sum = calculateArea();
+		double sum = calculateLogArea();
 
-		//return Math.log( cpPrior.pdf( popSize.getChangePointCount()) );
+		return sum;
 		
-		return Math.log(cpPrior.pdf( popSize.getChangePointCount()));
+		//return Math.log(cpPrior.pdf( popSize.getChangePointCount()));
 	} 
 
-	private double calculateArea() {
+	private double calculateLogArea() {
 		PiecewiseLinearFunction func = popSize.getFunction();
 		double[] yVals = func.yVals;
 		
-		double sum = 1;
+		double sum = 0;
 		for(int i=0; i<=func.changePoints; i++) {
-			sum *= gamDist.pdf(yVals[i]);
+			sum += Math.log( gamDist.pdf(yVals[i]) );
 		}
 		
 		return sum;
@@ -98,48 +105,52 @@ public class PopSizePrior extends LikelihoodComponent {
 			strB.append("\t " + func.xVals[i]);
 
 		
-		return currentLogLikelihood + "\t" + calculateArea();// + strB.toString();
+		return currentLogLikelihood + "\t" + calculateLogArea();// + strB.toString();
 	}
 	
-//	public static void main(String[] args) {
-//		RandomSource.initialize();
-//		PiecewiseLinearPopSize popsize = new PiecewiseLinearPopSize();
-//		ARG arg = new ARG(new HashMap<String, String>(), new Newick("(one:1.0, two:1.0);"));
-//		popsize.addModifier(new LinearFunctionMover(arg));
-//		popsize.addModifier(new LinearFunctionAddRemove(arg));
-//		
-//		
-//		PopSizePrior prior = new PopSizePrior(popsize);
-//		
-//		
-//		List<Object> likes = new ArrayList<Object>();
-//		likes.add(prior);
-//		
-//		List<Object> params = new ArrayList<Object>();
-//		params.add(popsize);
-//		
-//		List<Object> listeners = new ArrayList<Object>();
-//		
-//		PrintStream cplog;
-//		try {
-//			cplog= new PrintStream(new FileOutputStream("cpLog.txt"));
-//
-//			StateLogger slogger = new StateLogger(cplog);
-//			slogger.addStream(System.out);
-//			listeners.add( slogger );
-//		} catch (FileNotFoundException e) {
-//
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		//listeners.add(new PopSizeLogger(100, 100, arg, popsize));
-//
-//		
-//		MCMC mc = new MCMC(params, likes, listeners);
-//		
-//		mc.run(1000000);
-//		
-//		
-//		System.out.println("Final pop size function :\n " + popsize.getFunction());
-//	}
+	public static void main(String[] args) {
+		RandomSource.initialize();
+		PiecewiseLinearPopSize popsize = new PiecewiseLinearPopSize();
+		
+		Map<String, String> argAttrs = new HashMap<String, String>();
+		argAttrs.put("filename", "50tips_t01_L10K.xml");
+		ARG arg = new ARG(argAttrs);
+		popsize.addModifier(new LinearFunctionMover(arg));
+		
+		RecombinationParameter recParam = new ConstantRecombination(100.0);
+		CoalescentLikelihood coalLike = new CoalescentLikelihood(popsize, recParam, arg);
+		
+		//popsize.addModifier(new LinearFunctionAddRemove(arg));
+		
+		
+		PopSizePrior prior = new PopSizePrior(popsize);
+		
+		
+		List<Object> likes = new ArrayList<Object>();
+		likes.add(coalLike);
+		likes.add(prior);
+		
+		List<Object> params = new ArrayList<Object>();
+		params.add(popsize);
+		
+		List<Object> listeners = new ArrayList<Object>();
+		
+		String filename = "cplog.log";
+		Map<String, String> logAttrs = new HashMap<String, String>();
+		logAttrs.put("filename", filename);
+		StateLogger slogger = new StateLogger(logAttrs);
+		slogger.addStream(System.out);
+		listeners.add( slogger );
+		
+		listeners.add(new PopSizeLogger(100000, 100, arg, popsize));
+
+		Map<String, String> mcAttrs = new HashMap<String, String>();
+		mcAttrs.put("length", "10000000");		
+		MCMC mc = new MCMC(mcAttrs, params, likes, listeners);
+
+		mc.run();
+		
+		
+		System.out.println("Final pop size function :\n " + popsize.getFunction());
+	}
 }

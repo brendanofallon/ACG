@@ -23,18 +23,15 @@ public class PiecewiseLinearPopSize extends AbstractParameter<PiecewiseLinearFun
 		currentValue = new PiecewiseLinearFunction();
 		proposedValue = new PiecewiseLinearFunction();
 		
-		currentValue.changePoints = 3;
-		currentValue.yVals[0] = 100;
-		currentValue.xVals[0] = 0;
 		
-		currentValue.yVals[1] = 200;
-		currentValue.xVals[1] = 1;
 		
-		currentValue.yVals[2] = 100;
-		currentValue.xVals[2] = 2;
+		currentValue.changePoints = 10;
+		for(int i=0; i<=currentValue.changePoints; i++) {
+			currentValue.yVals[i] = 1;
+			currentValue.xVals[i] = (double)i/(double)(currentValue.changePoints);
+			System.out.println(i + " : " + currentValue.xVals[i] + ", " + currentValue.yVals[i]);
+		}
 		
-		currentValue.yVals[3] = 200.1;
-		currentValue.xVals[3] = 3;
 		activeValue = currentValue;
 	}
 	
@@ -51,7 +48,7 @@ public class PiecewiseLinearPopSize extends AbstractParameter<PiecewiseLinearFun
 	 * @return
 	 */
 	public String getLogHeader() {
-		return "Pop.size.changepoints";
+		return "pop.size.changepoints";
 	}
 	
 	public PiecewiseLinearFunction getFunction() {

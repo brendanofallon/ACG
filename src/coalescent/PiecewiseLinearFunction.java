@@ -22,6 +22,7 @@ public class PiecewiseLinearFunction {
 	//The number of change points. Can be 0. 
 	public int changePoints;
 	
+	
 	public PiecewiseLinearFunction() {
 		changePoints = 0;
 		yVals = new double[maxPoints];

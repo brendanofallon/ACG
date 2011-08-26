@@ -164,7 +164,7 @@ public class RootHeightDensity extends PropertyLogger {
 			if (siteMap != null)
 				mappedSite = siteMap.getOriginalSite(site);
 			
-			strB.append(mappedSite + "\t" + heightHistos[i].getMean() + " max: " + heightHistos[i].getMax() + " more than max: " + heightHistos[i].getMoreThanMax() + "\n");
+			strB.append(mappedSite + "\t" + heightHistos[i].getMean() );
 			site += binStep;
 		}
 		

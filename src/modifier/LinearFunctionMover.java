@@ -55,6 +55,9 @@ public class LinearFunctionMover extends AbstractModifier<PiecewiseLinearPopSize
 		}
 		else {
 			
+			//hr = modifySize(newValue, whichPoint);
+
+			
 			if (RandomSource.getNextUniform() < 0.5) {
 				hr = modifyTime(newValue, whichPoint);
 			}
