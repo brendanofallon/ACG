@@ -306,7 +306,7 @@ public class XYSeriesElement extends SeriesElement {
 	private double calculateBoxWidth() {
 		double boxesShowing = xySeries.size()*(axes.maxXVal-axes.minXVal)/(xySeries.getMaxX()-xySeries.getMinX());
 		double boxWidth = axes.getGraphAreaBounds().width / boxesShowing / (double)boxWidthDivisor;
-		//System.out.println("Box width: " + boxWidth);
+		System.out.println("Series size: " + xySeries.size() + " boxes showing: " + boxesShowing + " Box width: " + boxWidth);
 		return boxWidth;
 	}
 	

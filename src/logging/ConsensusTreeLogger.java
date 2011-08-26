@@ -19,8 +19,7 @@ import xml.XMLUtils;
 
 /**
  * This logger uses a ConsensusTreeBuilder to tabulate the clades for marginal trees
- * ancestor to a given site, and then builds consensus trees out of em. It's a property
- * logger 
+ * ancestral to a given site, and then builds consensus trees out of em. 
  * @author brendan
  *
  */
@@ -38,13 +37,12 @@ public class ConsensusTreeLogger extends PropertyLogger {
 		site = XMLUtils.getIntegerOrFail(XML_SITE, attrs);
 	}
 
-	
+	/**
+	 * Sample one marginal tree from the ARG, and add it to the consensus builder
+	 */
 	private void tabulateNewTree() {
 		CoalNode coalRoot = TreeUtils.createMarginalTree(arg, site);
 		Tree tree = new Tree(coalRoot);
-		if (tree.getTipCount() != arg.getTips().size()) {
-			System.out.println("Ahh! tree has " + tree.getTipCount() + " tips!");
-		}
 		builder.addTree(tree.getRoot());
 	}
 
@@ -73,7 +71,9 @@ public class ConsensusTreeLogger extends PropertyLogger {
 
 
 
-
+	/**
+	 * Critical for MC3 runs, when the chain switches we must listen to another arg / chain
+	 */
 	public void setMCMC(MCMC chain) {
 		ARG newARG = findARG(chain);
 		if (newARG == null) {

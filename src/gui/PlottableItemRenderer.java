@@ -2,11 +2,13 @@ package gui;
 
 import gui.PickMonitorsPanel.PlottableInfo;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
@@ -41,9 +43,13 @@ public class PlottableItemRenderer extends JPanel implements TreeCellRenderer {
 		setMaximumSize(new Dimension(2000, 30));
 		
 		labelPanel = new JPanel();
+		labelPanel.setLayout(new BorderLayout());
 		mainLabel = new JLabel();
 		mainLabel.setFont( new Font("Sans", Font.BOLD, 12));
-		labelPanel.add(mainLabel);
+		labelPanel.setMinimumSize(new Dimension(50, 55));
+		labelPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+		//labelPanel.setPreferredSize(new Dimension(50, 30));
+		labelPanel.add(mainLabel, BorderLayout.CENTER);
 		labelPanel.setBackground(Color.white);
 		mainLabel.setBackground(Color.white);
 	}

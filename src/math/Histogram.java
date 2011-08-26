@@ -20,6 +20,13 @@ public class Histogram {
 	double maxValue;
 	double binSpacing;
 	
+	//The minimum and maximum of all values that have been added to this histogram
+	double minValueAdded = Double.NaN;
+	double maxValueAdded = Double.NaN;
+	
+	//Index of the bin with the maximum count
+	int maxCountBin = -1;
+	
 	double lessThanMin = 0;
 	double moreThanMax = 0;
 	
@@ -99,8 +106,30 @@ public class Histogram {
 //		hist[ bin ]--;
 //	}
 	
+	/**
+	 * The minimum of all values added via addValue(x)
+	 * @return
+	 */
+	public double getMinValueAdded() {
+		return minValueAdded;
+	}
+	
+	/**
+	 * The maximum of all values added via addValue(x)
+	 * @return
+	 */
+	public double getMaxValueAdded() {
+		return maxValueAdded;
+	}
+	
 	public void addValue(double val) {
 		double prevMean = getMean(); //Needed to compute running stdev
+		if (Double.isNaN(minValueAdded) || val < minValueAdded)
+			minValueAdded = val;
+		
+		if (Double.isNaN(maxValueAdded) || val > maxValueAdded)
+			maxValueAdded = val;
+		
 		count++;		
 		currentSum += val;
 		
@@ -117,6 +146,10 @@ public class Histogram {
 		
 		int bin = getBin(val);
 		hist[ bin ]++;
+		
+		if (maxCountBin < 0 || hist[bin] > hist[maxCountBin]) {
+			maxCountBin = bin;
+		}
 	}
 	
 	/**
@@ -138,13 +171,17 @@ public class Histogram {
 	 * @return
 	 */
 	public double getMaxCount() {
-		double max = 0;
-		for(int i=0; i<hist.length; i++) {
-			if (hist[i] > max) {
-				max = hist[i];
-			}
-		}
-		return max;
+		if (maxCountBin < 0)
+			return 0;
+		else
+			return hist[maxCountBin];
+//		double max = 0;
+//		for(int i=0; i<hist.length; i++) {
+//			if (hist[i] > max) {
+//				max = hist[i];
+//			}
+//		}
+//		return max;
 	}
 	
 	/**

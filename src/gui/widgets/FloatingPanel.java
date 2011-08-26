@@ -92,12 +92,12 @@ public class FloatingPanel extends JPanel {
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
 		g2d.setColor(darkShadowColor);
-		g2d.drawLine(getWidth()-shadowXDepth-2, 4, getWidth()-shadowXDepth-2, getHeight()-8);
+		//g2d.drawLine(getWidth()-shadowXDepth-2, 4, getWidth()-shadowXDepth-2, getHeight()-8);
 		g2d.drawLine(3, getHeight()-shadowYDepth-2, getWidth()-7, getHeight()-shadowYDepth-1);
 	
-		gradientX = new GradientPaint(new Point2D.Double(getWidth()-shadowXDepth-2, 5), darkShadowColor, new Point2D.Double(getWidth()-1, 5), lightShadowColor);
+		gradientX = new GradientPaint(new Point2D.Double(getWidth()-shadowXDepth-3, 5), darkShadowColor, new Point2D.Double(getWidth()-1, 5), lightShadowColor);
 		g2d.setPaint(gradientX);
-		g2d.fillRoundRect(getWidth()-shadowXDepth-2, 4, shadowXDepth, getHeight()-7, 4, 4);
+		g2d.fillRoundRect(getWidth()-shadowXDepth-3, 4, shadowXDepth+1, getHeight()-6, 4, 4);
 		
 		gradientY = new GradientPaint(new Point2D.Double(5, getHeight()-shadowYDepth-2), darkShadowColor, new Point2D.Double(5, getHeight()), lightShadowColor);
 		g2d.setPaint(gradientY);

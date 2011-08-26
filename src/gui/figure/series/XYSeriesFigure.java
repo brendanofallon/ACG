@@ -157,10 +157,8 @@ public class XYSeriesFigure extends SeriesFigure {
 			axes.setDataBounds(0, 1, 0, 1);
 		}
 		else {
-			
 			double xmin = seriesElements.get(0).getMinX();
 			double xmax = seriesElements.get(0).getMaxX();
-
 			
 			for(int i=1; i<seriesElements.size(); i++) {
 				double serMaxX = seriesElements.get(i).getMaxX(); 
@@ -173,8 +171,9 @@ public class XYSeriesFigure extends SeriesFigure {
 	
 			}
 			
-			if (xmin>0 && (xmax-xmin)/xmin>10 )
+			if (xmin>0 && (xmax-xmin)/xmin>10 ) {
 				xmin = 0;
+			}
 			
 	
 			if (xmin == xmax) {

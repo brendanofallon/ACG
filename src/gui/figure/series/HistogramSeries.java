@@ -32,9 +32,9 @@ public class HistogramSeries extends XYSeries {
 		this("Density", bins, min, max);
 	}
 	
-	public void addValue(double x) {
-		histo.addValue(x);
-	}
+//	public void addValue(double x) {
+//		histo.addValue(x);
+//	}
 	
 //	public void removeValue(double x) {
 //		histo.removeValue(x);
@@ -54,7 +54,11 @@ public class HistogramSeries extends XYSeries {
 
 	
 	public void addPointInOrder(Point2D newPoint) {
-		addValue(newPoint.getY());
+		//addValue(newPoint.getY());
+		histo.addValue(newPoint.getY());
+		
+		if (Double.isNaN(maxY) || newPoint.getY() > maxY)
+			maxY = newPoint.getY();
 	}
 	
 	/**
@@ -65,10 +69,6 @@ public class HistogramSeries extends XYSeries {
 		return histo.getBinCount();
 	}
 		
-	/**
-	 * Sorts the values in X order
-	 */
-	private void sortByX() {	}
 
 	/**
 	 * Return the x-value of the point with the given index
@@ -85,7 +85,7 @@ public class HistogramSeries extends XYSeries {
 	 * @return
 	 */
 	public double getY(int index) {
-		return histo.getCount(index);
+		return (double)histo.getCount(index)/(double)histo.getCount();
 	}
 	
 	
@@ -131,7 +131,7 @@ public class HistogramSeries extends XYSeries {
 	 * @return
 	 */
 	public double getMinX() {
-		return histo.getMin();
+		return Math.max(histo.getMin(), histo.getMinValueAdded());
 	}
 	
 	/**
@@ -141,7 +141,7 @@ public class HistogramSeries extends XYSeries {
 	 * @return
 	 */
 	public double getMaxX() {
-		return histo.getMax();
+		return Math.min(histo.getMax(), histo.getMaxValueAdded());
 	}
 	
 	public double getMinY() {
@@ -150,7 +150,7 @@ public class HistogramSeries extends XYSeries {
 	
 	
 	public double getMaxY() {
-		return histo.getMaxCount();
+		return (double)histo.getMaxCount()/(double)histo.getCount();
 	}
 	
 	/**
@@ -163,15 +163,17 @@ public class HistogramSeries extends XYSeries {
 	}
 	
 	/**
-	 * The number of points in the list
+	 * The number bins between getMinX and getMaxX
 	 */
 	public int size() {
 		return histo.getBinCount();
+		
+//		return (int)Math.round( (getMaxX()-getMinX())/histo.getBinWidth() );
 	}
 
-	public int getCount() {
-		return histo.getCount();
-	}
+//	public int getCount() {
+//		return histo.getCount();
+//	}
 	
 	/**
 	 * Returns the Point at the given index in this list of points, or null if  i> this.size()

@@ -23,13 +23,13 @@ import java.util.List;
 public class XYSeries extends AbstractSeries {
 
 	protected List<Point2D> pointList;
-	double ySum = 0; //Stores sum of y-values, useful for calculating mean
-	double prevYSum; //Sum of y-values not including last-added item 
-	double m2n; //Running (online) sum of squares of differences from current mean, useful for computing stdev quickly without rescanning list
+	protected double ySum = 0; //Stores sum of y-values, useful for calculating mean
+	protected double prevYSum; //Sum of y-values not including last-added item 
+	protected double m2n; //Running (online) sum of squares of differences from current mean, useful for computing stdev quickly without rescanning list
 
 	//To prevent repeated scans of the list we store the max and min y-values here
-	private double maxY = Double.NaN;
-	private double minY = Double.NaN;
+	protected double maxY = Double.NaN;
+	protected double minY = Double.NaN;
 	
 	public XYSeries(List<Point2D> points, String name) {
 		this.name = name;
