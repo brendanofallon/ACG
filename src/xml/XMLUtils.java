@@ -9,6 +9,7 @@ import java.util.Map;
  */
 public class XMLUtils {
 	
+
 	/**
 	 * Attempt to find a Double in the map associated with the given key. 
 	 * @param key

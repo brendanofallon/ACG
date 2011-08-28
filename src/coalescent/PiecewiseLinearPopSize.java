@@ -1,6 +1,9 @@
 package coalescent;
 
 import java.util.HashMap;
+import java.util.Map;
+
+import arg.ARG;
 
 import math.RandomSource;
 import modifier.IllegalModificationException;
@@ -18,17 +21,32 @@ import parameter.InvalidParameterValueException;
 public class PiecewiseLinearPopSize extends AbstractParameter<PiecewiseLinearFunction> implements DemographicParameter {
 
 	
-	public PiecewiseLinearPopSize() {
-		super(new HashMap<String, String>());
+	public PiecewiseLinearPopSize(Map<String, String> attrs) {
+		this(attrs, null);
+	}
+	
+	public PiecewiseLinearPopSize(ARG arg) {
+		this(new HashMap<String, String>(), arg);
+	}
+	
+	public PiecewiseLinearPopSize(Map<String, String> attrs, ARG arg) {
+		super(attrs);
 		currentValue = new PiecewiseLinearFunction();
 		proposedValue = new PiecewiseLinearFunction();
 		
+		currentValue.changePoints = 5;
+		double maxHeight = 1.0;
 		
+		if (arg != null) {
+			maxHeight = arg.getMaxHeight();
+			System.out.println("Setting max height to : " + maxHeight);
+		}
 		
-		currentValue.changePoints = 10;
+		double size = maxHeight/2.0;
+		
 		for(int i=0; i<=currentValue.changePoints; i++) {
-			currentValue.yVals[i] = 1;
-			currentValue.xVals[i] = (double)i/(double)(currentValue.changePoints);
+			currentValue.yVals[i] = size;
+			currentValue.xVals[i] = maxHeight*(double)i/(double)(currentValue.changePoints);
 			System.out.println(i + " : " + currentValue.xVals[i] + ", " + currentValue.yVals[i]);
 		}
 		
@@ -40,6 +58,7 @@ public class PiecewiseLinearPopSize extends AbstractParameter<PiecewiseLinearFun
 	 * @return
 	 */
 	public String getLogString() {
+		System.out.println(getValue());
 		return "" + activeValue.changePoints;
 	}
 

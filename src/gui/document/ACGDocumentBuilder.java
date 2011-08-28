@@ -59,22 +59,8 @@ public class ACGDocumentBuilder {
 		return doc;
 	}
 	
-	/**
-	 * Obtain an xml-style String representation of the document 
-	 * @return
-	 * @throws TransformerException
-	 */
-	public String getString() throws TransformerException {
-		
-		TransformerFactory transfac = TransformerFactory.newInstance();
-		Transformer trans = transfac.newTransformer();
-		trans.setOutputProperty(OutputKeys.INDENT, "yes");
-		//create string from xml tree
-		StringWriter sw = new StringWriter();
-		StreamResult result = new StreamResult(sw);
-		DOMSource source = new DOMSource(doc);
-		trans.transform(source, result);
-		String xmlString = sw.toString();
-		return xmlString;
+	public ACGDocument getACGDocument() {
+		return new ACGDocument(getDocument());
 	}
+	
 }

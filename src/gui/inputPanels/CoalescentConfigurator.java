@@ -6,6 +6,7 @@ import java.awt.Dimension;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -22,8 +23,8 @@ public class CoalescentConfigurator extends RoundedPanel implements Configurator
 	}
 
 	@Override
-	public Node getXMLNode(Document doc) {
-		// TODO Auto-generated method stub
-		return null;
+	public Node[] getXMLNodes(Document doc) throws ParserConfigurationException {
+		
 	}
+
 }

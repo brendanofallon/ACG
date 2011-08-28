@@ -99,17 +99,24 @@ public class AlignmentConfigurator extends RoundedPanel implements Configurator 
 	}
 	
 	@Override
-	public Node[] getXMLNodes(Document doc) throws ParserConfigurationException {
-		
+	public Node[] getXMLNodes(Document doc) throws ParserConfigurationException, InputConfigException {
+		if (selectedFile == null || (! selectedFile.exists())) {
+			throw new InputConfigException("Please select a valid input alignment file");
+		}
 		Element root = doc.createElement(getNodeName());
-		root.setAttribute(XMLLoader.CLASS_NAME_ATTR, "" + Alignment.class);
+		root.setAttribute(XMLLoader.CLASS_NAME_ATTR,  Alignment.class.getCanonicalName());
 		
-		Element seqList = doc.createElement(XMLLoader.LIST_ATTR);
+		Element seqList = doc.createElement("sequences1");
+		seqList.setAttribute(XMLLoader.CLASS_NAME_ATTR,  XMLLoader.LIST_ATTR);
 		root.appendChild(seqList);
 		
 		Map<String, String> alnAttrs = new HashMap<String, String>();
 		alnAttrs.put(Alignment.SEQUENCE_FILE_ATTR, selectedFile.getPath());
 		Alignment aln = new Alignment(alnAttrs);
+		if (aln.getSequenceCount()==0) {
+			throw new InputConfigException("Could not read sequences from file: " + selectedFile.getName());
+		}
+		
 		for(Sequence seq : aln.getSequences()) {
 			Element seqEl = getElementForSequence(doc, seq);
 			seqList.appendChild(seqEl);
@@ -126,7 +133,7 @@ public class AlignmentConfigurator extends RoundedPanel implements Configurator 
 	 */
 	private Element getElementForSequence(Document doc, Sequence seq) {
 		Element seqEl = doc.createElement(seq.getLabel());
-		seqEl.setAttribute(XMLLoader.CLASS_NAME_ATTR, "" + Sequence.class);
+		seqEl.setAttribute(XMLLoader.CLASS_NAME_ATTR, Sequence.class.getCanonicalName());
 		Node textNode = doc.createTextNode(seq.getSequence());
 		seqEl.appendChild(textNode);
 		return seqEl;

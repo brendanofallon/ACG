@@ -3,6 +3,7 @@ package gui.document;
 import gui.ExecutingChain;
 
 import java.io.File;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +14,12 @@ import javax.swing.SwingWorker;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import mcmc.MCMC;
 import mcmc.mc3.MC3;
@@ -69,8 +76,53 @@ public class ACGDocument {
 			turnOffMCMC(); //Find all mcmc objects and make sure they're not set to run right away
 			
 		} catch (InvocationTargetException ex) {
+			try {
+				System.out.println("Input file is : " + getXMLString());
+			} catch (TransformerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			throw new InvalidInputFileException(ex.getTargetException().getMessage());
 		} catch (Exception e) {
+			try {
+				System.out.println("Input file is : " + getXMLString());
+			} catch (TransformerException ex) {
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
+			throw new InvalidInputFileException(e.getMessage());
+		}
+	}
+	
+	/**
+	 * Construct an ACG document from the given DOM object
+	 * @param doc
+	 */
+	public ACGDocument(Document doc) {
+		sourceFile = null;
+		this.doc = doc;
+		try {
+			loader = new XMLLoader(doc);
+			loader.loadAllClasses(); //Attempt to load all of the classes referenced by the document
+			//checkValidity(); //Must come after class loading
+			//turnOffMCMC(); //Find all mcmc objects and make sure they're not set to run right away
+		} 
+//		catch (InvocationTargetException ex) {
+//			try {
+//				System.out.println("Input file is : \n" + getXMLString());
+//			} catch (TransformerException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			throw new InvalidInputFileException(ex.getTargetException().getMessage());
+//		} 
+		catch (Exception e) {
+			try {
+				System.out.println("Input file is : \n" + getXMLString());
+			} catch (TransformerException ex) {
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
 			throw new InvalidInputFileException(e.getMessage());
 		}
 	}
@@ -378,6 +430,26 @@ public class ACGDocument {
 				}
 			}
 		}
+	}
+	
+	
+	/**
+	 * Obtain an xml-style String representation of the document 
+	 * @return
+	 * @throws TransformerException
+	 */
+	public String getXMLString() throws TransformerException {
+		
+		TransformerFactory transfac = TransformerFactory.newInstance();
+		Transformer trans = transfac.newTransformer();
+		trans.setOutputProperty(OutputKeys.INDENT, "yes");
+		//create string from xml tree
+		StringWriter sw = new StringWriter();
+		StreamResult result = new StreamResult(sw);
+		DOMSource source = new DOMSource(doc);
+		trans.transform(source, result);
+		String xmlString = sw.toString();
+		return xmlString;
 	}
 	
 	/**

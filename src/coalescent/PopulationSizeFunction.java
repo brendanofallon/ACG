@@ -10,7 +10,7 @@ import logging.StringUtils;
 public class PopulationSizeFunction {
 	
 	//Maximum number of change points, this is the length of the arrays
-	public final int maxPoints = 64;
+	public final int maxPoints = 32;
 	
 	//List of sizes beginning at first change point, whose time is > 0  
 	double[] sizes;

@@ -1,5 +1,6 @@
 package modifier;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,10 +15,10 @@ import coalescent.PiecewiseLinearPopSize;
 
 public class LinearFunctionMover extends AbstractModifier<PiecewiseLinearPopSize> {
 
-	double sizeWindow = 0.5;
+	double sizeWindow = 50;
 	ARG arg;
 	
-	boolean verbose = false;
+	final boolean verbose = false;
 
 	public LinearFunctionMover() {
 		this(new HashMap<String, String>(), null);
@@ -55,10 +56,7 @@ public class LinearFunctionMover extends AbstractModifier<PiecewiseLinearPopSize
 		}
 		else {
 			
-			//hr = modifySize(newValue, whichPoint);
-
-			
-			if (RandomSource.getNextUniform() < 0.5) {
+			if (RandomSource.getNextUniform() < 0.1) {
 				hr = modifyTime(newValue, whichPoint);
 			}
 			else {
@@ -67,6 +65,15 @@ public class LinearFunctionMover extends AbstractModifier<PiecewiseLinearPopSize
 		}
 		
 
+//		if (newValue.getYVals()[whichPoint] < 1.0) {
+//			System.out.println("Hmm, proposing very small value for size");
+//			try {
+//				System.in.read();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
 		param.proposeValue(newValue);
 		return hr / (double)newValue.getChangePointCount();
 	}
@@ -119,18 +126,20 @@ public class LinearFunctionMover extends AbstractModifier<PiecewiseLinearPopSize
 	 */
 	private double modifySize(PiecewiseLinearFunction func, int whichPoint) throws ModificationImpossibleException {
 		
-		Double multiplier = Math.exp( sizeWindow * (RandomSource.getNextUniform()-0.5));
+		double dif = sizeWindow * (RandomSource.getNextUniform()-0.5);
 		double[] yVals = func.getYVals();
 
 		if (verbose)
 			System.out.print("Modifying size of point " + whichPoint + " from " + yVals[whichPoint] );
 		
-		yVals[whichPoint] *= multiplier;
+		yVals[whichPoint] += dif;
+		if (yVals[whichPoint] < 0) 
+			yVals[whichPoint] *= -1;
 		
 		if (verbose)
 			System.out.println(" to " + yVals[whichPoint]);
 		
-		return multiplier;
+		return 1.0;
 	}
 
 

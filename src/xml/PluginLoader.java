@@ -106,8 +106,9 @@ public class PluginLoader {
 	 * 
 	 * @param className Fully qualified name of class to find and load
 	 * @return The first class encountered with the given name
+	 * @throws ClassNotFoundException 
 	 */
-	public Class getClassForName(String className) {
+	public Class getClassForName(String className) throws ClassNotFoundException {
 		for(File file : pluginPaths) {
 			try {
 				Class loadedClass = getClassFromFile(file, className);
@@ -122,13 +123,9 @@ public class PluginLoader {
 		
 		//If we're here, we didn't find the specified class in any of the files listed in the pluginPaths
 		// so we attempt to load it here. 
-		try {
-			Class clazz = ClassLoader.getSystemClassLoader().loadClass(className);
-			return clazz;
-		} catch (ClassNotFoundException e) {
-			System.out.println("Could not find class " + className + " in any pluginPath or in the system loader.");
-		}
-		return null;
+		Class clazz = ClassLoader.getSystemClassLoader().loadClass(className);
+		return clazz;
+		
 	}
 
 	

@@ -222,6 +222,10 @@ public class XMLLoader {
 	 * @return A class object 
 	 */
 	private Class findClass(String label, String className) {
+		if (className == null || className.trim().length()==0)
+			throw new InvalidInputFileException("No class attribute specified for object with label: " + label);
+
+		
 		Class clz = classMap.get(label);
 		
 		if (className.equals(LIST_ATTR)) {
@@ -229,13 +233,15 @@ public class XMLLoader {
 		}
 		
 		if (clz == null) {
-			clz = loader.getClassForName(className);
+			try {
+				clz = loader.getClassForName(className);
+			} catch (ClassNotFoundException e) {
+				throw new InvalidInputFileException("Could not find class '" + className + "' for object with label: " + label);
+			}
 
 			if (clz == null) {
-				if (className == null || className.trim().length()==0)
-					throw new InvalidInputFileException("No class attribute specified for object with label: " + label);
-				else
-					throw new InvalidInputFileException("Could not find class '" + className + "' for object with label: " + label);
+					throw new InvalidInputFileException("Error loading class: " + className + " for object: " + label);
+				
 			}
 			classMap.put(label, clz);
 		}

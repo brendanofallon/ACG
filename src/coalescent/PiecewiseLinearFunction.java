@@ -148,10 +148,10 @@ public class PiecewiseLinearFunction {
 		StringBuilder strB = new StringBuilder();
 		strB.append("Population size function, change points: " + changePoints +"\n");
 		for(int i=0; i<changePoints+1; i++) 
-			strB.append( StringUtils.format(xVals[i], 4) + "\t");
-		strB.append("\n");
-		for(int i=0; i<changePoints+1; i++) 
-			strB.append( StringUtils.format(yVals[i], 4) + "\t");		
+			strB.append( StringUtils.format(xVals[i], 4) + "\t" + StringUtils.format(yVals[i], 4) + "\n");
+//		strB.append("\n");
+//		for(int i=0; i<changePoints+1; i++) 
+//			strB.append( StringUtils.format(yVals[i], 4) + "\t");		
 		return strB.toString();
 	}
 	

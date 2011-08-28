@@ -2,6 +2,7 @@ package coalescent;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,8 +34,8 @@ public class PopSizePrior extends AbstractPrior {
 	Gamma gamDist;
 	Poisson cpPrior;
 	
-	double mean = 2000;
-	double stdev = 2000;
+	double mean = 1000;
+	double stdev = 750;
 	
 	double changePointMean = 3.0; //Mean of poisson distribution describing expected number of change points
 	
@@ -50,6 +51,15 @@ public class PopSizePrior extends AbstractPrior {
 		gamDist = new Gamma(mean*mean/variance, variance/mean, null); //Has mean 1.0, 
 		cpPrior = new Poisson(changePointMean, null);
 		
+		for(double x=0; x<mean*3; x+=(mean/200.0)) {
+			System.out.println(x + "\t" + gamDist.pdf(x));
+		}
+//		try {
+//			System.in.read();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		proposedLogLikelihood = computeProposedLikelihood();
 		this.stateAccepted();
 	}
@@ -110,11 +120,13 @@ public class PopSizePrior extends AbstractPrior {
 	
 	public static void main(String[] args) {
 		RandomSource.initialize();
-		PiecewiseLinearPopSize popsize = new PiecewiseLinearPopSize();
+		
 		
 		Map<String, String> argAttrs = new HashMap<String, String>();
-		argAttrs.put("filename", "50tips_t01_L10K.xml");
+		argAttrs.put("filename", "test/bneck/20tips_growth_mu2e5_bneck_L20K_2_#1.xml");
 		ARG arg = new ARG(argAttrs);
+		
+		PiecewiseLinearPopSize popsize = new PiecewiseLinearPopSize(arg);
 		popsize.addModifier(new LinearFunctionMover(arg));
 		
 		RecombinationParameter recParam = new ConstantRecombination(100.0);
@@ -145,7 +157,7 @@ public class PopSizePrior extends AbstractPrior {
 		listeners.add(new PopSizeLogger(100000, 100, arg, popsize));
 
 		Map<String, String> mcAttrs = new HashMap<String, String>();
-		mcAttrs.put("length", "10000000");		
+		mcAttrs.put("length", "5000000");		
 		MCMC mc = new MCMC(mcAttrs, params, likes, listeners);
 
 		mc.run();

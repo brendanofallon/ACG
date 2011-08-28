@@ -73,7 +73,7 @@ public class PopSizeLogger implements MCMCListener {
 			//Convert max height to reasonable value
 			maxHeight = Math.round( 2.0*maxHeight * 1000.0) / 1000.0;
 			binStep = maxHeight / (double)bins;
-			//System.out.println("PopSizeLogger is setting max root height to : " + maxHeight);
+			System.out.println("PopSizeLogger is setting max root height to : " + maxHeight);
 			
 			for(int i=0; i<bins; i++) {
 				sizeHistos[i] = new LazyHistogram(1000);
@@ -90,6 +90,10 @@ public class PopSizeLogger implements MCMCListener {
 	@Override
 	public void chainIsFinished() {
 		outStream.println("\n Population sizes over time : \n");
+		if (sizeHistos[0] == null) {
+			outStream.println("Histograms have not been initialized, probably burnin ( " + burnin +" states ) has not been reached yet");
+			return;
+		}
 		double time = 0;
 		for(int i=0; i<bins; i++) {
 			outStream.println(StringUtils.format(time, 4) + "\t" + sizeHistos[i].lowerHPD(0.05) + "\t" + sizeHistos[i].lowerHPD(0.1) + "\t" + sizeHistos[i].lowerHPD(0.20) + "\t" + sizeHistos[i].getMean() + "\t" + sizeHistos[i].upperHPD(0.20) + "\t" + sizeHistos[i].upperHPD(0.10) + "\t" + sizeHistos[i].upperHPD(0.05));

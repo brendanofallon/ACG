@@ -20,6 +20,7 @@ import xml.XMLUtils;
  */
 public class GammaSiteRates extends AbstractSiteRateModel {
 
+	public static final String XML_CATEGORIES = "categories";
 	DoubleParameter alphaParam;
 	
 	private final double[] equalProbs;
@@ -48,7 +49,7 @@ public class GammaSiteRates extends AbstractSiteRateModel {
 	}
 	
 	public GammaSiteRates(Map<String, String> attrs, DoubleParameter alphaParam) {
-		this( XMLUtils.getIntegerOrFail("categories", attrs), alphaParam);
+		this( XMLUtils.getIntegerOrFail(XML_CATEGORIES, attrs), alphaParam);
 	}
 	
 	public GammaSiteRates(int categories, DoubleParameter alphaParam) {

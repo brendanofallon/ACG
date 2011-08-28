@@ -7,6 +7,7 @@ import modifier.Modifier;
 import parameter.InvalidParameterValueException;
 import parameter.Parameter;
 import parameter.ParameterListener;
+import xml.XMLUtils;
 
 /**
  * A site rate model where the rates and probabilities never change
@@ -15,8 +16,15 @@ import parameter.ParameterListener;
  */
 public class ConstantSiteRates extends AbstractSiteRateModel {
 
+	public static final String XML_RATE = "rate";
+	
 	public ConstantSiteRates(Map<String, String> attrs) {
-		this();
+		super(1);
+		Double rate = XMLUtils.getOptionalDouble(XML_RATE, attrs);
+		if (rate == null) {
+			rate = 1.0;
+		}
+		initialize(new double[]{rate}, new double[]{1.0});
 	}
 	
 	/**
@@ -28,6 +36,10 @@ public class ConstantSiteRates extends AbstractSiteRateModel {
 	
 	public ConstantSiteRates(double[] rates, double[] probabilities) {
 		super(rates.length);
+		initialize(rates, probabilities);
+	}
+	
+	private void initialize(double[] rates, double[] probabilities) {
 		SiteRates siteRates = new SiteRates();
 		siteRates.rates = rates;
 		siteRates.probabilities = probabilities;
@@ -38,7 +50,6 @@ public class ConstantSiteRates extends AbstractSiteRateModel {
 		} catch (ModificationImpossibleException e) {
 			throw new IllegalArgumentException("Invalid initial values for ConstantSiteRate model");
 		}
-		
 	}
 
 	public void proposeValue(SiteRates proposal) {

@@ -1,27 +1,30 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
+import gui.document.ACGDocument;
 import gui.document.ACGDocumentBuilder;
 import gui.inputPanels.AlignmentConfigurator;
 import gui.inputPanels.CoalescentConfigurator;
+import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.SiteModelConfigurator;
 import gui.widgets.RoundedPanel;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -29,6 +32,8 @@ import org.w3c.dom.Node;
 
 public class BuildPanel extends JPanel {
 
+	private JPanel bottomPanel;
+	
 	public BuildPanel(ACGFrame acgParent) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
@@ -57,17 +62,92 @@ public class BuildPanel extends JPanel {
 		
 		
 		add(Box.createVerticalGlue());
-		JButton newPaneButton = new JButton("Add alignment");
-		newPaneButton.addActionListener(new ActionListener() {
+		JButton addAlignmentButton = new JButton("Add alignment");
+		addAlignmentButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				buildDocument();
 			}
 		});
 		alnPanel.setAlignmentY(LEFT_ALIGNMENT);
-		this.add(newPaneButton);
+		this.add(addAlignmentButton);
+		
+		bottomPanel = new JPanel();
+		bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		JButton runButton = new JButton("Run");
+		runButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				run();
+			}
+		});
+		bottomPanel.add(runButton);
+		
+		JButton saveButton = new JButton("Save settings");
+		saveButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				saveSettings();
+			}
+		});
+		bottomPanel.add(saveButton);
+		
+		add(bottomPanel);
 	}
 
-	protected void buildDocument() {
+	/**
+	 * Save the current settings to a file. This is done by building an ACGDocument by issuing
+	 * a call to buildDocument, then converting the document to text and saving the text to a file. 
+	 */
+	protected void saveSettings() {
+		JFileChooser fileChooser = new JFileChooser( System.getProperty("user.dir"));
+
+		int option = fileChooser.showSaveDialog(getRootPane());
+		if (option == JFileChooser.APPROVE_OPTION) {
+			File selectedFile = fileChooser.getSelectedFile();
+			
+			//Check about overwriting the existing file
+			if (selectedFile != null && selectedFile.exists()) {
+				Object[] options = {"Overwrite", "Cancel"};
+				int n = JOptionPane.showOptionDialog(getRootPane(),
+						"Overwrite existing file  " + selectedFile.getName(),
+						"File exists",
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.WARNING_MESSAGE,
+						null,
+						options,
+						options[1]);
+				//Abort
+				if (n == 1) 
+					return;
+				
+			}
+			
+			if (selectedFile != null) {
+				ACGDocument acgDoc = buildDocument();
+				String docText;
+				try {
+					docText = acgDoc.getXMLString();
+				} catch (TransformerException ex) {
+					ErrorWindow.showErrorWindow(ex);
+					return;
+				}
+				
+				BufferedWriter writer;
+				try {
+					writer = new BufferedWriter(new FileWriter(selectedFile));
+					writer.write(docText + "\n");
+					writer.close();
+				} catch (IOException e) {
+					ErrorWindow.showErrorWindow(e);
+				}
+			}
+		}
+	}
+
+	protected void run() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected ACGDocument buildDocument() {
 		
 		Node[] alnNodes;
 		try {
@@ -82,18 +162,13 @@ public class BuildPanel extends JPanel {
 			for(int i=0; i<siteModelNodes.length; i++)
 				docBuilder.appendNode(siteModelNodes[i]);
 			
-			
-			String str = docBuilder.getString();
-			System.out.println("String is : \n" + str);
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TransformerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ACGDocument doc = docBuilder.getACGDocument();
+			return doc;
+		} catch (Exception e) {
+			ErrorWindow.showErrorWindow(e);
 		}
 		
-	
+		return null;
 	}
 	
 	

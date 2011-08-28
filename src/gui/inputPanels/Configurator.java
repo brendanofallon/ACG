@@ -7,7 +7,12 @@ import org.w3c.dom.Node;
 
 public interface Configurator {
 	
+	public Node[] getXMLNodes(Document doc) throws ParserConfigurationException, InputConfigException;
 	
-	public Node[] getXMLNodes(Document doc) throws ParserConfigurationException;
-	
+	class InputConfigException extends Exception {
+		
+		public InputConfigException(String message) {
+			super(message);
+		}
+	}
 }

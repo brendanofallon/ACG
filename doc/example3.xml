@@ -101,7 +101,7 @@
  	 forget to include a reference to it in the DL calculator -->
 <siteRateModel class="dlCalculation.siteRateModels.GammaSiteRates" categories="4">
 	<!-- This site rate model also needs a DoubleParameter that controls the shape of the distribution -->
-	<alpha class="parameter.DoubleParameter" frequency="10" value="1.0" lowerBound="0.01" upperBound="50">
+	<alpha class="parameter.DoubleParameter" frequency="1" value="1.0" lowerBound="0.01" upperBound="50">
 		<alphaMod class="modifier.ScaleModifier"/>
 	</alpha>
 </siteRateModel>
