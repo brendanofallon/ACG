@@ -111,7 +111,7 @@
 	<alpha />
 </alphaPrior>
 
-<!-- The F84 model of nucletotide evolution  -->
+<!-- The F84 model of nucleotide evolution  -->
 <mutationModel class="dlCalculation.substitutionModels.F84Matrix">
 	<stationaries class="dlCalculation.substitutionModels.BaseFrequencies" frequency="0.1" stationaries="0.25 0.25 0.25 0.25" >
 		<stationariesMod class="modifier.DirichletModifier" />
