@@ -103,19 +103,8 @@ public class ACGDocument {
 		this.doc = doc;
 		try {
 			loader = new XMLLoader(doc);
-			loader.loadAllClasses(); //Attempt to load all of the classes referenced by the document
-			//checkValidity(); //Must come after class loading
-			//turnOffMCMC(); //Find all mcmc objects and make sure they're not set to run right away
+			//loader.loadAllClasses(); //Attempt to load all of the classes referenced by the document
 		} 
-//		catch (InvocationTargetException ex) {
-//			try {
-//				System.out.println("Input file is : \n" + getXMLString());
-//			} catch (TransformerException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			throw new InvalidInputFileException(ex.getTargetException().getMessage());
-//		} 
 		catch (Exception e) {
 			try {
 				System.out.println("Input file is : \n" + getXMLString());
@@ -144,6 +133,11 @@ public class ACGDocument {
 		}
 	}
 	
+	/**
+	 * Creates a new ExecutingChain object that wraps an MCMC or MC3 object, begins
+	 * execution of the chain, and returns the ExecutingChain object
+	 * @return
+	 */
 	public ExecutingChain runMCMC() {
 		List<String> mcLabels = getMCMCLabels();
 		if (mcLabels.size()==0) {

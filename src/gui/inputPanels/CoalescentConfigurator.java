@@ -12,7 +12,8 @@ import modifier.ScaleModifier;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+
+import parameter.DoubleParameter;
 
 import coalescent.ConstantPopSize;
 import coalescent.ConstantRecombination;
@@ -42,15 +43,17 @@ public class CoalescentConfigurator extends RoundedPanel implements Configurator
 	}
 
 	@Override
-	public Node[] getXMLNodes(Document doc)
+	public Element[] getXMLNodes(Document doc)
 			throws ParserConfigurationException, InputConfigException {
 		
 		Element popSizeElement = doc.createElement("PopSize");
-		Element recombElement = doc.createElement("RecombRate");
+		Element recombElement = doc.createElement("RecombModel");
 		
 		//Constant size
 		if (coalModelBox.getSelectedItem().toString().equals(coalModels[0])) {
 			popSizeElement.setAttribute(XMLLoader.CLASS_NAME_ATTR, ConstantPopSize.class.getCanonicalName());
+			popSizeElement.setAttribute(DoubleParameter.XML_VALUE, "0.01");
+			
 			Element popSizeScaler = doc.createElement("popSizeModifier");
 			popSizeScaler.setAttribute(XMLLoader.CLASS_NAME_ATTR, ScaleModifier.class.getCanonicalName());
 			popSizeElement.appendChild(popSizeScaler);
@@ -76,17 +79,22 @@ public class CoalescentConfigurator extends RoundedPanel implements Configurator
 
 		if (recombModelBox.getSelectedItem().toString().equals(recombModels[0])) {
 			recombElement.setAttribute(XMLLoader.CLASS_NAME_ATTR, ConstantRecombination.class.getCanonicalName());
-			Element recRate = createDoubleParamElement(doc, "RecombRate", 0, 0, 0);
-			recombElement.appendChild(recRate);
+			recombElement.setAttribute(DoubleParameter.XML_VALUE, "0.0");
+			recombElement.setAttribute(DoubleParameter.XML_LOWERBOUND, "0.0");
+			recombElement.setAttribute(DoubleParameter.XML_UPPERBOUND, "0.0");
 		}
 		
 		if (recombModelBox.getSelectedItem().toString().equals(recombModels[1])) {
 			recombElement.setAttribute(XMLLoader.CLASS_NAME_ATTR, ConstantRecombination.class.getCanonicalName());
-			Element recRate = createDoubleParamElement(doc, "RecombRate", 1.0, 0, 1e20);
+			recombElement.setAttribute(DoubleParameter.XML_VALUE, "0.0");
+			recombElement.setAttribute(DoubleParameter.XML_LOWERBOUND, "0.0");
+			recombElement.setAttribute(DoubleParameter.XML_UPPERBOUND, "1e10");
 			Element recMod = doc.createElement("RecombinationRateModifier");
 			recMod.setAttribute(XMLLoader.CLASS_NAME_ATTR,  modifier.ScaleModifier.class.getCanonicalName());
-			recRate.appendChild(recMod);
-			recombElement.appendChild(recRate);
+
+			
+			//TODO Add in exponential prior here
+			recombElement.appendChild(recMod);
 		}
 
 			
@@ -100,11 +108,12 @@ public class CoalescentConfigurator extends RoundedPanel implements Configurator
 	private static Element createDoubleParamElement(Document doc, String label, double value, double lowerBound, double upperBound) {
 		Element el = doc.createElement(label);
 		el.setAttribute(XMLLoader.CLASS_NAME_ATTR,  parameter.DoubleParameter.class.getCanonicalName());
-		el.setAttribute("value", "" + value);
-		el.setAttribute("lowerBound", "" + lowerBound);
-		el.setAttribute("upperBound", "" + upperBound);
+		el.setAttribute(DoubleParameter.XML_VALUE, "" + value);
+		el.setAttribute(DoubleParameter.XML_LOWERBOUND, "" + lowerBound);
+		el.setAttribute(DoubleParameter.XML_UPPERBOUND, "" + upperBound);
 		
 		return el;
 	}
 
 }
+

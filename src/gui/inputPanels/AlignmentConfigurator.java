@@ -99,7 +99,7 @@ public class AlignmentConfigurator extends RoundedPanel implements Configurator 
 	}
 	
 	@Override
-	public Node[] getXMLNodes(Document doc) throws ParserConfigurationException, InputConfigException {
+	public Element[] getXMLNodes(Document doc) throws ParserConfigurationException, InputConfigException {
 		if (selectedFile == null || (! selectedFile.exists())) {
 			throw new InputConfigException("Please select a valid input alignment file");
 		}
@@ -122,7 +122,7 @@ public class AlignmentConfigurator extends RoundedPanel implements Configurator 
 			seqList.appendChild(seqEl);
 		}
 		
-		return new Node[]{root};
+		return new Element[]{root};
 	}
 
 	/**

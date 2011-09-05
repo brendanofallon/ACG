@@ -12,6 +12,8 @@ import parameter.Parameter;
  */
 public abstract class AbstractModifier<T extends Parameter> implements Modifier<T> {
 	
+	public static final String XML_FREQUENCY = "frequency";
+	
 	private int totalCalls = 0;
 	private int totalAccepts = 0;
 	private int resetFrequency = 2500; //Parameter tuning is generally based on the number of 'recent' acceptances vs calls, we don't want to get swamped by a bunch of super-old noise
@@ -35,7 +37,7 @@ public abstract class AbstractModifier<T extends Parameter> implements Modifier<
 	 * @param attributes
 	 */
 	public AbstractModifier(Map<String, String> attributes) {
-		String freq = attributes.get("frequency");
+		String freq = attributes.get(XML_FREQUENCY);
 		if (freq != null) {
 			try {
 				frequency = Double.parseDouble(freq);

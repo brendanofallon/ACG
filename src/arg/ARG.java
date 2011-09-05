@@ -45,7 +45,12 @@ import xml.InvalidInputFileException;
  */
 public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 
-	public static final String XML_COLLECT = "collectPatterns";
+	//public static final String XML_COLLECT = "collectPatterns";
+	public static final String XML_USEUPGMA = "upgma";
+	public static final String XML_FILENAME = "filename";
+	public static final String XML_TIPS = "tips";
+	public static final String XML_SITES = "sites";
+	public static final String XML_THETA = "theta";
 	
 	private List<CoalNode> coalNodes = new ArrayList<CoalNode>(200);
 	private List<RecombNode> recombNodes = new ArrayList<RecombNode>(200);
@@ -208,14 +213,6 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 			frequency = 20.0;
 		}
 		
-		String collect = attrMap.get(XML_COLLECT);
-		if (collect != null) {
-			if (collect.equalsIgnoreCase("true")) {
-				throw new IllegalArgumentException("Pattern collecting has been disabled for now.");
-			}
-
-		}
-		
 		for(int i=0; i<mods.size(); i++) {
 			this.addModifier( (ARGModifier)mods.get(i));
 		}
@@ -322,7 +319,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 		boolean hasTheta = false;
 		boolean hasTips = false;
 		
-		String thetaStr = attrs.get("theta");
+		String thetaStr = attrs.get(XML_THETA);
 		double theta = 0.001; //Initial theta used to create tree
 		if (thetaStr != null) {
 			hasTheta = true;
@@ -339,7 +336,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 			throw new InvalidInputFileException("No sequences in alignment, please remove the alignment or add sequences to it.");
 		}
 		
-		String tipsStr = attrs.get("tips");
+		String tipsStr = attrs.get(XML_TIPS);
 		double tipNumber = 0;
 		if (tipsStr != null) {
 			hasTips = true;
@@ -364,7 +361,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 		}
 		
 		
-		String fileStr = attrs.get("filename");
+		String fileStr = attrs.get(XML_FILENAME);
 		CoalNode root = null;
 		if (fileStr != null ) {
 			
@@ -415,7 +412,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 				throw new InvalidInputFileException("No tree file, theta, or tip number has been specified, cannot build initial tree");
 			}
 			
-			String sitesStr = attrs.get("sites");
+			String sitesStr = attrs.get(XML_SITES);
 			
 			if (sitesStr != null) {
 				
@@ -449,7 +446,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 			}
 			
 			Boolean useUPGMA = true;
-			String upgmaStr = attrs.get("upgma");
+			String upgmaStr = attrs.get(XML_USEUPGMA);
 			if (upgmaStr != null) {
 				useUPGMA = Boolean.parseBoolean(upgmaStr);
 			}
@@ -1548,3 +1545,4 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 
 
 }
+

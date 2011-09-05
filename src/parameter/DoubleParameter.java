@@ -17,11 +17,17 @@ import modifier.Modifier;
  */
 public class DoubleParameter extends AbstractParameter<Double> {
 
+	public static final String XML_VALUE = "value";
+	public static final String XML_LOWERBOUND = "lowerBound";
+	public static final String XML_UPPERBOUND = "upperBound";
+	
 	protected Double lowerBound = Double.NEGATIVE_INFINITY;
 	protected Double upperBound = Double.POSITIVE_INFINITY;
 	
 	protected String name;
 	protected String logHeader;
+	
+	
 	
 	public DoubleParameter(double initValue, String logHeader, String name, double lowerBound, double upperBound) {
 		super(new HashMap<String, String>());
@@ -44,11 +50,11 @@ public class DoubleParameter extends AbstractParameter<Double> {
 	public DoubleParameter(Map<String, String> attrs, Modifier<DoubleParameter> mod) {
 		super(attrs);
 		
-		Double lBound = XMLUtils.getOptionalDouble("lowerBound", attrs);
+		Double lBound = XMLUtils.getOptionalDouble(XML_LOWERBOUND, attrs);
 		if (lBound != null)
 			lowerBound = lBound;
 		
-		Double uBound = XMLUtils.getOptionalDouble("upperBound", attrs);
+		Double uBound = XMLUtils.getOptionalDouble(XML_UPPERBOUND, attrs);
 		if (uBound != null)
 			upperBound = uBound;
 		
@@ -56,7 +62,7 @@ public class DoubleParameter extends AbstractParameter<Double> {
 		if (name == null)
 			name = attrs.get(XMLLoader.NODE_ID);
 		
-		Double val = XMLUtils.getDoubleOrFail("value", attrs);
+		Double val = XMLUtils.getDoubleOrFail(XML_VALUE, attrs);
 		try {
 			proposeValue(val);
 			acceptValue();

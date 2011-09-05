@@ -11,9 +11,11 @@ import java.io.IOException;
 
 import gui.document.ACGDocument;
 import gui.document.ACGDocumentBuilder;
+import gui.inputPanels.ARGConfigurator;
 import gui.inputPanels.AlignmentConfigurator;
 import gui.inputPanels.CoalescentConfigurator;
 import gui.inputPanels.Configurator.InputConfigException;
+import gui.inputPanels.DLConfigurator;
 import gui.inputPanels.SiteModelConfigurator;
 import gui.widgets.RoundedPanel;
 
@@ -28,6 +30,7 @@ import javax.swing.JPanel;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 public class BuildPanel extends JPanel {
@@ -46,7 +49,7 @@ public class BuildPanel extends JPanel {
 		add(siteModelPanel);
 		add(Box.createVerticalStrut(5));
 		
-		CoalescentConfigurator coalescentPanel = new CoalescentConfigurator();
+		coalescentPanel = new CoalescentConfigurator();
 		add(coalescentPanel);
 		add(Box.createVerticalStrut(5));
 		
@@ -107,7 +110,7 @@ public class BuildPanel extends JPanel {
 			if (selectedFile != null && selectedFile.exists()) {
 				Object[] options = {"Overwrite", "Cancel"};
 				int n = JOptionPane.showOptionDialog(getRootPane(),
-						"Overwrite existing file  " + selectedFile.getName(),
+						"Overwrite existing file  " + selectedFile.getName() + "?",
 						"File exists",
 						JOptionPane.YES_NO_OPTION,
 						JOptionPane.WARNING_MESSAGE,
@@ -149,7 +152,7 @@ public class BuildPanel extends JPanel {
 
 	protected ACGDocument buildDocument() {
 		
-		Node[] alnNodes;
+		Element[] alnNodes;
 		try {
 			ACGDocumentBuilder docBuilder = new ACGDocumentBuilder();
 			alnNodes = alnPanel.getXMLNodes(docBuilder.getDocument());
@@ -157,10 +160,35 @@ public class BuildPanel extends JPanel {
 			for(int i=0; i<alnNodes.length; i++)
 				docBuilder.appendNode(alnNodes[i]);	
 			
+			ARGConfigurator argConfig = new ARGConfigurator();
+			argConfig.setAlignment(alnNodes[0]);
+			Element argEl = argConfig.getXMLNodes( docBuilder.getDocument() )[0];
+			//At some point we could allow more initial ARG config options....
 			
-			Node[] siteModelNodes = siteModelPanel.getXMLNodes(docBuilder.getDocument());
+			docBuilder.appendNode( argEl );
+
+			
+			Element[] siteModelNodes = siteModelPanel.getXMLNodes(docBuilder.getDocument());
+			Element mutModelEl = siteModelNodes[0];
+			Element siteModelEl = siteModelNodes[1];
+			
 			for(int i=0; i<siteModelNodes.length; i++)
 				docBuilder.appendNode(siteModelNodes[i]);
+
+			Node[] coalModelNodes = coalescentPanel.getXMLNodes(docBuilder.getDocument());
+			for(int i=0; i<coalModelNodes.length; i++)
+				docBuilder.appendNode(coalModelNodes[i]);
+			
+			DLConfigurator dlConfig = new DLConfigurator();
+			dlConfig.setARG(argEl);
+			dlConfig.setMutModel(mutModelEl);
+			dlConfig.setSiteModel(siteModelEl);
+			
+			Element[] dlCalcNodes = dlConfig.getXMLNodes(docBuilder.getDocument());
+			
+			for(int i=0; i<dlCalcNodes.length; i++)
+				docBuilder.appendNode(dlCalcNodes[i]);
+
 			
 			ACGDocument doc = docBuilder.getACGDocument();
 			return doc;
@@ -174,4 +202,5 @@ public class BuildPanel extends JPanel {
 	
 	AlignmentConfigurator alnPanel;
 	SiteModelConfigurator siteModelPanel;
+	CoalescentConfigurator coalescentPanel;
 }

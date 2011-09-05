@@ -18,6 +18,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import xml.XMLLoader;
+
 /**
  * A class to aid in the creation of create an ACG document. Not really much functionality here...
  * we can just add nodes at the root level and then obtain the dom Document or a String
@@ -30,6 +32,7 @@ public class ACGDocumentBuilder {
 
 	Document doc  = null;
 	Element rootElement = null;
+	Element randomSource = null;
 	
 	public ACGDocumentBuilder() throws ParserConfigurationException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -37,6 +40,15 @@ public class ACGDocumentBuilder {
 		doc = builder.newDocument();
 		rootElement = doc.createElement("ACG");
 		doc.appendChild(rootElement);
+		
+		addRandomSource();
+		
+	}
+	
+	public void addRandomSource() {
+		Element ranEl = doc.createElement("RandomSource");
+		ranEl.setAttribute(XMLLoader.CLASS_NAME_ATTR, math.RandomSource.class.getCanonicalName());
+		rootElement.appendChild(ranEl);
 	}
 
 	/**

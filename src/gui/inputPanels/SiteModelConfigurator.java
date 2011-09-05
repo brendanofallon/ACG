@@ -119,10 +119,11 @@ public class SiteModelConfigurator extends RoundedPanel implements Configurator 
 
 
 	@Override
-	public Node[] getXMLNodes(Document doc) throws InputConfigException  {
+	public Element[] getXMLNodes(Document doc) throws InputConfigException  {
 		Element mutNode = createMutNode(doc);
 		Element siteNode = createSiteNode(doc);
-		return new Node[]{mutNode, siteNode};
+		//Order important here!
+		return new Element[]{mutNode, siteNode};
 	}
 	
 	private Element createSiteNode(Document doc) throws InputConfigException {

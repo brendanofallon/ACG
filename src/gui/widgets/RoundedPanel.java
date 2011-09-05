@@ -26,7 +26,7 @@ public class RoundedPanel extends JPanel {
 
 	private Color borderColor = Color.gray;
 	private BasicStroke borderStroke = new BasicStroke(1.2f);
-	private Color gradientBottom = new Color(0.75f, 0.75f, 0.75f);
+	private Color gradientBottom = new Color(0.80f, 0.80f, 0.80f);
 	private Color gradientTop = new Color(0.95f, 0.95f, 0.95f);
 	private GradientPaint gradient = null;
 	private JPanel mainPanel = null;

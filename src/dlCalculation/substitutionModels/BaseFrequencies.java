@@ -18,6 +18,7 @@ import modifier.Modifier;
 import parameter.AbstractParameter;
 import parameter.InvalidParameterValueException;
 import sequence.DNAUtils;
+import xml.XMLUtils;
 
 /**
  * A class to encapsulate the stationary frequencies for the evolutionary model
@@ -32,7 +33,6 @@ public class BaseFrequencies extends AbstractParameter<double[]> {
 	static final int A = DNAUtils.A;
 	static final int G = DNAUtils.G;
 	
-	//String[] logKeys = {"a.freq", "c.freq", "t.freq", "g.freq"};
 	String[] logKey = new String[]{"a.freq\tc.freq\tg.freq\tt.freq"};
 			
 	public BaseFrequencies(Map<String, String> attrs, Modifier<?> mod) {
@@ -42,22 +42,32 @@ public class BaseFrequencies extends AbstractParameter<double[]> {
 	
 	public BaseFrequencies(Map<String, String> attrs) {
 		super(attrs);
-		String statStr = attrs.get(TN93Matrix.XML_STATIONARIES);
-		String[] stats = statStr.split(" ");
-		if (stats.length != 4) {
-			throw new IllegalArgumentException("Could not parse stationaries from argument list, got : " + statStr);
-		}
-	
 		currentValue = new double[4];
-		try {
-			currentValue[A] = Double.parseDouble(stats[A]);
-			currentValue[C] = Double.parseDouble(stats[C]);
-			currentValue[T] = Double.parseDouble(stats[T]);
-			currentValue[G] = Double.parseDouble(stats[G]);
+		
+		String statStr = XMLUtils.getOptionalString(TN93Matrix.XML_STATIONARIES, attrs);
+		if (statStr != null) {
+			String[] stats = statStr.split(" ");
+			if (stats.length != 4) {
+				throw new IllegalArgumentException("Could not parse stationaries from argument list, got : " + statStr);
+			}
+
+			try {
+				currentValue[A] = Double.parseDouble(stats[A]);
+				currentValue[C] = Double.parseDouble(stats[C]);
+				currentValue[T] = Double.parseDouble(stats[T]);
+				currentValue[G] = Double.parseDouble(stats[G]);
+			}
+			catch (NumberFormatException nfe) {
+				throw new IllegalArgumentException("Could not parse a number from the stationaries list : " + statStr);
+			}	
+
 		}
-		catch (NumberFormatException nfe) {
-			throw new IllegalArgumentException("Could not parse a number from the stationaries list : " + statStr);
-		}	
+		else {
+			currentValue[0] = 0.25;
+			currentValue[1] = 0.25;
+			currentValue[2] = 0.25;
+			currentValue[3] = 0.25;
+		}
 		
 		activeValue = currentValue;
 	}

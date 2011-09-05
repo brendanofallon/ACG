@@ -221,11 +221,7 @@ public class XMLLoader {
 	 * @param className The fully qualified name of the class (i.e. package.Class)
 	 * @return A class object 
 	 */
-	private Class findClass(String label, String className) {
-		if (className == null || className.trim().length()==0)
-			throw new InvalidInputFileException("No class attribute specified for object with label: " + label);
-
-		
+	private Class findClass(String label, String className) {		
 		Class clz = classMap.get(label);
 		
 		if (className.equals(LIST_ATTR)) {
