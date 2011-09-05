@@ -8,14 +8,18 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import gui.document.ACGDocument;
 import gui.document.ACGDocumentBuilder;
 import gui.inputPanels.ARGConfigurator;
 import gui.inputPanels.AlignmentConfigurator;
 import gui.inputPanels.CoalescentConfigurator;
+import gui.inputPanels.Configurator;
 import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.DLConfigurator;
+import gui.inputPanels.MCMCConfigurator;
 import gui.inputPanels.SiteModelConfigurator;
 import gui.widgets.RoundedPanel;
 
@@ -37,6 +41,9 @@ public class BuildPanel extends JPanel {
 
 	private JPanel bottomPanel;
 	
+	//List of components capable of creating ACGDocument nodes
+	List<Configurator> configList = new ArrayList<Configurator>();
+	
 	public BuildPanel(ACGFrame acgParent) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
@@ -56,6 +63,11 @@ public class BuildPanel extends JPanel {
 		RoundedPanel loggingPanel = new RoundedPanel();
 		coalescentPanel.setMaximumSize(new Dimension(1000, 50));
 		coalescentPanel.setPreferredSize(new Dimension(500, 50));
+		
+		configList.add(alnPanel);
+		configList.add(siteModelPanel);
+		configList.add(coalescentPanel);
+		
 		loggingPanel.add(new JLabel("Logging :"));
 		loggingPanel.add(new JCheckBox("Parameter values"));
 		loggingPanel.add(new JCheckBox("Recomb. position"));
@@ -150,45 +162,96 @@ public class BuildPanel extends JPanel {
 		
 	}
 
+	private List<Configurator> getAllConfigurators() {
+		return configList;
+	}
+	
+	/**
+	 * Obtain a list of all parameter elements provided by all configurators. This will 
+	 * return an empty list before buildDocument has been called. 
+	 * 
+	 * @return
+	 */
+	private List<Element> getAllParameters() {
+		List<Element> params = new ArrayList<Element>();
+		for(Configurator config : getAllConfigurators()) {
+			Element[] pars = config.getParameters();
+			for(int i=0; i<pars.length; i++) {
+				params.add(pars[i]);
+			}
+		}
+		return params;
+	}
+	
+	/**
+	 * Obtain a list of all Likelihood elements provided by all configurators. This will 
+	 * return an empty list before buildDocument has been called. 
+	 * 
+	 * @return
+	 */
+	private List<Element> getAllLikelihoods() {
+		List<Element> likes = new ArrayList<Element>();
+		for(Configurator config : getAllConfigurators()) {
+			Element[] likeArr = config.getLikelihoods();
+			for(int i=0; i<likeArr.length; i++) {
+				likes.add(likeArr[i]);
+			}
+		}
+		return likes;
+	}
+	
 	protected ACGDocument buildDocument() {
 		
 		Element[] alnNodes;
 		try {
 			ACGDocumentBuilder docBuilder = new ACGDocumentBuilder();
-			alnNodes = alnPanel.getXMLNodes(docBuilder.getDocument());
+			alnNodes = alnPanel.getRootXMLNodes(docBuilder.getDocument());
 			
 			for(int i=0; i<alnNodes.length; i++)
 				docBuilder.appendNode(alnNodes[i]);	
 			
 			ARGConfigurator argConfig = new ARGConfigurator();
 			argConfig.setAlignment(alnNodes[0]);
-			Element argEl = argConfig.getXMLNodes( docBuilder.getDocument() )[0];
+			Element argEl = argConfig.getRootXMLNodes( docBuilder.getDocument() )[0];
 			//At some point we could allow more initial ARG config options....
 			
 			docBuilder.appendNode( argEl );
-
+			coalescentPanel.setARG(argEl);
 			
-			Element[] siteModelNodes = siteModelPanel.getXMLNodes(docBuilder.getDocument());
+			Element[] siteModelNodes = siteModelPanel.getRootXMLNodes(docBuilder.getDocument());
 			Element mutModelEl = siteModelNodes[0];
 			Element siteModelEl = siteModelNodes[1];
 			
 			for(int i=0; i<siteModelNodes.length; i++)
 				docBuilder.appendNode(siteModelNodes[i]);
 
-			Node[] coalModelNodes = coalescentPanel.getXMLNodes(docBuilder.getDocument());
+			Node[] coalModelNodes = coalescentPanel.getRootXMLNodes(docBuilder.getDocument());
 			for(int i=0; i<coalModelNodes.length; i++)
 				docBuilder.appendNode(coalModelNodes[i]);
 			
-			DLConfigurator dlConfig = new DLConfigurator();
+			dlConfig = new DLConfigurator();
 			dlConfig.setARG(argEl);
 			dlConfig.setMutModel(mutModelEl);
 			dlConfig.setSiteModel(siteModelEl);
 			
-			Element[] dlCalcNodes = dlConfig.getXMLNodes(docBuilder.getDocument());
+			Element[] dlCalcNodes = dlConfig.getRootXMLNodes(docBuilder.getDocument());
 			
 			for(int i=0; i<dlCalcNodes.length; i++)
 				docBuilder.appendNode(dlCalcNodes[i]);
 
+			mcConfig = new MCMCConfigurator();
+			
+			List<Element> allParams = getAllParameters();
+			for(Element param : allParams)
+				mcConfig.addParameterRef(param);
+			
+			List<Element> allLikelihoods = getAllLikelihoods();
+			for(Element like : allLikelihoods) 
+				mcConfig.addLikelihoodRef(like);
+			
+			Element[] mcNodes = mcConfig.getRootXMLNodes(docBuilder.getDocument());
+			for(int i=0; i<mcNodes.length; i++)
+				docBuilder.appendNode(mcNodes[i]);
 			
 			ACGDocument doc = docBuilder.getACGDocument();
 			return doc;
@@ -203,4 +266,6 @@ public class BuildPanel extends JPanel {
 	AlignmentConfigurator alnPanel;
 	SiteModelConfigurator siteModelPanel;
 	CoalescentConfigurator coalescentPanel;
+	DLConfigurator dlConfig;
+	MCMCConfigurator mcConfig;
 }

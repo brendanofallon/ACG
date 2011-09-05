@@ -1,5 +1,8 @@
 package gui.inputPanels;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
@@ -20,6 +23,9 @@ public class DLConfigurator implements Configurator {
 	private String mutModelLabel = null;
 	private String siteModelLabel = null;
 	
+	List<Element> params = new ArrayList<Element>();
+	List<Element> likelihoods = new ArrayList<Element>();;
+	
 	public void setARG(Element argEl) {
 		this.argLabel = argEl.getNodeName();
 	}
@@ -36,7 +42,7 @@ public class DLConfigurator implements Configurator {
 	/**
 	 * Returns a DataLikelihood element containing the  
 	 */
-	public Element[] getXMLNodes(Document doc)
+	public Element[] getRootXMLNodes(Document doc)
 			throws ParserConfigurationException, InputConfigException {
 		
 		if (mutModelLabel == null)
@@ -44,8 +50,12 @@ public class DLConfigurator implements Configurator {
 		if (argLabel == null)
 			throw new InputConfigException("No ARG has been specified");
 		
+		params = new ArrayList<Element>();
+		likelihoods = new ArrayList<Element>();
+		
 		Element dlElement = doc.createElement("DataLikelihood");
 		dlElement.setAttribute(XMLLoader.CLASS_NAME_ATTR, dlCalculation.DataLikelihood.class.getCanonicalName());
+		likelihoods.add(dlElement);
 		
 		Element mutModelRef = doc.createElement(mutModelLabel);
 		dlElement.appendChild(mutModelRef);
@@ -59,5 +69,17 @@ public class DLConfigurator implements Configurator {
 		
 		return new Element[]{dlElement};
 	}
+	
+	
+	@Override
+	public Element[] getParameters() {
+		return params.toArray(new Element[]{});
+	}
+
+	@Override
+	public Element[] getLikelihoods() {
+		return likelihoods.toArray(new Element[]{});
+	}
 
 }
+

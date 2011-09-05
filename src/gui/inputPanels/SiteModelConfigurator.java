@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -43,6 +45,9 @@ public class SiteModelConfigurator extends RoundedPanel implements Configurator 
 	private JSpinner categsSpinner; 
 	private JCheckBox estAlphaBox;
 	private JTextField alphaField;
+	
+	List<Element> params = new ArrayList<Element>();
+	List<Element> likelihoods = new ArrayList<Element>();;
 	
 	private final String[] rateTypes = new String[]{"One rate", "Gamma rates", "Custom rates"};
 	
@@ -119,7 +124,10 @@ public class SiteModelConfigurator extends RoundedPanel implements Configurator 
 
 
 	@Override
-	public Element[] getXMLNodes(Document doc) throws InputConfigException  {
+	public Element[] getRootXMLNodes(Document doc) throws InputConfigException  {
+		params = new ArrayList<Element>();
+		likelihoods = new ArrayList<Element>();
+		
 		Element mutNode = createMutNode(doc);
 		Element siteNode = createSiteNode(doc);
 		//Order important here!
@@ -149,8 +157,11 @@ public class SiteModelConfigurator extends RoundedPanel implements Configurator 
 			Element alpha = createDoubleParamElement(doc, "alpha", 1.0, 0.01, 50);
 			if (estAlphaBox.isSelected()) {
 				Element alphaMod = doc.createElement("alphaModifier");
+				params.add(alpha);
 				alphaMod.setAttribute(XMLLoader.CLASS_NAME_ATTR,  modifier.ScaleModifier.class.getCanonicalName());
 				alpha.appendChild(alphaMod);
+				
+				//TODO Prior for alpha?
 			}
 			else {
 				try {
@@ -177,7 +188,6 @@ public class SiteModelConfigurator extends RoundedPanel implements Configurator 
 	}
 
 	private Element createMutNode(Document doc) {
-		System.out.println("Selected model is : " + mutBox.getSelectedItem().toString() );
 		if (mutBox.getSelectedItem().toString().equals("F84")) {
 			Element el = doc.createElement("F84Model");
 			el.setAttribute(XMLLoader.CLASS_NAME_ATTR,  dlCalculation.substitutionModels.F84Matrix.class.getCanonicalName());
@@ -187,8 +197,10 @@ public class SiteModelConfigurator extends RoundedPanel implements Configurator 
 			Element baseModEl = doc.createElement("BaseFreqsMod");
 			baseModEl.setAttribute(XMLLoader.CLASS_NAME_ATTR, modifier.DirichletModifier.class.getCanonicalName());
 			baseEl.appendChild(baseModEl);
+			params.add(baseEl);
 			
 			Element kappa = createDoubleParamElement(doc, "Kappa", 2.0, 0.5, 500);
+			params.add(kappa);
 			
 			Element modEl = doc.createElement("KappaMod");
 			modEl.setAttribute(XMLLoader.CLASS_NAME_ATTR,  modifier.SimpleModifier.class.getCanonicalName());
@@ -208,12 +220,15 @@ public class SiteModelConfigurator extends RoundedPanel implements Configurator 
 			Element baseModEl = doc.createElement("BaseFreqsMod");
 			baseModEl.setAttribute(XMLLoader.CLASS_NAME_ATTR,  modifier.DirichletModifier.class.getCanonicalName());
 			baseEl.appendChild(baseModEl);
+			params.add(baseEl);
 			
 			Element kappaR = createDoubleParamElement(doc, "KappaR", 2.0, 0.5, 500);
 			Element modREl = doc.createElement("KappaRMod");
+			params.add(kappaR);
 			modREl.setAttribute(XMLLoader.CLASS_NAME_ATTR,  modifier.SimpleModifier.class.getCanonicalName());
 
 			Element kappaY = createDoubleParamElement(doc, "KappaY", 2.0, 0.5, 500);
+			params.add(kappaY);
 			Element modYEl = doc.createElement("KappaYMod");
 			modYEl.setAttribute(XMLLoader.CLASS_NAME_ATTR,  modifier.SimpleModifier.class.getCanonicalName());
 			
@@ -227,8 +242,6 @@ public class SiteModelConfigurator extends RoundedPanel implements Configurator 
 			return el;
 		}
 		
-		
-		System.out.println("Returning NULL");
 		return null;
 	}
 	
@@ -244,4 +257,15 @@ public class SiteModelConfigurator extends RoundedPanel implements Configurator 
 
 	private JComboBox mutBox;
 	private JComboBox rateBox;
+
+	@Override
+	public Element[] getParameters() {
+		return params.toArray(new Element[]{});
+	}
+
+
+	@Override
+	public Element[] getLikelihoods() {
+		return likelihoods.toArray(new Element[]{});
+	}
 }

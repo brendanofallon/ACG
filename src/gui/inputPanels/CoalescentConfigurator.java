@@ -3,6 +3,8 @@ package gui.inputPanels;
 import gui.widgets.RoundedPanel;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -31,6 +33,11 @@ public class CoalescentConfigurator extends RoundedPanel implements Configurator
 	private JComboBox recombModelBox;
 	private String[] recombModels = new String[]{"No recombination", "Constant recombination"};
 	
+	List<Element> params = new ArrayList<Element>();
+	List<Element> likelihoods = new ArrayList<Element>();;
+	
+	String argRefLabel = null;
+	
 	public CoalescentConfigurator() {
 		setMaximumSize(new Dimension(1000, 50));
 		setPreferredSize(new Dimension(500, 50));
@@ -42,9 +49,17 @@ public class CoalescentConfigurator extends RoundedPanel implements Configurator
 		add(recombModelBox);
 	}
 
+	
+	public void setARG(Element argRef) {
+		this.argRefLabel = argRef.getNodeName();
+	}
+	
 	@Override
-	public Element[] getXMLNodes(Document doc)
+	public Element[] getRootXMLNodes(Document doc)
 			throws ParserConfigurationException, InputConfigException {
+		
+		likelihoods = new ArrayList<Element>();
+		params = new ArrayList<Element>();
 		
 		Element popSizeElement = doc.createElement("PopSize");
 		Element recombElement = doc.createElement("RecombModel");
@@ -57,6 +72,7 @@ public class CoalescentConfigurator extends RoundedPanel implements Configurator
 			Element popSizeScaler = doc.createElement("popSizeModifier");
 			popSizeScaler.setAttribute(XMLLoader.CLASS_NAME_ATTR, ScaleModifier.class.getCanonicalName());
 			popSizeElement.appendChild(popSizeScaler);
+			params.add(popSizeElement);
 		}
 		
 		//Exponential growth
@@ -67,12 +83,14 @@ public class CoalescentConfigurator extends RoundedPanel implements Configurator
 			baseSizeMod.setAttribute(XMLLoader.CLASS_NAME_ATTR,  modifier.ScaleModifier.class.getCanonicalName());
 			baseSize.appendChild(baseSizeMod);
 			popSizeElement.appendChild(baseSize);
+			params.add(popSizeElement);
 			
 			Element growthRate = createDoubleParamElement(doc, "GrowthRate", 0, -1e12, 1e12);
 			Element growthRateMod = doc.createElement("GrowthRateModifier");
 			growthRateMod.setAttribute(XMLLoader.CLASS_NAME_ATTR,  modifier.SimpleModifier.class.getCanonicalName());
 			growthRate.appendChild(growthRateMod);
 			popSizeElement.appendChild(growthRate);
+			params.add(growthRate);
 			
 		}
 		
@@ -91,13 +109,23 @@ public class CoalescentConfigurator extends RoundedPanel implements Configurator
 			recombElement.setAttribute(DoubleParameter.XML_UPPERBOUND, "1e10");
 			Element recMod = doc.createElement("RecombinationRateModifier");
 			recMod.setAttribute(XMLLoader.CLASS_NAME_ATTR,  modifier.ScaleModifier.class.getCanonicalName());
-
+			params.add(recombElement);
 			
 			//TODO Add in exponential prior here
 			recombElement.appendChild(recMod);
 		}
 
 			
+		Element coalLikelihoodEl = doc.createElement("CoalescentLikelihood");
+		coalLikelihoodEl.setAttribute(XMLLoader.CLASS_NAME_ATTR, coalescent.CoalescentLikelihood.class.getCanonicalName());
+		Element popSizeRef = doc.createElement(popSizeElement.getNodeName());
+		Element recRateRef = doc.createElement(recombElement.getNodeName());
+		Element argRef = doc.createElement(argRefLabel);
+		coalLikelihoodEl.appendChild(popSizeRef);
+		coalLikelihoodEl.appendChild(recRateRef);
+		coalLikelihoodEl.appendChild(argRef);
+		likelihoods.add(coalLikelihoodEl);
+		
 		Element nodes[] = new Element[2];
 		nodes[0] = popSizeElement;
 		nodes[1] = recombElement;
@@ -113,6 +141,16 @@ public class CoalescentConfigurator extends RoundedPanel implements Configurator
 		el.setAttribute(DoubleParameter.XML_UPPERBOUND, "" + upperBound);
 		
 		return el;
+	}
+
+	@Override
+	public Element[] getParameters() {
+		return params.toArray(new Element[]{});
+	}
+
+	@Override
+	public Element[] getLikelihoods() {
+		return likelihoods.toArray(new Element[]{});
 	}
 
 }

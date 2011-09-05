@@ -2,6 +2,7 @@ package gui.document;
 
 import java.io.File;
 import java.io.StringWriter;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -58,10 +59,6 @@ public class ACGDocumentBuilder {
 	public void appendNode(Node node) {
 		rootElement.appendChild(node);
 	}
-	
-//	public Node getNodeForLabel() {
-//		
-//	}
 	
 	/**
 	 * Obtain the primary XML Document created by this DocumentBuilder

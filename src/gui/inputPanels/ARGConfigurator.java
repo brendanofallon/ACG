@@ -1,5 +1,8 @@
 package gui.inputPanels;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import modifier.AbstractModifier;
@@ -31,6 +34,9 @@ public class ARGConfigurator implements Configurator {
 	Newick newickStr = null;
 	String startingFilename = null;
 	boolean useUPGMA = true;
+	
+	List<Element> params;
+	List<Element> likelihoods;
 	
 	/**
 	 * Associate an alignment with this ARG
@@ -72,8 +78,11 @@ public class ARGConfigurator implements Configurator {
 	
 	
 	@Override
-	public Element[] getXMLNodes(Document doc)
+	public Element[] getRootXMLNodes(Document doc)
 			throws ParserConfigurationException, InputConfigException {
+		
+		params = new ArrayList<Element>();
+		likelihoods = new ArrayList<Element>();
 		
 		Element arg = doc.createElement("ARG1");
 		arg.setAttribute(XMLLoader.CLASS_NAME_ATTR, arg.ARG.class.getCanonicalName());
@@ -97,6 +106,7 @@ public class ARGConfigurator implements Configurator {
 		}
 		else {
 			//An input alignment was supplied
+			params.add(arg); //In this case, the ARG is a parameter that we estimate 
 			Element alnEl = doc.createElement(alnLabel);
 			arg.appendChild(alnEl);
 			arg.setAttribute(ARG.XML_PARAM_FREQUENCY, "30");
@@ -124,4 +134,15 @@ public class ARGConfigurator implements Configurator {
 		mods.appendChild(mod);
 	}
 
+	
+	@Override
+	public Element[] getParameters() {
+		return (Element[])params.toArray();
+	}
+
+
+	@Override
+	public Element[] getLikelihoods() {
+		return (Element[])likelihoods.toArray();
+	}
 }
