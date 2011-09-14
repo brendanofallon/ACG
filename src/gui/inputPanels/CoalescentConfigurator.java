@@ -31,7 +31,7 @@ public class CoalescentConfigurator extends RoundedPanel implements Configurator
 	private String[] coalModels = new String[]{"Constant size", "Exponential growth"};
 	
 	private JComboBox recombModelBox;
-	private String[] recombModels = new String[]{"No recombination", "Constant recombination"};
+	private String[] recombModels = new String[]{"None", "Constant rate"};
 	
 	List<Element> params = new ArrayList<Element>();
 	List<Element> likelihoods = new ArrayList<Element>();;
@@ -44,7 +44,7 @@ public class CoalescentConfigurator extends RoundedPanel implements Configurator
 		add(new JLabel("Coalescent model:"));
 		coalModelBox = new JComboBox(coalModels);
 		add(coalModelBox);
-		add(new JLabel("Recombination rate:"));
+		add(new JLabel("Recombination :"));
 		recombModelBox = new JComboBox(recombModels);
 		add(recombModelBox);
 	}

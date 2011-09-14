@@ -70,6 +70,11 @@ public class RoundedPanel extends JPanel {
 		mainPanel.add(comp, constraints);
 	}
 	
+	public void remove(Component comp) {
+		mainPanel.remove(comp);
+		mainPanel.revalidate();
+	}
+	
 	public JPanel getMainPanel() {
 		return mainPanel;
 	}

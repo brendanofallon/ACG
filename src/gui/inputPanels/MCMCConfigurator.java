@@ -1,8 +1,17 @@
 package gui.inputPanels;
 
+import gui.widgets.RoundedPanel;
+
+import java.awt.Dimension;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.xml.parsers.ParserConfigurationException;
 
 import mcmc.MCMC;
@@ -17,7 +26,7 @@ import xml.XMLLoader;
  * @author brendan
  *
  */
-public class MCMCConfigurator implements Configurator {
+public class MCMCConfigurator extends RoundedPanel implements Configurator {
 
 	List<String> paramRefs = new ArrayList<String>();
 	List<String> likelihoodRefs = new ArrayList<String>();
@@ -25,6 +34,54 @@ public class MCMCConfigurator implements Configurator {
 	
 	Integer runLength = null;
 	
+	String[] mcTypes = new String[]{"Single chain", "Heated chains"};
+	JComboBox mcTypeBox;
+	JSpinner runLengthSpinner;
+	
+	JLabel chainNumberLabel;
+	JSpinner chainNumberSpinner;
+	
+	public MCMCConfigurator() {
+		setMaximumSize(new Dimension(1000, 50));
+		setPreferredSize(new Dimension(500, 50));
+		
+		
+		add(new JLabel("Chain type:"));
+		mcTypeBox = new JComboBox(mcTypes);
+		add(mcTypeBox);
+		mcTypeBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				mcTypeChanged(arg0);
+			}
+		});
+		
+		SpinnerNumberModel model = new SpinnerNumberModel(25000000, 1000, 2000000000, 100000);
+		runLengthSpinner = new JSpinner(model);
+		add(new JLabel("Run length:"));
+		add(runLengthSpinner);
+		
+		chainNumberLabel = new JLabel("Chain number:");
+		SpinnerNumberModel chainModel = new SpinnerNumberModel(4, 2, 32, 1);
+		chainNumberSpinner = new JSpinner(chainModel);
+		
+		
+	}
+	
+	
+	protected void mcTypeChanged(ItemEvent arg0) {
+		if (mcTypeBox.getSelectedIndex()==0) {
+			remove(chainNumberSpinner);
+			remove(chainNumberLabel);
+		}
+		else {
+			add(chainNumberLabel);
+			add(chainNumberSpinner);
+		}
+		this.getMainPanel().revalidate();
+		repaint();
+	}
+
+
 	/**
 	 * Add a reference to this parameter element to the parameters list 
 	 * @param param
@@ -48,21 +105,14 @@ public class MCMCConfigurator implements Configurator {
 	public void addListenerRef(Element listener) {
 		listenerRefs.add(listener.getNodeName());
 	}
-	
-	/**
-	 * Set the number of states for which the chain will be run
-	 * @param length
-	 */
-	public void setRunLength(Integer length) {
-		this.runLength = length;
-	}
+
 	
 	@Override
 	public Element[] getRootXMLNodes(Document doc)
 			throws ParserConfigurationException, InputConfigException {
 
-		if (runLength == null)
-			throw new InputConfigException("Run length has not been set, cannot create MCMC");
+		runLength = (Integer)runLengthSpinner.getValue();
+
 		if (paramRefs.isEmpty()) 
 			throw new InputConfigException("No parameters have been set, cannot create MCMC");
 		if (likelihoodRefs.isEmpty())
@@ -70,6 +120,7 @@ public class MCMCConfigurator implements Configurator {
 		
 		Element mcEl = doc.createElement("MarkovChain");
 		mcEl.setAttribute(XMLLoader.CLASS_NAME_ATTR, mcmc.MCMC.class.getCanonicalName());
+		
 		mcEl.setAttribute(MCMC.XML_RUNLENGTH, "" + runLength);
 		 
 		Element paramList = doc.createElement("parameters");

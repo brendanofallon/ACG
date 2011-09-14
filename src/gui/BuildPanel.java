@@ -19,6 +19,7 @@ import gui.inputPanels.CoalescentConfigurator;
 import gui.inputPanels.Configurator;
 import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.DLConfigurator;
+import gui.inputPanels.LoggerConfigurator;
 import gui.inputPanels.MCMCConfigurator;
 import gui.inputPanels.SiteModelConfigurator;
 import gui.widgets.RoundedPanel;
@@ -47,36 +48,44 @@ public class BuildPanel extends JPanel {
 	public BuildPanel(ACGFrame acgParent) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		add(Box.createVerticalStrut(5));
+		add(Box.createVerticalStrut(3));
 		alnPanel = new AlignmentConfigurator(acgParent);
 		add(alnPanel);
-		add(Box.createVerticalStrut(5));
+		add(Box.createVerticalStrut(3));
 		
 		siteModelPanel = new SiteModelConfigurator();
 		add(siteModelPanel);
-		add(Box.createVerticalStrut(5));
+		add(Box.createVerticalStrut(3));
 		
 		coalescentPanel = new CoalescentConfigurator();
 		add(coalescentPanel);
-		add(Box.createVerticalStrut(5));
-		
-		RoundedPanel loggingPanel = new RoundedPanel();
-		coalescentPanel.setMaximumSize(new Dimension(1000, 50));
-		coalescentPanel.setPreferredSize(new Dimension(500, 50));
+		add(Box.createVerticalStrut(3));
 		
 		configList.add(alnPanel);
 		configList.add(siteModelPanel);
 		configList.add(coalescentPanel);
+		
+		loggingPanel = new LoggerConfigurator();
+		
+		
 		
 		loggingPanel.add(new JLabel("Logging :"));
 		loggingPanel.add(new JCheckBox("Parameter values"));
 		loggingPanel.add(new JCheckBox("Recomb. position"));
 		loggingPanel.add(new JCheckBox("TMRCA"));
 		loggingPanel.add(new JCheckBox("Marginal trees"));
+		
+		
 		add(loggingPanel);
 		
+		mcConfig = new MCMCConfigurator();
+		add(Box.createVerticalStrut(12));
+		add(mcConfig);
 		
 		add(Box.createVerticalGlue());
+		
+		
+		
 		JButton addAlignmentButton = new JButton("Add alignment");
 		addAlignmentButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -239,7 +248,7 @@ public class BuildPanel extends JPanel {
 			for(int i=0; i<dlCalcNodes.length; i++)
 				docBuilder.appendNode(dlCalcNodes[i]);
 
-			mcConfig = new MCMCConfigurator();
+		
 			
 			List<Element> allParams = getAllParameters();
 			for(Element param : allParams)
@@ -268,4 +277,6 @@ public class BuildPanel extends JPanel {
 	CoalescentConfigurator coalescentPanel;
 	DLConfigurator dlConfig;
 	MCMCConfigurator mcConfig;
+	LoggerConfigurator loggingPanel;
+	
 }
