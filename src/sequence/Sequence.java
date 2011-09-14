@@ -67,6 +67,31 @@ public class Sequence {
     	seq = buf.toString();
 	}
 	
+	/**
+	 * Converts the symbol at the given site into a Sequence.UNKNOWN
+	 * @param site
+	 */
+	public void mask(int site) {
+		char[] newChars = new char[seq.length()];
+		seq.getChars(0, seq.length(), newChars, 0);
+		newChars[site] = Sequence.UNKNOWN;
+		seq = new String(newChars);
+	}
+	
+	
+	/**
+	 * Converts symbols at each of the given sites to a Sequence.UNKNOWN
+	 * @param site
+	 */
+	public void mask(List<Integer> sites) {
+		char[] newChars = new char[seq.length()];
+		seq.getChars(0, seq.length(), newChars, 0);
+		for(Integer site : sites)
+			newChars[site] = Sequence.UNKNOWN;
+		seq = new String(newChars);
+	}
+	
+	
 	public String getSequence() {
 		return seq;
 	}

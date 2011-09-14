@@ -18,12 +18,13 @@ import gui.inputPanels.AlignmentConfigurator;
 import gui.inputPanels.CoalescentConfigurator;
 import gui.inputPanels.Configurator;
 import gui.inputPanels.Configurator.InputConfigException;
+import gui.inputPanels.loggerConfigs.LoggersPanel;
 import gui.inputPanels.DLConfigurator;
-import gui.inputPanels.LoggerConfigurator;
 import gui.inputPanels.MCMCConfigurator;
 import gui.inputPanels.SiteModelConfigurator;
 import gui.widgets.RoundedPanel;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -47,6 +48,7 @@ public class BuildPanel extends JPanel {
 	
 	public BuildPanel(ACGFrame acgParent) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.setBorder(BorderFactory.createEmptyBorder(6, 6, 1, 6));
 		
 		add(Box.createVerticalStrut(3));
 		alnPanel = new AlignmentConfigurator(acgParent);
@@ -65,15 +67,7 @@ public class BuildPanel extends JPanel {
 		configList.add(siteModelPanel);
 		configList.add(coalescentPanel);
 		
-		loggingPanel = new LoggerConfigurator();
-		
-		
-		
-		loggingPanel.add(new JLabel("Logging :"));
-		loggingPanel.add(new JCheckBox("Parameter values"));
-		loggingPanel.add(new JCheckBox("Recomb. position"));
-		loggingPanel.add(new JCheckBox("TMRCA"));
-		loggingPanel.add(new JCheckBox("Marginal trees"));
+		loggingPanel = new LoggersPanel();
 		
 		
 		add(loggingPanel);
@@ -277,6 +271,6 @@ public class BuildPanel extends JPanel {
 	CoalescentConfigurator coalescentPanel;
 	DLConfigurator dlConfig;
 	MCMCConfigurator mcConfig;
-	LoggerConfigurator loggingPanel;
+	LoggersPanel loggingPanel;
 	
 }

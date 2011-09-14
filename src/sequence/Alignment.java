@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -127,6 +128,49 @@ public class Alignment {
 	}
 	
 	/**
+	 * Return the most frequent symbol at this column
+	 * @param col
+	 * @return
+	 */
+	public char getMaxFreqBase(int col) {
+		Map<Character, Integer> map = new HashMap<Character, Integer>();
+		for(Sequence seq : seqs) {
+			char c= seq.getCharAt(col);
+			Integer count = map.get(c);
+			if (count == null)
+				map.put(c, 1);
+			else
+				map.put(c, count+1);
+		}
+		
+		//For find the key that has the greatest value associated with it
+		int max = 0;
+		Character maxKey = null;
+		for(Character key : map.keySet()) {
+			Integer val = map.get(key);
+			if (val > max) {
+				max = val;
+				maxKey = key;
+			}
+			
+		}
+		return maxKey;
+	}
+	
+	/**
+	 * Masks bases not matching the given symbol at the given column
+	 * @param nonMaskSymbol If a sequence has this character it will NOT be masked
+	 * @param col Column to replace characters in
+	 */
+	public void conditionalMask(char nonMaskSymbol, int col) {
+		for(Sequence seq : seqs) {
+			char c = seq.getCharAt(col);
+			if (c != nonMaskSymbol)
+				seq.mask(col);
+		}
+	}
+	
+	/**
 	 * Returns the data matrix object associated with this alignment
 	 * @return
 	 */
@@ -135,6 +179,35 @@ public class Alignment {
 			dataMatrix = new DataMatrix(this);
 		
 		return dataMatrix;
+	}
+	
+	/**
+	 * Returns an array of indices at which polymorphic sites occur, in which gaps or unknown do NOT count for polymorphism.
+	 * Right now this is used by Masker to mask out seemingly erroneous regions of X-chromosome data. 
+	 * @return
+	 */
+	public int[] getNonGapPolymorphicSites() {
+		List<Integer> sites = new ArrayList<Integer>(100);
+		for(int i=0; i<this.getSiteCount(); i++) {
+			if ( this.isNonGapPolymorphic(i))
+				sites.add(i);
+		}
+		
+		int[] arr = new int[sites.size()];
+		for(int i=0; i<sites.size(); i++)
+			arr[i] = sites.get(i);
+		
+		return arr;
+	}
+	
+	public boolean isNonGapPolymorphic(int site) {
+		char c = seqs.get(0).getCharAt(site);
+		for(Sequence seq : seqs) {
+			char comp = seq.getCharAt(site);
+			if (comp != c && (comp != Sequence.GAP) && (comp != Sequence.UNKNOWN) && (comp != Sequence.UNKNOWN2))
+				return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -159,6 +232,16 @@ public class Alignment {
 	public void removeColumn(int col) {
 		for(Sequence seq : seqs) {
 			seq.remove(col);
+		}
+	}
+	
+	/**
+	 * Convert all symbols in the column to "?"
+	 * @param col
+	 */
+	public void maskColumn(int col) {
+		for(Sequence seq : seqs) {
+			seq.mask(col);
 		}
 	}
 	
@@ -420,6 +503,9 @@ public class Alignment {
 		return seqs;
 	}
 	
+	/**
+	 * Returns a fasta-looking string 
+	 */
 	public String toString() {
 		StringBuilder str = new StringBuilder();
 		for(Sequence seq : seqs) {

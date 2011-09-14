@@ -25,6 +25,10 @@ import mcmc.MCMCListener;
  */
 public class StateLogger implements MCMCListener {
 
+	public static final String XML_FILENAME = "filename";
+	public static final String XML_FREQUENCY = "frequency";
+	public static final String XML_ECHOTOSCREEN = "echoToScreen";
+	
 	List<PrintStream> streams = new ArrayList<PrintStream>();
 	
 	//The chain we listen to. This will change over time in MC3 runs.
@@ -45,7 +49,7 @@ public class StateLogger implements MCMCListener {
 	
 	public StateLogger(Map<String, String> attrs) {
 		lastTime = System.currentTimeMillis();
-		String filename = XMLUtils.getOptionalString("filename", attrs);
+		String filename = XMLUtils.getOptionalString(XML_FILENAME, attrs);
 		if (filename != null) {
 			try {
 				File file = new File(filename);
@@ -58,7 +62,7 @@ public class StateLogger implements MCMCListener {
 		}
 		
 		
-		String writeStdout = attrs.get("echoToScreen");
+		String writeStdout = attrs.get(XML_ECHOTOSCREEN);
 		if (writeStdout != null) {
 			boolean write = Boolean.parseBoolean(writeStdout);
 			if (write) {
@@ -66,7 +70,7 @@ public class StateLogger implements MCMCListener {
 			}
 		}
 		
-		String freqStr = attrs.get("frequency");
+		String freqStr = attrs.get(XML_FREQUENCY);
 		if (freqStr != null) {
 			Integer freq = Integer.parseInt(freqStr);
 			if (freq != null)
