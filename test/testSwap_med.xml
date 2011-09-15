@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+ <graphml> 
+<graph  rangemin="0"  rangemax="1000">
+	 <node id="-372" height="242.0"/>
+	 <node id="-840" height="378.0"/>
+	 <node id="-920" height="887.0"/>
+	 <node id="173" height="1571.0"/>
+	 <node id="883" height="244.0"/>
+	 <node id="230" height="682.0"/>
+	 <node id="356" height="787.0"/>
+	 <node id="5462" height="795.0"/>
+	 <node id="5461" height="0.0"/>
+	 <node id="-744" height="0.0"/>
+	 <node id="563" height="0.0"/>
+	 <edge id="branch1" source="5461" target="-372"/>
+	 <edge id="branch2" source="-372" target="-840" >
+	 	 <range>
+	 	 	 <start> 677 </start>
+	 	 	 <end> 1000 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch3" source="-840" target="-920"/>
+	 <edge id="branch4" source="-920" target="173"/>
+	 <edge id="branch5" source="-372" target="883" >
+	 	 <range>
+	 	 	 <start> 0 </start>
+	 	 	 <end> 677 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch6" source="883" target="230"/>
+	 <edge id="branch7" source="230" target="356" >
+	 	 <range>
+	 	 	 <start> 0 </start>
+	 	 	 <end> 768 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch8" source="356" target="5462" >
+	 	 <range>
+	 	 	 <start> 404 </start>
+	 	 	 <end> 1000 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch9" source="5462" target="-920"/>
+	 <edge id="branch10" source="356" target="173" >
+	 	 <range>
+	 	 	 <start> 0 </start>
+	 	 	 <end> 404 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch11" source="230" target="5462" >
+	 	 <range>
+	 	 	 <start> 768 </start>
+	 	 	 <end> 1000 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch12" source="-744" target="-840"/>
+	 <edge id="branch13" source="563" target="883"/>
+</graph>
+</graphml>

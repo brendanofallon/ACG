@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+ <graphml> 
+<graph  rangemin="0"  rangemax="100">
+	 <node id="zero" height="0.0"/>
+	 <node id="one" height="0.0"/>
+	 <node id="2" height="0.1"/>
+	 <node id="3" height="0.7"/>
+	 <node id="4" height="1.0"/>
+	 <node id="2a" height="0.3"/>
+	 <node id="2b" height="0.5"/>
+	 
+	 
+	 
+	 <edge id="branch1" source="zero" target="2"/>
+	 
+	 <edge id="branch2" source="2" target="2a" >
+	 	 <range>
+	 	 	 <start> 0 </start>
+	 	 	 <end> 50 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch2" source="2a" target="2b" >
+	 	 <range>
+	 	 	 <start> 0 </start>
+	 	 	 <end> 25 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch2" source="2a" target="2b" >
+	 	 <range>
+	 	 	 <start> 25 </start>
+	 	 	 <end> 100 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch2" source="2b" target="3" />
+	 
+	 <edge id="branch3" source="2" target="3" >
+	 	 <range>
+	 	 	 <start> 50 </start>
+	 	 	 <end> 100 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch4" source="3" target="4"/>
+	 <edge id="branch5" source="one" target="4"/>
+</graph>
+</graphml>

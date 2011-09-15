@@ -46,7 +46,7 @@ public class BPLocationConfig extends LoggerConfigurator {
 		
 		this.add(new JLabel("File name:"));
 		bpFilenameField = new JTextField("breakpoint_location.txt");
-		bpFilenameField.setPreferredSize(new Dimension(200, 26));
+		bpFilenameField.setPreferredSize(new Dimension(180, 26));
 		this.add(bpFilenameField);
 		
 		this.setAlignmentX(Component.LEFT_ALIGNMENT);

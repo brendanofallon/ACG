@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
 
 public class LoggersPanel extends RoundedPanel implements Configurator {
 
-	List<LoggerConfigurator> loggers = new ArrayList<LoggerConfigurator>();
+	List<LoggerWrapper> loggers = new ArrayList<LoggerWrapper>();
 	
 	JButton addButton;
 	
@@ -57,17 +57,28 @@ public class LoggersPanel extends RoundedPanel implements Configurator {
 	}
 	
 	public void addLogger(LoggerConfigurator logger) {
-		loggers.add(logger);
+		LoggerWrapper wrapped = new LoggerWrapper(logger);
+		loggers.add(wrapped);
 		this.remove(addButton);
-		add(new LoggerWrapper(logger));
+		add(wrapped);
 		this.add(addButton);
 		revalidate();
 		repaint();
 	}
 	
 	public void removeLogger(LoggerConfigurator which) {
-		this.remove(which);
-		loggers.remove(which);
+		System.out.println("Removing logger : " + which.getName());
+		LoggerWrapper toRemove = null;
+		for(LoggerWrapper logger : loggers) {
+			if (logger.config == which) {
+				toRemove = logger;
+			}
+		}
+		
+		if (toRemove != null) {
+			remove(toRemove);
+			loggers.remove(toRemove);				
+		}
 		revalidate();
 		repaint();
 	}
@@ -76,7 +87,18 @@ public class LoggersPanel extends RoundedPanel implements Configurator {
 	@Override
 	public Element[] getRootXMLNodes(Document doc)
 			throws ParserConfigurationException, InputConfigException {
-		// TODO Auto-generated method stub
+		List<Element> elements = new ArrayList<Element>();
+		
+		for(LoggerWrapper logger : loggers) {
+			LoggerConfigurator conf = logger.config;
+			Element[] nodes = conf.getRootXMLNodes(doc);
+			if (nodes != null) {
+				for(int i=0; i<nodes.length; i++) {
+					elements.add(nodes[i]);
+				}
+			}
+		}
+		
 		return null;
 	}
 
@@ -96,7 +118,6 @@ public class LoggersPanel extends RoundedPanel implements Configurator {
 		ImageIcon icon = null;
 		try {
 			java.net.URL imageURL = LoggersPanel.class.getResource(url);
-			System.err.println("URL is : " + imageURL);
 			icon = new ImageIcon(imageURL);
 		}
 		catch (Exception ex) {
@@ -112,7 +133,10 @@ public class LoggersPanel extends RoundedPanel implements Configurator {
 	 */
 	class LoggerWrapper extends JPanel {
 		
+		LoggerConfigurator config;
+		
 		public LoggerWrapper(final LoggerConfigurator conf) {
+			this.config = conf;
 			setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 			setOpaque(false);
 			setPreferredSize(new Dimension(600, 36));
@@ -121,6 +145,7 @@ public class LoggersPanel extends RoundedPanel implements Configurator {
 			add(Box.createHorizontalGlue());
 			
 			BorderlessButton remove = new BorderlessButton(removeIcon);
+			remove.setToolTipText("Remove logger");
 			remove.setMinimumSize(new Dimension(24, 30));
 			remove.setPreferredSize(new Dimension(24, 30));
 			
@@ -132,7 +157,7 @@ public class LoggersPanel extends RoundedPanel implements Configurator {
 			add(remove);
 		}
 		
-		
+				
 	}
 	
 	

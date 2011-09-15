@@ -1,0 +1,203 @@
+[2J[H
+dnamlk: the file "outfile" that you wanted to
+     use as output file already exists.
+     Do you want to Replace it, Append to it,
+     write to a new File, or Quit?
+     (please type R, A, F, or Q) 
+
+[2J[H
+Nucleic acid sequence
+   Maximum Likelihood method with molecular clock, version 3.69
+
+Settings for this run:
+  U                 Search for best tree?  Yes
+  T        Transition/transversion ratio:  2.0
+  F       Use empirical base frequencies?  Yes
+  C   One category of substitution rates?  Yes
+  R           Rate variation among sites?  constant rate
+  G                Global rearrangements?  No
+  W                       Sites weighted?  No
+  J   Randomize input order of sequences?  No. Use input order
+  M           Analyze multiple data sets?  No
+  I          Input sequences interleaved?  Yes
+  0   Terminal type (IBM PC, ANSI, none)?  ANSI
+  1    Print out the data at start of run  No
+  2  Print indications of progress of run  Yes
+  3                        Print out tree  Yes
+  4       Write out trees onto tree file?  Yes
+  5   Reconstruct hypothetical sequences?  No
+
+Are these settings correct? (type Y or the letter for one to change)
+[2J[H
+Nucleic acid sequence
+   Maximum Likelihood method with molecular clock, version 3.69
+
+Settings for this run:
+  U                 Search for best tree?  No, use user trees in input file
+  L           Use lengths from user tree?  No
+  T        Transition/transversion ratio:  2.0
+  F       Use empirical base frequencies?  Yes
+  C   One category of substitution rates?  Yes
+  R           Rate variation among sites?  constant rate
+  W                       Sites weighted?  No
+  M           Analyze multiple data sets?  No
+  I          Input sequences interleaved?  Yes
+  0   Terminal type (IBM PC, ANSI, none)?  ANSI
+  1    Print out the data at start of run  No
+  2  Print indications of progress of run  Yes
+  3                        Print out tree  Yes
+  4       Write out trees onto tree file?  Yes
+  5   Reconstruct hypothetical sequences?  No
+
+Are these settings correct? (type Y or the letter for one to change)
+[2J[H
+Nucleic acid sequence
+   Maximum Likelihood method with molecular clock, version 3.69
+
+Settings for this run:
+  U                 Search for best tree?  No, use user trees in input file
+  L           Use lengths from user tree?  Yes
+  T        Transition/transversion ratio:  2.0
+  F       Use empirical base frequencies?  Yes
+  C   One category of substitution rates?  Yes
+  R           Rate variation among sites?  constant rate
+  W                       Sites weighted?  No
+  M           Analyze multiple data sets?  No
+  I          Input sequences interleaved?  Yes
+  0   Terminal type (IBM PC, ANSI, none)?  ANSI
+  1    Print out the data at start of run  No
+  2  Print indications of progress of run  Yes
+  3                        Print out tree  Yes
+  4       Write out trees onto tree file?  Yes
+  5   Reconstruct hypothetical sequences?  No
+
+Are these settings correct? (type Y or the letter for one to change)
+Transition/transversion ratio?
+[2J[H
+Nucleic acid sequence
+   Maximum Likelihood method with molecular clock, version 3.69
+
+Settings for this run:
+  U                 Search for best tree?  No, use user trees in input file
+  L           Use lengths from user tree?  Yes
+  T        Transition/transversion ratio:    2.8317
+  F       Use empirical base frequencies?  Yes
+  C   One category of substitution rates?  Yes
+  R           Rate variation among sites?  constant rate
+  W                       Sites weighted?  No
+  M           Analyze multiple data sets?  No
+  I          Input sequences interleaved?  Yes
+  0   Terminal type (IBM PC, ANSI, none)?  ANSI
+  1    Print out the data at start of run  No
+  2  Print indications of progress of run  Yes
+  3                        Print out tree  Yes
+  4       Write out trees onto tree file?  Yes
+  5   Reconstruct hypothetical sequences?  No
+
+Are these settings correct? (type Y or the letter for one to change)
+Base frequencies for A, C, G, T/U (use blanks to separate)?
+[2J[H
+Nucleic acid sequence
+   Maximum Likelihood method with molecular clock, version 3.69
+
+Settings for this run:
+  U                 Search for best tree?  No, use user trees in input file
+  L           Use lengths from user tree?  Yes
+  T        Transition/transversion ratio:    2.8317
+  F       Use empirical base frequencies?  No
+  C   One category of substitution rates?  Yes
+  R           Rate variation among sites?  constant rate
+  W                       Sites weighted?  No
+  M           Analyze multiple data sets?  No
+  I          Input sequences interleaved?  Yes
+  0   Terminal type (IBM PC, ANSI, none)?  ANSI
+  1    Print out the data at start of run  No
+  2  Print indications of progress of run  Yes
+  3                        Print out tree  Yes
+  4       Write out trees onto tree file?  Yes
+  5   Reconstruct hypothetical sequences?  No
+
+Are these settings correct? (type Y or the letter for one to change)
+[2J[H
+Nucleic acid sequence
+   Maximum Likelihood method with molecular clock, version 3.69
+
+Settings for this run:
+  U                 Search for best tree?  No, use user trees in input file
+  L           Use lengths from user tree?  Yes
+  T        Transition/transversion ratio:    2.8317
+  F       Use empirical base frequencies?  No
+  C   One category of substitution rates?  Yes
+  R           Rate variation among sites?  Gamma distributed rates
+  A   Rates at adjacent sites correlated?  No, they are independent
+  W                       Sites weighted?  No
+  M           Analyze multiple data sets?  No
+  I          Input sequences interleaved?  Yes
+  0   Terminal type (IBM PC, ANSI, none)?  ANSI
+  1    Print out the data at start of run  No
+  2  Print indications of progress of run  Yes
+  3                        Print out tree  Yes
+  4       Write out trees onto tree file?  Yes
+  5   Reconstruct hypothetical sequences?  No
+
+Are these settings correct? (type Y or the letter for one to change)
+[2J[H
+Nucleic acid sequence
+   Maximum Likelihood method with molecular clock, version 3.69
+
+Settings for this run:
+  U                 Search for best tree?  No, use user trees in input file
+  L           Use lengths from user tree?  Yes
+  T        Transition/transversion ratio:    2.8317
+  F       Use empirical base frequencies?  No
+  C   One category of substitution rates?  Yes
+  R           Rate variation among sites?  Gamma+Invariant sites
+  A   Rates at adjacent sites correlated?  No, they are independent
+  W                       Sites weighted?  No
+  M           Analyze multiple data sets?  No
+  I          Input sequences interleaved?  Yes
+  0   Terminal type (IBM PC, ANSI, none)?  ANSI
+  1    Print out the data at start of run  No
+  2  Print indications of progress of run  Yes
+  3                        Print out tree  Yes
+  4       Write out trees onto tree file?  Yes
+  5   Reconstruct hypothetical sequences?  No
+
+Are these settings correct? (type Y or the letter for one to change)
+[2J[H
+Nucleic acid sequence
+   Maximum Likelihood method with molecular clock, version 3.69
+
+Settings for this run:
+  U                 Search for best tree?  No, use user trees in input file
+  L           Use lengths from user tree?  Yes
+  T        Transition/transversion ratio:    2.8317
+  F       Use empirical base frequencies?  No
+  C   One category of substitution rates?  Yes
+  R           Rate variation among sites?  user-defined HMM of rates
+  A   Rates at adjacent sites correlated?  No, they are independent
+  W                       Sites weighted?  No
+  M           Analyze multiple data sets?  No
+  I          Input sequences interleaved?  Yes
+  0   Terminal type (IBM PC, ANSI, none)?  ANSI
+  1    Print out the data at start of run  No
+  2  Print indications of progress of run  Yes
+  3                        Print out tree  Yes
+  4       Write out trees onto tree file?  Yes
+  5   Reconstruct hypothetical sequences?  No
+
+Are these settings correct? (type Y or the letter for one to change)
+
+Rates in HMM:
+Number of categories (1-9)?
+Rate for each category? (use a space to separate)
+Probability for each category? (use a space to separate)
+
+dnamlk: the file "outtree" that you wanted to
+     use as output tree file already exists.
+     Do you want to Replace it, Append to it,
+     write to a new File, or Quit?
+     (please type R, A, F, or Q) 
+
+Done.
+

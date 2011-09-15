@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+ <graphml> 
+<graph  rangemin="0"  rangemax="50000">
+	 <node id="-5445230690867676504" height="21.0"/>
+	 <node id="8572301931441313731" height="43.0"/>
+	 <node id="87050003672361203" height="69.0"/>
+	 <node id="6791834476419617220" height="100.0"/>
+	 <node id="1264725934776026280" height="179.0"/>
+	 <node id="5968106204054810477" height="234.0"/>
+	 <node id="-8845631546594860826" height="476.0"/>
+	 <node id="-7789129678707528384" height="116.0"/>
+	 <node id="7058714093208799856" height="123.0"/>
+	 <node id="2176100408614063330" height="163.0"/>
+	 <node id="-3118131045494959905" height="0.0"/>
+	 <node id="-719870650974167954" height="22.0"/>
+	 <node id="-4328324107327215911" height="43.0"/>
+	 <node id="42003846665990478" height="136.0"/>
+	 <node id="4561905554707058930" height="50.0"/>
+	 <node id="1500409127542387837" height="0.0"/>
+	 <node id="-4318262549146256492" height="3.0"/>
+	 <node id="-2159727137915182676" height="4.0"/>
+	 <node id="-206285562921107307" height="6.0"/>
+	 <node id="8202879607457411871" height="0.0"/>
+	 <node id="1432307950500388685" height="75.0"/>
+	 <node id="-8087582688332173750" height="83.0"/>
+	 <node id="-4638468463161794109" height="121.0"/>
+	 <node id="5393847195955541016" height="136.0"/>
+	 <node id="-4813571202980480561" height="0.0"/>
+	 <node id="5507832341281704653" height="53.0"/>
+	 <node id="5515085861118239711" height="71.0"/>
+	 <node id="18967407535045446" height="0.0"/>
+	 <node id="-2865641714419754826" height="0.0"/>
+	 <node id="-1514154754758773588" height="9.0"/>
+	 <node id="-84098710464841369" height="12.0"/>
+	 <node id="-4479494716225870028" height="0.0"/>
+	 <node id="-3067652504163942632" height="8.0"/>
+	 <node id="-6866585393240606157" height="25.0"/>
+	 <node id="-8440360707839480237" height="34.0"/>
+	 <node id="2086557343603571635" height="55.0"/>
+	 <node id="1268205403800919636" height="58.0"/>
+	 <node id="-5146313470460533928" height="67.0"/>
+	 <node id="3046525652224066774" height="0.0"/>
+	 <node id="8147485589694120776" height="0.0"/>
+	 <node id="8482526262991575567" height="6.0"/>
+	 <node id="-1242039927181488124" height="0.0"/>
+	 <node id="5928499747394519540" height="3.0"/>
+	 <node id="-8805629225223755366" height="11.0"/>
+	 <node id="8405432915909364919" height="8.0"/>
+	 <node id="2728251735120294331" height="0.0"/>
+	 <node id="-4434580687010233295" height="0.0"/>
+	 <node id="6156177761605545491" height="0.0"/>
+	 <node id="-8881271905697981388" height="0.0"/>
+	 <node id="211137329199909875" height="7.0"/>
+	 <node id="-4465864329243803862" height="0.0"/>
+	 <node id="4864678024413315230" height="0.0"/>
+	 <node id="-6896670161403490401" height="0.0"/>
+	 <node id="-1325296464948903332" height="17.0"/>
+	 <node id="2148285696881187685" height="0.0"/>
+	 <node id="5038318240829947117" height="0.0"/>
+	 <node id="6882593098193446019" height="6.0"/>
+	 <node id="5320361631655004514" height="0.0"/>
+	 <node id="2203853280030102924" height="0.0"/>
+	 <node id="4101178213815168314" height="0.0"/>
+	 <node id="-3025145074390159677" height="0.0"/>
+	 <node id="8196574224460116091" height="0.0"/>
+	 <node id="-1850376470896163001" height="0.0"/>
+	 <edge id="branch1" source="-3118131045494959905" target="-5445230690867676504"/>
+	 <edge id="branch2" source="-5445230690867676504" target="8572301931441313731"/>
+	 <edge id="branch3" source="8572301931441313731" target="87050003672361203"/>
+	 <edge id="branch4" source="87050003672361203" target="6791834476419617220"/>
+	 <edge id="branch5" source="6791834476419617220" target="1264725934776026280" >
+	 	 <range>
+	 	 	 <start> 14619 </start>
+	 	 	 <end> 50000 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch6" source="1264725934776026280" target="5968106204054810477"/>
+	 <edge id="branch7" source="5968106204054810477" target="-8845631546594860826"/>
+	 <edge id="branch8" source="6791834476419617220" target="-7789129678707528384" >
+	 	 <range>
+	 	 	 <start> 0 </start>
+	 	 	 <end> 14619 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch9" source="-7789129678707528384" target="7058714093208799856"/>
+	 <edge id="branch10" source="7058714093208799856" target="2176100408614063330"/>
+	 <edge id="branch11" source="2176100408614063330" target="1264725934776026280"/>
+	 <edge id="branch12" source="1500409127542387837" target="-719870650974167954"/>
+	 <edge id="branch13" source="-719870650974167954" target="-4328324107327215911"/>
+	 <edge id="branch14" source="-4328324107327215911" target="42003846665990478" >
+	 	 <range>
+	 	 	 <start> 44884 </start>
+	 	 	 <end> 50000 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch15" source="42003846665990478" target="5968106204054810477"/>
+	 <edge id="branch16" source="-4328324107327215911" target="4561905554707058930" >
+	 	 <range>
+	 	 	 <start> 0 </start>
+	 	 	 <end> 44884 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch17" source="4561905554707058930" target="87050003672361203"/>
+	 <edge id="branch18" source="8202879607457411871" target="-4318262549146256492"/>
+	 <edge id="branch19" source="-4318262549146256492" target="-2159727137915182676"/>
+	 <edge id="branch20" source="-2159727137915182676" target="-206285562921107307"/>
+	 <edge id="branch21" source="-206285562921107307" target="-719870650974167954"/>
+	 <edge id="branch22" source="-4813571202980480561" target="1432307950500388685"/>
+	 <edge id="branch23" source="1432307950500388685" target="-8087582688332173750" >
+	 	 <range>
+	 	 	 <start> 0 </start>
+	 	 	 <end> 32951 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch24" source="-8087582688332173750" target="-4638468463161794109"/>
+	 <edge id="branch25" source="-4638468463161794109" target="5393847195955541016" >
+	 	 <range>
+	 	 	 <start> 0 </start>
+	 	 	 <end> 44350 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch26" source="5393847195955541016" target="2176100408614063330" >
+	 	 <range>
+	 	 	 <start> 21823 </start>
+	 	 	 <end> 50000 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch27" source="5393847195955541016" target="-8845631546594860826" >
+	 	 <range>
+	 	 	 <start> 0 </start>
+	 	 	 <end> 21823 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch28" source="-4638468463161794109" target="42003846665990478" >
+	 	 <range>
+	 	 	 <start> 44350 </start>
+	 	 	 <end> 50000 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch29" source="1432307950500388685" target="-7789129678707528384" >
+	 	 <range>
+	 	 	 <start> 32951 </start>
+	 	 	 <end> 50000 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch30" source="18967407535045446" target="5507832341281704653"/>
+	 <edge id="branch31" source="5507832341281704653" target="5515085861118239711"/>
+	 <edge id="branch32" source="5515085861118239711" target="-8087582688332173750"/>
+	 <edge id="branch33" source="-2865641714419754826" target="-4318262549146256492"/>
+	 <edge id="branch34" source="-4479494716225870028" target="-1514154754758773588"/>
+	 <edge id="branch35" source="-1514154754758773588" target="-84098710464841369"/>
+	 <edge id="branch36" source="-84098710464841369" target="-5445230690867676504"/>
+	 <edge id="branch37" source="3046525652224066774" target="-3067652504163942632"/>
+	 <edge id="branch38" source="-3067652504163942632" target="-6866585393240606157"/>
+	 <edge id="branch39" source="-6866585393240606157" target="-8440360707839480237"/>
+	 <edge id="branch40" source="-8440360707839480237" target="2086557343603571635"/>
+	 <edge id="branch41" source="2086557343603571635" target="7058714093208799856" >
+	 	 <range>
+	 	 	 <start> 0 </start>
+	 	 	 <end> 27395 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch42" source="2086557343603571635" target="1268205403800919636" >
+	 	 <range>
+	 	 	 <start> 27395 </start>
+	 	 	 <end> 50000 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch43" source="1268205403800919636" target="-5146313470460533928"/>
+	 <edge id="branch44" source="-5146313470460533928" target="5515085861118239711"/>
+	 <edge id="branch45" source="8147485589694120776" target="-1514154754758773588"/>
+	 <edge id="branch46" source="-1242039927181488124" target="8482526262991575567"/>
+	 <edge id="branch47" source="8482526262991575567" target="-5146313470460533928"/>
+	 <edge id="branch48" source="2728251735120294331" target="5928499747394519540"/>
+	 <edge id="branch49" source="5928499747394519540" target="-8805629225223755366" >
+	 	 <range>
+	 	 	 <start> 0 </start>
+	 	 	 <end> 885 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch50" source="-8805629225223755366" target="-8440360707839480237"/>
+	 <edge id="branch51" source="5928499747394519540" target="8405432915909364919" >
+	 	 <range>
+	 	 	 <start> 885 </start>
+	 	 	 <end> 50000 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch52" source="8405432915909364919" target="-8805629225223755366"/>
+	 <edge id="branch53" source="-4434580687010233295" target="-6866585393240606157"/>
+	 <edge id="branch54" source="6156177761605545491" target="1268205403800919636"/>
+	 <edge id="branch55" source="-8881271905697981388" target="-2159727137915182676"/>
+	 <edge id="branch56" source="-4465864329243803862" target="211137329199909875"/>
+	 <edge id="branch57" source="211137329199909875" target="-84098710464841369"/>
+	 <edge id="branch58" source="4864678024413315230" target="211137329199909875"/>
+	 <edge id="branch59" source="-6896670161403490401" target="8405432915909364919"/>
+	 <edge id="branch60" source="2148285696881187685" target="-1325296464948903332"/>
+	 <edge id="branch61" source="-1325296464948903332" target="8572301931441313731"/>
+	 <edge id="branch62" source="5038318240829947117" target="-1325296464948903332"/>
+	 <edge id="branch63" source="5320361631655004514" target="6882593098193446019"/>
+	 <edge id="branch64" source="6882593098193446019" target="4561905554707058930"/>
+	 <edge id="branch65" source="2203853280030102924" target="6882593098193446019"/>
+	 <edge id="branch66" source="4101178213815168314" target="5507832341281704653"/>
+	 <edge id="branch67" source="-3025145074390159677" target="8482526262991575567"/>
+	 <edge id="branch68" source="8196574224460116091" target="-206285562921107307"/>
+	 <edge id="branch69" source="-1850376470896163001" target="-3067652504163942632"/>
+</graph>
+</graphml>

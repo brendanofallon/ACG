@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<graphml> 
+<graph  rangemin="0"  rangemax="250">
+	 <node id="root" height="0.1" />
+	 <node id="interior1" height="0.05"/>
+	 <node id="tipA" height="0.0"/>
+	 <!-- node id="tipB" height="0.0" / -->
+	 <node id="tipC" height="0.0"/>
+	 <node id="tipD" height="0.0"/>
+	 <node id="tipE" height="0.0"/>
+	 <node id="tipF" height="0.0"/>
+	 <!-- node id="interior2" height="0.08" / -->
+	 
+	 <edge id="branchA" source="tipA" target="interior1" />
+	 <!-- edge id="branchB" source="tipB" target="interior1" / -->
+	 <edge id="branchC" source="tipC" target="interior1" />
+	 <edge id="branchE" source="tipE" target="interior1" />
+ 	 <edge id="branchF" source="tipF" target="interior1" />
+	 <edge id="branchInternal1" source="interior1" target="root">	</edge>
+	
+	 <!-- edge id="branchInternal2" source="interior1" target="interior2">
+		 <range>
+	 	 	 <start> 0 </start>
+	 	 	 <end> 56 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branchX" source="interior2" target="root" / -->	 
+	 <edge id="branchD" source="tipD" target="root" />
+</graph>
+</graphml>

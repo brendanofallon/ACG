@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+ <graphml> 
+<graph  rangemin="0"  rangemax="100">
+	 <node id="-3536124515471026062" height="0.0073"/>
+	 <node id="4057950314742241646" height="0.0178"/>
+	 <node id="2443697477918567640" height="0.0088"/>
+	 <node id="i56353" height="0.0"/>
+	 <node id="-3960708212445398248" height="0.0048"/>
+	 <node id="i44171" height="0.0"/>
+	 <node id="i10966" height="0.0"/>
+	 <edge id="branch1" source="i56353" target="-3536124515471026062"/>
+	 <edge id="branch2" source="-3536124515471026062" target="4057950314742241646" >
+	 	 <range>
+	 	 	 <start> 82 </start>
+	 	 	 <end> 100 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch3" source="-3536124515471026062" target="2443697477918567640" >
+	 	 <range>
+	 	 	 <start> 0 </start>
+	 	 	 <end> 82 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch4" source="2443697477918567640" target="4057950314742241646"/>
+	 <edge id="branch5" source="i44171" target="-3960708212445398248"/>
+	 <edge id="branch6" source="-3960708212445398248" target="2443697477918567640"/>
+	 <edge id="branch7" source="i10966" target="-3960708212445398248"/>
+</graph>
+</graphml>

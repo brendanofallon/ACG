@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<graphml>
+<graph rangemax="50000" rangemin="0">
+<node height="1.3134628567296026E-6" id="46">
+<annotation key="c_nodes">26: 0-50000[0][9]
+</annotation>
+</node>
+<node height="5.19022086018686E-5" id="8814">
+<annotation key="c_nodes">70: 0-50000[2][21]
+</annotation>
+</node>
+<node height="2.36862742999301E-5" id="360486">
+<annotation key="c_nodes">29: 0-50000[17][18]
+</annotation>
+</node>
+<node height="1.2247008869179264E-6" id="503848">
+<annotation key="c_nodes">28: 0-50000[6][4]
+</annotation>
+</node>
+<node height="2.7171303423725898E-5" id="768628">
+<annotation key="c_nodes">46: 0-50000[19][29]
+</annotation>
+</node>
+<node height="4.653294020627951E-5" id="797732">
+<annotation key="c_nodes">91: 0-50000[14][13]
+</annotation>
+</node>
+<node height="6.7361610486468995E-6" id="43080">
+<annotation key="c_nodes">27: 0-50000[1][3]
+</annotation>
+</node>
+<node height="1.0192045502126808E-5" id="38484">
+<annotation key="c_nodes">25: 0-50000[11][5]
+</annotation>
+</node>
+<node height="5.7139384418249914E-5" id="828720">
+<annotation key="c_nodes">34: 0-36050[70][20]
+49: 36050-50000[70][68]
+</annotation>
+</node>
+<node height="7.971844286207594E-6" id="576970">
+<annotation key="c_nodes">54: 0-50000[10][27]
+</annotation>
+</node>
+<node height="3.90553887189141E-5" id="351860">
+<annotation key="c_nodes">69: 0-50000[54][7]
+</annotation>
+</node>
+<node height="4.041472639325472E-5" id="45250">
+<annotation key="c_nodes">20: 0-36050[69][25]
+68: 36050-50000[69][87]
+</annotation>
+</node>
+<node height="4.3832483477595995E-5" id="14916">
+<annotation key="c_nodes">21: 0-50000[28][26]
+</annotation>
+</node>
+<node height="7.162628335555573E-4" id="870386">
+<annotation key="c_nodes">86: 33339-35939[92][64]
+79: 35939-36050[12][30]
+84: 36050-49502[12][37]
+</annotation>
+</node>
+<node height="1.2073622424362255E-4" id="869686">
+<annotation key="c_nodes">64: 0-36050[34][8]
+23: 36050-50000[49][8]
+</annotation>
+</node>
+<node height="1.5359603530965248E-4" id="856702">
+<annotation key="c_nodes">82: 0-22592[91][64]
+</annotation>
+</node>
+<node height="3.6248892710396543E-4" id="870462">
+<annotation key="c_nodes">43: 0-22592[42][83]
+71: 22592-23114[42][24]
+</annotation>
+</node>
+<node height="0.001149644766704254" id="871342">
+<annotation key="c_nodes">38: 28404-33339[74][40]
+22: 33339-35939[86][40]
+56: 35939-36050[79][40]
+89: 36050-49502[84][52]
+85: 49502-50000[72][52]
+</annotation>
+</node>
+<node height="3.715840356388933E-5" id="682390">
+<annotation key="c_nodes">87: 36050-50000[15][25]
+</annotation>
+</node>
+<node height="2.4472791343518825E-4" id="865024">
+<annotation key="c_nodes">40: 23114-36050[42][46]
+52: 36050-50000[16][46]
+</annotation>
+</node>
+<node height="1.0119088512770313E-4" id="870820">
+<annotation key="c_nodes">42: 0-36050[15][16]
+</annotation>
+</node>
+<node height="0.0033612056590511218" id="870484">
+<annotation key="c_nodes">53: 10236-22592[46][43]
+81: 22592-23114[46][67]
+51: 23114-28404[40][74]
+</annotation>
+</node>
+<node height="0.0013296084492050025" id="871436">
+<annotation key="c_nodes">X</annotation>
+</node>
+<node height="4.129791109189728E-4" id="870522">
+<annotation key="c_nodes">67: 22592-23114[91][71]
+74: 23114-33339[91][24]
+92: 33339-35939[91][12]
+</annotation>
+</node>
+<node height="4.243815723465677E-4" id="870938">
+<annotation key="c_nodes">30: 35939-36050[64][91]
+37: 36050-49502[23][91]
+72: 49502-50000[63][91]
+</annotation>
+</node>
+<node height="8.800219071441407E-4" id="869822">
+<annotation key="c_nodes">76: 0-10236[46][43]
+</annotation>
+</node>
+<node height="2.4184834830132858E-4" id="868330">
+<annotation key="c_nodes">83: 0-22592[82][12]
+24: 22592-33339[64][12]
+</annotation>
+</node>
+<node height="3.830409630730216E-4" id="871124">
+<annotation key="c_nodes">63: 49502-50000[12][23]
+</annotation>
+</node>
+<node height="1.1720966020457372E-4" id="856701"/>
+<node height="2.3901100495781342E-4" id="2699"/>
+<node height="2.075242314129075E-5" id="4745"/>
+<node height="0.0011060839353091655" id="860137"/>
+<node height="0.0013224025032505281" id="871435"/>
+<node height="3.0069946847332846E-4" id="835255"/>
+<node height="8.260155151624052E-4" id="867221"/>
+<node height="2.3191247156176256E-4" id="865199"/>
+<node height="3.1929865680870473E-4" id="871049"/>
+<node height="0.0" id="GS21737_chrX.tsv"/>
+<node height="0.0" id="GS20850_chrX.tsv"/>
+<node height="0.0" id="GS19735_chrX.tsv"/>
+<node height="0.0" id="GS20845_chrX.tsv"/>
+<node height="0.0" id="GS20510_chrX.tsv"/>
+<node height="0.0" id="GS20846_chrX.tsv"/>
+<node height="0.0" id="GS10851_chrX.tsv"/>
+<node height="0.0" id="GS20511_chrX.tsv"/>
+<node height="0.0" id="GS18504_chrX.tsv"/>
+<node height="0.0" id="GS21732_chrX.tsv"/>
+<node height="0.0" id="GS18501_chrX.tsv"/>
+<node height="0.0" id="GS19649_chrX.tsv"/>
+<node height="0.0" id="GS19025_chrX.tsv"/>
+<node height="0.0" id="GS19026_chrX.tsv"/>
+<node height="0.0" id="GS19670_chrX.tsv"/>
+<node height="0.0" id="GS07357_chrX.tsv"/>
+<node height="0.0" id="GS069994_chrX.tsv"/>
+<node height="0.0" id="GS19020_chrX.tsv"/>
+<node height="0.0" id="GS18558_chrX.tsv"/>
+<node height="0.0" id="GS18940_chrX.tsv"/>
+<edge id="edge0" source="GS21737_chrX.tsv" target="46"/>
+<edge id="edge1" source="GS21732_chrX.tsv" target="46"/>
+<edge id="edge2" source="46" target="14916"/>
+<edge id="edge3" source="GS19735_chrX.tsv" target="8814"/>
+<edge id="edge4" source="14916" target="8814"/>
+<edge id="edge5" source="8814" target="828720"/>
+<edge id="edge6" source="GS19020_chrX.tsv" target="360486"/>
+<edge id="edge7" source="GS18558_chrX.tsv" target="360486"/>
+<edge id="edge8" source="360486" target="768628"/>
+<edge id="edge9" source="GS10851_chrX.tsv" target="503848"/>
+<edge id="edge10" source="GS20510_chrX.tsv" target="503848"/>
+<edge id="edge11" source="503848" target="14916"/>
+<edge id="edge12" source="GS18940_chrX.tsv" target="768628"/>
+<edge id="edge13" source="768628" target="865024"/>
+<edge id="edge14" source="GS19670_chrX.tsv" target="797732"/>
+<edge id="edge15" source="GS19026_chrX.tsv" target="797732"/>
+<edge id="edge16" source="797732" target="856701"/>
+<edge id="edge17" source="GS20850_chrX.tsv" target="43080"/>
+<edge id="edge18" source="GS20845_chrX.tsv" target="43080"/>
+<edge id="edge19" source="43080" target="576970"/>
+<edge id="edge20" source="GS19649_chrX.tsv" target="38484"/>
+<edge id="edge21" source="GS20846_chrX.tsv" target="38484"/>
+<edge id="edge22" source="38484" target="682390"/>
+<edge id="edge23" source="45250" target="828720"/>
+<edge id="edge24" source="828720" target="869686"/>
+<edge id="edge25" source="GS18501_chrX.tsv" target="576970"/>
+<edge id="edge26" source="576970" target="351860"/>
+<edge id="edge27" source="GS20511_chrX.tsv" target="351860"/>
+<edge id="edge28" source="351860" target="45250"/>
+<edge id="edge29" source="682390" target="45250"/>
+<edge id="edge30" source="870522" target="870386"/>
+<edge id="edge31" source="870938" target="870386"/>
+<edge id="edge32" source="870386" target="869822"/>
+<edge id="edge33" source="GS18504_chrX.tsv" target="869686"/>
+<edge id="edge34" source="869686" target="856702"/>
+<edge id="edge35" source="856701" target="856702">
+<range>
+<start>0</start>
+<end>22592</end>
+</range>
+</edge>
+<edge id="edge36" source="856702" target="865199"/>
+<edge id="edge37" source="2699" target="870462">
+<range>
+<start>0</start>
+<end>23114</end>
+</range>
+</edge>
+<edge id="edge38" source="871049" target="870462">
+<range>
+<start>0</start>
+<end>49502</end>
+</range>
+</edge>
+<edge id="edge39" source="870462" target="870522"/>
+<edge id="edge40" source="860137" target="871342">
+<range>
+<start>28404</start>
+<end>50000</end>
+</range>
+</edge>
+<edge id="edge41" source="867221" target="871342">
+<range>
+<start>10236</start>
+<end>50000</end>
+</range>
+</edge>
+<edge id="edge42" source="871342" target="871435"/>
+<edge id="edge43" source="4745" target="682390">
+<range>
+<start>36050</start>
+<end>50000</end>
+</range>
+</edge>
+<edge id="edge44" source="2699" target="865024">
+<range>
+<start>23114</start>
+<end>50000</end>
+</range>
+</edge>
+<edge id="edge45" source="865024" target="867221"/>
+<edge id="edge46" source="4745" target="870820">
+<range>
+<start>0</start>
+<end>36050</end>
+</range>
+</edge>
+<edge id="edge47" source="GS069994_chrX.tsv" target="870820"/>
+<edge id="edge48" source="870820" target="2699"/>
+<edge id="edge49" source="871435" target="870484">
+<range>
+<start>0</start>
+<end>34972</end>
+</range>
+</edge>
+<edge id="edge50" source="871436" target="870484"/>
+<edge id="edge51" source="871435" target="871436">
+<range>
+<start>34972</start>
+<end>50000</end>
+</range>
+</edge>
+<edge id="edge52" source="860137" target="871436">
+<range>
+<start>0</start>
+<end>28404</end>
+</range>
+</edge>
+<edge id="edge53" source="835255" target="870522">
+<range>
+<start>0</start>
+<end>35939</end>
+</range>
+</edge>
+<edge id="edge54" source="871124" target="870938"/>
+<edge id="edge55" source="835255" target="870938">
+<range>
+<start>35939</start>
+<end>50000</end>
+</range>
+</edge>
+<edge id="edge56" source="867221" target="869822">
+<range>
+<start>0</start>
+<end>10236</end>
+</range>
+</edge>
+<edge id="edge57" source="869822" target="860137"/>
+<edge id="edge58" source="865199" target="868330">
+<range>
+<start>0</start>
+<end>33339</end>
+</range>
+</edge>
+<edge id="edge59" source="GS19025_chrX.tsv" target="868330"/>
+<edge id="edge60" source="868330" target="871049"/>
+<edge id="edge61" source="871049" target="871124">
+<range>
+<start>49502</start>
+<end>50000</end>
+</range>
+</edge>
+<edge id="edge62" source="865199" target="871124">
+<range>
+<start>33339</start>
+<end>50000</end>
+</range>
+</edge>
+<edge id="edge63" source="856701" target="835255">
+<range>
+<start>22592</start>
+<end>50000</end>
+</range>
+</edge>
+<edge id="edge64" source="GS07357_chrX.tsv" target="4745"/>
+</graph>
+</graphml>

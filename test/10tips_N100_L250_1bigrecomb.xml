@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- This one has two recombinations. There's a 'big' one at site 125 which
+ introduces a big topological change between two large clades that we think should be detectable. There's another (at site 5) which is probably undetectable.
+  Parameters are N=100, mu = 5e-4, rec = 0.005		-->
+ <graphml> 
+<graph  rangemin="0"  rangemax="250">
+	 <node id="-241661883446495350" height="0.0025"/>
+	 <node id="-8712886360753030788" height="0.046"/>
+	 <node id="1778903824486217949" height="0.114"/>
+	 <node id="-1645807517595479646" height="0.050"/>
+	 <node id="-8328003338012436212" height="0.055"/>
+	 <node id="-3313228080511917754" height="0.0975"/>
+	 <node id="i13960" height="0.0"/>
+	 <node id="8085710650591137569" height="0.0005"/>
+	 <node id="-1057117748506922044" height="0.018"/>
+	 <node id="6883166203973778769" height="0.017"/>
+	 <node id="-9090492805865992832" height="0.0235"/>
+	 <node id="2193561699007692278" height="0.034"/>
+	 <node id="i12187" height="0.0"/>
+	 <node id="-7055708312715341118" height="0.011"/>
+	 <node id="-2589828345993631366" height="0.027"/>
+	 <node id="i93372" height="0.0"/>
+	 <node id="i19540" height="0.0"/>
+	 <node id="i15669" height="0.0"/>
+	 <node id="i31830" height="0.0"/>
+	 <node id="i73714" height="0.0"/>
+	 <node id="i39904" height="0.0"/>
+	 <node id="i36011" height="0.0"/>
+	 <node id="i29564" height="0.0"/>
+	 <edge id="branch1" source="i13960" target="-241661883446495350"/>
+	 <edge id="branch2" source="-241661883446495350" target="-8712886360753030788"/>
+	 <edge id="branch3" source="-8712886360753030788" target="1778903824486217949" >
+	 	 <range>
+	 	 	 <start> 5 </start>
+	 	 	 <end> 250 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch4" source="-8712886360753030788" target="-1645807517595479646" >
+	 	 <range>
+	 	 	 <start> 0 </start>
+	 	 	 <end> 5 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch5" source="-1645807517595479646" target="-8328003338012436212"/>
+	 <edge id="branch6" source="-8328003338012436212" target="-3313228080511917754"/>
+	 <edge id="branch7" source="-3313228080511917754" target="1778903824486217949"/>
+	 <edge id="branch8" source="i12187" target="8085710650591137569"/>
+	 <edge id="branch9" source="8085710650591137569" target="-1057117748506922044"/>
+	 <edge id="branch10" source="-1057117748506922044" target="6883166203973778769"/>
+	 <edge id="branch11" source="6883166203973778769" target="-9090492805865992832" >
+	 	 <range>
+	 	 	 <start> 0 </start>
+	 	 	 <end> 125 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch12" source="-9090492805865992832" target="-1645807517595479646"/>
+	 <edge id="branch13" source="6883166203973778769" target="2193561699007692278" >
+	 	 <range>
+	 	 	 <start> 125 </start>
+	 	 	 <end> 250 </end>
+	 	 </range>
+	 </edge>
+	 <edge id="branch14" source="2193561699007692278" target="-3313228080511917754"/>
+	 <edge id="branch15" source="i93372" target="-7055708312715341118"/>
+	 <edge id="branch16" source="-7055708312715341118" target="-2589828345993631366"/>
+	 <edge id="branch17" source="-2589828345993631366" target="2193561699007692278"/>
+	 <edge id="branch18" source="i19540" target="-9090492805865992832"/>
+	 <edge id="branch19" source="i15669" target="-2589828345993631366"/>
+	 <edge id="branch20" source="i31830" target="8085710650591137569"/>
+	 <edge id="branch21" source="i73714" target="-241661883446495350"/>
+	 <edge id="branch22" source="i39904" target="-8328003338012436212"/>
+	 <edge id="branch23" source="i36011" target="-7055708312715341118"/>
+	 <edge id="branch24" source="i29564" target="-1057117748506922044"/>
+</graph>
+</graphml>
