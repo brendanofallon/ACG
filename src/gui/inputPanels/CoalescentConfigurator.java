@@ -46,6 +46,7 @@ public class CoalescentConfigurator extends RoundedPanel implements Configurator
 		add(coalModelBox);
 		add(new JLabel("Recombination :"));
 		recombModelBox = new JComboBox(recombModels);
+		recombModelBox.setSelectedIndex(1);
 		add(recombModelBox);
 	}
 
@@ -62,7 +63,7 @@ public class CoalescentConfigurator extends RoundedPanel implements Configurator
 		params = new ArrayList<Element>();
 		
 		Element popSizeElement = doc.createElement("PopSize");
-		Element recombElement = doc.createElement("RecombModel");
+		Element recombElement = doc.createElement("RecombRate");
 		
 		//Constant size
 		if (coalModelBox.getSelectedItem().toString().equals(coalModels[0])) {
@@ -104,7 +105,7 @@ public class CoalescentConfigurator extends RoundedPanel implements Configurator
 		
 		if (recombModelBox.getSelectedItem().toString().equals(recombModels[1])) {
 			recombElement.setAttribute(XMLLoader.CLASS_NAME_ATTR, ConstantRecombination.class.getCanonicalName());
-			recombElement.setAttribute(DoubleParameter.XML_VALUE, "0.0");
+			recombElement.setAttribute(DoubleParameter.XML_VALUE, "1.0");
 			recombElement.setAttribute(DoubleParameter.XML_LOWERBOUND, "0.0");
 			recombElement.setAttribute(DoubleParameter.XML_UPPERBOUND, "1e10");
 			Element recMod = doc.createElement("RecombinationRateModifier");
@@ -126,9 +127,10 @@ public class CoalescentConfigurator extends RoundedPanel implements Configurator
 		coalLikelihoodEl.appendChild(argRef);
 		likelihoods.add(coalLikelihoodEl);
 		
-		Element nodes[] = new Element[2];
+		Element nodes[] = new Element[3];
 		nodes[0] = popSizeElement;
 		nodes[1] = recombElement;
+		nodes[2] = coalLikelihoodEl;
 		return nodes;
 	}
 

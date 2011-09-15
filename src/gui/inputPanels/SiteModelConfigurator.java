@@ -30,6 +30,8 @@ import parameter.DoubleParameter;
 
 import dlCalculation.siteRateModels.ConstantSiteRates;
 import dlCalculation.siteRateModels.GammaSiteRates;
+import dlCalculation.substitutionModels.BaseFrequencies;
+import dlCalculation.substitutionModels.TN93Matrix;
 
 import xml.XMLLoader;
 
@@ -194,6 +196,9 @@ public class SiteModelConfigurator extends RoundedPanel implements Configurator 
 
 			Element baseEl = doc.createElement("BaseFrequencies");
 			baseEl.setAttribute(XMLLoader.CLASS_NAME_ATTR, dlCalculation.substitutionModels.BaseFrequencies.class.getCanonicalName());
+			baseEl.setAttribute(BaseFrequencies.XML_PARAM_FREQUENCY, "0.1");
+			baseEl.setAttribute(TN93Matrix.XML_STATIONARIES, "0.25 0.25 0.25 0.25");
+			
 			Element baseModEl = doc.createElement("BaseFreqsMod");
 			baseModEl.setAttribute(XMLLoader.CLASS_NAME_ATTR, modifier.DirichletModifier.class.getCanonicalName());
 			baseEl.appendChild(baseModEl);
@@ -217,8 +222,11 @@ public class SiteModelConfigurator extends RoundedPanel implements Configurator 
 			
 			Element baseEl = doc.createElement("BaseFrequencies");
 			baseEl.setAttribute(XMLLoader.CLASS_NAME_ATTR, dlCalculation.substitutionModels.BaseFrequencies.class.getCanonicalName());
+			baseEl.setAttribute(BaseFrequencies.XML_PARAM_FREQUENCY, "0.1");
+			baseEl.setAttribute(TN93Matrix.XML_STATIONARIES, "0.25 0.25 0.25 0.25");
+			
 			Element baseModEl = doc.createElement("BaseFreqsMod");
-			baseModEl.setAttribute(XMLLoader.CLASS_NAME_ATTR,  modifier.DirichletModifier.class.getCanonicalName());
+			baseModEl.setAttribute(XMLLoader.CLASS_NAME_ATTR, modifier.DirichletModifier.class.getCanonicalName());
 			baseEl.appendChild(baseModEl);
 			params.add(baseEl);
 			

@@ -87,8 +87,30 @@ public class MCMCConfigurator extends RoundedPanel implements Configurator {
 	 * @param param
 	 */
 	public void addParameterRef(Element param) {
-		paramRefs.add(param.getNodeName());
+		//Don't add multiple elements with same label
+		if (! containsLabel(param.getNodeName(), paramRefs))
+			paramRefs.add(param.getNodeName());
 	}
+	
+	private static boolean containsLabel(String label, List<String> list) {
+		for(String str : list) {
+			if (str.equals(label)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Clear all references to likelihoods, parameters, and listeners. This should happen between every call to 
+	 * getRootXMLNodes
+	 */
+	public void clearAllReferences() {
+		likelihoodRefs.clear();
+		paramRefs.clear();
+		listenerRefs.clear();
+	}
+	
 	
 	/**
 	 * Add a reference to the likelihood component described by the element  
@@ -122,20 +144,25 @@ public class MCMCConfigurator extends RoundedPanel implements Configurator {
 		mcEl.setAttribute(XMLLoader.CLASS_NAME_ATTR, mcmc.MCMC.class.getCanonicalName());
 		
 		mcEl.setAttribute(MCMC.XML_RUNLENGTH, "" + runLength);
+
+		mcEl.setAttribute(MCMC.XML_RUNNOW, "true");
 		 
 		Element paramList = doc.createElement("parameters");
+		paramList.setAttribute(XMLLoader.CLASS_NAME_ATTR, XMLLoader.LIST_ATTR);
 		for(String param : paramRefs) {
 			paramList.appendChild( doc.createElement(param));
 		}
 		mcEl.appendChild(paramList);
 		
 		Element likeList = doc.createElement("likelihoods");
+		likeList.setAttribute(XMLLoader.CLASS_NAME_ATTR, XMLLoader.LIST_ATTR);
 		for(String like : likelihoodRefs) {
 			likeList.appendChild( doc.createElement(like));
 		}
 		mcEl.appendChild(likeList);
 		
 		Element listenerList = doc.createElement("listeners");
+		listenerList.setAttribute(XMLLoader.CLASS_NAME_ATTR, XMLLoader.LIST_ATTR);
 		for(String listener : listenerRefs) {
 			listenerList.appendChild( doc.createElement(listener));
 		}

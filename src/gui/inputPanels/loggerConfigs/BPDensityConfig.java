@@ -1,5 +1,7 @@
 package gui.inputPanels.loggerConfigs;
 
+import gui.inputPanels.Configurator.InputConfigException;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -21,7 +23,6 @@ import xml.XMLLoader;
 
 public class BPDensityConfig extends LoggerConfigurator {
 
-	
 	public BPDensityConfig() {
 		this.setOpaque(false);
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -66,10 +67,17 @@ public class BPDensityConfig extends LoggerConfigurator {
 	public Element[] getRootXMLNodes(Document doc)
 			throws ParserConfigurationException, InputConfigException {
 		
+		if (ARGref == null) {
+			throw new InputConfigException("ARG not specified for BP location element");
+		}
+		
 		Element el = doc.createElement("BreakpointDensity");
 		el.setAttribute(XMLLoader.CLASS_NAME_ATTR, BreakpointDensity.class.getCanonicalName());
 		el.setAttribute(StateLogger.XML_FILENAME, bpFilenameField.getText());
 		el.setAttribute(StateLogger.XML_FREQUENCY, "" + freqSpinner.getValue().toString());
+		
+		Element argEl = doc.createElement(ARGref);
+		el.appendChild(argEl);
 		
 		return new Element[]{el};
 	}

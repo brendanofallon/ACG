@@ -137,12 +137,12 @@ public class ARGConfigurator implements Configurator {
 	
 	@Override
 	public Element[] getParameters() {
-		return (Element[])params.toArray();
+		return (Element[])params.toArray(new Element[]{});
 	}
 
 
 	@Override
 	public Element[] getLikelihoods() {
-		return (Element[])likelihoods.toArray();
+		return (Element[])likelihoods.toArray(new Element[]{});
 	}
 }

@@ -45,6 +45,8 @@ public class BuildPanel extends JPanel {
 	
 	//List of components capable of creating ACGDocument nodes
 	List<Configurator> configList = new ArrayList<Configurator>();
+
+	private static String documentHeader = "ACG input document created by ACGUI. To run this file, open it with ACG or type java -jar acg.jar [this file name] at the command line";
 	
 	public BuildPanel(ACGFrame acgParent) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -77,7 +79,6 @@ public class BuildPanel extends JPanel {
 		add(mcConfig);
 		
 		add(Box.createVerticalGlue());
-		
 		
 		
 		JButton addAlignmentButton = new JButton("Add alignment");
@@ -180,10 +181,21 @@ public class BuildPanel extends JPanel {
 		for(Configurator config : getAllConfigurators()) {
 			Element[] pars = config.getParameters();
 			for(int i=0; i<pars.length; i++) {
-				params.add(pars[i]);
+				if (! containsLabel( pars[i].getNodeName(), params )) {
+					params.add(pars[i]);
+				}
 			}
 		}
 		return params;
+	}
+	
+	private static boolean containsLabel(String label, List<Element> list) {
+		for(Element el : list) {
+			if (el.getNodeName().equals(label)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -197,7 +209,8 @@ public class BuildPanel extends JPanel {
 		for(Configurator config : getAllConfigurators()) {
 			Element[] likeArr = config.getLikelihoods();
 			for(int i=0; i<likeArr.length; i++) {
-				likes.add(likeArr[i]);
+				if (! containsLabel( likeArr[i].getNodeName(), likes))
+					likes.add(likeArr[i]);
 			}
 		}
 		return likes;
@@ -208,6 +221,10 @@ public class BuildPanel extends JPanel {
 		Element[] alnNodes;
 		try {
 			ACGDocumentBuilder docBuilder = new ACGDocumentBuilder();
+			Node header = docBuilder.getDocument().createComment(documentHeader);
+			docBuilder.appendNode(header);
+			
+			
 			alnNodes = alnPanel.getRootXMLNodes(docBuilder.getDocument());
 			
 			for(int i=0; i<alnNodes.length; i++)
@@ -215,7 +232,9 @@ public class BuildPanel extends JPanel {
 			
 			ARGConfigurator argConfig = new ARGConfigurator();
 			argConfig.setAlignment(alnNodes[0]);
+			configList.add( argConfig );
 			Element argEl = argConfig.getRootXMLNodes( docBuilder.getDocument() )[0];
+			
 			//At some point we could allow more initial ARG config options....
 			
 			docBuilder.appendNode( argEl );
@@ -232,7 +251,9 @@ public class BuildPanel extends JPanel {
 			for(int i=0; i<coalModelNodes.length; i++)
 				docBuilder.appendNode(coalModelNodes[i]);
 			
+			
 			dlConfig = new DLConfigurator();
+			configList.add(dlConfig);
 			dlConfig.setARG(argEl);
 			dlConfig.setMutModel(mutModelEl);
 			dlConfig.setSiteModel(siteModelEl);
@@ -243,7 +264,13 @@ public class BuildPanel extends JPanel {
 				docBuilder.appendNode(dlCalcNodes[i]);
 
 		
+			loggingPanel.setARGReference(argEl);
+			Element[] loggerNodes = loggingPanel.getRootXMLNodes(docBuilder.getDocument());
+			for(int i=0; i<loggerNodes.length; i++) {
+				docBuilder.appendNode(loggerNodes[i]);
+			}
 			
+			mcConfig.clearAllReferences(); //Clear any previous references to parameters, likelihoods, etc
 			List<Element> allParams = getAllParameters();
 			for(Element param : allParams)
 				mcConfig.addParameterRef(param);
@@ -251,6 +278,9 @@ public class BuildPanel extends JPanel {
 			List<Element> allLikelihoods = getAllLikelihoods();
 			for(Element like : allLikelihoods) 
 				mcConfig.addLikelihoodRef(like);
+					
+			for(int i=0; i<loggerNodes.length; i++)
+				mcConfig.addListenerRef(loggerNodes[i]);
 			
 			Element[] mcNodes = mcConfig.getRootXMLNodes(docBuilder.getDocument());
 			for(int i=0; i<mcNodes.length; i++)

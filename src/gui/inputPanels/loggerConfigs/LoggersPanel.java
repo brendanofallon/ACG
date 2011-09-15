@@ -28,6 +28,11 @@ public class LoggersPanel extends RoundedPanel implements Configurator {
 	
 	JButton addButton;
 	
+	//Reference to ARG object that may be used by loggers
+	//This implementation sucks because what if different loggers want to reference different ARGs?
+	//Maybe there should be one logger panel per ARG? per alignment? 
+	Element ARGref = null;
+	
 	static final ImageIcon removeIcon = getIcon("icons/removeButton.png");
 	
 	public LoggersPanel() {
@@ -54,6 +59,10 @@ public class LoggersPanel extends RoundedPanel implements Configurator {
 	protected void showAddFrame() {
 		addFrame.setVisible(true);
 		
+	}
+	
+	public void setARGReference(Element ARGref) {
+		this.ARGref = ARGref;
 	}
 	
 	public void addLogger(LoggerConfigurator logger) {
@@ -91,6 +100,7 @@ public class LoggersPanel extends RoundedPanel implements Configurator {
 		
 		for(LoggerWrapper logger : loggers) {
 			LoggerConfigurator conf = logger.config;
+			conf.setARG( ARGref );
 			Element[] nodes = conf.getRootXMLNodes(doc);
 			if (nodes != null) {
 				for(int i=0; i<nodes.length; i++) {
@@ -99,7 +109,9 @@ public class LoggersPanel extends RoundedPanel implements Configurator {
 			}
 		}
 		
-		return null;
+		Element[] els = new Element[elements.size()];
+		els = elements.toArray(els);
+		return els;
 	}
 
 	@Override

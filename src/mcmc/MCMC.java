@@ -27,6 +27,8 @@ import xml.XMLUtils;
 public class MCMC {
 
 	public static final String XML_RUNLENGTH = "length";
+
+	public static final String XML_RUNNOW = "run";
 	
 	//Keeps track of current state numbers
 	int acceptedStates = 0;
@@ -225,7 +227,7 @@ public class MCMC {
 		userRunLength = XMLUtils.getIntegerOrFail(XML_RUNLENGTH, attrs);
 		
 		boolean runNow = false;
-		String runStr = attrs.get("run");
+		String runStr = attrs.get(XML_RUNNOW);
 		if (runStr != null) {
 			boolean run = Boolean.parseBoolean(runStr);
 			runNow = run;

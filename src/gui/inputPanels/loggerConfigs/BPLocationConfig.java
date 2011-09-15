@@ -22,6 +22,7 @@ import xml.XMLLoader;
 public class BPLocationConfig extends LoggerConfigurator {
 
 	
+	
 	public BPLocationConfig() {
 		this.setOpaque(false);
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -52,14 +53,23 @@ public class BPLocationConfig extends LoggerConfigurator {
 		this.setAlignmentX(Component.LEFT_ALIGNMENT);
 	}
 	
+
+	
 	@Override
 	public Element[] getRootXMLNodes(Document doc)
 			throws ParserConfigurationException, InputConfigException {
+		
+		if (ARGref == null) {
+			throw new InputConfigException("ARG not specified for BP location element");
+		}
 		
 		Element el = doc.createElement("BreakpointLocation");
 		el.setAttribute(XMLLoader.CLASS_NAME_ATTR, BreakpointLocation.class.getCanonicalName());
 		el.setAttribute(StateLogger.XML_FILENAME, bpFilenameField.getText());
 		el.setAttribute(StateLogger.XML_FREQUENCY, "" + freqSpinner.getValue().toString());
+		
+		Element argEl = doc.createElement(ARGref);
+		el.appendChild(argEl);
 		
 		return new Element[]{el};
 	}
