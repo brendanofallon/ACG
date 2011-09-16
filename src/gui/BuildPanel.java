@@ -1,6 +1,6 @@
 package gui;
 
-import java.awt.Dimension;
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,23 +17,18 @@ import gui.inputPanels.ARGConfigurator;
 import gui.inputPanels.AlignmentConfigurator;
 import gui.inputPanels.CoalescentConfigurator;
 import gui.inputPanels.Configurator;
-import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.loggerConfigs.LoggersPanel;
 import gui.inputPanels.DLConfigurator;
 import gui.inputPanels.MCMCConfigurator;
 import gui.inputPanels.SiteModelConfigurator;
-import gui.widgets.RoundedPanel;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.Element;
@@ -42,6 +37,9 @@ import org.w3c.dom.Node;
 public class BuildPanel extends JPanel {
 
 	private JPanel bottomPanel;
+	private JPanel centerPanel;
+	private JLabel alnHelpLabel;
+	ACGFrame acgParent;
 	
 	//List of components capable of creating ACGDocument nodes
 	List<Configurator> configList = new ArrayList<Configurator>();
@@ -49,37 +47,22 @@ public class BuildPanel extends JPanel {
 	private static String documentHeader = "ACG input document created by ACGUI. To run this file, open it with ACG or type java -jar acg.jar [this file name] at the command line";
 	
 	public BuildPanel(ACGFrame acgParent) {
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.acgParent = acgParent;
+		this.setLayout(new BorderLayout());
 		this.setBorder(BorderFactory.createEmptyBorder(6, 6, 1, 6));
 		
-		add(Box.createVerticalStrut(3));
-		alnPanel = new AlignmentConfigurator(acgParent);
-		add(alnPanel);
-		add(Box.createVerticalStrut(3));
+		centerPanel = new JPanel();
+		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+		add(centerPanel, BorderLayout.CENTER);
 		
-		siteModelPanel = new SiteModelConfigurator();
-		add(siteModelPanel);
-		add(Box.createVerticalStrut(3));
+		centerPanel.add(Box.createVerticalGlue());
+		showAlnPanel();
+		centerPanel.add(Box.createVerticalGlue());
 		
-		coalescentPanel = new CoalescentConfigurator();
-		add(coalescentPanel);
-		add(Box.createVerticalStrut(3));
+
 		
-		configList.add(alnPanel);
-		configList.add(siteModelPanel);
-		configList.add(coalescentPanel);
-		
-		loggingPanel = new LoggersPanel();
-		
-		
-		add(loggingPanel);
-		
-		mcConfig = new MCMCConfigurator();
-		add(Box.createVerticalStrut(12));
-		add(mcConfig);
-		
-		add(Box.createVerticalGlue());
-		
+		bottomPanel = new JPanel();
+		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		
 		JButton addAlignmentButton = new JButton("Add alignment");
 		addAlignmentButton.addActionListener(new ActionListener() {
@@ -87,11 +70,8 @@ public class BuildPanel extends JPanel {
 				buildDocument();
 			}
 		});
-		alnPanel.setAlignmentY(LEFT_ALIGNMENT);
-		this.add(addAlignmentButton);
+		bottomPanel.add(addAlignmentButton);
 		
-		bottomPanel = new JPanel();
-		bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		JButton runButton = new JButton("Run");
 		runButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -108,9 +88,68 @@ public class BuildPanel extends JPanel {
 		});
 		bottomPanel.add(saveButton);
 		
-		add(bottomPanel);
+		add(bottomPanel, BorderLayout.SOUTH);
+	}
+	
+	public void showAlnPanel() {
+		centerPanel.add(Box.createVerticalStrut(3));
+		alnPanel = new AlignmentConfigurator(this, acgParent);
+		alnHelpLabel = new JLabel(" To begin, select an input alignment file :");
+		centerPanel.add(alnHelpLabel);
+		centerPanel.add(alnPanel);
+		centerPanel.add(Box.createVerticalStrut(3));
+		configList.add(alnPanel);
+		centerPanel.revalidate();
+		repaint();
+	}
+	
+	public void alignmentSelected() {
+		centerPanel.remove(alnHelpLabel);
+		showSiteModelPanel();
+		
+		showCoalescentModelPanel();
+		showLoggersConfigPanel();
+		showMCConfigPanel();
+	}
+	
+	/**
+	 * Causes the site model panel to appear
+	 */
+	public void showSiteModelPanel() {
+		siteModelPanel = new SiteModelConfigurator();
+		configList.add(siteModelPanel);
+		centerPanel.add(siteModelPanel);
+		centerPanel.add(Box.createVerticalStrut(3));
+		centerPanel.revalidate();
+		repaint();
+	}
+	
+	public void showCoalescentModelPanel() {
+		coalescentPanel = new CoalescentConfigurator();
+		configList.add(coalescentPanel);
+		centerPanel.add(coalescentPanel);
+		centerPanel.add(Box.createVerticalStrut(3));
+		centerPanel.revalidate();
+		repaint();
+	}
+	
+	public void showLoggersConfigPanel() {
+		loggingPanel = new LoggersPanel();
+		centerPanel.add(loggingPanel);
+		centerPanel.revalidate();
+		repaint();
+	}
+	
+	public void showMCConfigPanel() {
+		mcConfig = new MCMCConfigurator();
+		centerPanel.add(Box.createVerticalStrut(12));
+		centerPanel.add(mcConfig);
+		centerPanel.revalidate();
+		repaint();
 	}
 
+	
+	
 	/**
 	 * Save the current settings to a file. This is done by building an ACGDocument by issuing
 	 * a call to buildDocument, then converting the document to text and saving the text to a file. 
@@ -161,9 +200,21 @@ public class BuildPanel extends JPanel {
 		}
 	}
 
+	
+	/**
+	 * Build the document given the current settings of the configurators and attempt to run it
+	 * via a call to acgParent.loadFile( ... )
+	 */
 	protected void run() {
-		// TODO Auto-generated method stub
-		
+		ACGDocument acgDoc = buildDocument();
+		try {
+			acgDoc.loadAndVerifyClasses();
+			acgDoc.turnOffMCMC();
+			acgParent.loadFile(null, acgDoc);
+		} catch (Exception e) {
+			ErrorWindow.showErrorWindow(e);
+		}
+
 	}
 
 	private List<Configurator> getAllConfigurators() {

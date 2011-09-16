@@ -146,10 +146,12 @@ public class StartFrame extends JPanel {
 		acgParent.dispose();
 	}
 	
-	
+
 	/**
-	 * Called when the user has clicked on the 'Done' button. We see if a valid input file has been selected, and
-	 * then attempt to install some hooks and run it
+	 * Called when the user has clicked on the 'Done' button. Read the file 
+	 * contained specified by selectedFile (or, if null, the text from the 
+	 * filenameField), and replace the center panel with the PickParameters 
+	 * panel
 	 */
 	protected void loadFile() {
 		File inputFile = null;
@@ -160,29 +162,18 @@ public class StartFrame extends JPanel {
 			inputFile = new File( filenameField.getText() );
 		}
 		
-		acgParent.setTitle("ACG : " + inputFile.getName() );
-		
 		if (inputFile == null || (! inputFile.exists())) {
 			String filename = inputFile == null ? "(empty)" : inputFile.getName();
 			JOptionPane.showMessageDialog(getRootPane(), "The file " + filename + " cannot be found.");
 			return;
 		}
 		
-		try {
-			ACGDocument acgDocument = new ACGDocument(inputFile);
-			
-			//In the future we may want to do a few other things before instantiating the objects... but for now
-			//we just create 'em right away...
-			acgDocument.instantiateAll();
-			
-			PickMonitorsPanel pickPanel = new PickMonitorsPanel(acgParent, acgDocument);
-			acgParent.replaceCenterPanel(pickPanel);
-		}
-		catch (InvalidInputFileException ex) {
-			ErrorWindow.showErrorWindow(ex, "Error encountered while reading input file :");
-		}
 
+		ACGDocument acgDocument = new ACGDocument(inputFile);
+		acgParent.loadFile(inputFile.getName(), acgDocument);
 	}
+	
+
 
 
 	private void clearSelectedFile() {

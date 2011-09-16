@@ -1,5 +1,7 @@
 package gui;
 
+import gui.document.ACGDocument;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -19,6 +21,8 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+
+import xml.InvalidInputFileException;
 
 import mcmc.MCMC;
 import mcmc.MCMCListener;
@@ -96,6 +100,29 @@ public class ACGFrame extends JFrame implements WindowListener {
 		});
 	}
 	
+	
+	/**
+	 *  Read the given document and instantiate all of its elements, then turn control
+	 *  over to a PickMonitorsPanel
+	 */
+	protected void loadFile(String name, ACGDocument acgDocument) {
+		if (name != null)
+			this.setTitle("ACG : " + name);
+		
+		try {
+			//In the future we may want to do a few other things before instantiating the objects... but for now
+			//we just create 'em right away...
+			acgDocument.instantiateAll();
+			
+			PickMonitorsPanel pickPanel = new PickMonitorsPanel(this, acgDocument);
+			this.replaceCenterPanel(pickPanel);
+		}
+		catch (InvalidInputFileException ex) {
+			ErrorWindow.showErrorWindow(ex, "Error encountered while reading input file :");
+		}
+
+	}
+	
 	public void setRunner(ExecutingChain runner) {
 		this.runner = runner;
 		runButtonPressed(); //Sets run and pause button to correct enabled states
@@ -128,8 +155,10 @@ public class ACGFrame extends JFrame implements WindowListener {
 	}
 	
 	public void replaceCenterPanel(JPanel newCenterPanel) {
-		this.remove(centerPanel);
-		this.validate();
+		if (centerPanel != null) {
+			this.remove(centerPanel);
+			this.validate();
+		}
 		
 		this.centerPanel = newCenterPanel;
 		this.add(newCenterPanel, BorderLayout.CENTER);
@@ -165,10 +194,10 @@ public class ACGFrame extends JFrame implements WindowListener {
 		mainContainer.setLayout(layout);
 		
 		
-		JPanel testPanel = new BuildPanel(this);
-		mainContainer.add(testPanel, BorderLayout.CENTER);
+		centerPanel = new BuildPanel(this);
 		//centerPanel = new StartFrame(this, onAMac);
-		//mainContainer.add(centerPanel, BorderLayout.CENTER);
+		
+		mainContainer.add(centerPanel, BorderLayout.CENTER);
 		
 		bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));

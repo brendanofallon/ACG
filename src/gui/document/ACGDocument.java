@@ -94,6 +94,7 @@ public class ACGDocument {
 		}
 	}
 	
+	
 	/**
 	 * Construct an ACG document from the given DOM object
 	 * @param doc
@@ -103,7 +104,6 @@ public class ACGDocument {
 		this.doc = doc;
 		try {
 			loader = new XMLLoader(doc);
-			//loader.loadAllClasses(); //Attempt to load all of the classes referenced by the document
 		} 
 		catch (Exception e) {
 			try {
@@ -116,6 +116,14 @@ public class ACGDocument {
 		}
 	}
 	
+	/**
+	 * Load all classes referenced by this document and perform some simple validity checking
+	 * @throws Exception
+	 */
+	public void loadAndVerifyClasses() throws Exception {
+		loader.loadAllClasses(); //Attempt to load all of the classes referenced by the document
+		checkValidity(); //Must come after class loading
+	}
 	/**
 	 * Instantiate all of the objects described by the document. All exceptions are caught and
 	 * wrapped into an InvalidInputFileException  
@@ -193,19 +201,19 @@ public class ACGDocument {
 	/**
 	 * Adds "run=false" as an attribute to all MCMC objects so they won't run right away when we create them
 	 */
-	private void turnOffMCMC() {
+	public void turnOffMCMC() {
 		List<String> mcLabels = getMCMCLabels();
 		if (mcLabels.size()==0) {
 			throw new InvalidInputFileException("Could not find any MCMC objects");
 		}
 		for(String label : mcLabels) {
-			loader.addAttribute(label, "run", "false");
+			loader.addAttribute(label, MCMC.XML_RUNNOW, "false");
 		}
 		
 		//Also turn off instant run for all MC3 objects, if any
 		mcLabels = getLabelForClass(MC3.class);
 		for(String label : mcLabels) {
-			loader.addAttribute(label, "run", "false");
+			loader.addAttribute(label, MCMC.XML_RUNNOW, "false");
 		}
 
 	}

@@ -27,6 +27,7 @@ import sequence.Sequence;
 import xml.XMLLoader;
 
 import gui.ACGFrame;
+import gui.BuildPanel;
 import gui.widgets.RoundedPanel;
 
 public class AlignmentConfigurator extends RoundedPanel implements Configurator {
@@ -34,10 +35,12 @@ public class AlignmentConfigurator extends RoundedPanel implements Configurator 
 	protected File selectedFile = null;
 	protected JTextField fileField; 
 	ACGFrame acgParent;
+	BuildPanel buildPanel;
 	
-	public AlignmentConfigurator(ACGFrame acgParent) {
+	public AlignmentConfigurator(BuildPanel buildPanel, ACGFrame acgParent) {
 		super();
 		this.acgParent = acgParent;
+		this.buildPanel = buildPanel;
 		setMaximumSize(new Dimension(1000, 55));
 		setPreferredSize(new Dimension(500, 55));
 		add(Box.createGlue());
@@ -91,6 +94,7 @@ public class AlignmentConfigurator extends RoundedPanel implements Configurator 
 		//If we found a valid selected file, set the info in the text field (a a couple other things)
 		if (selectedFile != null && selectedFile.exists()) {
 			fileField.setText(selectedFile.getName());
+			buildPanel.alignmentSelected(); //Causes other windows to appear in the build panel
 		}
 	}
 
