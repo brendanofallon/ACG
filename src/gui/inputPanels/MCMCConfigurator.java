@@ -1,5 +1,6 @@
 package gui.inputPanels;
 
+import gui.document.ACGDocument;
 import gui.widgets.RoundedPanel;
 
 import java.awt.Dimension;
@@ -180,6 +181,14 @@ public class MCMCConfigurator extends RoundedPanel implements Configurator {
 	@Override
 	public Element[] getLikelihoods() {
 		return new Element[]{};
+	}
+
+
+	@Override
+	public void readNodesFromDocument(ACGDocument doc)
+			throws InputConfigException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -1,6 +1,10 @@
 package gui.widgets;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -8,8 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.event.MouseInputAdapter;
 
@@ -18,24 +25,42 @@ import javax.swing.event.MouseInputAdapter;
  * @author brendano
  *
  */
-public class BorderlessButton extends JLabel {
+public class BorderlessButton extends JPanel {
 
 	ImageIcon icon = null;
+	String text = null;
+	private boolean drawBorder = false;
 	
 	List<ActionListener> actionListeners = new ArrayList<ActionListener>();
 	
-	public BorderlessButton(ImageIcon icon) {
-		super(icon);
-		super.setHorizontalAlignment(SwingConstants.LEFT);
-		super.setVerticalAlignment(SwingConstants.TOP);
-		setBorder(BorderFactory.createEmptyBorder(2, 2, 1, 1));
-		if (icon == null)
-			this.setText("NULL");
-		else
-			setPreferredSize(new Dimension(icon.getIconWidth()+2, icon.getIconHeight()+2));
+	public BorderlessButton(String label, ImageIcon icon) {
+		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		this.setOpaque(false);
+		this.text = label;
+		this.icon = icon;
+		
+		setBorder(BorderFactory.createEmptyBorder(4, 2, 4, 5));
+		int pWidth = 0;
+		int pHeight = 0;
+		if (icon != null) {
+			pWidth += icon.getIconWidth()+5;
+			pHeight += icon.getIconHeight()+5;
+		}
+		if (label != null) {
+			pWidth += label.length()*10+4;
+			pHeight = Math.max(24, icon.getIconHeight()+5);
+		}
+		
+		
+		setPreferredSize(new Dimension(pWidth, pHeight));
+		this.add(Box.createRigidArea(new Dimension(pWidth, pHeight)));
 		Listener listener = new Listener();
 		addMouseListener(listener);
 		addMouseMotionListener(listener);
+	}
+	
+	public BorderlessButton(ImageIcon icon) {
+		this(null, icon);
 	}
 	
 	public void fireActionEvent(MouseEvent me) {
@@ -55,12 +80,7 @@ public class BorderlessButton extends JLabel {
 	}
 	
 	public void setDrawBorder(boolean drawIt) {
-		if (drawIt) {
-			this.setBorder(BorderFactory.createEtchedBorder());
-		}
-		else {
-			this.setBorder(BorderFactory.createEmptyBorder(2, 2, 1, 1));
-		}
+		this.drawBorder = drawIt;
 		repaint();
 	}
 	
@@ -78,6 +98,40 @@ public class BorderlessButton extends JLabel {
 			setDrawBorder(false);
 		}
 		
+	}
+	
+	public void paintComponent(Graphics g) {
+		Graphics2D g2d = (Graphics2D)g;
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		if (drawBorder) {
+			g2d.setColor(new Color(0.99f, 0.99f, 0.99f, 0.5f));
+			g2d.fillRoundRect(2, 2, getWidth()-3, getHeight()-4, 5, 5);
+		}
+		else {
+			super.paintComponent(g);
+		}
+		
+		int dx = 1;
+		if (icon != null) {
+			g2d.drawImage(icon.getImage(), 2, Math.max(0, getHeight()/2-icon.getIconHeight()/2) , null);
+			dx += icon.getIconWidth()+2;
+		}
+		if (text != null) {
+			g2d.setColor(new Color(0.99f, 0.99f, 0.99f, 0.5f));
+			g2d.drawString(text, dx+3, getHeight()/2+7);
+			g2d.setColor(new Color(0.2f, 0.2f, 0.2f));
+			g2d.drawString(text, dx+2, getHeight()/2+6);
+		}
+		
+		if (drawBorder) {
+			g2d.setColor(new Color(0.99f, 0.99f, 0.99f, 0.45f));
+			g2d.drawRoundRect(1, 1, getWidth()-2, getHeight()-4, 5, 5);
+			
+			g2d.setColor(new Color(0.79f, 0.79f, 0.79f, 0.95f));
+			g2d.drawRoundRect(0, 0, getWidth()-2, getHeight()-3, 5, 5);
+		}
 	}
 
 

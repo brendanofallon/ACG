@@ -35,11 +35,18 @@ public class ACGDocumentBuilder {
 	Element rootElement = null;
 	Element randomSource = null;
 	
+	private static String documentHeader = "ACG input document created by ACGUI. To run this file, open it with ACG or type java -jar acg.jar [this file name] at the command line";
+
+	
 	public ACGDocumentBuilder() throws ParserConfigurationException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		doc = builder.newDocument();
 		rootElement = doc.createElement("ACG");
+		
+		Node topComment = doc.createComment(documentHeader);
+		doc.appendChild(topComment);
+		
 		doc.appendChild(rootElement);
 		
 		addRandomSource();

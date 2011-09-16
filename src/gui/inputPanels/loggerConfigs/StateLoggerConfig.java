@@ -1,5 +1,6 @@
 package gui.inputPanels.loggerConfigs;
 
+import gui.document.ACGDocument;
 import gui.inputPanels.Configurator;
 import gui.inputPanels.Configurator.InputConfigException;
 
@@ -77,6 +78,12 @@ public class StateLoggerConfig extends LoggerConfigurator {
 
 	private JSpinner freqSpinner;
 	private JTextField stateLoggerFilenameField;
+	@Override
+	public void readNodesFromDocument(ACGDocument doc)
+			throws InputConfigException {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 

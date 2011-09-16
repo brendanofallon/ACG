@@ -5,7 +5,9 @@ import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.Box;
@@ -28,14 +30,20 @@ import xml.XMLLoader;
 
 import gui.ACGFrame;
 import gui.BuildPanel;
+import gui.ErrorWindow;
+import gui.document.ACGDocument;
 import gui.widgets.RoundedPanel;
 
 public class AlignmentConfigurator extends RoundedPanel implements Configurator {
 
 	protected File selectedFile = null;
-	protected JTextField fileField; 
+	protected JTextField fileField;
+	List<Sequence> seqs;
 	ACGFrame acgParent;
 	BuildPanel buildPanel;
+	
+	private static final String defaultNodeLabel = "Alignment";
+	private String nodeLabel = defaultNodeLabel;
 	
 	public AlignmentConfigurator(BuildPanel buildPanel, ACGFrame acgParent) {
 		super();
@@ -48,6 +56,7 @@ public class AlignmentConfigurator extends RoundedPanel implements Configurator 
 		add(new JLabel("Alignment :"));
 		fileField = new JTextField("Choose file");
 		fileField.setPreferredSize(new Dimension(150, 30));
+		fileField.setEditable(false);
 		add(fileField);
 		JButton chooseAlnButton = new JButton("Browse");
 		chooseAlnButton.addActionListener(new ActionListener() {
@@ -93,19 +102,35 @@ public class AlignmentConfigurator extends RoundedPanel implements Configurator 
 		
 		//If we found a valid selected file, set the info in the text field (a a couple other things)
 		if (selectedFile != null && selectedFile.exists()) {
+			String shortname = selectedFile.getName();
+			shortname = shortname.substring(0, shortname.lastIndexOf("."));
 			fileField.setText(selectedFile.getName());
+			nodeLabel = shortname;
+			readSequences(selectedFile); //read sequences from file into list
 			buildPanel.alignmentSelected(); //Causes other windows to appear in the build panel
 		}
 	}
 
 	public String getNodeName() {
-		return "alignment1";
+		return nodeLabel;
 	}
+	
+	/**
+	 * Read sequences from the given file and put them in the 'seqs' field
+	 * @param file
+	 */
+	private void readSequences(File file) {
+		Map<String, String> alnAttrs = new HashMap<String, String>();
+		alnAttrs.put(Alignment.SEQUENCE_FILE_ATTR, selectedFile.getPath());
+		Alignment aln = new Alignment(alnAttrs);
+		seqs = aln.getSequences();
+	}
+	
 	
 	@Override
 	public Element[] getRootXMLNodes(Document doc) throws ParserConfigurationException, InputConfigException {
-		if (selectedFile == null || (! selectedFile.exists())) {
-			throw new InputConfigException("Please select a valid input alignment file");
+		if (seqs == null || seqs.size()==0) {
+			throw new InputConfigException("No sequences found");
 		}
 		Element root = doc.createElement(getNodeName());
 		root.setAttribute(XMLLoader.CLASS_NAME_ATTR,  Alignment.class.getCanonicalName());
@@ -114,14 +139,14 @@ public class AlignmentConfigurator extends RoundedPanel implements Configurator 
 		seqList.setAttribute(XMLLoader.CLASS_NAME_ATTR,  XMLLoader.LIST_ATTR);
 		root.appendChild(seqList);
 		
-		Map<String, String> alnAttrs = new HashMap<String, String>();
-		alnAttrs.put(Alignment.SEQUENCE_FILE_ATTR, selectedFile.getPath());
-		Alignment aln = new Alignment(alnAttrs);
-		if (aln.getSequenceCount()==0) {
-			throw new InputConfigException("Could not read sequences from file: " + selectedFile.getName());
-		}
+//		Map<String, String> alnAttrs = new HashMap<String, String>();
+//		alnAttrs.put(Alignment.SEQUENCE_FILE_ATTR, selectedFile.getPath());
+//		Alignment aln = new Alignment(alnAttrs);
+//		if (aln.getSequenceCount()==0) {
+//			throw new InputConfigException("Could not read sequences from file: " + selectedFile.getName());
+//		}
 		
-		for(Sequence seq : aln.getSequences()) {
+		for(Sequence seq : seqs) {
 			Element seqEl = getElementForSequence(doc, seq);
 			seqList.appendChild(seqEl);
 		}
@@ -143,6 +168,34 @@ public class AlignmentConfigurator extends RoundedPanel implements Configurator 
 		return seqEl;
 	}
 
+	
+	@Override
+	public void readNodesFromDocument(ACGDocument doc) throws InputConfigException {
+		List<String> alnLabels = doc.getLabelForClass(Alignment.class);
+		
+		if (alnLabels.size() == 0) {
+			throw new InputConfigException("Could not find any sequences in document");
+		}
+		
+		if (alnLabels.size() > 1) {
+			throw new InputConfigException("Currently, the document builder can only handle a single alignment (found " + alnLabels.size() + ") sorry!");			
+		}
+		
+		Object alnObj;
+		try {
+			nodeLabel = alnLabels.get(0);
+			alnObj = doc.getObjectForLabel(alnLabels.get(0));
+			if (alnObj instanceof Alignment) {
+				Alignment aln = (Alignment)alnObj;
+				seqs = aln.getSequences();
+			}
+		} catch (Exception ex) {
+			ErrorWindow.showErrorWindow(ex);
+		}
+		
+	}
+	
+	
 	@Override
 	public Element[] getParameters() {
 		//Alignments create no parameters
@@ -154,6 +207,8 @@ public class AlignmentConfigurator extends RoundedPanel implements Configurator 
 		//Alignments create no likelihoods
 		return new Element[]{};
 	}
+
+
 	
 	
 }

@@ -1,5 +1,7 @@
 package gui.inputPanels;
 
+import gui.document.ACGDocument;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -144,5 +146,12 @@ public class ARGConfigurator implements Configurator {
 	@Override
 	public Element[] getLikelihoods() {
 		return (Element[])likelihoods.toArray(new Element[]{});
+	}
+
+	@Override
+	public void readNodesFromDocument(ACGDocument doc)
+			throws InputConfigException {
+		// TODO Auto-generated method stub
+		
 	}
 }

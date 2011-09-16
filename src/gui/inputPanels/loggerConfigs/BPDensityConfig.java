@@ -1,5 +1,6 @@
 package gui.inputPanels.loggerConfigs;
 
+import gui.document.ACGDocument;
 import gui.inputPanels.Configurator.InputConfigException;
 
 import java.awt.Component;
@@ -87,5 +88,11 @@ public class BPDensityConfig extends LoggerConfigurator {
 	JSpinner freqSpinner;
 	JSpinner bpBurninSpinner;
 	JTextField bpFilenameField;
+	@Override
+	public void readNodesFromDocument(ACGDocument doc)
+			throws InputConfigException {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

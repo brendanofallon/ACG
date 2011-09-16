@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import gui.document.ACGDocument;
 import gui.inputPanels.Configurator;
 import gui.inputPanels.DLConfigurator;
 import gui.widgets.BorderlessButton;
@@ -172,7 +173,15 @@ public class LoggersPanel extends RoundedPanel implements Configurator {
 				
 	}
 	
+	@Override
+	public void readNodesFromDocument(ACGDocument doc)
+			throws InputConfigException {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	private AddLoggerFrame addFrame;
+
+
 	
 }

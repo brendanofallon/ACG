@@ -1,5 +1,7 @@
 package gui.inputPanels;
 
+import gui.document.ACGDocument;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,6 +81,13 @@ public class DLConfigurator implements Configurator {
 	@Override
 	public Element[] getLikelihoods() {
 		return likelihoods.toArray(new Element[]{});
+	}
+
+	@Override
+	public void readNodesFromDocument(ACGDocument doc)
+			throws InputConfigException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

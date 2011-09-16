@@ -1,5 +1,7 @@
 package gui.inputPanels.loggerConfigs;
 
+import gui.document.ACGDocument;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -88,5 +90,11 @@ public class BPLocationConfig extends LoggerConfigurator {
 	JSpinner freqSpinner;
 	JSpinner bpBurninSpinner;
 	JTextField bpFilenameField;
+	@Override
+	public void readNodesFromDocument(ACGDocument doc)
+			throws InputConfigException {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

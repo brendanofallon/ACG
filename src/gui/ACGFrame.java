@@ -193,6 +193,8 @@ public class ACGFrame extends JFrame implements WindowListener {
 		Container mainContainer = this.getContentPane();
 		mainContainer.setLayout(layout);
 		
+		TopToolBar toolBar = new TopToolBar(this);
+		this.add(toolBar, BorderLayout.NORTH);
 		
 		centerPanel = new BuildPanel(this);
 		//centerPanel = new StartFrame(this, onAMac);

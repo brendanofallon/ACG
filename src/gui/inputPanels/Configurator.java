@@ -1,11 +1,20 @@
 package gui.inputPanels;
 
+import gui.document.ACGDocument;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public interface Configurator {
+		
+	
+	/**
+	 * Set the state of this configurator to be that described by the document
+	 * @param doc
+	 */
+	public void readNodesFromDocument(ACGDocument doc)  throws InputConfigException;
 	
 	/**
 	 * Return a list of Elements created by this node reflecting the proper XML structure, suitable

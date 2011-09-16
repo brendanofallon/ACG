@@ -1,5 +1,6 @@
 package gui.inputPanels;
 
+import gui.document.ACGDocument;
 import gui.widgets.RoundedPanel;
 
 import java.awt.Dimension;
@@ -153,6 +154,14 @@ public class CoalescentConfigurator extends RoundedPanel implements Configurator
 	@Override
 	public Element[] getLikelihoods() {
 		return likelihoods.toArray(new Element[]{});
+	}
+
+
+	@Override
+	public void readNodesFromDocument(ACGDocument doc)
+			throws InputConfigException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

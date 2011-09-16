@@ -24,6 +24,7 @@ import gui.inputPanels.SiteModelConfigurator;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -36,16 +37,12 @@ import org.w3c.dom.Node;
 
 public class BuildPanel extends JPanel {
 
-	private JPanel bottomPanel;
-	private JPanel centerPanel;
-	private JLabel alnHelpLabel;
-	ACGFrame acgParent;
+	
 	
 	//List of components capable of creating ACGDocument nodes
 	List<Configurator> configList = new ArrayList<Configurator>();
 
-	private static String documentHeader = "ACG input document created by ACGUI. To run this file, open it with ACG or type java -jar acg.jar [this file name] at the command line";
-	
+		
 	public BuildPanel(ACGFrame acgParent) {
 		this.acgParent = acgParent;
 		this.setLayout(new BorderLayout());
@@ -61,36 +58,64 @@ public class BuildPanel extends JPanel {
 		
 
 		
-		bottomPanel = new JPanel();
-		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		
-		JButton addAlignmentButton = new JButton("Add alignment");
-		addAlignmentButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				buildDocument();
-			}
-		});
-		bottomPanel.add(addAlignmentButton);
-		
-		JButton runButton = new JButton("Run");
-		runButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				run();
-			}
-		});
-		bottomPanel.add(runButton);
-		
-		JButton saveButton = new JButton("Save settings");
-		saveButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				saveSettings();
-			}
-		});
-		bottomPanel.add(saveButton);
-		
-		add(bottomPanel, BorderLayout.SOUTH);
+//		bottomPanel = new JPanel();
+//		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+//		
+//		ImageIcon loadIcon = ACGFrame.getIcon("icons/upArrow.png");
+//		JButton loadButton;
+//		if (loadIcon != null)
+//			loadButton = new JButton(loadIcon);
+//		else 
+//			loadButton = new JButton("Load");
+//		
+//		loadButton.setToolTipText("Load input file");
+//		loadButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				loadFromFile();
+//			}
+//		});
+//		bottomPanel.add(loadButton);
+//		
+//		
+//		ImageIcon runIcon = ACGFrame.getIcon("icons/rightArrow.png");
+//		JButton runButton;
+//		if (runIcon != null)
+//			runButton = new JButton(runIcon);
+//		else 
+//			runButton = new JButton("Run");
+//		runButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				run();
+//			}
+//		});
+//		bottomPanel.add(runButton);
+//		
+//		ImageIcon saveIcon = ACGFrame.getIcon("icons/downArrow.png");
+//		JButton saveButton;
+//		if (saveIcon != null)
+//			saveButton = new JButton(saveIcon);
+//		else 
+//			saveButton = new JButton("Save");
+//		saveButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				saveSettings();
+//			}
+//		});
+//		bottomPanel.add(saveButton);
+//		
+//		add(bottomPanel, BorderLayout.SOUTH);
 	}
 	
+	protected void loadFromFile() {
+		if (!otherPanelsShown) {
+			alignmentSelected();
+		}
+		
+	}
+	
+	
+	
+
 	public void showAlnPanel() {
 		centerPanel.add(Box.createVerticalStrut(3));
 		alnPanel = new AlignmentConfigurator(this, acgParent);
@@ -106,10 +131,10 @@ public class BuildPanel extends JPanel {
 	public void alignmentSelected() {
 		centerPanel.remove(alnHelpLabel);
 		showSiteModelPanel();
-		
 		showCoalescentModelPanel();
 		showLoggersConfigPanel();
 		showMCConfigPanel();
+		otherPanelsShown = true;
 	}
 	
 	/**
@@ -267,14 +292,15 @@ public class BuildPanel extends JPanel {
 		return likes;
 	}
 	
+	/**
+	 * Construct an ACGDocument form the settings in the current configurators
+	 * @return
+	 */
 	protected ACGDocument buildDocument() {
 		
 		Element[] alnNodes;
 		try {
-			ACGDocumentBuilder docBuilder = new ACGDocumentBuilder();
-			Node header = docBuilder.getDocument().createComment(documentHeader);
-			docBuilder.appendNode(header);
-			
+			ACGDocumentBuilder docBuilder = new ACGDocumentBuilder();			
 			
 			alnNodes = alnPanel.getRootXMLNodes(docBuilder.getDocument());
 			
@@ -346,7 +372,12 @@ public class BuildPanel extends JPanel {
 		return null;
 	}
 	
+	private JPanel bottomPanel;
+	private JPanel centerPanel;
+	private JLabel alnHelpLabel;
+	ACGFrame acgParent;
 	
+	private boolean otherPanelsShown = false;
 	AlignmentConfigurator alnPanel;
 	SiteModelConfigurator siteModelPanel;
 	CoalescentConfigurator coalescentPanel;
