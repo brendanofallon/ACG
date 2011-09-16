@@ -187,6 +187,12 @@ public class ACGFrame extends JFrame implements WindowListener {
 		}
 	}
 	
+	public void clearAndMakeNew() {
+		centerPanel = new BuildPanel(this);
+		this.getContentPane().add(centerPanel, BorderLayout.CENTER);
+		this.getContentPane().validate();
+		repaint();
+	}
 	
 	private void initComponents() {
 		BorderLayout layout = new BorderLayout();

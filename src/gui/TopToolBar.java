@@ -94,15 +94,13 @@ public class TopToolBar extends JPanel {
 
 
 	protected void loadButtonPressed() {
-		// TODO Auto-generated method stub
 		
 	}
 
 
 
 	protected void newButtonPressed() {
-		// TODO Auto-generated method stub
-		
+		acgParent.clearAndMakeNew();
 	}
 
 
