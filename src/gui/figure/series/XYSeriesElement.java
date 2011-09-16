@@ -38,6 +38,8 @@ public class XYSeriesElement extends SeriesElement {
 	
 	SeriesConfigFrame configFrame;
 	
+	
+	
 	//Flag to indicate if we should recalculate data bounds
 	//False indicates we should recalculate
 	boolean dataBoundsSet = false;

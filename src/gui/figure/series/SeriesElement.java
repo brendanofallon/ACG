@@ -46,9 +46,27 @@ public abstract class SeriesElement extends FigureElement {
 	protected int boxWidthDivisor = 1;
 	protected double boxOffset = 0;
 	
+	boolean includeInLegend = true;
+	
 	public SeriesElement(Figure parent, AbstractSeries series) {
 		super(parent);
 		this.series = series;
+	}
+	
+	/**
+	 * Returns true if this element should be displayed in the legend, the default is true.
+	 * @return
+	 */
+	public boolean includeInLegend() {
+		return includeInLegend;
+	}
+	
+	/**
+	 * Set a flag to indicate whether or not this element should be included in the legend
+	 * @param include
+	 */
+	public void setIncludeInLegend(boolean include) {
+		this.includeInLegend = include;
 	}
 	
 	/**

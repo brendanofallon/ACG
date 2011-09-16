@@ -59,7 +59,7 @@ public class LegendElement extends FigureElement {
 		g.setColor(Color.green);
 		int count = 0;
 		for(SeriesElement el : seriesParent.getSeriesElements()) {
-			if (el.getSeries().size()>0) {
+			if (el.includeInLegend() && el.getSeries().size()>0) {
 				Rectangle2D rect = fm.getStringBounds(el.getName(), 0, el.getName().length(), g);
 				yPosn.add(round(bounds.y*yFactor+pos+rect.getHeight()) );
 
@@ -94,7 +94,7 @@ public class LegendElement extends FigureElement {
 		
 		int i = 0;
 		for(SeriesElement el : seriesParent.getSeriesElements()) {
-			if (el.getSeries().size()>0) {
+			if (el.includeInLegend() && el.getSeries().size()>0) {
 				g.setColor(el.getLineColor());
 				if (el.getType() == XYSeriesElement.LINES)
 					g.drawLine(round(bounds.x*xFactor+4), yPosn.get(i)-5, round(bounds.x*xFactor+markerSpace-4), yPosn.get(i)-5);

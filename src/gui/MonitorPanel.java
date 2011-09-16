@@ -287,6 +287,14 @@ public abstract class MonitorPanel extends FloatingPanel {
 	public void updateMonitor(int steps) {
 		update(steps);
 		chainHasChanged = false;
+		
+		//When burnin is reached remove burnin series from legend
+		if (! burninReached && steps > burnin) {
+			for(int i=0; i<burninEls.length; i++)
+				burninEls[i].setIncludeInLegend(false);
+			burninReached = true;
+		}
+		
 		if (series != null && series.length > 0) {
 			double[] means = new double[seriesMeans.length];
 			for(int i=0; i<seriesMeans.length; i++)
