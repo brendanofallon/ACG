@@ -81,20 +81,19 @@ public class TopToolBar extends JPanel {
 	}
 	
 	protected void runButtonPressed() {
-		acgParent.startNewRun();
+	//	acgParent.startNewRun();
 	}
 
 
 
 	protected void saveButtonPressed() {
 		// TODO Auto-generated method stub
-		
 	}
 
 
 
 	protected void loadButtonPressed() {
-		
+		acgParent.loadDocumentFromFile();
 	}
 
 

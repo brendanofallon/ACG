@@ -170,7 +170,7 @@ public class StartFrame extends JPanel {
 		
 
 		ACGDocument acgDocument = new ACGDocument(inputFile);
-		acgParent.loadFile(inputFile.getName(), acgDocument);
+		acgParent.pickParameters(inputFile.getName(), acgDocument);
 	}
 	
 

@@ -1,20 +1,24 @@
 package gui;
 
 import gui.document.ACGDocument;
+import gui.inputPanels.Configurator.InputConfigException;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -105,7 +109,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 	 *  Read the given document and instantiate all of its elements, then turn control
 	 *  over to a PickMonitorsPanel
 	 */
-	protected void loadFile(String name, ACGDocument acgDocument) {
+	protected void pickParameters(String name, ACGDocument acgDocument) {
 		if (name != null)
 			this.setTitle("ACG : " + name);
 		
@@ -125,7 +129,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 	
 	public void setRunner(ExecutingChain runner) {
 		this.runner = runner;
-		runButtonPressed(); //Sets run and pause button to correct enabled states
+		resumeButtonPressed(); //Sets run and pause button to correct enabled states
 	}
 	
 	
@@ -168,10 +172,10 @@ public class ACGFrame extends JFrame implements WindowListener {
 	/**
 	 * Called when user clicks on run button, we switch from paused to running state
 	 */
-	protected void runButtonPressed() {
+	protected void resumeButtonPressed() {
 		if (runner != null) {
 			runner.setPaused(false);
-			runButton.setEnabled(false);
+			resumeButton.setEnabled(false);
 			pauseButton.setEnabled(true);
 		}
 	}
@@ -182,7 +186,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 	protected void pauseButtonPressed() {
 		if (runner != null) {
 			runner.setPaused(true);
-			runButton.setEnabled(true);
+			resumeButton.setEnabled(true);
 			pauseButton.setEnabled(false);
 		}
 	}
@@ -192,6 +196,67 @@ public class ACGFrame extends JFrame implements WindowListener {
 		this.getContentPane().add(centerPanel, BorderLayout.CENTER);
 		this.getContentPane().validate();
 		repaint();
+	}
+	
+	public ACGDocument readDocumentFromFile() {
+		//If we're on a mac then a FileDialog looks better and supports a few mac-specific options 
+		File selectedFile = null;
+		if (onAMac) {
+			if (fileDialog == null)
+				fileDialog = new FileDialog(this, "Choose a file");
+			fileDialog.setMode(FileDialog.LOAD);
+			String userDir = System.getProperty("user.dir");
+			if (userDir != null)
+				fileDialog.setDirectory(userDir);
+
+			fileDialog.setVisible(true);
+
+			String filename = fileDialog.getFile();
+			String path = fileDialog.getDirectory();
+			selectedFile = new File(path + filename);
+		}
+		else {
+			//Not on a mac, use a JFileChooser instead of a FileDialog
+
+			//Construct a new file choose whose default path is the path to this executable, which 
+			//is returned by System.getProperty("user.dir")
+			if (fileChooser == null)
+				fileChooser = new JFileChooser( System.getProperty("user.dir"));
+
+			int option = fileChooser.showOpenDialog(getRootPane());
+			if (option == JFileChooser.APPROVE_OPTION) {
+				selectedFile = fileChooser.getSelectedFile();
+			}
+		}
+
+		//If we found a valid selected file, set the info in the text field (a a couple other things)
+		if (selectedFile != null && selectedFile.exists()) {
+			ACGDocument doc = new ACGDocument(selectedFile);
+			return doc;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Allow user to pick a file and then attempt to read an ACG document from it, and 
+	 * display the associated settings in a new buildPanel that replaces the current centerPanel.
+	 * 
+	 */
+	public void loadDocumentFromFile() {
+		ACGDocument doc = readDocumentFromFile();
+		if (doc != null) {
+			BuildPanel buildPanel = new BuildPanel(this);
+			this.replaceCenterPanel(buildPanel);
+			try {
+				buildPanel.loadSettingsFromDocument(doc);
+			} catch (InputConfigException e) {
+				ErrorWindow.showErrorWindow(e);
+				//e.printStackTrace();
+			}
+			
+			
+		}
 	}
 	
 	private void initComponents() {
@@ -215,17 +280,17 @@ public class ACGFrame extends JFrame implements WindowListener {
 		progressBar.setStringPainted(true);
 		bottomPanel.add(Box.createHorizontalStrut(20));
 		bottomPanel.add(progressBar);
-		runButton = new JButton();
-		runButton.setBorder(null);
-		runButton.setPreferredSize(new Dimension(40, 40));
-		runButton.setMaximumSize(new Dimension(40, 40));
+		resumeButton = new JButton();
+		resumeButton.setBorder(null);
+		resumeButton.setPreferredSize(new Dimension(40, 40));
+		resumeButton.setMaximumSize(new Dimension(40, 40));
 		ImageIcon runIcon = getIcon("icons/runButton.png");
-		runButton.setIcon(runIcon);
-		runButton.setToolTipText("Resume run");
-		runButton.setEnabled(false);
-		runButton.addActionListener(new ActionListener() {
+		resumeButton.setIcon(runIcon);
+		resumeButton.setToolTipText("Resume run");
+		resumeButton.setEnabled(false);
+		resumeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				runButtonPressed();
+				resumeButtonPressed();
 			}
 		});
 		
@@ -244,7 +309,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 		
 		bottomPanel.add(Box.createHorizontalStrut(10));
 		
-		bottomPanel.add(runButton);
+		bottomPanel.add(resumeButton);
 		
 		bottomPanel.add(pauseButton);
 		
@@ -324,7 +389,10 @@ public class ACGFrame extends JFrame implements WindowListener {
 	private JPanel centerPanel;
 	private JPanel bottomPanel;
 	private JProgressBar progressBar;
-	private JButton runButton;
+	private JButton resumeButton;
 	private JButton pauseButton;
+	
+	private JFileChooser fileChooser; //Used on non-mac platforms
+	private FileDialog fileDialog; //Used on mac systems
 
 }

@@ -139,13 +139,6 @@ public class AlignmentConfigurator extends RoundedPanel implements Configurator 
 		seqList.setAttribute(XMLLoader.CLASS_NAME_ATTR,  XMLLoader.LIST_ATTR);
 		root.appendChild(seqList);
 		
-//		Map<String, String> alnAttrs = new HashMap<String, String>();
-//		alnAttrs.put(Alignment.SEQUENCE_FILE_ATTR, selectedFile.getPath());
-//		Alignment aln = new Alignment(alnAttrs);
-//		if (aln.getSequenceCount()==0) {
-//			throw new InputConfigException("Could not read sequences from file: " + selectedFile.getName());
-//		}
-		
 		for(Sequence seq : seqs) {
 			Element seqEl = getElementForSequence(doc, seq);
 			seqList.appendChild(seqEl);

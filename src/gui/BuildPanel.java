@@ -1,9 +1,6 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -17,6 +14,7 @@ import gui.inputPanels.ARGConfigurator;
 import gui.inputPanels.AlignmentConfigurator;
 import gui.inputPanels.CoalescentConfigurator;
 import gui.inputPanels.Configurator;
+import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.loggerConfigs.LoggersPanel;
 import gui.inputPanels.DLConfigurator;
 import gui.inputPanels.MCMCConfigurator;
@@ -24,8 +22,6 @@ import gui.inputPanels.SiteModelConfigurator;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -41,6 +37,9 @@ public class BuildPanel extends JPanel {
 	
 	//List of components capable of creating ACGDocument nodes
 	List<Configurator> configList = new ArrayList<Configurator>();
+	
+	
+	
 
 		
 	public BuildPanel(ACGFrame acgParent) {
@@ -106,11 +105,17 @@ public class BuildPanel extends JPanel {
 //		add(bottomPanel, BorderLayout.SOUTH);
 	}
 	
-	protected void loadFromFile() {
+	protected void loadSettingsFromDocument(ACGDocument doc) throws InputConfigException {
+		if (alnPanel == null)
+			showAlnPanel();
+		
+		alnPanel.readNodesFromDocument(doc);
+		
 		if (!otherPanelsShown) {
 			alignmentSelected();
 		}
 		
+		associatedDocument = doc;
 	}
 	
 	
@@ -205,6 +210,8 @@ public class BuildPanel extends JPanel {
 			
 			if (selectedFile != null) {
 				ACGDocument acgDoc = buildDocument();
+				associatedDocument = acgDoc;
+				acgDoc.setSourceFile(selectedFile);
 				String docText;
 				try {
 					docText = acgDoc.getXMLString();
@@ -235,7 +242,7 @@ public class BuildPanel extends JPanel {
 		try {
 			acgDoc.loadAndVerifyClasses();
 			acgDoc.turnOffMCMC();
-			acgParent.loadFile(null, acgDoc);
+			acgParent.pickParameters(null, acgDoc);
 		} catch (Exception e) {
 			ErrorWindow.showErrorWindow(e);
 		}
@@ -376,6 +383,10 @@ public class BuildPanel extends JPanel {
 	private JPanel centerPanel;
 	private JLabel alnHelpLabel;
 	ACGFrame acgParent;
+	
+	//When we load settings from a file or save settings to a file, this field gets set so we
+	//remember where the settings came from
+	private ACGDocument associatedDocument = null;
 	
 	private boolean otherPanelsShown = false;
 	AlignmentConfigurator alnPanel;
