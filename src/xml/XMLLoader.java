@@ -139,6 +139,29 @@ public class XMLLoader {
 	}
 	
 	/**
+	 * Returns a list of the labels of all child nodes descending from the node
+	 * of the given label
+	 * @param label
+	 * @return
+	 */
+	public List<String> getChildLabelsForLabel(String label) {
+		List<String> children = new ArrayList<String>();
+		
+		ConstructorInfo consInfo = consMap.get(label);
+		
+		if (consInfo == null)
+			return null;
+		else {
+			if (consInfo.refLabels != null) {
+				for(int i=0; i<consInfo.refLabels.length; i++) {
+					children.add(consInfo.refLabels[i]);
+				}
+			}
+			return children;
+		}
+	}
+	
+	/**
 	 * Examines the children of a given node and gathers the information required to call a constructor for the 
 	 * class associated with this node. Attributes (including class) are put into a map, and lists of the
 	 * labels and classes referenced by all children are put into arrays. This information is all encapsulated

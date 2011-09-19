@@ -320,6 +320,17 @@ public class ACGDocument {
 		return loader.getObjLabelsForClass(clazz);
 	}
 	
+	
+	/**
+	 * Return all object labels that are immediate descendants of the node with the 
+	 * given label. Returns null if there is no node with the given label
+	 * @param clazz
+	 * @return
+	 */
+	public List<String> getChildrenForLabel(String label) {
+		return loader.getChildLabelsForLabel(label);
+	}
+	
 	public String toString() {
 		StringBuilder str = new StringBuilder();
 		str.append("Found " + objMap.size() + " total objects.. \n");

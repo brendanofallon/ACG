@@ -2,6 +2,7 @@ package gui;
 
 import gui.document.ACGDocument;
 import gui.inputPanels.Configurator.InputConfigException;
+import gui.inputPanels.DocMemberConfigPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -267,7 +268,8 @@ public class ACGFrame extends JFrame implements WindowListener {
 		TopToolBar toolBar = new TopToolBar(this);
 		this.add(toolBar, BorderLayout.NORTH);
 		
-		centerPanel = new BuildPanel(this);
+		centerPanel = new DocMemberConfigPanel(this);
+		//centerPanel = new BuildPanel(this);
 		//centerPanel = new StartFrame(this, onAMac);
 		
 		mainContainer.add(centerPanel, BorderLayout.CENTER);
