@@ -19,7 +19,7 @@ import gui.inputPanels.Configurator.InputConfigException;
  * @author brendano
  *
  */
-public class AlignmentElement {
+public class AlignmentElement implements ElementProvider {
 
 	private List<Sequence> seqs = new ArrayList<Sequence>();
 	private static final String defaultNodeLabel = "Alignment";
@@ -88,7 +88,7 @@ public class AlignmentElement {
 		return nodeLabel;
 	}
 	
-	public List<Element> getElements(ACGDocument doc) throws InputConfigException {
+	public List<Node> getElements(ACGDocument doc) throws InputConfigException {
 		if (seqs == null || seqs.size()==0) {
 			throw new InputConfigException("No sequences found");
 		}
@@ -105,7 +105,7 @@ public class AlignmentElement {
 			seqList.appendChild(seqEl);
 		}
 		
-		List<Element> alnEl = new ArrayList<Element>();
+		List<Node> alnEl = new ArrayList<Node>();
 		alnEl.add(root);
 		return alnEl;
 		

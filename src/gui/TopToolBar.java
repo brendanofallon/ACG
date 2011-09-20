@@ -87,7 +87,7 @@ public class TopToolBar extends JPanel {
 
 
 	protected void saveButtonPressed() {
-		// TODO Auto-generated method stub
+		acgParent.saveSettings();
 	}
 
 

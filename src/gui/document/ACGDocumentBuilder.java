@@ -1,7 +1,12 @@
 package gui.document;
 
+import gui.inputPanels.Configurator.InputConfigException;
+import gui.inputPanels.ElementProvider;
+
 import java.io.File;
 import java.io.StringWriter;
+import java.sql.Time;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -31,7 +36,8 @@ import xml.XMLLoader;
  */
 public class ACGDocumentBuilder {
 
-	Document doc  = null;
+	ACGDocument acgDoc  = null;
+	Document domDoc = null;
 	Element rootElement = null;
 	Element randomSource = null;
 	
@@ -41,20 +47,29 @@ public class ACGDocumentBuilder {
 	public ACGDocumentBuilder() throws ParserConfigurationException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
-		doc = builder.newDocument();
-		rootElement = doc.createElement("ACG");
-		
-		Node topComment = doc.createComment(documentHeader);
-		doc.appendChild(topComment);
-		
-		doc.appendChild(rootElement);
-		
-		addRandomSource();
-		
+		domDoc = builder.newDocument();
+		acgDoc = new ACGDocument( domDoc );
+		rootElement = domDoc.createElement("ACG");
+		domDoc.appendChild(rootElement);
+	}
+	
+	/**
+	 * Append a generic header to the document
+	 */
+	public void appendHeader() {
+		Node topComment = domDoc.createComment(documentHeader);
+		domDoc.appendChild(topComment);
+	}
+	
+	public void appendTimeAndDateComment() {
+		Date today = new Date();
+		String str = "Created by ACG document builder on " + today;
+		Node dateComment = domDoc.createComment(str);
+		domDoc.appendChild(dateComment);		
 	}
 	
 	public void addRandomSource() {
-		Element ranEl = doc.createElement("RandomSource");
+		Element ranEl = domDoc.createElement("RandomSource");
 		ranEl.setAttribute(XMLLoader.CLASS_NAME_ATTR, math.RandomSource.class.getCanonicalName());
 		rootElement.appendChild(ranEl);
 	}
@@ -68,15 +83,27 @@ public class ACGDocumentBuilder {
 	}
 	
 	/**
+	 * Append all nodes obtained from provider.getElements() to the ACG document
+	 * @param provider
+	 * @throws InputConfigException 
+	 */
+	public void appendNodes(ElementProvider provider) throws InputConfigException {
+		List<Node> elements = provider.getElements(acgDoc);
+		for(Node node : elements) {
+			appendNode(node);
+		}
+	}
+	
+	/**
 	 * Obtain the primary XML Document created by this DocumentBuilder
 	 * @return
 	 */
 	public Document getDocument() {
-		return doc;
+		return domDoc;
 	}
 	
 	public ACGDocument getACGDocument() {
-		return new ACGDocument(getDocument());
+		return acgDoc;
 	}
 	
 }

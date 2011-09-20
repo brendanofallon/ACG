@@ -13,7 +13,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -26,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.xml.transform.TransformerException;
 
 import xml.InvalidInputFileException;
 
@@ -247,18 +251,89 @@ public class ACGFrame extends JFrame implements WindowListener {
 	public void loadDocumentFromFile() {
 		ACGDocument doc = readDocumentFromFile();
 		if (doc != null) {
-			BuildPanel buildPanel = new BuildPanel(this);
-			this.replaceCenterPanel(buildPanel);
-			try {
-				buildPanel.loadSettingsFromDocument(doc);
-			} catch (InputConfigException e) {
-				ErrorWindow.showErrorWindow(e);
-				//e.printStackTrace();
+			if (centerPanel instanceof DocMemberConfigPanel) {
+				DocMemberConfigPanel configPanel = (DocMemberConfigPanel)centerPanel;
+				configPanel.loadSettingsFromDocument(doc);
 			}
-			
+				
 			
 		}
 	}
+	
+	
+	/**
+	 * Save the settings to a new file. We always save as a new file so it's clear that
+	 * any old one will be overwritten. 
+	 */
+	public void saveSettings() {
+		File selectedFile = null;
+		if (onAMac) {
+			if (fileDialog == null)
+				fileDialog = new FileDialog(this, "Choose a file");
+			fileDialog.setMode(FileDialog.SAVE);
+			String userDir = System.getProperty("user.dir");
+			if (userDir != null)
+				fileDialog.setDirectory(userDir);
+
+			fileDialog.setVisible(true);
+
+			String filename = fileDialog.getFile();
+			String path = fileDialog.getDirectory();
+			selectedFile = new File(path + filename);
+		}
+		else {
+			//Not on a mac, use a JFileChooser instead of a FileDialog
+
+			//Construct a new file choose whose default path is the path to this executable, which 
+			//is returned by System.getProperty("user.dir")
+			if (fileChooser == null)
+				fileChooser = new JFileChooser( System.getProperty("user.dir"));
+
+			int option = fileChooser.showSaveDialog(getRootPane());
+			if (option == JFileChooser.APPROVE_OPTION) {
+				selectedFile = fileChooser.getSelectedFile();
+			}
+		}
+
+		//Check about overwriting the existing file
+		if (selectedFile != null && selectedFile.exists()) {
+			Object[] options = {"Overwrite", "Cancel"};
+			int n = JOptionPane.showOptionDialog(getRootPane(),
+					"Overwrite existing file  " + selectedFile.getName() + "?",
+					"File exists",
+					JOptionPane.YES_NO_OPTION,
+					JOptionPane.WARNING_MESSAGE,
+					null,
+					options,
+					options[1]);
+			//Abort
+			if (n == 1) 
+				return;
+			
+		}
+		
+		if (selectedFile != null) {
+			ACGDocument acgDoc = ((DocMemberConfigPanel)centerPanel).getACGDocument();
+			acgDoc.setSourceFile(selectedFile);
+			String docText;
+			try {
+				docText = acgDoc.getXMLString();
+			} catch (TransformerException ex) {
+				ErrorWindow.showErrorWindow(ex);
+				return;
+			}
+			
+			BufferedWriter writer;
+			try {
+				writer = new BufferedWriter(new FileWriter(selectedFile));
+				writer.write(docText + "\n");
+				writer.close();
+			} catch (IOException e) {
+				ErrorWindow.showErrorWindow(e);
+			}
+		}
+	}
+		
 	
 	private void initComponents() {
 		BorderLayout layout = new BorderLayout();
@@ -396,5 +471,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 	
 	private JFileChooser fileChooser; //Used on non-mac platforms
 	private FileDialog fileDialog; //Used on mac systems
+
+
 
 }

@@ -5,14 +5,11 @@ import gui.widgets.RoundedPanel;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -25,10 +22,6 @@ import javax.swing.event.ChangeListener;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
-import parameter.DoubleParameter;
-
 import dlCalculation.siteRateModels.ConstantSiteRates;
 import dlCalculation.siteRateModels.GammaSiteRates;
 import dlCalculation.substitutionModels.BaseFrequencies;

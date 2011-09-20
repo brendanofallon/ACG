@@ -82,6 +82,9 @@ public class ACGDocument {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+
+			System.out.println(ex.getMessage());
+			ex.printStackTrace();
 			throw new InvalidInputFileException(ex.getTargetException().getMessage());
 		} catch (Exception e) {
 			try {
@@ -90,6 +93,8 @@ public class ACGDocument {
 				// TODO Auto-generated catch block
 				ex.printStackTrace();
 			}
+			System.out.println(e.getMessage());
+			e.printStackTrace();
 			throw new InvalidInputFileException(e.getMessage());
 		}
 	}
@@ -382,8 +387,12 @@ public class ACGDocument {
 				if (nodeName.equals(label)) {
 					return el;
 				}
-				
+
 				readNodes(el);
+				
+				Element found = getFirstElement(el, label);
+				if (found != null)
+					return found;
 			}
 			
 		}

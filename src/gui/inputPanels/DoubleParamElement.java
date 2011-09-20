@@ -9,6 +9,7 @@ import parameter.DoubleParameter;
 import xml.XMLLoader;
 
 import gui.inputPanels.Configurator.InputConfigException;
+import gui.inputPanels.DoubleModifierElement.ModType;
 
 /**
  * Reads / writes XML from DoubleParameter elements, used by many element configurators
@@ -17,11 +18,74 @@ import gui.inputPanels.Configurator.InputConfigException;
  */
 public class DoubleParamElement {
 
+	ModType modType = null;
+	
+
+	Double modifierFrequency = 1.0;
+	
 	double value = 1.0; 
 	double upperBound = Double.NEGATIVE_INFINITY;
 	double lowerBound = Double.POSITIVE_INFINITY;
 	String elementName = null;
 	
+	public DoubleParamElement() {
+		//No op constructor
+	}
+	
+	public DoubleParamElement(Element el) throws InputConfigException {
+		this.readSettings(el);
+	}
+	
+	/**
+	 * Set the type of modifier for this double parameter. Null indicates no modifier
+	 * @param modType
+	 */
+	public void setModifierType(ModType modType) {
+		this.modType = modType;
+	}
+	
+	public void setModifierFrequency(double modFreq) {
+		this.modifierFrequency = modFreq;
+	}
+	
+	/**
+	 * Returns true if the given Element has class DoubleParameter
+	 * @param el
+	 * @return
+	 */
+	public static boolean isAcceptable(Element el) {
+		String childClass = el.getAttribute(XMLLoader.CLASS_NAME_ATTR);
+		if (childClass == null)
+			return false;
+		if (childClass.equals(DoubleParameter.class.getCanonicalName()))
+			return true;
+		
+		return false;
+	}
+	
+	public ModType getModType() {
+		return modType;
+	}
+
+	public Double getModifierFrequency() {
+		return modifierFrequency;
+	}
+
+	public double getValue() {
+		return value;
+	}
+
+	public double getUpperBound() {
+		return upperBound;
+	}
+
+	public double getLowerBound() {
+		return lowerBound;
+	}
+
+	public String getElementName() {
+		return elementName;
+	}
 	
 	public void setValue(double val) {
 		this.value = val;
@@ -99,6 +163,13 @@ public class DoubleParamElement {
 		el.setAttribute(DoubleParameter.XML_VALUE, "" + value);
 		el.setAttribute(DoubleParameter.XML_LOWERBOUND, "" + lowerBound);
 		el.setAttribute(DoubleParameter.XML_UPPERBOUND, "" + upperBound);
+		
+		if (modType != null) {
+			DoubleModifierElement modEl = new DoubleModifierElement();
+			modEl.setType( modType );
+			modEl.setFrequency(modifierFrequency);
+			el.appendChild( modEl.getElement(doc));
+		}
 		
 		return el;
 	}

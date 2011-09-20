@@ -9,13 +9,17 @@ import java.io.File;
 import java.util.List;
 
 import gui.ACGFrame;
+import gui.ErrorWindow;
 import gui.document.ACGDocument;
+import gui.document.ACGDocumentBuilder;
+import gui.inputPanels.Configurator.InputConfigException;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Node;
 
@@ -35,7 +39,7 @@ public class DocMemberConfigPanel extends JPanel {
 	
 	JTabbedPane tabPane;
 	
-	JPanel siteModelPanel;
+	SiteModelView siteModelPanel;
 	JPanel coalescentModelPanel;
 	JPanel loggersPanel;
 	
@@ -64,8 +68,7 @@ public class DocMemberConfigPanel extends JPanel {
 		this.add(topPanel, BorderLayout.NORTH);
 		
 		tabPane = new JTabbedPane();
-		siteModelPanel = new JPanel();
-		siteModelPanel.add(new JLabel("Site model stuff here"));
+		siteModelPanel = new SiteModelView();
 		tabPane.insertTab("Site model", null, siteModelPanel, "Substitution model for this alignment", 0);
 		
 		coalescentModelPanel = new JPanel();
@@ -80,11 +83,49 @@ public class DocMemberConfigPanel extends JPanel {
 	}
 	
 	public void loadSettingsFromDocument(ACGDocument doc) {
-		
+		try {
+			alignmentEl.readElement(doc);
+			updateTopLabel(alignmentEl.getNodeName());
+			siteModelPanel.readNodesFromDocument(doc);
+			siteModelPanel.updateView();
+			
+		}
+		catch (InputConfigException e) {
+			ErrorWindow.showErrorWindow(e);
+		}
+		catch (Exception ex) {
+			ErrorWindow.showErrorWindow(ex);
+		}
 	}
 	
-	public List<Node> getDocumentNodes() {
-		return null; 
+	/**
+	 * Build an ACGDocument given the current settings 
+	 * @return
+	 * @throws ParserConfigurationException 
+	 */
+	public ACGDocument getACGDocument() {
+		ACGDocumentBuilder docBuilder = null;
+		try {
+			docBuilder = new ACGDocumentBuilder();
+			docBuilder.appendHeader();
+			docBuilder.appendTimeAndDateComment();
+			docBuilder.addRandomSource();
+			
+			docBuilder.appendNodes( alignmentEl );
+			
+			docBuilder.appendNodes( siteModelPanel.getSiteModel() );
+						
+			
+		} catch (ParserConfigurationException e) {
+			ErrorWindow.showErrorWindow(e);
+		} catch (InputConfigException e) {
+			ErrorWindow.showErrorWindow(e);
+		}
+		
+		if (docBuilder != null)
+			return docBuilder.getACGDocument();
+		else
+			return null;
 	}
 	
 	protected void browseForFile() {
