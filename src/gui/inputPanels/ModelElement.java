@@ -6,11 +6,12 @@ import gui.inputPanels.Configurator.InputConfigException;
 import java.util.List;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import parameter.DoubleParameter;
 import xml.XMLLoader;
 
-public abstract class ModelElement {
+public abstract class ModelElement implements ElementProvider {
 	
 	
 	/**
@@ -18,7 +19,7 @@ public abstract class ModelElement {
 	 * @param doc
 	 * @return
 	 */
-	public abstract List<Element> getElements(ACGDocument doc) throws InputConfigException;
+	public abstract List<Node> getElements(ACGDocument doc) throws InputConfigException;
 	
 	/**
 	 * Read settings from the given document and store the data. Subsequent calls to

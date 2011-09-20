@@ -269,7 +269,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 		File selectedFile = null;
 		if (onAMac) {
 			if (fileDialog == null)
-				fileDialog = new FileDialog(this, "Choose a file");
+				fileDialog = new FileDialog(this, "Save settings");
 			fileDialog.setMode(FileDialog.SAVE);
 			String userDir = System.getProperty("user.dir");
 			if (userDir != null)
@@ -293,24 +293,26 @@ public class ACGFrame extends JFrame implements WindowListener {
 			if (option == JFileChooser.APPROVE_OPTION) {
 				selectedFile = fileChooser.getSelectedFile();
 			}
+			
+			//Check about overwriting the existing file
+			if (selectedFile != null && selectedFile.exists()) {
+				Object[] options = {"Overwrite", "Cancel"};
+				int n = JOptionPane.showOptionDialog(getRootPane(),
+						"Overwrite existing file  " + selectedFile.getName() + "?",
+						"File exists",
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.WARNING_MESSAGE,
+						null,
+						options,
+						options[1]);
+				//Abort
+				if (n == 1) 
+					return;
+				
+			}
 		}
 
-		//Check about overwriting the existing file
-		if (selectedFile != null && selectedFile.exists()) {
-			Object[] options = {"Overwrite", "Cancel"};
-			int n = JOptionPane.showOptionDialog(getRootPane(),
-					"Overwrite existing file  " + selectedFile.getName() + "?",
-					"File exists",
-					JOptionPane.YES_NO_OPTION,
-					JOptionPane.WARNING_MESSAGE,
-					null,
-					options,
-					options[1]);
-			//Abort
-			if (n == 1) 
-				return;
-			
-		}
+		
 		
 		if (selectedFile != null) {
 			ACGDocument acgDoc = ((DocMemberConfigPanel)centerPanel).getACGDocument();
@@ -320,6 +322,9 @@ public class ACGFrame extends JFrame implements WindowListener {
 				docText = acgDoc.getXMLString();
 			} catch (TransformerException ex) {
 				ErrorWindow.showErrorWindow(ex);
+				return;
+			} catch (IOException e) {
+				ErrorWindow.showErrorWindow(e);
 				return;
 			}
 			

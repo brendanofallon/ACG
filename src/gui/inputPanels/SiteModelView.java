@@ -53,7 +53,6 @@ public class SiteModelView extends JPanel {
 	private final String[] rateTypes = new String[]{"One rate", "Gamma rates", "Custom rates"};
 	
 
-	
 	public SiteModelView() {
 		oneRatePanel = new JPanel();
 		rateConfigPanel = new JPanel();
@@ -61,9 +60,6 @@ public class SiteModelView extends JPanel {
 		customPanel = new JPanel();
 		initComponents();
 	}
-
-	
-	
 	
 	/**
 	 * Get the site model that holds the model data 
@@ -120,11 +116,6 @@ public class SiteModelView extends JPanel {
 		}
 	}
 
-
-	public Element[] getRootXMLNodes(ACGDocument doc) throws InputConfigException  {
-		List<Element> nodes = siteModel.getElements(doc);
-		return nodes.toArray(new Element[]{});	
-	}
 	
 	public Element[] getParameters() {
 		return siteModel.getParameters().toArray(new Element[]{});

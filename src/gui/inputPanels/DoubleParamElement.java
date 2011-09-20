@@ -2,7 +2,16 @@ package gui.inputPanels;
 
 import gui.document.ACGDocument;
 
+import modifier.AbstractModifier;
+import modifier.ScaleModifier;
+import modifier.SimpleModifier;
+
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.NodeType;
+import com.sun.tools.javac.util.Name;
 
 import parameter.DoubleParameter;
 
@@ -19,8 +28,7 @@ import gui.inputPanels.DoubleModifierElement.ModType;
 public class DoubleParamElement {
 
 	ModType modType = null;
-	
-
+	String modifierLabel = null;
 	Double modifierFrequency = 1.0;
 	
 	double value = 1.0; 
@@ -103,6 +111,10 @@ public class DoubleParamElement {
 		this.elementName = label;
 	}
 	
+	public void setModifierLabel(String label) {
+		this.modifierLabel = label;
+	}
+	
 	/**
 	 * Sets the settings of this object to be those given by the element provided
 	 * @param el
@@ -150,7 +162,44 @@ public class DoubleParamElement {
 			}
 		}
 		
-		
+		NodeList childNodes = el.getChildNodes();
+		boolean found = false;
+		for(int i=0; i<childNodes.getLength(); i++) {
+			Node node = childNodes.item(i);
+			if ( node.getNodeType() == Node.ELEMENT_NODE ) {
+				Element childEl = (Element)node;
+				String childClass = childEl.getAttribute(XMLLoader.CLASS_NAME_ATTR);
+				if (childClass != null) {
+					if (childClass.equals( SimpleModifier.class.getCanonicalName())) {
+						this.setModifierType(ModType.Simple);
+						this.setModifierLabel(childEl.getNodeName());
+						found = true;
+					}
+					if (childClass.equals( ScaleModifier.class.getCanonicalName())) {
+						this.setModifierType(ModType.Scale);
+						this.setModifierLabel(childEl.getNodeName());
+						found = true;
+					}
+					
+					String freqStr = childEl.getAttribute(AbstractModifier.XML_FREQUENCY);
+					if (freqStr != null && freqStr.length()>0) {
+						try {
+						Double freq = Double.parseDouble(freqStr);
+						if (freq != null)
+							setModifierFrequency(freq);
+						}
+						catch (NumberFormatException nfe) {
+							throw new InputConfigException("Could not parse frequency for modifier with label: " + childEl.getNodeName() + ", found : " + freqStr );
+						}
+					}
+					
+					
+					if (!found)
+						setModifierType(null);
+				}
+				
+			}
+		}
 		
 	}
 	
@@ -167,6 +216,7 @@ public class DoubleParamElement {
 		if (modType != null) {
 			DoubleModifierElement modEl = new DoubleModifierElement();
 			modEl.setType( modType );
+			modEl.setLabel(modifierLabel);
 			modEl.setFrequency(modifierFrequency);
 			el.appendChild( modEl.getElement(doc));
 		}

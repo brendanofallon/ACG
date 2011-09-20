@@ -116,7 +116,7 @@ public class BaseFreqsModelElement {
 		Element el = doc.createElement(label);
 		el.setAttribute(XMLLoader.CLASS_NAME_ATTR, BaseFrequencies.class.getCanonicalName());
 	
-		String statStr= initA + "\t" + initC + "\t" + initG + "\t" + initG;
+		String statStr= initA + "  " + initC + "  " + initG + "  " + initG;
 		el.setAttribute(TN93Matrix.XML_STATIONARIES, statStr);
 		
 		if (estimate) {

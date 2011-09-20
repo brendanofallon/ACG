@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import xml.XMLLoader;
 import dlCalculation.siteRateModels.ConstantSiteRates;
@@ -40,6 +41,11 @@ public class SiteModelElement extends ModelElement {
 	private DoubleParamElement kappaRElement = new DoubleParamElement();
 	private DoubleParamElement kappaYElement = new DoubleParamElement();
 	
+	//Default labels for some parameters
+	private String ttRatioLabel = "Kappa";
+	private String kappaRLabel = "KappaR";
+	private String kappaYLabel = "KappaY";
+	
 	private String defaultRateModelLabel = "RateModel";
 	private String rateModelLabel = defaultRateModelLabel;
 	
@@ -50,9 +56,16 @@ public class SiteModelElement extends ModelElement {
 	private double constantRate = 1.0;
 	
 	private int rateCatCount = 4;
+	private String defaultAlphaParamLabel = "AlphaShape";
+	
+	
 	private DoubleParamElement alphaParamElement = new DoubleParamElement();
 	
 	public SiteModelElement() {
+		ttRatioElement.setLabel(ttRatioLabel);
+		kappaRElement.setLabel(kappaRLabel);
+		kappaYElement.setLabel(kappaYLabel);
+		alphaParamElement.setLabel(defaultAlphaParamLabel);
 		alphaParamElement.setValue(1.0);
 		alphaParamElement.setLowerBound(0.01);
 		alphaParamElement.setUpperBound(50.0);
@@ -329,8 +342,8 @@ public class SiteModelElement extends ModelElement {
 	
 	
 	
-	public List<Element> getElements(ACGDocument doc) throws InputConfigException {
-		List<Element> elements = new ArrayList<Element>();
+	public List<Node> getElements(ACGDocument doc) throws InputConfigException {
+		List<Node> elements = new ArrayList<Node>();
 		
 		try {
 			Element rateModelNode = createRateModelNode(doc);
@@ -355,6 +368,7 @@ public class SiteModelElement extends ModelElement {
 		if (rateModelType == RateModelType.Gamma) {
 			siteNode.setAttribute(XMLLoader.CLASS_NAME_ATTR,  GammaSiteRates.class.getCanonicalName());
 			siteNode.setAttribute(GammaSiteRates.XML_CATEGORIES, "" + rateCatCount);
+			
 			
 			Element alpha = alphaParamElement.getElement(doc);
 			
@@ -385,10 +399,6 @@ public class SiteModelElement extends ModelElement {
 			Element kappa = ttRatioElement.getElement(doc);
 			allParams.add(kappa);
 			
-			Element modEl = doc.createElement("KappaMod");
-			modEl.setAttribute(XMLLoader.CLASS_NAME_ATTR,  modifier.SimpleModifier.class.getCanonicalName());
-			
-			kappa.appendChild(modEl);
 			el.appendChild(baseEl);
 			el.appendChild(kappa);
 			return el;
@@ -401,7 +411,7 @@ public class SiteModelElement extends ModelElement {
 			Element kappaR = kappaRElement.getElement(doc);
 			allParams.add(kappaR);
 
-			Element kappaY = kappaRElement.getElement(doc);
+			Element kappaY = kappaYElement.getElement(doc);
 			allParams.add(kappaY);
 			
 			el.appendChild(baseEl);

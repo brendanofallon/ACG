@@ -3,7 +3,9 @@ package gui.document;
 import gui.ExecutingChain;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +30,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 import component.LikelihoodComponent;
 
@@ -78,7 +83,7 @@ public class ACGDocument {
 		} catch (InvocationTargetException ex) {
 			try {
 				System.out.println("Input file is : " + getXMLString());
-			} catch (TransformerException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -89,7 +94,7 @@ public class ACGDocument {
 		} catch (Exception e) {
 			try {
 				System.out.println("Input file is : " + getXMLString());
-			} catch (TransformerException ex) {
+			} catch (Exception ex) {
 				// TODO Auto-generated catch block
 				ex.printStackTrace();
 			}
@@ -113,10 +118,10 @@ public class ACGDocument {
 		catch (Exception e) {
 			try {
 				System.out.println("Input file is : \n" + getXMLString());
-			} catch (TransformerException ex) {
+			} catch (Exception ex) {
 				// TODO Auto-generated catch block
 				ex.printStackTrace();
-			}
+			} 
 			throw new InvalidInputFileException(e.getMessage());
 		}
 	}
@@ -497,19 +502,30 @@ public class ACGDocument {
 	 * Obtain an xml-style String representation of the document 
 	 * @return
 	 * @throws TransformerException
+	 * @throws IOException 
 	 */
-	public String getXMLString() throws TransformerException {
+	public String getXMLString() throws TransformerException, IOException {
 		
-		TransformerFactory transfac = TransformerFactory.newInstance();
-		Transformer trans = transfac.newTransformer();
-		trans.setOutputProperty(OutputKeys.INDENT, "yes");
-		//create string from xml tree
-		StringWriter sw = new StringWriter();
-		StreamResult result = new StreamResult(sw);
-		DOMSource source = new DOMSource(doc);
-		trans.transform(source, result);
-		String xmlString = sw.toString();
-		return xmlString;
+		OutputFormat format = new OutputFormat(doc);
+        format.setLineWidth(80);
+        format.setIndenting(true);
+        format.setIndent(4);
+        Writer out = new StringWriter();
+        XMLSerializer serializer = new XMLSerializer(out, format);
+        serializer.serialize(doc);
+
+        return out.toString();
+		
+//		TransformerFactory transfac = TransformerFactory.newInstance();
+//		Transformer trans = transfac.newTransformer();
+//		trans.setOutputProperty(OutputKeys.INDENT, "yes");
+//		//create string from xml tree
+//		StringWriter sw = new StringWriter();
+//		StreamResult result = new StreamResult(sw);
+//		DOMSource source = new DOMSource(doc);
+//		trans.transform(source, result);
+//		String xmlString = sw.toString();
+//		return xmlString;
 	}
 	
 	/**

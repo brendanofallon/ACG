@@ -41,7 +41,7 @@ public class ACGDocumentBuilder {
 	Element rootElement = null;
 	Element randomSource = null;
 	
-	private static String documentHeader = "ACG input document created by ACGUI. To run this file, open it with ACG or type java -jar acg.jar [this file name] at the command line";
+	private static String documentHeader = "ACG input document created by ACG Document Builder.\n To run this file, open it with ACG or type java -jar acg.jar [this file name] at the command line";
 
 	
 	public ACGDocumentBuilder() throws ParserConfigurationException {
@@ -80,6 +80,11 @@ public class ACGDocumentBuilder {
 	 */
 	public void appendNode(Node node) {
 		rootElement.appendChild(node);
+	}
+	
+	public void appendEmptyNode() {
+		Node node = domDoc.createTextNode(" ");
+		appendNode(node);
 	}
 	
 	/**

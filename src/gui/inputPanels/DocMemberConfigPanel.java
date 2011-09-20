@@ -111,8 +111,10 @@ public class DocMemberConfigPanel extends JPanel {
 			docBuilder.appendTimeAndDateComment();
 			docBuilder.addRandomSource();
 			
+			docBuilder.appendEmptyNode();
 			docBuilder.appendNodes( alignmentEl );
-			
+
+			docBuilder.appendEmptyNode();
 			docBuilder.appendNodes( siteModelPanel.getSiteModel() );
 						
 			
