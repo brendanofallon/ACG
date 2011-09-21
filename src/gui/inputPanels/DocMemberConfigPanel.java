@@ -40,10 +40,11 @@ public class DocMemberConfigPanel extends JPanel {
 	JTabbedPane tabPane;
 	
 	SiteModelView siteModelPanel;
-	JPanel coalescentModelPanel;
+	CoalescentView coalescentModelPanel;
 	JPanel loggersPanel;
 	
 	AlignmentElement alignmentEl;
+	ARGModelElement argModel;
 	
 	ACGFrame acgParent;
 	
@@ -52,6 +53,7 @@ public class DocMemberConfigPanel extends JPanel {
 		this.acgParent = acgParent;
 		
 		alignmentEl = new AlignmentElement();
+		argModel = new ARGModelElement();
 		
 		topPanel = new JPanel();
 		topPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -71,8 +73,7 @@ public class DocMemberConfigPanel extends JPanel {
 		siteModelPanel = new SiteModelView();
 		tabPane.insertTab("Site model", null, siteModelPanel, "Substitution model for this alignment", 0);
 		
-		coalescentModelPanel = new JPanel();
-		coalescentModelPanel.add(new JLabel("Coal model stuff here"));
+		coalescentModelPanel = new CoalescentView();
 		tabPane.insertTab("Coalescent model", null, coalescentModelPanel, "Coalescent model for this alignment", 1);
 		
 		loggersPanel = new JPanel();
@@ -85,10 +86,10 @@ public class DocMemberConfigPanel extends JPanel {
 	public void loadSettingsFromDocument(ACGDocument doc) {
 		try {
 			alignmentEl.readElement(doc);
-			updateTopLabel(alignmentEl.getNodeName());
+			argModel.readElements(doc);
+			updateTopLabel(alignmentEl.getNodeLabel());
 			siteModelPanel.readNodesFromDocument(doc);
-			siteModelPanel.updateView();
-			
+			coalescentModelPanel.readNodesFromDocument(doc);
 		}
 		catch (InputConfigException e) {
 			ErrorWindow.showErrorWindow(e);
@@ -111,10 +112,10 @@ public class DocMemberConfigPanel extends JPanel {
 			docBuilder.appendTimeAndDateComment();
 			docBuilder.addRandomSource();
 			
-			docBuilder.appendEmptyNode();
 			docBuilder.appendNodes( alignmentEl );
 
-			docBuilder.appendEmptyNode();
+			docBuilder.appendNodes( argModel );			
+
 			docBuilder.appendNodes( siteModelPanel.getSiteModel() );
 						
 			

@@ -322,7 +322,7 @@ public class ACGDocument {
 	}
 	
 	/**
-	 * Return all object labels that refer to an object of the given class
+	 * Return all object labels with a class that "isAssignableFrom" the given class
 	 * @param clazz
 	 * @return
 	 */
@@ -369,40 +369,9 @@ public class ACGDocument {
 	 * @param label
 	 * @return
 	 */
-	public Element getFirstElement(String label) {
-		return getFirstElement(doc.getDocumentElement(), label);
-	}
-	
-	/**
-	 * Recursive helper for getFirstElement(String), this performs a postorder traversal 
-	 * from the root to find nodes with the given label
-	 * @param root
-	 * @param label
-	 * @return
-	 */
-	private Element getFirstElement(Node root, String label) {
-		NodeList nodeList = root.getChildNodes();
-
-		for (int i = 0; i < nodeList.getLength(); i++) {
-			Node node = nodeList.item(i);
-
-			if (node.getNodeType() == Node.ELEMENT_NODE) {
-				Element el = (Element) node;
-				String nodeName = el.getNodeName();
-				if (nodeName.equals(label)) {
-					return el;
-				}
-
-				readNodes(el);
-				
-				Element found = getFirstElement(el, label);
-				if (found != null)
-					return found;
-			}
-			
-		}
-		return null;
-	}
+	public Element getElementForLabel(String label) {
+		return loader.getElementForLabel(label);
+	}	
 	
 	/**
 	 * Returns true if the element provided has any child element with the given label

@@ -4,8 +4,12 @@ import gui.document.ACGDocument;
 import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.SiteModelElement.MutModelType;
 import gui.inputPanels.SiteModelElement.RateModelType;
+import gui.widgets.Style;
+import gui.widgets.Stylist;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,8 +18,10 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -50,10 +56,16 @@ public class SiteModelView extends JPanel {
 	List<Element> params = new ArrayList<Element>();
 	List<Element> likelihoods = new ArrayList<Element>();;
 	
+	JPanel mutPanel;
+	JPanel ratePanel;
+	JPanel mutCenterPanel;
+	JPanel rateCenterPanel;
+	
 	private final String[] rateTypes = new String[]{"One rate", "Gamma rates", "Custom rates"};
 	
+	private Stylist stylist = new Stylist();
 
-	public SiteModelView() {
+	public SiteModelView() {		
 		oneRatePanel = new JPanel();
 		rateConfigPanel = new JPanel();
 		gammaPanel = new JPanel();
@@ -130,14 +142,29 @@ public class SiteModelView extends JPanel {
 	public void readNodesFromDocument(ACGDocument doc)
 			throws InputConfigException {
 		siteModel.readElements(doc);
+		updateView();
 	}
 	
 	
 	private void initComponents() {
-		setOpaque(false);
+		stylist.addStyle(new Style() {
+			public void apply(JComponent comp) {
+				comp.setOpaque(false);
+			}
+		});
+		
+		stylist.applyStyle(this);
 		setMaximumSize(new Dimension(1000, 60));
 		setPreferredSize(new Dimension(500, 60));
-		add(new JLabel("Mutation model: "));
+		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		
+		mutPanel = new JPanel();
+		stylist.applyStyle(mutPanel);
+		JPanel mutTop = new JPanel();
+		stylist.applyStyle(mutTop);
+		
+		
+		mutTop.add(new JLabel("Mutation model: "));
 		mutBox = new JComboBox(new Object[]{/*"JC69", "K2P", */ "F84", "TN93"}); 
 		mutBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent evt) {
@@ -150,9 +177,16 @@ public class SiteModelView extends JPanel {
 			    rateConfigPanel.repaint();
 			}
 		});
-		add(mutBox);
+		mutTop.add(mutBox);
+		mutPanel.add(mutTop, BorderLayout.NORTH);
+		this.add(mutPanel);
 		
-		add(new JLabel("Rate model: "));
+		ratePanel = new JPanel();
+		this.add(ratePanel);
+		stylist.applyStyle(ratePanel);
+		JPanel rateTop = new JPanel();
+		stylist.applyStyle(rateTop);
+		rateTop.add(new JLabel("Rate model: "));
 		rateBox = new JComboBox(rateTypes);
 		rateBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent evt) {
@@ -168,12 +202,13 @@ public class SiteModelView extends JPanel {
 			    rateConfigPanel.repaint();
 			}
 		});
-		add(rateBox);
+		rateTop.add(rateBox);
+		ratePanel.add(rateTop, BorderLayout.NORTH);
 		
 
 		rateConfigPanel.setLayout(new CardLayout());
-		rateConfigPanel.setOpaque(false);
-		add(rateConfigPanel);
+		stylist.applyStyle(rateConfigPanel);
+		ratePanel.add(rateConfigPanel, BorderLayout.CENTER);
 		
 		oneRatePanel.add(new JLabel("Rate :"));
 		oneRatePanel.setToolTipText("Pick the rate at which sites evolve in expected substitutions / time");

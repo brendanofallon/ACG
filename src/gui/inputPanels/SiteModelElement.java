@@ -196,7 +196,7 @@ public class SiteModelElement extends ModelElement {
 		this.mutModelLabel = nodeLabel;
 		
 		try {
-			Element mutModelElement = doc.getFirstElement(nodeLabel);
+			Element mutModelElement = doc.getElementForLabel(nodeLabel);
 			String mutModelClass = mutModelElement.getAttribute(XMLLoader.CLASS_NAME_ATTR);
 			if (mutModelClass == null)
 				throw new InputConfigException("Could not find class for mutation model with label: " + nodeLabel);
@@ -206,7 +206,7 @@ public class SiteModelElement extends ModelElement {
 				
 				List<String> refs = doc.getChildrenForLabel(nodeLabel);
 				for (String ref : refs) {
-					Element childRef = doc.getFirstElement(ref);
+					Element childRef = doc.getElementForLabel(ref);
 					if (DoubleParamElement.isAcceptable(childRef)) 
 						ttRatioElement = new DoubleParamElement( childRef );
 										
@@ -225,7 +225,7 @@ public class SiteModelElement extends ModelElement {
 				List<String> refs = doc.getChildrenForLabel(nodeLabel);
 				boolean kappaRFound = false;
 				for (String ref : refs) {
-					Element childRef = doc.getFirstElement(ref);
+					Element childRef = doc.getElementForLabel(ref);
 					
 					if (BaseFreqsModelElement.isAcceptable(childRef))
 						continue;
@@ -281,7 +281,7 @@ public class SiteModelElement extends ModelElement {
 		String rateModelLabel = rateModelLabels.get(0);
 		this.rateModelLabel = rateModelLabel;
 		
-		Element rateEl = doc.getFirstElement(rateModelLabel);
+		Element rateEl = doc.getElementForLabel(rateModelLabel);
 		String rateModelClass = rateEl.getAttribute(XMLLoader.CLASS_NAME_ATTR);
 		if (rateModelClass == null)
 			throw new InputConfigException("No class found for rate model element : " + rateModelLabel);
@@ -330,7 +330,7 @@ public class SiteModelElement extends ModelElement {
 			else {
 				
 				//If there's a child, it must be a DoubleParameter
-				Element childEl = doc.getFirstElement( refLabels.get(0));
+				Element childEl = doc.getElementForLabel( refLabels.get(0));
 				if (DoubleParamElement.isAcceptable(childEl)) {
 					alphaParamElement = new DoubleParamElement(childEl);
 				}

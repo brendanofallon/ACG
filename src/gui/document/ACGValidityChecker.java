@@ -24,7 +24,7 @@ public class ACGValidityChecker implements ValidityChecker {
 			if (! CompoundParameter.class.isAssignableFrom(cls)) {
 				boolean getsReferredTo = false;
 				for(String mcmc : mcmcs) {
-					Element mcmcElement = doc.getFirstElement(mcmc);
+					Element mcmcElement = doc.getElementForLabel(mcmc);
 					if ( doc.getElementRefersToLabel(mcmcElement, param)) {
 						getsReferredTo = true;
 						break;
@@ -34,7 +34,7 @@ public class ACGValidityChecker implements ValidityChecker {
 				if (! getsReferredTo) {
 					List<String> mc3s = doc.getLabelForClass(MC3.class);
 					for(String mc3 : mc3s) {
-						Element mcmcElement = doc.getFirstElement(mc3);
+						Element mcmcElement = doc.getElementForLabel(mc3);
 						if ( doc.getElementRefersToLabel(mcmcElement, param)) {
 							getsReferredTo = true;
 							break;
@@ -56,7 +56,7 @@ public class ACGValidityChecker implements ValidityChecker {
 			if (! CompoundParameter.class.isAssignableFrom(cls)) {
 				boolean getsReferredTo = false;
 				for(String mcmc : mcmcs) {
-					Element mcmcElement = doc.getFirstElement(mcmc);
+					Element mcmcElement = doc.getElementForLabel(mcmc);
 					if ( doc.getElementRefersToLabel(mcmcElement, likeLabel)) {
 						getsReferredTo = true;
 						break;

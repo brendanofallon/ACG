@@ -28,6 +28,32 @@ public class DoubleModifierElement {
 	
 	private String label = null;
 	
+	public DoubleModifierElement() {
+		
+	}
+	
+	public DoubleModifierElement(Element el) throws InputConfigException {
+		this.readElement(el);
+	}
+	
+	/**
+	 * Returns true if we can turn the given element into a SimpleModifier or ScaleModifier
+	 * @param el
+	 * @return
+	 */
+	public static boolean isAssignable(Element el) {
+		String className = el.getAttribute(XMLLoader.CLASS_NAME_ATTR);
+		if (className == null) {
+			return false;
+		}
+	
+		if ( (!className.equals(SimpleModifier.class.getCanonicalName())) && (!className.equals(ScaleModifier.class.getCanonicalName())) ) {
+			return false;
+		}
+		
+		return true;
+	}
+	
 	public void setLabel(String label) {
 		this.label = label;
 	}
@@ -57,7 +83,7 @@ public class DoubleModifierElement {
 			setType(ModType.Scale);
 		
 		String freqStr = el.getAttribute(AbstractModifier.XML_FREQUENCY);
-		if (freqStr != null) {
+		if (freqStr != null && freqStr.length()>0) {
 			try {
 				Double freq = Double.parseDouble(freqStr);
 				setFrequency(freq);

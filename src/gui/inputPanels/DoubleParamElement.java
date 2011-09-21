@@ -130,7 +130,7 @@ public class DoubleParamElement {
 		setLabel(label);
 		
 		String valStr = el.getAttribute(DoubleParameter.XML_VALUE);
-		if (valStr == null)
+		if (valStr == null && valStr.length()>0)
 			throw new InputConfigException("Could not find value for DoubleParameter with label " + elementName);
 		try {
 			Double val = Double.parseDouble(valStr);
@@ -141,24 +141,24 @@ public class DoubleParamElement {
 		}
 		
 		String lowerStr = el.getAttribute(DoubleParameter.XML_LOWERBOUND);
-		if (lowerStr != null) {
+		if (lowerStr != null & lowerStr.length()>0) {
 			try {
 				Double val = Double.parseDouble(lowerStr);
 				setLowerBound(val);
 			}
 			catch (NumberFormatException ex) {
-				throw new InputConfigException("Could not parse lower bound for DoubleParameter with label " + elementName + ", got : " + valStr);
+				throw new InputConfigException("Could not parse lower bound for DoubleParameter with label " + elementName + ", got : " + lowerStr);
 			}
 		}
 		
 		String upperStr = el.getAttribute(DoubleParameter.XML_UPPERBOUND);
-		if (upperStr != null) {
+		if (upperStr != null && upperStr.length()>0) {
 			try {
 				Double val = Double.parseDouble(upperStr);
 				setUpperBound(val);
 			}
 			catch (NumberFormatException ex) {
-				throw new InputConfigException("Could not parse upper bound for DoubleParameter with label " + elementName + ", got : " + valStr);
+				throw new InputConfigException("Could not parse upper bound for DoubleParameter with label " + elementName + ", got : " + upperStr);
 			}
 		}
 		

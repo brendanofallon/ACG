@@ -24,35 +24,35 @@ public class DocumentMember {
 	
 	
 	public Element getAlignmentElement() {
-		
+		return null;
 	}
 	
 	public List<Element> getSiteModelElements() {
-		
+		return null;
 	}
 	
 	public List<Element> getCoalescentModelElements() {
-		
+		return null;
 	}
 	
 	public List<Element> getDLElements() {
-		
+		return null;
 	}
 	
 	public List<Element> getRootLevelElements() {
-		
+		return null;
 	}
 	
 	public List<Element> getAllParameters() {
-		
+		return null;
 	}
 	
 	public List<Element> getAllLikelihoods() {
-		
+		return null;
 	}
 	
 	public List<Element> getAllListeners() {
-		
+		return null;
 	}
 	
 }

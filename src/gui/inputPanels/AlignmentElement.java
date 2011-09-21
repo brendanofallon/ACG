@@ -84,8 +84,12 @@ public class AlignmentElement implements ElementProvider {
 	 * The name of the node holding the alignment
 	 * @return
 	 */
-	public String getNodeName() {
+	public String getNodeLabel() {
 		return nodeLabel;
+	}
+	
+	public void setNodeLabel(String nodeName) {
+		this.nodeLabel = nodeName;
 	}
 	
 	public List<Node> getElements(ACGDocument doc) throws InputConfigException {
@@ -93,7 +97,7 @@ public class AlignmentElement implements ElementProvider {
 			throw new InputConfigException("No sequences found");
 		}
 		
-		Element root = doc.createElement(getNodeName());
+		Element root = doc.createElement(getNodeLabel());
 		root.setAttribute(XMLLoader.CLASS_NAME_ATTR,  Alignment.class.getCanonicalName());
 		
 		Element seqList = doc.createElement("sequences1");
@@ -118,4 +122,6 @@ public class AlignmentElement implements ElementProvider {
 		seqEl.appendChild(textNode);
 		return seqEl;
 	}
+
+	
 }

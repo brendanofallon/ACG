@@ -60,7 +60,7 @@ import org.xml.sax.SAXException;
  */
 public class XMLLoader {
 	
-	//Static access to the loader. This will break
+	//Static access to the loader. 
 	static XMLLoader primaryLoader = null;
 
 	public static final String CLASS_NAME_ATTR = "class";
@@ -72,10 +72,16 @@ public class XMLLoader {
 	
 	boolean verbose = false;
 
+	//Maps from object labels to the XML Element that defines the object
+	Map<String, Element> elementMap = new HashMap<String, Element>();
+	
+	//Maps from object labels to classes
 	Map<String, Class> classMap = new HashMap<String, Class>();
 
+	//Mapping from object labels to the actual objects created. This is empty until after a call to instantiateAll()
 	Map<String, Object> objMap = new HashMap<String, Object>();
 
+	//Maps from element labels to a ConstructorInfo obj that describes how to construct the object
 	Map<String, ConstructorInfo> consMap = new HashMap<String, ConstructorInfo>();
 
 	/**
@@ -161,6 +167,18 @@ public class XMLLoader {
 		}
 	}
 	
+	
+	/**
+	 * Returns the DOM element associated with the given label. This always returns the Element
+	 * that contains the constructor info for the object - not a random element that just references
+	 * the first one. 
+	 * @param label
+	 * @return
+	 */
+	public Element getElementForLabel(String label) {
+		return elementMap.get(label);
+	}
+	
 	/**
 	 * Examines the children of a given node and gathers the information required to call a constructor for the 
 	 * class associated with this node. Attributes (including class) are put into a map, and lists of the
@@ -168,6 +186,8 @@ public class XMLLoader {
 	 * into a ConstructorItem, and put into a map that is referenced by this node's label.
 	 * 
 	 * If there is already an entry in the 'consMap' (the map of ConstructorItems), we do nothing. 
+	 * 
+	 * This method also builds the 'elementMap', which stores a mapping from label to DOM Element
 	 * 
 	 * @param node The node whose children will be examined
 	 */
@@ -178,6 +198,8 @@ public class XMLLoader {
 		if (consMap.get(nodeLabel)!=null) {
 			return;
 		}
+		
+		elementMap.put(nodeLabel, nodeEl);
 
 		//Find all attributes and put them into a Map which will be added to the constructorItems object
 		Map<String, String> attrMap = new HashMap<String, String>();
