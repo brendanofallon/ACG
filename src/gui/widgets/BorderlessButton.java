@@ -2,6 +2,7 @@ package gui.widgets;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -39,15 +40,15 @@ public class BorderlessButton extends JPanel {
 		this.text = label;
 		this.icon = icon;
 		
-		setBorder(BorderFactory.createEmptyBorder(4, 2, 4, 5));
+		setBorder(BorderFactory.createEmptyBorder(4, 2, 4, 2));
 		int pWidth = 0;
 		int pHeight = 0;
 		if (icon != null) {
-			pWidth += icon.getIconWidth()+5;
+			pWidth += icon.getIconWidth()+3;
 			pHeight += icon.getIconHeight()+5;
 		}
 		if (label != null) {
-			pWidth += label.length()*10+4;
+			pWidth += label.length()*10+3;
 			pHeight = Math.max(24, icon.getIconHeight()+5);
 		}
 		
@@ -106,8 +107,9 @@ public class BorderlessButton extends JPanel {
                 RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		if (drawBorder) {
-			g2d.setColor(new Color(0.99f, 0.99f, 0.99f, 0.5f));
-			g2d.fillRoundRect(2, 2, getWidth()-3, getHeight()-4, 5, 5);
+			GradientPaint gp = new GradientPaint(1, 0, new Color(1f, 1f, 1f), 3, getHeight(), new Color(0.88f, 0.88f, 0.88f));
+			g2d.setPaint(gp);
+			g2d.fillRoundRect(1, 1, getWidth()-2, getHeight()-3, 5, 2);
 		}
 		else {
 			super.paintComponent(g);
@@ -126,11 +128,11 @@ public class BorderlessButton extends JPanel {
 		}
 		
 		if (drawBorder) {
-			g2d.setColor(new Color(0.99f, 0.99f, 0.99f, 0.45f));
-			g2d.drawRoundRect(1, 1, getWidth()-2, getHeight()-4, 5, 5);
+			g2d.setColor(new Color(0.99f, 0.99f, 0.99f, 0.35f));
+			g2d.drawRoundRect(1, 1, getWidth()-2, getHeight()-3, 7, 7);
 			
-			g2d.setColor(new Color(0.79f, 0.79f, 0.79f, 0.95f));
-			g2d.drawRoundRect(0, 0, getWidth()-2, getHeight()-3, 5, 5);
+			g2d.setColor(new Color(0.69f, 0.69f, 0.69f, 0.90f));
+			g2d.drawRoundRect(0, 0, getWidth()-2, getHeight()-3, 7, 7);
 		}
 	}
 

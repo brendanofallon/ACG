@@ -29,6 +29,10 @@ public class CoalescentLikelihood extends LikelihoodComponent {
 		this(new HashMap<String, String>(), demoParam, recParam, tree);
 	}
 	
+	public CoalescentLikelihood(Map<String, String> attrs, DemographicParameter demoParam, ARG tree) {
+		this(new HashMap<String, String>(), demoParam, null, tree);
+	}
+	
 	public CoalescentLikelihood(Map<String, String> attrs, DemographicParameter demoParam, RecombinationParameter recParam, ARG tree) {
 		super(attrs);
 		

@@ -32,8 +32,8 @@ public class DoubleParamElement {
 	Double modifierFrequency = 1.0;
 	
 	double value = 1.0; 
-	double upperBound = Double.NEGATIVE_INFINITY;
-	double lowerBound = Double.POSITIVE_INFINITY;
+	double upperBound = Double.POSITIVE_INFINITY;
+	double lowerBound = Double.NEGATIVE_INFINITY;
 	String elementName = null;
 	
 	public DoubleParamElement() {
@@ -75,6 +75,10 @@ public class DoubleParamElement {
 		return modType;
 	}
 
+	public String getModLabel() {
+		return modifierLabel;
+	}
+	
 	public Double getModifierFrequency() {
 		return modifierFrequency;
 	}
@@ -223,4 +227,6 @@ public class DoubleParamElement {
 		
 		return el;
 	}
+
+	
 }

@@ -56,8 +56,8 @@ public class DocMemberConfigPanel extends JPanel {
 		argModel = new ARGModelElement();
 		
 		topPanel = new JPanel();
-		topPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		topLabel = new JLabel("Top label and info here");
+		topPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		topLabel = new JLabel("Choose an alignment");
 		chooseButton = new JButton("Choose");
 		chooseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -114,9 +114,13 @@ public class DocMemberConfigPanel extends JPanel {
 			
 			docBuilder.appendNodes( alignmentEl );
 
+			argModel.setAlignmentRef(alignmentEl);
 			docBuilder.appendNodes( argModel );			
 
 			docBuilder.appendNodes( siteModelPanel.getSiteModel() );
+			
+			coalescentModelPanel.getModel().setARGRef(argModel);
+			docBuilder.appendNodes( coalescentModelPanel.getModel() );
 						
 			
 		} catch (ParserConfigurationException e) {
@@ -178,7 +182,7 @@ public class DocMemberConfigPanel extends JPanel {
 	 * Reset info in top label to reflect changes in alignment
 	 */
 	private void updateTopLabel(String alnName) {
-		topLabel.setText(alnName + " : " + alignmentEl.getSequenceCount() + " sequences of length  " + alignmentEl.getSequenceLength() + " sites");
+		topLabel.setText("Alignment \"" + alnName + "\" : " + alignmentEl.getSequenceCount() + " sequences of length  " + alignmentEl.getSequenceLength() + " sites");
 		topLabel.revalidate();
 	}
 	

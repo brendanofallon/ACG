@@ -253,7 +253,7 @@ public class ARGModelElement extends ModelElement {
 	private String startingFilePath = null;
 	private AlignmentElement alignmentRef = null;
 	private Double frequency = 10.0;
-	private boolean useAllModifiers;
+	private boolean useAllModifiers = true;
 	private String argLabel = "ARG";
 	private Newick startingNewick = null;
 	

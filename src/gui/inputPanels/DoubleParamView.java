@@ -2,10 +2,13 @@ package gui.inputPanels;
 
 import gui.ErrorWindow;
 import gui.inputPanels.DoubleModifierElement.ModType;
+import gui.widgets.Style;
+import gui.widgets.Stylist;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -26,21 +29,27 @@ import javax.swing.JTextField;
  */
 public class DoubleParamView extends JPanel {
 
-	DoubleParamElement model;
-	
-	JTextField initValueField;
-	JTextField lowerBoundField;
-	JTextField upperBoundField;
-	String[] modTypes = new String[]{"None", "Simple", "Scale"};
-	JComboBox modifierBox;
+	private DoubleParamElement model;
 	
 	
 	public DoubleParamView(String name, final DoubleParamElement model) {
-		this.model = model;
-		setOpaque(false);
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		add(new JLabel(name));
+		stylist.addStyle(new Style() {
+			public void apply(JComponent comp) {
+				comp.setOpaque(false);
+				comp.setAlignmentX(Component.LEFT_ALIGNMENT);
+				comp.setFont(new Font("Sans", Font.PLAIN, 12));
+			}
+		});
+		
+		this.model = model;
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.setPreferredSize(new Dimension(250, 155));
+		this.setMaximumSize(new Dimension(2500, 220));
+		stylist.applyStyle(this);
+		
+		
+		add(stylist.applyStyle(new JLabel(name)));
 		initValueField = new JTextField("" + model.getValue() );
 		addComps("Init value : ", initValueField);
 		lowerBoundField = new JTextField("" + model.getLowerBound() );
@@ -62,15 +71,16 @@ public class DoubleParamView extends JPanel {
 		});
 		addComps("Modifier type: ", modifierBox);
 		add(Box.createVerticalGlue());
+		add(Box.createGlue());
 		updateView();
 	}
 	
 	private void addComps(String label, JComponent comp) {
 		JPanel panel = new JPanel();
-		panel.setOpaque(false);
+		stylist.applyStyle(panel);
 		panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		panel.add(new JLabel(label));
-		panel.add(comp);
+		panel.add(stylist.applyStyle(new JLabel(label)));
+		panel.add(stylist.applyStyle(comp));
 		this.add(panel);
 	}
 	
@@ -81,10 +91,12 @@ public class DoubleParamView extends JPanel {
 				updateFieldInfo(field);
 			}
 		});
+		stylist.applyStyle(field);
 		JPanel panel = new JPanel();
+		stylist.applyStyle(panel);
 		panel.setOpaque(false);
 		panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		panel.add(new JLabel(label));
+		panel.add(stylist.applyStyle(new JLabel(label)));
 		panel.add(field);
 		this.add(panel);
 	}
@@ -126,4 +138,12 @@ public class DoubleParamView extends JPanel {
 	public DoubleParamElement getModel() {
 		return model;
 	}
+
+
+	private Stylist stylist = new Stylist();
+	private JTextField initValueField;
+	private JTextField lowerBoundField;
+	private JTextField upperBoundField;
+	private String[] modTypes = new String[]{"None", "Simple", "Scale"};
+	private JComboBox modifierBox;
 }

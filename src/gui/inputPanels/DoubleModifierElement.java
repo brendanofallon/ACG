@@ -66,6 +66,18 @@ public class DoubleModifierElement {
 		this.frequency = freq;
 	}
 	
+	public String getLabel() {
+		return label;
+	}
+	
+	public ModType getType() {
+		return type;
+	}
+	
+	public double getFrequency() {
+		return frequency;
+	}
+	
 	public void readElement(Element el) throws InputConfigException {
 		String className = el.getAttribute(XMLLoader.CLASS_NAME_ATTR);
 		if (className == null) {
@@ -114,4 +126,6 @@ public class DoubleModifierElement {
 		
 		return el;
 	}
+
+
 }

@@ -45,10 +45,10 @@ public class CoalescentModelElement extends ModelElement {
 			nodes.addAll(recRateModel.getElements(doc));
 		
 		Element coalEl = createElement(doc, modelLabel, CoalescentLikelihood.class);
-		coalEl.appendChild( doc.createElement(argRef.getModelLabel()));
 		coalEl.appendChild( doc.createElement(popSizeModel.getModelLabel()));
 		if (recRateModel != null)
 			coalEl.appendChild( doc.createElement(recRateModel.getModelLabel()));
+		coalEl.appendChild( doc.createElement(argRef.getModelLabel()));
 		
 		nodes.add(coalEl);
 		return nodes;

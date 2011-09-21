@@ -16,86 +16,112 @@ import coalescent.ConstantRecombination;
 import coalescent.RecombinationParameter;
 
 /**
- * Model implememtation for recombination rate. Right now only "ConstantRecombination" is supported. 
+ * Model implememtation for recombination rate. Right now only "ConstantRecombination" is supported,
+ * and this is basically just a (very) thin wrapper for a DoubleParamElement 
  * @author brendano
  *
  */
 public class RecombRateModel extends ModelElement {
 
-	private double initialRecRate = 1.0;
-	private DoubleModifierElement modEl = null;
-	private String modifierLabel = "RecRateModifier";
-	private String modelLabel = "RecombinationRate";
+	DoubleParamElement recModel = new DoubleParamElement();
 	
 	public RecombRateModel() {
-		modEl = new DoubleModifierElement();
-		modEl.setType(ModType.Scale);
-		modEl.setFrequency(0.2);
-		modEl.setLabel("RecRateModifier");
+		initialize();
+	}
+	
+	private void initialize() {
+		recModel = new DoubleParamElement();
+		recModel.setLabel("RecombinationRate");
+		recModel.setValue( 1.0);
+		recModel.setLowerBound(0);
+		recModel.setUpperBound(Double.POSITIVE_INFINITY);
+		recModel.setModifierType( ModType.Scale );
+		recModel.setModifierLabel("RecombRateModifier");
+		recModel.setModifierFrequency(0.1);
 	}
 	
 	public String getModelLabel() {
-		return modelLabel;
+		if (recModel == null)
+			initialize();
+		return recModel.getElementName();
 	}
 	
 	public void setModelLabel(String label) {
-		this.modelLabel = label;
+		if (recModel == null)
+			initialize();
+		recModel.setLabel(label);
 	}
 	
 	@Override
 	public List<Node> getElements(ACGDocument doc) throws InputConfigException {
 		List<Node> nodes = new ArrayList<Node>();
-		Element el = createElement(doc, modelLabel, ConstantRecombination.class);
-		el.setAttribute(DoubleParameter.XML_VALUE, "" + this.initialRecRate);
-		
-		if (modEl != null)
-			el.appendChild(modEl.getElement(doc));
-		
-		nodes.add(el);
+		if (recModel != null)
+			nodes.add( recModel.getElement(doc));
 		return nodes;
 	}
 
 	@Override
 	public void readElements(ACGDocument doc) throws InputConfigException {
 		Element recRateEl = getOptionalElementForClass(doc, RecombinationParameter.class);
+		if (recRateEl == null) {
+			recModel = null;
+			return;
+		}
+		
+		recModel = new DoubleParamElement();
 		setModelLabel(recRateEl.getNodeName());
 		
 		Double recRate = getOptionalDoubleAttribute(recRateEl, DoubleParameter.XML_VALUE);
 		if (recRate != null)
-			initialRecRate = recRate;
+			recModel.setValue( recRate );
 		
 		if ( getChildCount(doc, recRateEl) > 0) {
 			Element child = getChild(doc, recRateEl, 0);
 			if (DoubleModifierElement.isAssignable( child )) {
-				modEl= new DoubleModifierElement( child );
+				DoubleModifierElement modEl = new DoubleModifierElement( child );
+				recModel.setModifierFrequency( modEl.getFrequency() );
+				recModel.setModifierLabel( modEl.getLabel() );
+				recModel.setModifierType( modEl.getType() );
 			}
 		}
 	}
 
 	public void setUseModifier(boolean use) {
-		if (use && modEl == null) {
-			modEl = new DoubleModifierElement();
-			modEl.setFrequency(0.2);
-			modEl.setLabel(modifierLabel);
-			modEl.setType(ModType.Scale);
+		if (use) {
+			if (recModel == null)
+				initialize();
+			recModel.setModifierType( ModType.Scale );
 		}
-		if ( (!use) && modEl != null) {
-			modEl = null;
+		else {
+			recModel.setModifierType( null );		
 		}
+		
 	}
 	public double getInitialRecRate() {
-		return initialRecRate;
+		if (recModel == null)
+			initialize();
+		return recModel.getValue();
 	}
 
 	public void setInitialRecRate(double initialRecRate) {
-		this.initialRecRate = initialRecRate;
+		if (recModel == null)
+			initialize();
+		recModel.setValue( initialRecRate);
 	}
 
 	public String getModifierLabel() {
-		return modifierLabel;
+		if (recModel == null)
+			initialize();
+		return recModel.getModLabel();
 	}
 
 	public void setModifierLabel(String modifierLabel) {
-		this.modifierLabel = modifierLabel;
+		if (recModel == null)
+			initialize();
+		recModel.setModifierLabel(modifierLabel);
+	}
+
+	public DoubleParamElement getModel() {
+		return recModel;
 	}
 }

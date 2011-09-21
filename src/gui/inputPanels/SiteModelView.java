@@ -9,8 +9,10 @@ import gui.widgets.Stylist;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -18,12 +20,15 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
@@ -42,16 +47,7 @@ public class SiteModelView extends JPanel {
 	//The 'model' portion that stores the data
 	private SiteModelElement siteModel = new SiteModelElement();
 	
-	private final JPanel rateConfigPanel;
 	
-	private final JPanel gammaPanel;
-	private final JPanel customPanel;
-	private final JPanel oneRatePanel;
-
-	private JTextField rateTextField;
-	private JSpinner categsSpinner; 
-	private JCheckBox estAlphaBox;
-	private JTextField alphaField;
 	
 	List<Element> params = new ArrayList<Element>();
 	List<Element> likelihoods = new ArrayList<Element>();;
@@ -60,6 +56,8 @@ public class SiteModelView extends JPanel {
 	JPanel ratePanel;
 	JPanel mutCenterPanel;
 	JPanel rateCenterPanel;
+	
+	private JPanel mutParamsPanel;
 	
 	private final String[] rateTypes = new String[]{"One rate", "Gamma rates", "Custom rates"};
 	
@@ -159,6 +157,8 @@ public class SiteModelView extends JPanel {
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		
 		mutPanel = new JPanel();
+		mutPanel.setPreferredSize(new Dimension(300, 400));
+		mutPanel.setMaximumSize(new Dimension(400, 1000));
 		stylist.applyStyle(mutPanel);
 		JPanel mutTop = new JPanel();
 		stylist.applyStyle(mutTop);
@@ -168,18 +168,28 @@ public class SiteModelView extends JPanel {
 		mutBox = new JComboBox(new Object[]{/*"JC69", "K2P", */ "F84", "TN93"}); 
 		mutBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent evt) {
-				if (mutBox.getSelectedIndex()==0)
-			    	siteModel.setMutModelType( SiteModelElement.MutModelType.F84);
-				if (mutBox.getSelectedIndex()==1)
-			    	siteModel.setMutModelType( SiteModelElement.MutModelType.TN93);
+				updateMutModelBox();
 				
-			    
-			    rateConfigPanel.repaint();
 			}
 		});
 		mutTop.add(mutBox);
 		mutPanel.add(mutTop, BorderLayout.NORTH);
+		
+		mutParamsPanel = new JPanel();
+		mutParamsPanel.setLayout(new BoxLayout(mutParamsPanel, BoxLayout.Y_AXIS));
+		mutParamsPanel.setPreferredSize(new Dimension(300, 400));
+		stylist.applyStyle(mutParamsPanel);
+		mutPanel.add(mutParamsPanel, BorderLayout.CENTER);
+		
+		kappaView = new DoubleParamView("Ts/Tv Ratio", siteModel.getTtRatioElement());
+		kappaRView = new DoubleParamView("Kappa R", siteModel.getKappaRElement());
+		kappaYView = new DoubleParamView("Kappa Y", siteModel.getKappaYElement());
+		mutParamsPanel.add(kappaView);
+		
 		this.add(mutPanel);
+		
+		JSeparator sep = new JSeparator(JSeparator.VERTICAL);
+		this.add(sep);
 		
 		ratePanel = new JPanel();
 		this.add(ratePanel);
@@ -255,11 +265,48 @@ public class SiteModelView extends JPanel {
 		customPanel.add(new JTextField("Custom rate stuff"));
 		customPanel.setOpaque(false);
 		rateConfigPanel.add(customPanel,rateTypes[2]);
+		
+		this.add(Box.createHorizontalGlue());
 	}
 
+	protected void updateMutModelBox() {
+		if (mutBox.getSelectedIndex()==0) {
+	    	siteModel.setMutModelType( SiteModelElement.MutModelType.F84);
+	    	mutParamsPanel.remove(kappaRView);
+	    	mutParamsPanel.remove(kappaYView);
+	    	mutParamsPanel.add(kappaView);
+	    	mutParamsPanel.revalidate();
+	    	mutParamsPanel.repaint();
+		}
+		
+		if (mutBox.getSelectedIndex()==1) {
+	    	siteModel.setMutModelType( SiteModelElement.MutModelType.TN93);
+	    	mutParamsPanel.remove(kappaView);
+	    	mutParamsPanel.add(kappaRView);
+	    	mutParamsPanel.add(kappaYView);
+	    	mutParamsPanel.revalidate();
+	    	mutParamsPanel.repaint();
+		}
+		
+	    
+	    rateConfigPanel.repaint();
+	}
+
+	private final JPanel rateConfigPanel;
+	
+	private final JPanel gammaPanel;
+	private final JPanel customPanel;
+	private final JPanel oneRatePanel;
+
+	private JTextField rateTextField;
+	private JSpinner categsSpinner; 
+	private JCheckBox estAlphaBox;
+	private JTextField alphaField;
+	
 	private JComboBox mutBox;
 	private JComboBox rateBox;
-
-
+	private DoubleParamView kappaView;
+	private DoubleParamView kappaRView;
+	private DoubleParamView kappaYView;
 	
 }

@@ -1,7 +1,9 @@
 package gui.inputPanels;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
@@ -11,11 +13,15 @@ import gui.document.ACGDocument;
 import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.DoubleModifierElement.ModType;
 import gui.inputPanels.PopSizeModelElement.PopSizeModel;
+import gui.widgets.Style;
+import gui.widgets.Stylist;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 
 import org.w3c.dom.Element;
 
@@ -37,24 +43,39 @@ public class CoalescentView extends JPanel {
 	List<Element> params = new ArrayList<Element>();
 	List<Element> likelihoods = new ArrayList<Element>();;
 		
+	private JPanel popCenterPanel;
+	private JPanel growthRatePanel;
+	private DoubleParamView constPopView;
+	private DoubleParamView baseSizeView;
+	private DoubleParamView growthRateView;
+	private DoubleParamView recView;
+	
 	private JPanel popPanel;
-	private JPanel popCenter;
 	private JPanel recPanel;
-	private JPanel recCenter;
+	private JPanel recCenterPanel;
+	
+
+	private Stylist stylist = new Stylist();
 	
 	public CoalescentView() {
+		stylist.addStyle(new Style() {
+			public void apply(JComponent comp) {
+				comp.setOpaque(false);
+				comp.setAlignmentX(Component.LEFT_ALIGNMENT);
+			}
+		});
+		
 		coalModel = new CoalescentModelElement();
 		
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		
-		setOpaque(false);
 		setMaximumSize(new Dimension(1000, 50));
 		setPreferredSize(new Dimension(500, 50));
-		
+		stylist.applyStyle(this);
 		popPanel = new JPanel();
 		JPanel popTop = new JPanel();
-		popTop.setOpaque(false);
-		popPanel.setOpaque(false);
+		stylist.applyStyle(popTop);
+		stylist.applyStyle(popPanel);
 		popPanel.setLayout(new BorderLayout());
 		popTop.add(new JLabel("Coalescent model:"));
 		coalModelBox = new JComboBox(coalModels);
@@ -65,27 +86,40 @@ public class CoalescentView extends JPanel {
 		});
 		popTop.add(coalModelBox);
 		popPanel.add(popTop, BorderLayout.NORTH);
-		popCenter = new JPanel();
-		popCenter.setOpaque(false);
-		popPanel.add(popCenter, BorderLayout.CENTER);
 		this.add(popPanel);
 		
-		DoubleParamElement test = new DoubleParamElement();
-		test.setLabel("Test!");
-		test.setValue(12.4);
-		test.setLowerBound(Double.NEGATIVE_INFINITY);
-		test.setUpperBound(1238.12);
-		test.setModifierType(ModType.Scale);
+		popCenterPanel = new JPanel();
+		popCenterPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		stylist.applyStyle(popCenterPanel);
+		popPanel.add(popCenterPanel, BorderLayout.CENTER);
+		constPopView = new DoubleParamView("Population Size", coalModel.getPopSizeModel().getConstSizeModel());
+		popCenterPanel.add( constPopView);
 		
-		DoubleParamView constPopView = new DoubleParamView("Population Size", test);
-		popPanel.add( constPopView, BorderLayout.CENTER );
+		baseSizeView = new DoubleParamView("Base Size", coalModel.getPopSizeModel().getBaseSizeModel());
+		growthRateView = new DoubleParamView("Growth Rate", coalModel.getPopSizeModel().getGrowthRateModel());
+		growthRatePanel = new JPanel();
+		growthRatePanel.setOpaque(false);
+		growthRatePanel.setLayout(new BoxLayout(growthRatePanel, BoxLayout.Y_AXIS));
+		growthRatePanel.add(baseSizeView);
+		growthRatePanel.add(growthRateView);
+		
+		
+		JSeparator sep = new JSeparator(JSeparator.VERTICAL);
+		this.add(sep);
 		
 		recPanel = new JPanel();
-		recPanel.setOpaque(false);
+		stylist.applyStyle(recPanel);
 		recPanel.setLayout(new BorderLayout());
 		JPanel recTop = new JPanel();
-		recPanel.add(recTop, BorderLayout.NORTH);
+		stylist.applyStyle(recTop);
 		
+		recCenterPanel = new JPanel();
+		stylist.applyStyle(recCenterPanel);
+		
+		recPanel.add(recTop, BorderLayout.NORTH);
+		recView = new DoubleParamView("Recombination rate", coalModel.getRecombModel().getModel());
+		stylist.applyStyle(recView);
+		recPanel.add(recCenterPanel, BorderLayout.CENTER);
 		
 		recTop.add(new JLabel("Recombination :"));
 		recombModelBox = new JComboBox(recombModels);
@@ -96,26 +130,42 @@ public class CoalescentView extends JPanel {
 		});
 		recombModelBox.setSelectedIndex(1);
 		recTop.add(recombModelBox);
-		recCenter = new JPanel();
-		recPanel.add(recCenter, BorderLayout.CENTER);
 		this.add(recPanel);
 	}
 	
 	protected void updateCoalModelBox() {
 		if (coalModelBox.getSelectedIndex()==0) {
 			coalModel.getPopSizeModel().setModelType( PopSizeModel.Constant );
+			popCenterPanel.remove(growthRatePanel);
+			popCenterPanel.add(constPopView, BorderLayout.CENTER);
+			popCenterPanel.revalidate();
+			
 		}
 		if (coalModelBox.getSelectedIndex()==1) {
 			coalModel.getPopSizeModel().setModelType( PopSizeModel.ExpGrowth );
+			popCenterPanel.remove(constPopView);
+			popCenterPanel.add(growthRatePanel, BorderLayout.CENTER);
+			popCenterPanel.revalidate();
 		}
 	}
 
+	public CoalescentModelElement getModel() {
+		return coalModel;
+	}
+	
+	
 	protected void updateRecombModelBox() {
 		if (recombModelBox.getSelectedIndex()==0) {
 			coalModel.setUseRecombination(false);
+			recCenterPanel.remove(recView);
+			recCenterPanel.revalidate();
+			repaint();
 		}
 		if (recombModelBox.getSelectedIndex()==1) {
 			coalModel.setUseRecombination(true);
+			recCenterPanel.add( recView, BorderLayout.CENTER);
+			recCenterPanel.revalidate();
+			repaint();
 		}
 	}
 

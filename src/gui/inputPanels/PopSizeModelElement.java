@@ -25,35 +25,40 @@ public class PopSizeModelElement extends ModelElement {
 
 	enum PopSizeModel { Constant, ExpGrowth }
 	private PopSizeModel modelType = PopSizeModel.Constant;
-	private double initialPopSize = 0.001;
+	DoubleParamElement constSizeModel = new DoubleParamElement(); //Used to store info for constant pop size model
 	
-	//Used for Constant pop size case
-	private DoubleModifierElement modifierElement = null;
-	
-	private DoubleParamElement baseSizeElement = null;
-	private DoubleParamElement growthRateElement = null;
+	private DoubleParamElement baseSizeElement = new DoubleParamElement();
+	private DoubleParamElement growthRateElement = new DoubleParamElement();
+	private String constSizeLabel = "PopulationSize";
 	private String baseSizeLabel = "BaseSize";
 	private String growthRateLabel = "GrowthRate";
 	
 	public PopSizeModelElement() {
-		//Don't think theres any initialization?
+		constSizeModel = new DoubleParamElement();
+		constSizeModel.setLabel(constSizeLabel);
+		constSizeModel.setValue(0.005);
+		constSizeModel.setLowerBound(1e-10);
+		constSizeModel.setUpperBound(1e20);
+		constSizeModel.setModifierType(ModType.Scale);
+		constSizeModel.setModifierLabel(constSizeLabel + "Modifier");
+
+		baseSizeElement = new DoubleParamElement();
+		baseSizeElement.setLabel(baseSizeLabel);
+		baseSizeElement.setValue(0.005);
+		baseSizeElement.setLowerBound(0);
+		baseSizeElement.setModifierType(ModType.Scale);
+		baseSizeElement.setModifierLabel(baseSizeLabel + "Modifier");
+		
+		growthRateElement = new DoubleParamElement();
+		growthRateElement.setLabel(growthRateLabel);
+		growthRateElement.setLowerBound(Double.NEGATIVE_INFINITY);
+		growthRateElement.setValue(0.0); //Zero is OK if we use a 'simple' modifier 
+		growthRateElement.setModifierType(ModType.Simple);
+		growthRateElement.setModifierLabel(growthRateLabel + "Modifier");
 	}
 	
 	public void setModelType(PopSizeModel type) {
 		this.modelType = type;
-		if (modelType == PopSizeModel.ExpGrowth && baseSizeElement == null) {
-			baseSizeElement = new DoubleParamElement();
-			baseSizeElement.setLabel(baseSizeLabel);
-			baseSizeElement.setValue(0.005);
-			baseSizeElement.setLowerBound(0);
-			baseSizeElement.setModifierType(ModType.Scale);
-			
-			growthRateElement = new DoubleParamElement();
-			growthRateElement.setLabel(growthRateLabel);
-			growthRateElement.setLowerBound(Double.NEGATIVE_INFINITY);
-			growthRateElement.setValue(0.0); //Zero is OK if we use a 'simple' modifier 
-			growthRateElement.setModifierType(ModType.Simple);
-		}
 	}
 	
 	public PopSizeModel getModelType() {
@@ -69,9 +74,15 @@ public class PopSizeModelElement extends ModelElement {
 		
 		if (modelType == PopSizeModel.Constant) {
 			popEl.setAttribute(XMLLoader.CLASS_NAME_ATTR, ConstantPopSize.class.getCanonicalName());
-			popEl.setAttribute(DoubleParameter.XML_VALUE, "" + initialPopSize);
-			if (modifierElement != null)
-				popEl.appendChild( modifierElement.getElement(doc));
+			popEl.setAttribute(DoubleParameter.XML_VALUE, "" + constSizeModel.getValue());
+			popEl.setAttribute(DoubleParameter.XML_LOWERBOUND, "" + constSizeModel.getLowerBound());
+			popEl.setAttribute(DoubleParameter.XML_UPPERBOUND, "" + constSizeModel.getUpperBound());
+			if (constSizeModel.getModType() != null) {
+				DoubleModifierElement modEl = new DoubleModifierElement();
+				modEl.setLabel( constSizeModel.getModLabel() );
+				modEl.setFrequency( constSizeModel.getModifierFrequency() );
+				modEl.setType( constSizeModel.getModType() );
+			}
 			
 		}
 
@@ -92,14 +103,16 @@ public class PopSizeModelElement extends ModelElement {
 		
 		//Constant pop size model. May be mutable or not
 		if (className.equals(ConstantPopSize.class.getCanonicalName())) {
-			setModelType(PopSizeModel.Constant);
-		
+			setModelType(PopSizeModel.Constant);	
 			
 			List<String> children = doc.getChildrenForLabel(popSizeElement.getNodeName());
 			for(String childLabel : children) {
 				Element childEl = doc.getElementForLabel(childLabel);
 				if (DoubleModifierElement.isAssignable(childEl)) {
-					modifierElement = new DoubleModifierElement(childEl);
+					DoubleModifierElement modEl = new DoubleModifierElement(childEl);
+					constSizeModel.setModifierType( modEl.getType() );
+					constSizeModel.setModifierLabel( modEl.getLabel() );
+					constSizeModel.setModifierFrequency( modEl.getFrequency() );
 				}
 			}
 		}
@@ -125,10 +138,26 @@ public class PopSizeModelElement extends ModelElement {
 	}
 
 	public double getInitialPopSize() {
-		return initialPopSize;
+		return constSizeModel.getValue();
 	}
 
 	public void setInitialPopSize(double initialPopSize) {
-		this.initialPopSize = initialPopSize;
+		this.constSizeModel.setValue( initialPopSize );
+	}
+	
+	/**
+	 * The model element that provides into for the Constant Size model
+	 * @return
+	 */
+	public DoubleParamElement getConstSizeModel() {
+		return constSizeModel;
+	}
+	
+	public DoubleParamElement getBaseSizeModel() {
+		return baseSizeElement;
+	}
+	
+	public DoubleParamElement getGrowthRateModel() {
+		return growthRateElement;
 	}
 }
