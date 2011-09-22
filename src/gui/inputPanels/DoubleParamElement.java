@@ -1,5 +1,8 @@
 package gui.inputPanels;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import gui.document.ACGDocument;
 
 import modifier.AbstractModifier;
@@ -19,6 +22,7 @@ import xml.XMLLoader;
 
 import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.DoubleModifierElement.ModType;
+import gui.inputPanels.DoublePriorModel.PriorType;
 
 /**
  * Reads / writes XML from DoubleParameter elements, used by many element configurators
@@ -36,8 +40,11 @@ public class DoubleParamElement {
 	double lowerBound = Double.NEGATIVE_INFINITY;
 	String elementName = null;
 	
+	private DoublePriorModel priorModel; 
+	
 	public DoubleParamElement() {
-		//No op constructor
+		priorModel = new DoublePriorModel(this);
+		priorModel.setType(PriorType.Uniform);
 	}
 	
 	public DoubleParamElement(Element el) throws InputConfigException {
@@ -120,6 +127,15 @@ public class DoubleParamElement {
 	}
 	
 	/**
+	 * The model describing prior information for this parameter, may be null
+	 * if nothing has been specified
+	 * @return
+	 */
+	public DoublePriorModel getPriorModel() {
+		return priorModel;
+	}
+	
+	/**
 	 * Sets the settings of this object to be those given by the element provided
 	 * @param el
 	 * @throws InputConfigException
@@ -134,7 +150,7 @@ public class DoubleParamElement {
 		setLabel(label);
 		
 		String valStr = el.getAttribute(DoubleParameter.XML_VALUE);
-		if (valStr == null && valStr.length()>0)
+		if (valStr == null || valStr.length()>0)
 			throw new InputConfigException("Could not find value for DoubleParameter with label " + elementName);
 		try {
 			Double val = Double.parseDouble(valStr);
@@ -145,7 +161,7 @@ public class DoubleParamElement {
 		}
 		
 		String lowerStr = el.getAttribute(DoubleParameter.XML_LOWERBOUND);
-		if (lowerStr != null & lowerStr.length()>0) {
+		if (lowerStr != null && lowerStr.length()>0) {
 			try {
 				Double val = Double.parseDouble(lowerStr);
 				setLowerBound(val);
@@ -207,10 +223,10 @@ public class DoubleParamElement {
 		
 	}
 	
-	public Element getElement(ACGDocument doc) throws InputConfigException {
+	public Element getElement(ACGDocument doc) throws InputConfigException {		
 		if (elementName == null)
 			throw new InputConfigException("Element label required for double parameter");
-	
+		
 		Element el = doc.createElement(elementName);
 		el.setAttribute(XMLLoader.CLASS_NAME_ATTR, DoubleParameter.class.getCanonicalName());
 		el.setAttribute(DoubleParameter.XML_VALUE, "" + value);
@@ -225,8 +241,13 @@ public class DoubleParamElement {
 			el.appendChild( modEl.getElement(doc));
 		}
 		
+		
 		return el;
 	}
 
+	@Override
+	public void readElements(ACGDocument doc) throws InputConfigException {
+		throw new IllegalStateException("Cannot read param elements directly from document");
+	}
 	
 }

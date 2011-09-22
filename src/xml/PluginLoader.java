@@ -124,8 +124,7 @@ public class PluginLoader {
 		//If we're here, we didn't find the specified class in any of the files listed in the pluginPaths
 		// so we attempt to load it here. 
 		Class clazz = ClassLoader.getSystemClassLoader().loadClass(className);
-		return clazz;
-		
+		return clazz;	
 	}
 
 	

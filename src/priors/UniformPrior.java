@@ -56,7 +56,7 @@ public class UniformPrior extends AbstractPrior {
 	public UniformPrior(Map<String, String> attrs, DoubleParameter param) {
 		super(attrs, param);
 		this.param = param;
-		String lowerStr = attrs.get("lowerBound");
+		String lowerStr = attrs.get(DoubleParameter.XML_LOWERBOUND);
 		if (lowerStr != null) {
 			try {
 				this.lowerBound = Double.parseDouble(lowerStr);
@@ -67,7 +67,7 @@ public class UniformPrior extends AbstractPrior {
 			}
 		}
 		
-		String upperStr = attrs.get("uppperBound");
+		String upperStr = attrs.get(DoubleParameter.XML_UPPERBOUND);
 		if (lowerStr != null) {
 			try {
 				this.upperBound = Double.parseDouble(upperStr);

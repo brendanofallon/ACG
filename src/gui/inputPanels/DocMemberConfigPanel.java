@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import sequence.Alignment;
@@ -44,6 +45,7 @@ public class DocMemberConfigPanel extends JPanel {
 	JPanel loggersPanel;
 	
 	AlignmentElement alignmentEl;
+	MCMCModelElement mcElement;
 	ARGModelElement argModel;
 	
 	ACGFrame acgParent;
@@ -53,6 +55,7 @@ public class DocMemberConfigPanel extends JPanel {
 		this.acgParent = acgParent;
 		
 		alignmentEl = new AlignmentElement();
+		mcElement = new MCMCModelElement();
 		argModel = new ARGModelElement();
 		
 		topPanel = new JPanel();
@@ -117,10 +120,24 @@ public class DocMemberConfigPanel extends JPanel {
 			argModel.setAlignmentRef(alignmentEl);
 			docBuilder.appendNodes( argModel );			
 
+			siteModelPanel.getSiteModel().setARGRef( argModel );
 			docBuilder.appendNodes( siteModelPanel.getSiteModel() );
 			
 			coalescentModelPanel.getModel().setARGRef(argModel);
 			docBuilder.appendNodes( coalescentModelPanel.getModel() );
+			
+			mcElement.clearReferences();
+			List<Element> params = docBuilder.getParameters();
+			for(Element param : params) {
+				mcElement.addParamRef(param);
+			}
+			
+			List<Element> likelihoods = docBuilder.getLikelihoods();
+			for(Element like : likelihoods) {
+				mcElement.addLikelihoodRef(like);
+			}
+			
+			docBuilder.appendNodes( mcElement );
 						
 			
 		} catch (ParserConfigurationException e) {

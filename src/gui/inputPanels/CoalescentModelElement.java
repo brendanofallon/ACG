@@ -46,8 +46,10 @@ public class CoalescentModelElement extends ModelElement {
 		
 		Element coalEl = createElement(doc, modelLabel, CoalescentLikelihood.class);
 		coalEl.appendChild( doc.createElement(popSizeModel.getModelLabel()));
-		if (recRateModel != null)
+		if (recRateModel != null) {
 			coalEl.appendChild( doc.createElement(recRateModel.getModelLabel()));
+		}
+		
 		coalEl.appendChild( doc.createElement(argRef.getModelLabel()));
 		
 		nodes.add(coalEl);
@@ -96,4 +98,9 @@ public class CoalescentModelElement extends ModelElement {
 	public void setModelLabel(String modelLabel) {
 		this.modelLabel = modelLabel;
 	}
+
+
+	
+	//private List<Element> allParams = new ArrayList<Element>();
+	//private List<Element> allLikelihoods = new ArrayList<Element>();
 }

@@ -17,6 +17,9 @@ import xml.XMLUtils;
  */
 public class GammaPrior extends LikelihoodComponent {
 
+	public static final String XML_MEAN = "mean";
+	public static final String XML_STDEV = "stdev";
+	
 	Gamma gamma;
 	DoubleParameter param;
 	
@@ -24,8 +27,8 @@ public class GammaPrior extends LikelihoodComponent {
 		super(attrs);
 		addParameter(param);
 		this.param = param;
-		double mean = XMLUtils.getDoubleOrFail("mean", attrs);
-		double stdev = XMLUtils.getDoubleOrFail("stdev", attrs);
+		double mean = XMLUtils.getDoubleOrFail(XML_MEAN, attrs);
+		double stdev = XMLUtils.getDoubleOrFail(XML_STDEV, attrs);
 		double var = stdev*stdev;
 		
 		gamma = new Gamma(mean*mean/var , var/mean, RandomSource.getEngine());

@@ -1,6 +1,7 @@
 package gui.inputPanels;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -16,6 +17,7 @@ import gui.inputPanels.PopSizeModelElement.PopSizeModel;
 import gui.widgets.Style;
 import gui.widgets.Stylist;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -57,6 +59,7 @@ public class CoalescentView extends JPanel {
 
 	private Stylist stylist = new Stylist();
 	
+	
 	public CoalescentView() {
 		stylist.addStyle(new Style() {
 			public void apply(JComponent comp) {
@@ -65,74 +68,12 @@ public class CoalescentView extends JPanel {
 			}
 		});
 		
-		coalModel = new CoalescentModelElement();
-		
-		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-		
-		setMaximumSize(new Dimension(1000, 50));
-		setPreferredSize(new Dimension(500, 50));
-		stylist.applyStyle(this);
-		popPanel = new JPanel();
-		JPanel popTop = new JPanel();
-		stylist.applyStyle(popTop);
-		stylist.applyStyle(popPanel);
-		popPanel.setLayout(new BorderLayout());
-		popTop.add(new JLabel("Coalescent model:"));
-		coalModelBox = new JComboBox(coalModels);
-		coalModelBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				updateCoalModelBox();
-			}
-		});
-		popTop.add(coalModelBox);
-		popPanel.add(popTop, BorderLayout.NORTH);
-		this.add(popPanel);
-		
-		popCenterPanel = new JPanel();
-		popCenterPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		stylist.applyStyle(popCenterPanel);
-		popPanel.add(popCenterPanel, BorderLayout.CENTER);
-		constPopView = new DoubleParamView("Population Size", coalModel.getPopSizeModel().getConstSizeModel());
-		popCenterPanel.add( constPopView);
-		
-		baseSizeView = new DoubleParamView("Base Size", coalModel.getPopSizeModel().getBaseSizeModel());
-		growthRateView = new DoubleParamView("Growth Rate", coalModel.getPopSizeModel().getGrowthRateModel());
-		growthRatePanel = new JPanel();
-		growthRatePanel.setOpaque(false);
-		growthRatePanel.setLayout(new BoxLayout(growthRatePanel, BoxLayout.Y_AXIS));
-		growthRatePanel.add(baseSizeView);
-		growthRatePanel.add(growthRateView);
-		
-		
-		JSeparator sep = new JSeparator(JSeparator.VERTICAL);
-		this.add(sep);
-		
-		recPanel = new JPanel();
-		stylist.applyStyle(recPanel);
-		recPanel.setLayout(new BorderLayout());
-		JPanel recTop = new JPanel();
-		stylist.applyStyle(recTop);
-		
-		recCenterPanel = new JPanel();
-		stylist.applyStyle(recCenterPanel);
-		
-		recPanel.add(recTop, BorderLayout.NORTH);
-		recView = new DoubleParamView("Recombination rate", coalModel.getRecombModel().getModel());
-		stylist.applyStyle(recView);
-		recPanel.add(recCenterPanel, BorderLayout.CENTER);
-		
-		recTop.add(new JLabel("Recombination :"));
-		recombModelBox = new JComboBox(recombModels);
-		recombModelBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				updateRecombModelBox();
-			}
-		});
-		recombModelBox.setSelectedIndex(1);
-		recTop.add(recombModelBox);
-		this.add(recPanel);
+		initComponents();
 	}
 	
+	/**
+	 * Called when the coalescent model box has a new item selected
+	 */
 	protected void updateCoalModelBox() {
 		if (coalModelBox.getSelectedIndex()==0) {
 			coalModel.getPopSizeModel().setModelType( PopSizeModel.Constant );
@@ -147,13 +88,22 @@ public class CoalescentView extends JPanel {
 			popCenterPanel.add(growthRatePanel, BorderLayout.CENTER);
 			popCenterPanel.revalidate();
 		}
+		
+		popCenterPanel.repaint();
 	}
 
+	/**
+	 * Obtain the CoalescentModelElement backing this view
+	 * @return
+	 */
 	public CoalescentModelElement getModel() {
 		return coalModel;
 	}
 	
 	
+	/**
+	 * Called when recombination selection has changed
+	 */
 	protected void updateRecombModelBox() {
 		if (recombModelBox.getSelectedIndex()==0) {
 			coalModel.setUseRecombination(false);
@@ -190,5 +140,79 @@ public class CoalescentView extends JPanel {
 	public void readNodesFromDocument(ACGDocument doc) throws InputConfigException {
 		coalModel.readElements(doc);
 		updateView();
+	}
+	
+	/**
+	 * Create GUI components
+	 */
+	private void initComponents() {
+		coalModel = new CoalescentModelElement();
+		
+		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		
+		stylist.applyStyle(this);
+		popPanel = new JPanel();
+		JPanel popTop = new JPanel();
+		stylist.applyStyle(popTop);
+		stylist.applyStyle(popPanel);
+		popPanel.setLayout(new BorderLayout());
+		popTop.add(new JLabel("Coalescent model:"));
+		coalModelBox = new JComboBox(coalModels);
+		coalModelBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				updateCoalModelBox();
+			}
+		});
+		popTop.add(coalModelBox);
+		popPanel.add(popTop, BorderLayout.NORTH);
+		this.add(popPanel);
+		
+		popCenterPanel = new JPanel();
+		popCenterPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		stylist.applyStyle(popCenterPanel);
+		popPanel.add(popCenterPanel, BorderLayout.CENTER);
+		constPopView = new DoubleParamView("Population Size", coalModel.getPopSizeModel().getConstSizeModel());
+		constPopView.setPreferredSize(new Dimension(350, 36));
+		popCenterPanel.add( constPopView);
+		
+		baseSizeView = new DoubleParamView("Base Size", coalModel.getPopSizeModel().getBaseSizeModel());
+		baseSizeView.setPreferredSize(new Dimension(350, 36));
+		growthRateView = new DoubleParamView("Growth Rate", coalModel.getPopSizeModel().getGrowthRateModel());
+		growthRateView.setPreferredSize(new Dimension(350, 36));
+		
+		growthRatePanel = new JPanel();
+		growthRatePanel.setOpaque(false);
+		growthRatePanel.setLayout(new BoxLayout(growthRatePanel, BoxLayout.Y_AXIS));
+		growthRatePanel.add(baseSizeView);
+		growthRatePanel.add(growthRateView);
+		
+		
+		JSeparator sep = new JSeparator(JSeparator.VERTICAL);
+		this.add(sep);
+		
+		recPanel = new JPanel();
+		stylist.applyStyle(recPanel);
+		recPanel.setLayout(new BorderLayout());
+		JPanel recTop = new JPanel();
+		stylist.applyStyle(recTop);
+		
+		recCenterPanel = new JPanel();
+		stylist.applyStyle(recCenterPanel);
+		
+		recPanel.add(recTop, BorderLayout.NORTH);
+		recView = new DoubleParamView("Recombination rate", coalModel.getRecombModel().getModel());
+		stylist.applyStyle(recView);
+		recPanel.add(recCenterPanel, BorderLayout.CENTER);
+		
+		recTop.add(new JLabel("Recombination :"));
+		recombModelBox = new JComboBox(recombModels);
+		recombModelBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				updateRecombModelBox();
+			}
+		});
+		recombModelBox.setSelectedIndex(1);
+		recTop.add(recombModelBox);
+		this.add(recPanel);
 	}
 }

@@ -1,7 +1,10 @@
 package gui.inputPanels;
 
+import gui.ACGFrame;
 import gui.ErrorWindow;
 import gui.inputPanels.DoubleModifierElement.ModType;
+import gui.widgets.BorderlessButton;
+import gui.widgets.RoundedPanel;
 import gui.widgets.Style;
 import gui.widgets.Stylist;
 
@@ -16,6 +19,8 @@ import java.awt.event.ItemListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -30,7 +35,7 @@ import javax.swing.JTextField;
 public class DoubleParamView extends JPanel {
 
 	private DoubleParamElement model;
-	
+	private ParamConfigFrame configFrame = null; //Instantiated only when we need it
 	
 	public DoubleParamView(String name, final DoubleParamElement model) {
 		
@@ -43,107 +48,61 @@ public class DoubleParamView extends JPanel {
 		});
 		
 		this.model = model;
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setPreferredSize(new Dimension(250, 155));
-		this.setMaximumSize(new Dimension(2500, 220));
+		setPreferredSize(new Dimension(350, 38));
+		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		stylist.applyStyle(this);
 		
+		infoLabel = new JLabel(model.getElementName() + " : "  + model.getValue() + " [" + model.getLowerBound() + " - " + model.getUpperBound() + "]");
+		stylist.applyStyle(infoLabel);
+		add(Box.createHorizontalGlue());
+		add(infoLabel);
 		
-		add(stylist.applyStyle(new JLabel(name)));
-		initValueField = new JTextField("" + model.getValue() );
-		addComps("Init value : ", initValueField);
-		lowerBoundField = new JTextField("" + model.getLowerBound() );
-		addComps("Lower bound:", lowerBoundField);
-		upperBoundField = new JTextField("" + model.getUpperBound() );
-		addComps("Upper bound:", upperBoundField);
-		
-		modifierBox = new JComboBox(modTypes);
-		
-		modifierBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (modifierBox.getSelectedIndex()==0)
-					model.setModifierType(null);
-				if (modifierBox.getSelectedIndex()==1)
-					model.setModifierType(ModType.Simple);
-				if (modifierBox.getSelectedIndex()==2)
-					model.setModifierType(ModType.Scale);
+		ImageIcon configIcon = ACGFrame.getIcon("icons/settings2.png");
+		BorderlessButton configButton;
+		if (configIcon != null) {
+			configButton = new BorderlessButton(configIcon);
+			configButton.setPreferredSize(new Dimension(34, 20));
+			configButton.setMaximumSize(new Dimension(34, 32));
+		}
+		else {
+			configButton = new BorderlessButton("Configure", null);
+		}
+		configButton.setToolTipText("Configure properties for this parameter");
+		configButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showConfigFrame();
 			}
 		});
-		addComps("Modifier type: ", modifierBox);
-		add(Box.createVerticalGlue());
-		add(Box.createGlue());
+
+		add(Box.createHorizontalGlue());
+		add(Box.createHorizontalGlue());
+		add(configButton);
 		updateView();
 	}
 	
-	private void addComps(String label, JComponent comp) {
-		JPanel panel = new JPanel();
-		stylist.applyStyle(panel);
-		panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		panel.add(stylist.applyStyle(new JLabel(label)));
-		panel.add(stylist.applyStyle(comp));
-		this.add(panel);
-	}
-	
-	private void addComps(String label, final JTextField field) {
-		field.setPreferredSize(new Dimension(100, 28));
-		field.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				updateFieldInfo(field);
-			}
-		});
-		stylist.applyStyle(field);
-		JPanel panel = new JPanel();
-		stylist.applyStyle(panel);
-		panel.setOpaque(false);
-		panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		panel.add(stylist.applyStyle(new JLabel(label)));
-		panel.add(field);
-		this.add(panel);
-	}
-	
-	protected void updateFieldInfo(JTextField field) {
-		Double value = null;
-		try {
-			value = Double.parseDouble( field.getText() );
-		}
-		catch (NumberFormatException nfe) {
-			Exception ex = new Exception("Please enter a number.");
-			ErrorWindow.showErrorWindow(ex);
-		}
-		
-		if (field == initValueField) {
-			model.setValue( value );
-		}
-		if (field == lowerBoundField)
-			model.setLowerBound(value);
-		if (field == upperBoundField)
-			model.setUpperBound(value);
+	protected void showConfigFrame() {
+		if (configFrame == null)
+			configFrame = new ParamConfigFrame(this);
+		configFrame.setVisible(true);
 	}
 
+	
+	private void redrawLabel() {
+		infoLabel.setText(model.getElementName() + " : "  + model.getValue() + " [" + model.getLowerBound() + " - " + model.getUpperBound() + "]");
+		revalidate();
+	}
+
+
 	public void updateView() {
-		ModType modType = model.getModType();
-		if (modType == null)
-			modifierBox.setSelectedIndex(0);
-		if (modType == ModType.Simple)
-			modifierBox.setSelectedIndex(1);
-		if (modType == ModType.Scale)
-			modifierBox.setSelectedIndex(2);
-		
-		initValueField.setText("" + model.getValue() );
-		lowerBoundField.setText("" + model.getLowerBound());
-		upperBoundField.setText("" + model.getUpperBound());
+		redrawLabel();
 		repaint();
 	}
 	
 	public DoubleParamElement getModel() {
 		return model;
 	}
-
-
+	
 	private Stylist stylist = new Stylist();
-	private JTextField initValueField;
-	private JTextField lowerBoundField;
-	private JTextField upperBoundField;
-	private String[] modTypes = new String[]{"None", "Simple", "Scale"};
-	private JComboBox modifierBox;
+	private JLabel infoLabel;
+	
 }

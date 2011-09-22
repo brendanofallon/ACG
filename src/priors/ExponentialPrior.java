@@ -16,6 +16,8 @@ import component.LikelihoodComponent;
  */
 public class ExponentialPrior extends LikelihoodComponent {
 
+	public static final String XML_MEAN = "mean";
+	
 	double mean;
 	Exponential exp; 
 	DoubleParameter param;
@@ -24,7 +26,7 @@ public class ExponentialPrior extends LikelihoodComponent {
 		super(attrs);
 		addParameter(param);
 		this.param = param;
-		this.mean = XMLUtils.getDoubleOrFail("mean", attrs);
+		this.mean = XMLUtils.getDoubleOrFail(XML_MEAN, attrs);
 		exp = new Exponential(1.0/mean, RandomSource.getEngine());	
 		proposedLogLikelihood = computeProposedLikelihood();
 		this.stateAccepted();
@@ -42,6 +44,9 @@ public class ExponentialPrior extends LikelihoodComponent {
 	
 	@Override
 	public Double computeProposedLikelihood() {
+		if (param.getValue() < 0)
+			return Double.NEGATIVE_INFINITY;
+		
 		return Math.log( exp.pdf(param.getValue()) );
 	}
 

@@ -13,6 +13,12 @@ import coalescent.DemographicParameter;
 import parameter.DoubleParameter;
 import xml.XMLLoader;
 
+/**
+ * Base class of many objects that can read data from XML and can generate XML nodes to reflect the 
+ * data that was read or provided through other means (for instance, from a View component)
+ * @author brendano
+ *
+ */
 public abstract class ModelElement implements ElementProvider {
 	
 	
@@ -132,6 +138,18 @@ public abstract class ModelElement implements ElementProvider {
 	protected static Element createElement(ACGDocument doc, String label, Class clazz) {
 		Element el  = doc.createElement(label);
 		el.setAttribute(XMLLoader.CLASS_NAME_ATTR, clazz.getCanonicalName());
+		return el;
+	}
+	
+	/**
+	 * Create and return a List element
+	 * @param doc
+	 * @param label
+	 * @return
+	 */
+	protected static Element createList(ACGDocument doc, String label) {
+		Element el  = doc.createElement(label);
+		el.setAttribute(XMLLoader.CLASS_NAME_ATTR, XMLLoader.LIST_ATTR);
 		return el;
 	}
 }

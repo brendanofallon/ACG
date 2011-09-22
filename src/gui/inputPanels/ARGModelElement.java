@@ -29,8 +29,6 @@ import xml.XMLLoader;
  */
 public class ARGModelElement extends ModelElement {
 
-	
-	
 	@Override
 	public List<Node> getElements(ACGDocument doc) throws InputConfigException {
 		List<Node> elements = new ArrayList<Node>();
@@ -257,9 +255,4 @@ public class ARGModelElement extends ModelElement {
 	private String argLabel = "ARG";
 	private Newick startingNewick = null;
 	
-	
-		
-	
-
-
 }

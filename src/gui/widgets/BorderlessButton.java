@@ -31,8 +31,13 @@ public class BorderlessButton extends JPanel {
 	ImageIcon icon = null;
 	String text = null;
 	private boolean drawBorder = false;
+	private boolean clicking = false;
 	
 	List<ActionListener> actionListeners = new ArrayList<ActionListener>();
+	
+	public BorderlessButton(String label) {
+		this(label, null);
+	}
 	
 	public BorderlessButton(String label, ImageIcon icon) {
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -49,7 +54,7 @@ public class BorderlessButton extends JPanel {
 		}
 		if (label != null) {
 			pWidth += label.length()*10+3;
-			pHeight = Math.max(24, icon.getIconHeight()+5);
+			pHeight = Math.max(24, pHeight);
 		}
 		
 		
@@ -91,6 +96,16 @@ public class BorderlessButton extends JPanel {
 			fireActionEvent(me);
 		}
 		
+		public void mousePressed(MouseEvent me) {
+			clicking = true;
+			repaint();
+		}
+		
+		public void mouseReleased(MouseEvent me) {
+			clicking = false;
+			repaint();
+		}
+		
 		public void mouseEntered(MouseEvent me) {
 			setDrawBorder(true);
 		}
@@ -107,7 +122,12 @@ public class BorderlessButton extends JPanel {
                 RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		if (drawBorder) {
-			GradientPaint gp = new GradientPaint(1, 0, new Color(1f, 1f, 1f), 3, getHeight(), new Color(0.88f, 0.88f, 0.88f));
+
+			GradientPaint gp;
+			if (clicking)
+				gp = new GradientPaint(1, 0, new Color(0.75f, 0.75f, 0.75f), 3, getHeight(), new Color(0.88f, 0.88f, 0.88f));
+			else
+				gp = new GradientPaint(1, 0, new Color(1f, 1f, 1f), 3, getHeight(), new Color(0.88f, 0.88f, 0.88f));
 			g2d.setPaint(gp);
 			g2d.fillRoundRect(1, 1, getWidth()-2, getHeight()-3, 5, 2);
 		}

@@ -5,6 +5,7 @@ import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.DoubleModifierElement.ModType;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.w3c.dom.Element;
@@ -83,14 +84,15 @@ public class PopSizeModelElement extends ModelElement {
 				modEl.setFrequency( constSizeModel.getModifierFrequency() );
 				modEl.setType( constSizeModel.getModType() );
 			}
-			
 		}
 
 		
 		if (modelType == PopSizeModel.ExpGrowth) {
 			popEl.setAttribute(XMLLoader.CLASS_NAME_ATTR, ExponentialGrowth.class.getCanonicalName());
-			popEl.appendChild( baseSizeElement.getElement(doc));
-			popEl.appendChild( growthRateElement.getElement(doc));
+			Element baseEl = baseSizeElement.getElement(doc);
+			Element growthEl = growthRateElement.getElement(doc);
+			popEl.appendChild( baseEl );
+			popEl.appendChild( growthEl );
 		}
 		
 		return nodes;
@@ -160,4 +162,5 @@ public class PopSizeModelElement extends ModelElement {
 	public DoubleParamElement getGrowthRateModel() {
 		return growthRateElement;
 	}
+
 }

@@ -7,6 +7,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import xml.XMLLoader;
+import dlCalculation.DataLikelihood;
 import dlCalculation.siteRateModels.ConstantSiteRates;
 import dlCalculation.siteRateModels.GammaSiteRates;
 import dlCalculation.substitutionModels.F84Matrix;
@@ -29,9 +30,7 @@ public class SiteModelElement extends ModelElement {
 	enum RateModelType { Constant, Gamma, Custom };
 	
 	AlignmentElement alignmentRef = null;
-	
-	List<Element> allParams = new ArrayList<Element>();
-	List<Element> allLikes = new ArrayList<Element>();
+	ARGModelElement argRef = null;
 	
 	private MutModelType modelType = MutModelType.F84;
 	private RateModelType rateModelType = RateModelType.Constant;
@@ -354,6 +353,12 @@ public class SiteModelElement extends ModelElement {
 		
 		Element mutModelNode = createMutNode(doc);
 		elements.add(mutModelNode);
+		
+		Element dlNode = createElement(doc, "DataLikelihood", DataLikelihood.class);
+		dlNode.appendChild( doc.createElement(mutModelNode.getNodeName()) );
+		dlNode.appendChild( doc.createElement( argRef.getModelLabel() ) );
+		elements.add( dlNode );
+		
 		return elements;
 	}
 	
@@ -390,33 +395,20 @@ public class SiteModelElement extends ModelElement {
 
 	private Element createMutNode(ACGDocument doc) throws InputConfigException {
 		Element baseEl = baseFreqsElement.getElement(doc);
-		allParams.add(baseEl);
 		
 		if (modelType == MutModelType.F84) {
-			Element el = doc.createElement(mutModelLabel);
-			el.setAttribute(XMLLoader.CLASS_NAME_ATTR,  dlCalculation.substitutionModels.F84Matrix.class.getCanonicalName());
-			
-			Element kappa = ttRatioElement.getElement(doc);
-			allParams.add(kappa);
-			
+			Element el = createElement(doc, mutModelLabel, dlCalculation.substitutionModels.F84Matrix.class);			
 			el.appendChild(baseEl);
-			el.appendChild(kappa);
+			el.appendChild(ttRatioElement.getElement(doc));
 			return el;
 		}
 		
 		if (modelType == MutModelType.TN93) {
-			Element el = doc.createElement("TN93Model");
-			el.setAttribute(XMLLoader.CLASS_NAME_ATTR, dlCalculation.substitutionModels.TN93Matrix.class.getCanonicalName());
-				
-			Element kappaR = kappaRElement.getElement(doc);
-			allParams.add(kappaR);
-
-			Element kappaY = kappaYElement.getElement(doc);
-			allParams.add(kappaY);
-			
+			Element el = createElement(doc, "TN93Model", dlCalculation.substitutionModels.TN93Matrix.class);
+						
 			el.appendChild(baseEl);
-			el.appendChild(kappaR);
-			el.appendChild(kappaY);
+			el.appendChild(kappaRElement.getElement(doc));
+			el.appendChild(kappaYElement.getElement(doc));
 			
 			return el;
 		}
@@ -424,12 +416,8 @@ public class SiteModelElement extends ModelElement {
 		return null;
 	}
 	
-	public List<Element> getParameters() {
-		return allParams;
-	}
-	
-	public List<Element> getLikelihoods() {
-		return allLikes;
+	public void setARGRef(ARGModelElement argRef) {
+		this.argRef = argRef;
 	}
 
 	public DoubleParamElement getAlphaParamElement() {
@@ -440,13 +428,5 @@ public class SiteModelElement extends ModelElement {
 		return rateCatCount;
 	}
 	
-//	private static Element createDoubleParamElement(ACGDocument doc, String label, double value, double lowerBound, double upperBound) throws InputConfigException {
-//		DoubleParamElement dpEl = new DoubleParamElement();
-//		dpEl.setLabel(label);
-//		dpEl.setValue(value);
-//		dpEl.setLowerBound(lowerBound);
-//		dpEl.setUpperBound(upperBound);
-//		return dpEl.getElement(doc);
-//	}
 
 }

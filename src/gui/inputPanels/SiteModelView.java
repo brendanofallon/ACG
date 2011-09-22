@@ -46,19 +46,7 @@ public class SiteModelView extends JPanel {
 
 	//The 'model' portion that stores the data
 	private SiteModelElement siteModel = new SiteModelElement();
-	
-	
-	
-	List<Element> params = new ArrayList<Element>();
-	List<Element> likelihoods = new ArrayList<Element>();;
-	
-	JPanel mutPanel;
-	JPanel ratePanel;
-	JPanel mutCenterPanel;
-	JPanel rateCenterPanel;
-	
-	private JPanel mutParamsPanel;
-	
+		
 	private final String[] rateTypes = new String[]{"One rate", "Gamma rates", "Custom rates"};
 	
 	private Stylist stylist = new Stylist();
@@ -95,45 +83,13 @@ public class SiteModelView extends JPanel {
 		}
 		if (siteModel.getRateModelType().equals( RateModelType.Gamma)) {
 			rateBox.setSelectedIndex(1);
-			DoubleParamElement alphaPar = siteModel.getAlphaParamElement();
-			if (alphaPar.getModType() == null) {
-				estAlphaBox.setSelected(false);
-				alphaField.setEnabled(true);
-				alphaField.setText("" + alphaPar.getValue());
-			}
-			else {
-				estAlphaBox.setSelected(true);
-				alphaField.setEnabled(false);
-			}
-			
 			Integer categs = siteModel.getRatCatgeoryCount();
 			categsSpinner.setValue( categs );
 		}
 		if (siteModel.getRateModelType().equals( RateModelType.Custom)) {
 			rateBox.setSelectedIndex(2);
 		}
-
 		
-	}
-	
-	protected void alphaBoxSwitched() {
-		siteModel.setEstimateAlpha(estAlphaBox.isSelected());
-		if (estAlphaBox.isSelected()) {
-			alphaField.setEnabled(false);
-		}
-		else {
-			alphaField.setEnabled(true);
-		}
-	}
-
-	
-	public Element[] getParameters() {
-		return siteModel.getParameters().toArray(new Element[]{});
-	}
-
-
-	public Element[] getLikelihoods() {
-		return siteModel.getLikelihoods().toArray(new Element[]{});
 	}
 
 
@@ -181,7 +137,8 @@ public class SiteModelView extends JPanel {
 		stylist.applyStyle(mutParamsPanel);
 		mutPanel.add(mutParamsPanel, BorderLayout.CENTER);
 		
-		kappaView = new DoubleParamView("Ts/Tv Ratio", siteModel.getTtRatioElement());
+		kappaView = new DoubleParamView("Kappa", siteModel.getTtRatioElement());
+		kappaView.setPreferredSize(new Dimension(200, 40));
 		kappaRView = new DoubleParamView("Kappa R", siteModel.getKappaRElement());
 		kappaYView = new DoubleParamView("Kappa Y", siteModel.getKappaYElement());
 		mutParamsPanel.add(kappaView);
@@ -192,6 +149,7 @@ public class SiteModelView extends JPanel {
 		this.add(sep);
 		
 		ratePanel = new JPanel();
+		ratePanel.setLayout(new BorderLayout());
 		this.add(ratePanel);
 		stylist.applyStyle(ratePanel);
 		JPanel rateTop = new JPanel();
@@ -220,7 +178,7 @@ public class SiteModelView extends JPanel {
 		stylist.applyStyle(rateConfigPanel);
 		ratePanel.add(rateConfigPanel, BorderLayout.CENTER);
 		
-		oneRatePanel.add(new JLabel("Rate :"));
+		oneRatePanel.add(new JLabel("Rate (subs. / site):"));
 		oneRatePanel.setToolTipText("Pick the rate at which sites evolve in expected substitutions / time");
 		rateTextField = new JTextField("1.0");
 		rateTextField.addActionListener(new ActionListener() {
@@ -243,21 +201,12 @@ public class SiteModelView extends JPanel {
 			}
 		});
 		categsSpinner.setToolTipText("Number of categories in discrete gamma rates model");
-		gammaPanel.add(new JLabel("Categories :"));
+		gammaPanel.add(new JLabel("Rate categories:"));
 		gammaPanel.add(categsSpinner);
-		estAlphaBox = new JCheckBox("Estimate alpha");
-		estAlphaBox.setToolTipText("Estimate the shape of the gamma distribution from the data");
-		estAlphaBox.setSelected(true);
-		estAlphaBox.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent arg0) {
-				alphaBoxSwitched();
-			}
-		});
 		
-		gammaPanel.add(estAlphaBox);
-		alphaField = new JTextField("1.0");
-		alphaField.setEnabled(false);
-		gammaPanel.add(alphaField);
+		
+		alphaView = new DoubleParamView("Gamma shape (alpha):", siteModel.getAlphaParamElement());
+		gammaPanel.add(alphaView);
 		
 		gammaPanel.setOpaque(false);
 		rateConfigPanel.add(gammaPanel, rateTypes[1]);
@@ -289,10 +238,13 @@ public class SiteModelView extends JPanel {
 		}
 		
 	    
-	    rateConfigPanel.repaint();
+	    mutPanel.repaint();
 	}
 
 	private final JPanel rateConfigPanel;
+	private JPanel mutPanel;
+	private JPanel ratePanel;
+	private JPanel mutParamsPanel;
 	
 	private final JPanel gammaPanel;
 	private final JPanel customPanel;
@@ -300,11 +252,10 @@ public class SiteModelView extends JPanel {
 
 	private JTextField rateTextField;
 	private JSpinner categsSpinner; 
-	private JCheckBox estAlphaBox;
-	private JTextField alphaField;
 	
 	private JComboBox mutBox;
 	private JComboBox rateBox;
+	private DoubleParamView alphaView;
 	private DoubleParamView kappaView;
 	private DoubleParamView kappaRView;
 	private DoubleParamView kappaYView;

@@ -11,6 +11,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import parameter.DoubleParameter;
+import xml.XMLLoader;
 
 import coalescent.ConstantRecombination;
 import coalescent.RecombinationParameter;
@@ -55,8 +56,12 @@ public class RecombRateModel extends ModelElement {
 	@Override
 	public List<Node> getElements(ACGDocument doc) throws InputConfigException {
 		List<Node> nodes = new ArrayList<Node>();
-		if (recModel != null)
-			nodes.add( recModel.getElement(doc));
+
+		if (recModel != null) {
+			Element recRate =  recModel.getElement(doc); 
+			recRate.setAttribute(XMLLoader.CLASS_NAME_ATTR, ConstantRecombination.class.getCanonicalName());
+			nodes.add( recRate );
+		}
 		return nodes;
 	}
 
@@ -124,4 +129,5 @@ public class RecombRateModel extends ModelElement {
 	public DoubleParamElement getModel() {
 		return recModel;
 	}
+	
 }

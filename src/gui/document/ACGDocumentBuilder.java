@@ -6,8 +6,10 @@ import gui.inputPanels.ElementProvider;
 import java.io.File;
 import java.io.StringWriter;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Stack;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -23,6 +25,11 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import component.LikelihoodComponent;
+
+import parameter.AbstractParameter;
 
 import xml.XMLLoader;
 
@@ -43,6 +50,13 @@ public class ACGDocumentBuilder {
 	
 	private static String documentHeader = "ACG input document created by ACG Document Builder.\n To run this file, open it with ACG or type java -jar acg.jar [this file name] at the command line";
 
+	//Holds a reference to all parameters that have been added
+	List<Element> parameters = new ArrayList<Element>();
+	
+
+	//Holds a reference to all parameters that have been added
+	List<Element> likelihoods = new ArrayList<Element>();
+	
 	
 	public ACGDocumentBuilder() throws ParserConfigurationException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -80,11 +94,103 @@ public class ACGDocumentBuilder {
 	 */
 	public void appendNode(Node node) {
 		rootElement.appendChild(node);
+		
+		//Scan node for parameters and likelihoods to add to list
+		scoopParametersAndLikelihoods(node);
+	}
+	
+	/**
+	 * Traverse this node and all descendants looking for any element children that are
+	 * parameters and add them
+	 * @param node
+	 */
+	private void scoopParametersAndLikelihoods(Node node) {
+		Stack<Element> stack = new Stack<Element>();
+		if (node.getNodeType() == Node.ELEMENT_NODE)
+			stack.push((Element)node);
+		
+		while( ! stack.isEmpty()) {
+			Element el = stack.pop();
+			if (isParameter(el))
+				parameters.add(el);
+			if (isLikelihood(el))
+				likelihoods.add(el);
+			//NodeList children = el.getChildNodes();
+			for(Node child = el.getFirstChild(); child != null; child = child.getNextSibling()) {
+				if (child.getNodeType() == Node.ELEMENT_NODE)
+					stack.push((Element)child);
+			}
+		}
+	}
+	
+	/**
+	 * True if the given element has a class attribute from which an AbstractParameter is assignable
+	 * @param el
+	 * @return
+	 */
+	private static boolean isParameter(Element el) {
+		String className = el.getAttribute(XMLLoader.CLASS_NAME_ATTR);
+		if (className == null || className.length()==0 || className.equals(XMLLoader.LIST_ATTR))
+			return false;
+		
+		try {
+			Class clazz = ClassLoader.getSystemClassLoader().loadClass(className);
+			if (AbstractParameter.class.isAssignableFrom(clazz)) {
+				//System.out.println("Class " + clazz + " is assignable from AbstractParam");
+				return true;
+			}
+		} catch (ClassNotFoundException e) {
+			System.err.println("Could not load class \'" + className + "\': " + e);
+			return false;
+		}
+		return false;
+	}
+
+	/**
+	 * Returns true if the given element has a class name attribute from which a LikelihoodComponent is assignable
+	 * @param el
+	 * @return
+	 */
+	private static boolean isLikelihood(Element el) {
+		String className = el.getAttribute(XMLLoader.CLASS_NAME_ATTR);
+		if (className == null || className.length()==0 || className.equals(XMLLoader.LIST_ATTR))
+			return false;
+		
+		try {
+			Class clazz = ClassLoader.getSystemClassLoader().loadClass(className);
+			//System.out.println("Loaded class : " + clazz);
+			if (LikelihoodComponent.class.isAssignableFrom(clazz)) {
+				return true;
+			}
+		} catch (ClassNotFoundException e) {
+			System.err.println("Could not load class \'" + className + "\': " + e);
+			return false;
+		}
+		return false;
 	}
 	
 	public void appendEmptyNode() {
-		Node node = domDoc.createTextNode(" ");
+		Node node = domDoc.createTextNode("\n");
 		appendNode(node);
+	}
+	
+	/**
+	 * Get all parameter elements (Elements with a class that is assignable from AbstractParameter) that have
+	 * been added to this builder 
+	 * @return
+	 */
+	public List<Element> getParameters() {
+		return parameters;
+	}
+	
+	
+	/**
+	 * Get all likelihoods elements (Elements with a class that is assignable from LikelihoodComponent) that have
+	 * been added to this builder 
+	 * @return
+	 */
+	public List<Element> getLikelihoods() {
+		return likelihoods;
 	}
 	
 	/**
