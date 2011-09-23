@@ -14,7 +14,7 @@ import component.LikelihoodComponent;
  * @author brendano
  *
  */
-public class ExponentialPrior extends LikelihoodComponent {
+public class ExponentialPrior extends AbstractPrior {
 
 	public static final String XML_MEAN = "mean";
 	
@@ -23,7 +23,7 @@ public class ExponentialPrior extends LikelihoodComponent {
 	DoubleParameter param;
 	
 	public ExponentialPrior(Map<String, String> attrs, DoubleParameter param) {
-		super(attrs);
+		super(attrs, param);
 		addParameter(param);
 		this.param = param;
 		this.mean = XMLUtils.getDoubleOrFail(XML_MEAN, attrs);

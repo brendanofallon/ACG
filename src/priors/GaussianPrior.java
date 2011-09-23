@@ -15,7 +15,7 @@ import cern.jet.random.Normal;
  * @author brendano
  *
  */
-public class GaussianPrior extends LikelihoodComponent {
+public class GaussianPrior extends AbstractPrior {
 
 	public static final String XML_MEAN = "mean";
 	public static final String XML_STDEV = "stdev";
@@ -24,8 +24,7 @@ public class GaussianPrior extends LikelihoodComponent {
 	DoubleParameter param;
 	
 	public GaussianPrior(Map<String, String> attrs, DoubleParameter param) {
-		super(attrs);
-		addParameter(param);
+		super(attrs, param);
 		this.param = param;
 		double mean = XMLUtils.getDoubleOrFail( XML_MEAN, attrs);
 		double stdev = XMLUtils.getDoubleOrFail(XML_STDEV, attrs);

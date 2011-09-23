@@ -14,13 +14,9 @@ import parameter.Parameter;
  */
 public abstract class AbstractPrior extends LikelihoodComponent implements Prior {
 
-	
 	public AbstractPrior(Map<String, String> attrs, Parameter param) {
 		super(attrs);
 		addParameter(param);
-		
-		proposedLogLikelihood = computeProposedLikelihood();
-		this.stateAccepted();
 	}
 	
 	

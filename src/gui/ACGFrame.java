@@ -1,7 +1,6 @@
 package gui;
 
 import gui.document.ACGDocument;
-import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.DocMemberConfigPanel;
 
 import java.awt.BorderLayout;
