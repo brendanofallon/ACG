@@ -39,7 +39,7 @@ public class ParamConfigFrame extends JFrame {
 	private JPanel priorPanel;
 	
 	public ParamConfigFrame(final DoubleParamView paramView) {
-		super("Configure " + paramView.getModel().getElementName());
+		super("Configure " + paramView.getModel().getLabel());
 		this.view = paramView;
 		this.model = paramView.getModel();
 		stylist.addStyle(new Style() {
@@ -50,7 +50,7 @@ public class ParamConfigFrame extends JFrame {
 			}
 		});
 		
-		String name = model.getElementName();
+		String name = model.getLabel();
 		mainPanel = new JPanel();
 		stylist.applyStyle(mainPanel);
 		
@@ -93,10 +93,18 @@ public class ParamConfigFrame extends JFrame {
 	}
 	
 	protected void done() {
+		//ActionPerformed is only called if the user hits the return button whilst the cursor is in
+		//one of the fields, which may never happen. When the done button is clicked we therefore
+		//have to make sure that all of the info is updated in the models
 		updateFieldInfo(paramNameField);
 		updateFieldInfo(initValueField);
 		updateFieldInfo(lowerBoundField);
 		updateFieldInfo(upperBoundField);
+		if (priorBox.getSelectedIndex() != 0)
+			updatePriorMeanField();
+		
+		if (priorBox.getSelectedIndex() != 0 && priorBox.getSelectedIndex() != 2)
+			updatePriorStdevField();
 		setVisible(false);
 		view.updateView();
 	}
@@ -110,7 +118,7 @@ public class ParamConfigFrame extends JFrame {
 		if (modType == ModType.Scale)
 			modifierBox.setSelectedIndex(2);
 		
-		paramNameField.setText(model.getElementName());
+		paramNameField.setText(model.getLabel());
 		initValueField.setText("" + model.getValue() );
 		lowerBoundField.setText("" + model.getLowerBound());
 		upperBoundField.setText("" + model.getUpperBound());
@@ -124,7 +132,7 @@ public class ParamConfigFrame extends JFrame {
 		valuesPanel.setLayout(new BoxLayout(valuesPanel, BoxLayout.Y_AXIS));
 		
 		//mainPanel.add(stylist.applyStyle(new JLabel("Enter settings below:")));
-		paramNameField = new JTextField(model.getElementName());
+		paramNameField = new JTextField(model.getLabel());
 		addComps(valuesPanel, "Param. label : ", paramNameField);
 		
 		initValueField = new JTextField("" + model.getValue() );
@@ -190,32 +198,32 @@ public class ParamConfigFrame extends JFrame {
 	}
 	
 	protected void updatePriorStdevField() {
-		String text = priorMeanField.getText();
+		String text = priorStdevField.getText();
 		try {
 			Double val = Double.parseDouble(text);
 			if (priorBox.getSelectedIndex()==2 && val <= 0) {
 				JOptionPane.showMessageDialog(this, "Mean must be strictly positive");
 				return;
 			}
-			model.getPriorModel().setMean(val);
+			model.getPriorModel().setStdev(val);
 		}
 		catch(NumberFormatException nfe) {
-			JOptionPane.showMessageDialog(this, "Please enter a valid number");
+			JOptionPane.showMessageDialog(this, "Please enter a valid number for the std. dev.");
 		}
 	}
 
 	protected void updatePriorMeanField() {
-		String text = priorStdevField.getText();
+		String text = priorMeanField.getText();
 		try {
 			Double val = Double.parseDouble(text);
 			if (val <= 0) {
 				JOptionPane.showMessageDialog(this, "Standard deviation must be a strictly positive number");
 				return;
 			}
-			model.getPriorModel().setStdev(val);
+			model.getPriorModel().setMean(val);
 		}
 		catch(NumberFormatException nfe) {
-			JOptionPane.showMessageDialog(this, "Please enter a valid number");
+			JOptionPane.showMessageDialog(this, "Please enter a valid number for the mean");
 		}
 	}
 

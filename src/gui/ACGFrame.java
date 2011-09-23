@@ -76,7 +76,7 @@ public class ACGFrame extends JFrame implements WindowListener {
         }
         
 		initComponents();
-		setPreferredSize(new Dimension(1000, 600));
+		setPreferredSize(new Dimension(950, 450));
 		//We handle things from a listener of our own design
 		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(this);
@@ -185,6 +185,10 @@ public class ACGFrame extends JFrame implements WindowListener {
 		}
 	}
 	
+	public void enableRunButton() {
+		toolBar.enableRunButton();
+	}
+	
 	/**
 	 * Called when user clicks on 'pause' button
 	 */
@@ -197,7 +201,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 	}
 	
 	public void clearAndMakeNew() {
-		centerPanel = new BuildPanel(this);
+		centerPanel = new DocMemberConfigPanel(this);
 		this.getContentPane().add(centerPanel, BorderLayout.CENTER);
 		this.getContentPane().validate();
 		repaint();
@@ -254,12 +258,27 @@ public class ACGFrame extends JFrame implements WindowListener {
 			if (centerPanel instanceof DocMemberConfigPanel) {
 				DocMemberConfigPanel configPanel = (DocMemberConfigPanel)centerPanel;
 				configPanel.loadSettingsFromDocument(doc);
+				toolBar.enableRunButton();
 			}
-				
 			
 		}
 	}
 	
+	
+	public void startNewRun() {
+		ACGDocument acgDoc = ((DocMemberConfigPanel)centerPanel).getACGDocument();
+		try {
+			acgDoc.loadAndVerifyClasses();
+			acgDoc.turnOffMCMC();
+			acgDoc.instantiateAll();
+		} catch (Exception e1) {
+			ErrorWindow.showErrorWindow(e1);
+			return;
+		}
+		
+		PickMonitorsPanel pickMonitors = new PickMonitorsPanel(this, acgDoc);
+		replaceCenterPanel(pickMonitors);
+	}
 	
 	/**
 	 * Save the settings to a new file. We always save as a new file so it's clear that
@@ -345,7 +364,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 		Container mainContainer = this.getContentPane();
 		mainContainer.setLayout(layout);
 		
-		TopToolBar toolBar = new TopToolBar(this);
+		toolBar = new TopToolBar(this);
 		this.add(toolBar, BorderLayout.NORTH);
 		
 		centerPanel = new DocMemberConfigPanel(this);
@@ -476,7 +495,9 @@ public class ACGFrame extends JFrame implements WindowListener {
 	
 	private JFileChooser fileChooser; //Used on non-mac platforms
 	private FileDialog fileDialog; //Used on mac systems
+	
+	private TopToolBar toolBar;
 
-
+	
 
 }

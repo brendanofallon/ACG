@@ -21,6 +21,11 @@ import xml.XMLLoader;
  */
 public abstract class ModelElement implements ElementProvider {
 	
+	/**
+	 * Convenient access to the doubleparameters created by this element
+	 * @return
+	 */
+	public abstract List<DoubleParamElement> getDoubleParameters();
 	
 	/**
 	 * Return a list of DOM elements representing the data in this ModelElement

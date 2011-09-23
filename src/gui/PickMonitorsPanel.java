@@ -42,7 +42,7 @@ import sequence.Alignment;
 import xml.XMLLoader;
 
 /**
- * A different (prettier) panel allowing the user to pick some properties of parameters and likelihoods to monitor. 
+ * A panel allowing the user to pick some properties of parameters and likelihoods to monitor. 
  * @author brendano
  *
  */

@@ -13,7 +13,9 @@ import org.w3c.dom.Node;
 import coalescent.CoalescentLikelihood;
 
 /**
- * Model implementation for Coalescent stuff - including pop size, recomb rate, etc. 
+ * Model implementation for Coalescent stuff - including pop size, recomb rate, etc. Mostly just a 
+ * wrapper for a PopSizeModel and a recombination rate model, but also creates the coalescent likelihood
+ * element. 
  * @author brendano
  *
  */
@@ -38,8 +40,10 @@ public class CoalescentModelElement extends ModelElement {
 	@Override
 	public List<Node> getElements(ACGDocument doc) throws InputConfigException {
 		List<Node> nodes = new ArrayList<Node>();
+		params.clear();
 		
 		nodes.addAll(popSizeModel.getElements(doc));
+		params.addAll(popSizeModel.getDoubleParameters());
 		
 		if (recRateModel != null)
 			nodes.addAll(recRateModel.getElements(doc));
@@ -48,6 +52,7 @@ public class CoalescentModelElement extends ModelElement {
 		coalEl.appendChild( doc.createElement(popSizeModel.getModelLabel()));
 		if (recRateModel != null) {
 			coalEl.appendChild( doc.createElement(recRateModel.getModelLabel()));
+			params.addAll(recRateModel.getDoubleParameters());
 		}
 		
 		coalEl.appendChild( doc.createElement(argRef.getModelLabel()));
@@ -99,8 +104,13 @@ public class CoalescentModelElement extends ModelElement {
 		this.modelLabel = modelLabel;
 	}
 
-
+	public List<DoubleParamElement> getDoubleParameters() {
+		return params;
+	}
 	
-	//private List<Element> allParams = new ArrayList<Element>();
-	//private List<Element> allLikelihoods = new ArrayList<Element>();
+	//Maintains list of all double parameters we use
+	private List<DoubleParamElement> params = new ArrayList<DoubleParamElement>();
+
+
+
 }

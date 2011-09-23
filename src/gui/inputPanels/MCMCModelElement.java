@@ -21,7 +21,7 @@ public class MCMCModelElement extends ModelElement {
 	String label = "MCMC";
 	
 
-	int runLength;
+	long runLength;
 	boolean verbose = false;
 	
 	
@@ -59,6 +59,10 @@ public class MCMCModelElement extends ModelElement {
 		this.runLength = runLength;
 	}
 	
+	public void setRunLength(long runLength) {
+		this.runLength = runLength;
+	}
+	
 	@Override
 	public List<Node> getElements(ACGDocument doc) throws InputConfigException {
 		List<Node> nodes = new ArrayList<Node>();
@@ -91,8 +95,13 @@ public class MCMCModelElement extends ModelElement {
 
 	@Override
 	public void readElements(ACGDocument doc) throws InputConfigException {
-		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public List<DoubleParamElement> getDoubleParameters() {
+		return new ArrayList<DoubleParamElement>();
+	}
+
 
 }

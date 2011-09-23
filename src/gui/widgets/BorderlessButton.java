@@ -33,6 +33,10 @@ public class BorderlessButton extends JPanel {
 	private boolean drawBorder = false;
 	private boolean clicking = false;
 	
+	//Allows nudgeing of image a bit so its in right spot
+	private int yDif = 0;
+	private int xDif = 0;
+	
 	List<ActionListener> actionListeners = new ArrayList<ActionListener>();
 	
 	public BorderlessButton(String label) {
@@ -93,17 +97,22 @@ public class BorderlessButton extends JPanel {
 	class Listener extends MouseInputAdapter {
 		
 		public void mouseClicked(MouseEvent me) {
-			fireActionEvent(me);
+			if (isEnabled())
+				fireActionEvent(me);
 		}
 		
 		public void mousePressed(MouseEvent me) {
-			clicking = true;
-			repaint();
+			if (isEnabled()) {
+				clicking = true;
+				repaint();
+			}
 		}
 		
 		public void mouseReleased(MouseEvent me) {
-			clicking = false;
-			repaint();
+			if (isEnabled()) {
+				clicking = false;
+				repaint();
+			}
 		}
 		
 		public void mouseEntered(MouseEvent me) {
@@ -121,7 +130,7 @@ public class BorderlessButton extends JPanel {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		if (drawBorder) {
+		if (this.isEnabled() && drawBorder) {
 
 			GradientPaint gp;
 			if (clicking)
@@ -137,17 +146,17 @@ public class BorderlessButton extends JPanel {
 		
 		int dx = 1;
 		if (icon != null) {
-			g2d.drawImage(icon.getImage(), 2, Math.max(0, getHeight()/2-icon.getIconHeight()/2) , null);
+			g2d.drawImage(icon.getImage(), 2+xDif, Math.max(0, getHeight()/2-icon.getIconHeight()/2)+yDif , null);
 			dx += icon.getIconWidth()+2;
 		}
 		if (text != null) {
 			g2d.setColor(new Color(0.99f, 0.99f, 0.99f, 0.5f));
-			g2d.drawString(text, dx+3, getHeight()/2+7);
+			g2d.drawString(text, dx+3+xDif, getHeight()/2+7);
 			g2d.setColor(new Color(0.2f, 0.2f, 0.2f));
-			g2d.drawString(text, dx+2, getHeight()/2+6);
+			g2d.drawString(text, dx+2+xDif, getHeight()/2+6);
 		}
 		
-		if (drawBorder) {
+		if (this.isEnabled() && drawBorder) {
 			g2d.setColor(new Color(0.99f, 0.99f, 0.99f, 0.35f));
 			g2d.drawRoundRect(1, 1, getWidth()-2, getHeight()-3, 7, 7);
 			
@@ -157,6 +166,20 @@ public class BorderlessButton extends JPanel {
 	}
 
 
-	
+	public int getYDif() {
+		return yDif;
+	}
+
+	public void setYDif(int yDif) {
+		this.yDif = yDif;
+	}
+
+	public int getXDif() {
+		return xDif;
+	}
+
+	public void setXDif(int xDif) {
+		this.xDif = xDif;
+	}
 	
 }

@@ -234,6 +234,10 @@ public class ARGModelElement extends ModelElement {
 		this.argLabel = label;
 	}
 	
+	@Override
+	public List<DoubleParamElement> getDoubleParameters() {
+		return new ArrayList<DoubleParamElement>();
+	}
 	
 	/**
 	 * Little wrapper for ARG modifiers
@@ -254,5 +258,6 @@ public class ARGModelElement extends ModelElement {
 	private boolean useAllModifiers = true;
 	private String argLabel = "ARG";
 	private Newick startingNewick = null;
+
 	
 }

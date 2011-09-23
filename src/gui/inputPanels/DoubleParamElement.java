@@ -102,7 +102,7 @@ public class DoubleParamElement {
 		return lowerBound;
 	}
 
-	public String getElementName() {
+	public String getLabel() {
 		return elementName;
 	}
 	
@@ -243,11 +243,6 @@ public class DoubleParamElement {
 		
 		
 		return el;
-	}
-
-	@Override
-	public void readElements(ACGDocument doc) throws InputConfigException {
-		throw new IllegalStateException("Cannot read param elements directly from document");
 	}
 	
 }

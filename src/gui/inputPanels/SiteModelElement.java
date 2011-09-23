@@ -62,8 +62,12 @@ public class SiteModelElement extends ModelElement {
 	
 	public SiteModelElement() {
 		ttRatioElement.setLabel(ttRatioLabel);
+		ttRatioElement.setModifierLabel(ttRatioLabel + "Mod");
 		kappaRElement.setLabel(kappaRLabel);
+		kappaRElement.setModifierLabel(kappaRLabel + "Mod");
+		kappaYElement.setModifierLabel(kappaYLabel + "Mod");
 		kappaYElement.setLabel(kappaYLabel);
+		
 		alphaParamElement.setLabel(defaultAlphaParamLabel);
 		alphaParamElement.setValue(1.0);
 		alphaParamElement.setLowerBound(0.01);
@@ -343,7 +347,7 @@ public class SiteModelElement extends ModelElement {
 	
 	public List<Node> getElements(ACGDocument doc) throws InputConfigException {
 		List<Node> elements = new ArrayList<Node>();
-		
+		params.clear();
 		try {
 			Element rateModelNode = createRateModelNode(doc);
 			elements.add(rateModelNode);
@@ -376,7 +380,7 @@ public class SiteModelElement extends ModelElement {
 			
 			
 			Element alpha = alphaParamElement.getElement(doc);
-			
+			params.add(alphaParamElement);
 			
 			siteNode.appendChild(alpha);
 			
@@ -389,7 +393,6 @@ public class SiteModelElement extends ModelElement {
 			//return null;
 		}
 		
-		System.out.println("Hmm, returning null for the site node");
 		return null;
 	}
 
@@ -400,6 +403,7 @@ public class SiteModelElement extends ModelElement {
 			Element el = createElement(doc, mutModelLabel, dlCalculation.substitutionModels.F84Matrix.class);			
 			el.appendChild(baseEl);
 			el.appendChild(ttRatioElement.getElement(doc));
+			params.add(ttRatioElement);
 			return el;
 		}
 		
@@ -410,6 +414,8 @@ public class SiteModelElement extends ModelElement {
 			el.appendChild(kappaRElement.getElement(doc));
 			el.appendChild(kappaYElement.getElement(doc));
 			
+			params.add(kappaRElement);
+			params.add(kappaYElement);
 			return el;
 		}
 		
@@ -427,6 +433,12 @@ public class SiteModelElement extends ModelElement {
 	public int getRatCatgeoryCount() {
 		return rateCatCount;
 	}
-	
 
+	@Override
+	public List<DoubleParamElement> getDoubleParameters() {
+		return params;
+	}
+	
+	//Maintains list of all double parameters we use
+	private List<DoubleParamElement> params = new ArrayList<DoubleParamElement>();
 }

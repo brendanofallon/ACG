@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -32,13 +33,14 @@ public class TopToolBar extends JPanel {
 	public TopToolBar(ACGFrame acgParent) {
 		this.acgParent = acgParent;
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		setBorder(BorderFactory.createEmptyBorder(1, 2, 1, 2));
 		makeButtons();
+		disableRunButton();
 	}
 	
 	
 	
 	private void makeButtons() {
-
 		newButton = new BorderlessButton("New", ACGFrame.getIcon("icons/addIcon.png"));
 		newButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -54,6 +56,9 @@ public class TopToolBar extends JPanel {
 			}
 		});
 		loadButton.setToolTipText("Load from file");
+		loadButton.setMinimumSize(new Dimension(60, 36));
+		loadButton.setPreferredSize(new Dimension(60, 36));
+		loadButton.setMaximumSize(new Dimension(60, 36));
 		
 		saveButton = new BorderlessButton("Save", ACGFrame.getIcon("icons/downArrow.png"));
 		saveButton.addActionListener(new ActionListener() {
@@ -62,6 +67,9 @@ public class TopToolBar extends JPanel {
 			}
 		});
 		saveButton.setToolTipText("Save this analysis");
+		saveButton.setMinimumSize(new Dimension(60, 36));
+		saveButton.setPreferredSize(new Dimension(60, 36));
+		saveButton.setMaximumSize(new Dimension(60, 36));
 		
 		runButton = new BorderlessButton("Run", ACGFrame.getIcon("icons/rightArrow.png"));
 		runButton.addActionListener(new ActionListener() {
@@ -70,9 +78,12 @@ public class TopToolBar extends JPanel {
 			}
 		});
 		runButton.setToolTipText("Run with current settings");
+		runButton.setMinimumSize(new Dimension(60, 36));
+		runButton.setPreferredSize(new Dimension(60, 36));
+		runButton.setMaximumSize(new Dimension(60, 36));
 		
 		add(Box.createRigidArea(new Dimension(20, 40)));
-		add(newButton);
+		//add(newButton);
 		add(loadButton);
 		add(saveButton);
 		add(runButton);
@@ -81,7 +92,7 @@ public class TopToolBar extends JPanel {
 	}
 	
 	protected void runButtonPressed() {
-	//	acgParent.startNewRun();
+		acgParent.startNewRun();
 	}
 
 
@@ -91,6 +102,13 @@ public class TopToolBar extends JPanel {
 	}
 
 
+	public void disableRunButton() {
+		runButton.setEnabled(false);
+	}
+	
+	public void enableRunButton() {
+		runButton.setEnabled(true);
+	}
 
 	protected void loadButtonPressed() {
 		acgParent.loadDocumentFromFile();

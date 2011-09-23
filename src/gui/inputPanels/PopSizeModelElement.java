@@ -69,6 +69,7 @@ public class PopSizeModelElement extends ModelElement {
 	@Override
 	public List<Node> getElements(ACGDocument doc) throws InputConfigException {
 		List<Node> nodes = new ArrayList<Node>();
+		params.clear();
 		
 		Element popEl = doc.createElement(modelLabel);
 		nodes.add(popEl);
@@ -84,6 +85,8 @@ public class PopSizeModelElement extends ModelElement {
 				modEl.setFrequency( constSizeModel.getModifierFrequency() );
 				modEl.setType( constSizeModel.getModType() );
 			}
+			constSizeModel.setLabel(modelLabel); //Make sure it has the same name as
+			params.add( constSizeModel );
 		}
 
 		
@@ -93,6 +96,8 @@ public class PopSizeModelElement extends ModelElement {
 			Element growthEl = growthRateElement.getElement(doc);
 			popEl.appendChild( baseEl );
 			popEl.appendChild( growthEl );
+			params.add(baseSizeElement);
+			params.add(growthRateElement);
 		}
 		
 		return nodes;
@@ -162,5 +167,12 @@ public class PopSizeModelElement extends ModelElement {
 	public DoubleParamElement getGrowthRateModel() {
 		return growthRateElement;
 	}
+
+	public List<DoubleParamElement> getDoubleParameters() {
+		return params;
+	}
+	
+	//Maintains list of all double parameters we use
+	private List<DoubleParamElement> params = new ArrayList<DoubleParamElement>();
 
 }

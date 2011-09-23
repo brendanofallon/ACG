@@ -52,7 +52,7 @@ public class DoubleParamView extends JPanel {
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		stylist.applyStyle(this);
 		
-		infoLabel = new JLabel(model.getElementName() + " : "  + model.getValue() + " [" + model.getLowerBound() + " - " + model.getUpperBound() + "]");
+		infoLabel = new JLabel(model.getLabel() + " : "  + model.getValue() + " [" + model.getLowerBound() + " - " + model.getUpperBound() + "]");
 		stylist.applyStyle(infoLabel);
 		add(Box.createHorizontalGlue());
 		add(infoLabel);
@@ -63,6 +63,8 @@ public class DoubleParamView extends JPanel {
 			configButton = new BorderlessButton(configIcon);
 			configButton.setPreferredSize(new Dimension(34, 20));
 			configButton.setMaximumSize(new Dimension(34, 32));
+			configButton.setYDif(-3);
+			configButton.setXDif(2);
 		}
 		else {
 			configButton = new BorderlessButton("Configure", null);
@@ -88,7 +90,7 @@ public class DoubleParamView extends JPanel {
 
 	
 	private void redrawLabel() {
-		infoLabel.setText(model.getElementName() + " : "  + model.getValue() + " [" + model.getLowerBound() + " - " + model.getUpperBound() + "]");
+		infoLabel.setText(model.getLabel() + " : "  + model.getValue() + " [" + model.getLowerBound() + " - " + model.getUpperBound() + "]");
 		revalidate();
 	}
 

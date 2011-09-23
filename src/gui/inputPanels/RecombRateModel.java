@@ -44,7 +44,7 @@ public class RecombRateModel extends ModelElement {
 	public String getModelLabel() {
 		if (recModel == null)
 			initialize();
-		return recModel.getElementName();
+		return recModel.getLabel();
 	}
 	
 	public void setModelLabel(String label) {
@@ -56,10 +56,12 @@ public class RecombRateModel extends ModelElement {
 	@Override
 	public List<Node> getElements(ACGDocument doc) throws InputConfigException {
 		List<Node> nodes = new ArrayList<Node>();
-
+		params.clear();
+		
 		if (recModel != null) {
 			Element recRate =  recModel.getElement(doc); 
 			recRate.setAttribute(XMLLoader.CLASS_NAME_ATTR, ConstantRecombination.class.getCanonicalName());
+			params.add(recModel);
 			nodes.add( recRate );
 		}
 		return nodes;
@@ -129,5 +131,11 @@ public class RecombRateModel extends ModelElement {
 	public DoubleParamElement getModel() {
 		return recModel;
 	}
-	
+
+	@Override
+	public List<DoubleParamElement> getDoubleParameters() {
+		return params;
+	}
+
+	List<DoubleParamElement> params = new ArrayList<DoubleParamElement>();
 }

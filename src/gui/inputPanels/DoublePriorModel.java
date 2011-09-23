@@ -20,10 +20,10 @@ import priors.UniformPrior;
  * @author brendano
  *
  */
-public class DoublePriorModel extends ModelElement {
+public class DoublePriorModel {
 
 	enum PriorType { Uniform, Exponential, Gamma, Gaussian };
-	private String label;
+	private String label = null;
 	private PriorType type = PriorType.Uniform;
 	private double mean = 1.0;
 	private double stdev = 1.0;
@@ -32,12 +32,22 @@ public class DoublePriorModel extends ModelElement {
 	
 	public DoublePriorModel(DoubleParamElement param) {
 		this.param = param;
-		label = param.getElementName() + "Prior";
+		
 	}
 	
-	@Override
-	public List<Node> getElements(ACGDocument doc) throws InputConfigException {
-		List<Node> nodes = new ArrayList<Node>();
+	public void setLabel(String label) {
+		this.label = label;
+	}
+	
+	public DoubleParamElement getParamModel() {
+		return param;
+	}
+	
+	public Element getElement(ACGDocument doc) throws InputConfigException {
+	
+		if (label == null) {
+			setLabel(param.getLabel() + "Prior");
+		}
 		
 		Class priorClass = UniformPrior.class;
 		switch(type) {
@@ -47,7 +57,7 @@ public class DoublePriorModel extends ModelElement {
 		case Gaussian : priorClass = GaussianPrior.class; break;
 		}
 		
-		Element el = createElement(doc, label, priorClass);
+		Element el = ModelElement.createElement(doc, label, priorClass);
 		if (type == PriorType.Uniform) {
 			el.setAttribute(DoubleParameter.XML_LOWERBOUND, "" + param.getLowerBound());
 			el.setAttribute(DoubleParameter.XML_UPPERBOUND, "" + param.getUpperBound());
@@ -66,15 +76,9 @@ public class DoublePriorModel extends ModelElement {
 		}
 		
 		//Reference to parameter
-		el.appendChild( doc.createElement( param.getElementName() ));
+		el.appendChild( doc.createElement( param.getLabel() ));
 		
-		nodes.add(el);
-		return nodes;
-	}
-
-	@Override
-	public void readElements(ACGDocument doc) throws InputConfigException {
-		throw new IllegalStateException("Cannot read elements from document");
+		return el;
 	}
 	
 	public void setType(PriorType type) {

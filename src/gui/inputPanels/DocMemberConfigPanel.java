@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import gui.ACGFrame;
@@ -126,6 +127,18 @@ public class DocMemberConfigPanel extends JPanel {
 			coalescentModelPanel.getModel().setARGRef(argModel);
 			docBuilder.appendNodes( coalescentModelPanel.getModel() );
 			
+			//Prior stuff comes last
+			List<DoubleParamElement> paramModels = new ArrayList<DoubleParamElement>();
+			paramModels.addAll(siteModelPanel.getSiteModel().getDoubleParameters());
+			paramModels.addAll(coalescentModelPanel.getModel().getDoubleParameters());
+			
+			for(DoubleParamElement paramElement : paramModels) {
+				if (paramElement.getPriorModel() != null) {
+					Element priorNode = paramElement.getPriorModel().getElement(docBuilder.getACGDocument());
+					docBuilder.appendNode(priorNode);
+				}
+			}
+			
 			mcElement.clearReferences();
 			List<Element> params = docBuilder.getParameters();
 			for(Element param : params) {
@@ -137,8 +150,9 @@ public class DocMemberConfigPanel extends JPanel {
 				mcElement.addLikelihoodRef(like);
 			}
 			
+			mcElement.setRunLength((long)1e7);
 			docBuilder.appendNodes( mcElement );
-						
+				
 			
 		} catch (ParserConfigurationException e) {
 			ErrorWindow.showErrorWindow(e);
@@ -192,6 +206,7 @@ public class DocMemberConfigPanel extends JPanel {
 			Alignment aln = new Alignment(selectedFile);
 			alignmentEl.setElement(aln);
 			updateTopLabel(shortname);
+			acgParent.enableRunButton();
 		}
 	}
 	
