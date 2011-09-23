@@ -35,7 +35,7 @@ public abstract class PropertyLogger implements MCMCListener {
 	//Don't collect info before this number of states
 	int burnin = 500000;
 	
-	protected boolean writeTempData = false;
+	protected boolean writeTempData = true;
 	protected int writeTempFrequency = 100000; //Frequency to write in MCMC gens
 	
 	//We periodically write what we know to a file so that if a long
@@ -73,6 +73,11 @@ public abstract class PropertyLogger implements MCMCListener {
 		if (writeTempData != null) {
 			this.writeTempData = writeTempData;
 			tempFileName = filename;
+		}
+		else {
+			//Nothing provided, which means we ARE writing temp data, to a file of the same name as the final output file
+			if (filename != null)
+				tempFileName = filename;
 		}
 	}
 	

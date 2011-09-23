@@ -2,6 +2,7 @@ package gui.inputPanels.loggerConfigs;
 
 import gui.document.ACGDocument;
 import gui.inputPanels.Configurator.InputConfigException;
+import logging.BreakpointDensity;
 import logging.StateLogger;
 
 import org.w3c.dom.Element;
@@ -18,6 +19,11 @@ public class StateLoggerModel extends LoggerModel {
 		this.echoToScreen = echoToScreen;
 	}
 
+	@Override
+	public Class getLoggerClass() {
+		return StateLogger.class;
+	}
+	
 	@Override
 	public void readElements(ACGDocument doc) throws InputConfigException {
 		Element el = getSingleElementForClass(doc, StateLogger.class);

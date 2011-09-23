@@ -11,10 +11,13 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import logging.StateLogger;
+
 public class AddLoggerFrame extends JFrame {
 
 	LoggersPanel parentPanel;
 	List<AbstractLoggerView> loggerList = new ArrayList<AbstractLoggerView>();
+	
 	
 	
 	public AddLoggerFrame(LoggersPanel parentPanel) {
@@ -46,6 +49,21 @@ public class AddLoggerFrame extends JFrame {
 		loggerList.add(new StateLoggerView(new StateLoggerModel()) );
 		loggerList.add(new BPDensityView(new BPDensityModel()) );
 		loggerList.add(new BPLocationView(new BPLocationModel()) );
+		loggerList.add(new RootHeightView(new RootHeightModel()) );
+	}
+	
+	/**
+	 * Obtain the view associated with the given class, or null if there is not one
+	 * @param clazz
+	 * @return
+	 */
+	public AbstractLoggerView getViewForClass(String canonicalName) {
+		for(AbstractLoggerView view : loggerList){
+			if (view.getModel().getLoggerClass().getCanonicalName().equals( canonicalName )) {
+				return view;
+			}
+		}
+		return null;
 	}
 
 	/**

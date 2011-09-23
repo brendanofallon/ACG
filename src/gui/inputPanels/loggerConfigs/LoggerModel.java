@@ -28,12 +28,11 @@ public abstract class LoggerModel extends ModelElement {
 	protected int burnin = 1000000;	
 	protected ARGModelElement argRef = null; //Many loggers need a reference to the ARG
 	
-
-
 	public LoggerModel() {
 		modelLabel = getDefaultLabel();
 	}
 	
+	public abstract Class getLoggerClass();
 	
 	public ARGModelElement getArgRef() {
 		return argRef;

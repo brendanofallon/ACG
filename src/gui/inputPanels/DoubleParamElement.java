@@ -150,7 +150,7 @@ public class DoubleParamElement {
 		setLabel(label);
 		
 		String valStr = el.getAttribute(DoubleParameter.XML_VALUE);
-		if (valStr == null || valStr.length()>0)
+		if (valStr == null || valStr.length()==0)
 			throw new InputConfigException("Could not find value for DoubleParameter with label " + elementName);
 		try {
 			Double val = Double.parseDouble(valStr);

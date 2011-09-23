@@ -1,23 +1,30 @@
 package gui.inputPanels.loggerConfigs;
 
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import gui.ErrorWindow;
 import gui.document.ACGDocument;
 import gui.inputPanels.ARGModelElement;
 import gui.inputPanels.Configurator.InputConfigException;
 import gui.widgets.BorderlessButton;
+
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+
+import logging.PropertyLogger;
+import logging.StateLogger;
+
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+
+import xml.XMLLoader;
 
 
 public class LoggersPanel extends JPanel {
@@ -74,7 +81,6 @@ public class LoggersPanel extends JPanel {
 	}
 	
 	public void removeLogger(AbstractLoggerView which) {
-		System.out.println("Removing logger : " + which.getName());
 		LoggerWrapper toRemove = null;
 		for(LoggerWrapper logger : loggers) {
 			if (logger.config == which) {
@@ -119,7 +125,40 @@ public class LoggersPanel extends JPanel {
 		return icon;
 	}
 	
+	
+	public void removeAllLoggers() {
+		for(LoggerWrapper wrapper : loggers) {
+			remove(wrapper);
+		}
+		loggers.clear();
+		revalidate();
+		repaint();
+	}
+	
 	public void readNodesFromDocument(ACGDocument doc) {
+		removeAllLoggers();
+		List<String> docLoggers = doc.getLabelForClass(PropertyLogger.class);
+		docLoggers.addAll( doc.getLabelForClass(StateLogger.class));
+		
+		for(String loggerLabel : docLoggers) {
+			Element el = doc.getElementForLabel(loggerLabel);
+			String className = el.getAttribute(XMLLoader.CLASS_NAME_ATTR);
+			System.out.println("Found logger with class name: " + className);
+			AbstractLoggerView view = addFrame.getViewForClass( className );
+			try {
+				if (view!= null) {
+					view.getModel().readElements(doc);
+					addLogger(view);
+					System.out.println(" found view for it");
+				}
+				else {
+					System.out.println(" could not find associated view");
+				}
+			} catch (InputConfigException e) {
+				ErrorWindow.showErrorWindow(e);
+			}
+			
+		}
 		
 	}
 	
@@ -138,6 +177,7 @@ public class LoggersPanel extends JPanel {
 			setOpaque(false);
 			setPreferredSize(conf.getPreferredDimensions());
 			setMaximumSize(conf.getPreferredDimensions());
+			setBorder(BorderFactory.createEmptyBorder(0, 0, 4, 0));
 			conf.setAlignmentY(TOP_ALIGNMENT);
 			add(conf);
 			add(Box.createHorizontalGlue());

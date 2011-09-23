@@ -103,4 +103,9 @@ public class BPLocationModel extends LoggerModel {
 		}
 	}
 
+	@Override
+	public Class getLoggerClass() {
+		return BreakpointLocation.class;
+	}
+
 }

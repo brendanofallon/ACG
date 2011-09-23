@@ -53,6 +53,7 @@ public class BreakpointLocation extends PropertyLogger {
 		userMaxHeight = XMLUtils.getOptionalDouble(XML_HEIGHT, attrs); //This can be null
 		
 		this.arg = arg;
+		hist = new int[seqBins][depthBins];
 	}
 	
 	public BreakpointLocation(ARG arg) {

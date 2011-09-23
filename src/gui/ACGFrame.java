@@ -275,6 +275,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 			return;
 		}
 		
+		this.remove(toolBar);
 		PickMonitorsPanel pickMonitors = new PickMonitorsPanel(this, acgDoc);
 		replaceCenterPanel(pickMonitors);
 	}

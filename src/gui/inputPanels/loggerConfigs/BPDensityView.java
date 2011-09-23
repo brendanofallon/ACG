@@ -52,11 +52,6 @@ public class BPDensityView extends AbstractLoggerView {
 	public String getDescription() {
 		return "Locations of recombination breakpoints along sequence";
 	}
-	
-	
-	JSpinner freqSpinner;
-	JSpinner bpBurninSpinner;
-	JTextField bpFilenameField;
 
 
 }

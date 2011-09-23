@@ -1,15 +1,17 @@
 package gui.inputPanels.loggerConfigs;
 
 import logging.BreakpointDensity;
-import logging.BreakpointLocation;
 import logging.PropertyLogger;
-import logging.StateLogger;
-import gui.document.ACGDocument;
-import gui.inputPanels.Configurator.InputConfigException;
+import logging.RootHeightDensity;
 
 import org.w3c.dom.Element;
 
-public class BPDensityModel extends LoggerModel {
+import gui.document.ACGDocument;
+import gui.inputPanels.Configurator;
+import gui.inputPanels.Configurator.InputConfigException;
+
+
+public class RootHeightModel extends LoggerModel {
 
 	private int bins = 500;
 	
@@ -20,24 +22,23 @@ public class BPDensityModel extends LoggerModel {
 	public void setBins(int bins) {
 		this.bins = bins;
 	}
+	
+	@Override
+	public Class getLoggerClass() {
+		return RootHeightDensity.class;
+	}
 
 	@Override
 	public String getDefaultLabel() {
-		return "BreakpointDensity";
+		return "MarginalTMRCA";
 	}
 
-	@Override
-	public Class getLoggerClass() {
-		return BreakpointDensity.class;
-	}
-
-	
 	@Override
 	protected Element getElement(ACGDocument doc) throws InputConfigException {
 		if (argRef == null)
 			throw new InputConfigException("ARG reference not set for BreakpointDensity");
 		
-		Element el = createElement(doc, getModelLabel(), logging.BreakpointDensity.class );
+		Element el = createElement(doc, getModelLabel(), logging.RootHeightDensity.class );
 		el.setAttribute(PropertyLogger.FILENAME, getOutputFilename());
 		el.setAttribute(PropertyLogger.FREQUENCY, "" + getLogFrequency());
 		el.setAttribute(BreakpointDensity.BINS, "" + bins);
@@ -49,7 +50,7 @@ public class BPDensityModel extends LoggerModel {
 
 	@Override
 	public void readElements(ACGDocument doc) throws InputConfigException {
-		Element el = getSingleElementForClass(doc, BreakpointDensity.class);
+		Element el = getSingleElementForClass(doc, RootHeightDensity.class);
 		readFilename(el);
 		readBurnin(el);
 		String echoStr = el.getAttribute(BreakpointDensity.BINS);
@@ -64,4 +65,5 @@ public class BPDensityModel extends LoggerModel {
 		}
 	}
 
+	
 }
