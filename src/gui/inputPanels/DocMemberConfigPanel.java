@@ -14,6 +14,7 @@ import gui.ErrorWindow;
 import gui.document.ACGDocument;
 import gui.document.ACGDocumentBuilder;
 import gui.inputPanels.Configurator.InputConfigException;
+import gui.inputPanels.loggerConfigs.LoggersPanel;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -43,7 +44,7 @@ public class DocMemberConfigPanel extends JPanel {
 	
 	SiteModelView siteModelPanel;
 	CoalescentView coalescentModelPanel;
-	JPanel loggersPanel;
+	LoggersPanel loggersPanel;
 	
 	AlignmentElement alignmentEl;
 	MCMCModelElement mcElement;
@@ -80,8 +81,7 @@ public class DocMemberConfigPanel extends JPanel {
 		coalescentModelPanel = new CoalescentView();
 		tabPane.insertTab("Coalescent model", null, coalescentModelPanel, "Coalescent model for this alignment", 1);
 		
-		loggersPanel = new JPanel();
-		loggersPanel.add(new JLabel("Loggers stuff here"));
+		loggersPanel = new LoggersPanel();
 		tabPane.insertTab("Loggers", null, loggersPanel, "Logging and output options", 2);
 		
 		this.add(tabPane, BorderLayout.CENTER);
@@ -94,6 +94,7 @@ public class DocMemberConfigPanel extends JPanel {
 			updateTopLabel(alignmentEl.getNodeLabel());
 			siteModelPanel.readNodesFromDocument(doc);
 			coalescentModelPanel.readNodesFromDocument(doc);
+			loggersPanel.readNodesFromDocument(doc);
 		}
 		catch (InputConfigException e) {
 			ErrorWindow.showErrorWindow(e);
@@ -139,7 +140,17 @@ public class DocMemberConfigPanel extends JPanel {
 				}
 			}
 			
+			
 			mcElement.clearReferences();
+			
+			
+			loggersPanel.setARGReference(argModel);
+			List<Element> loggers = loggersPanel.getLoggerNodes(docBuilder.getACGDocument());
+			for(Element node : loggers) {
+				docBuilder.appendNode(node);
+				mcElement.addListenerRef(node);
+			}
+			
 			List<Element> params = docBuilder.getParameters();
 			for(Element param : params) {
 				mcElement.addParamRef(param);
@@ -149,6 +160,7 @@ public class DocMemberConfigPanel extends JPanel {
 			for(Element like : likelihoods) {
 				mcElement.addLikelihoodRef(like);
 			}
+			
 			
 			mcElement.setRunLength((long)1e7);
 			docBuilder.appendNodes( mcElement );

@@ -14,7 +14,7 @@ import javax.swing.JScrollPane;
 public class AddLoggerFrame extends JFrame {
 
 	LoggersPanel parentPanel;
-	List<LoggerConfigurator> loggerList = new ArrayList<LoggerConfigurator>();
+	List<AbstractLoggerView> loggerList = new ArrayList<AbstractLoggerView>();
 	
 	
 	public AddLoggerFrame(LoggersPanel parentPanel) {
@@ -28,7 +28,7 @@ public class AddLoggerFrame extends JFrame {
 		listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
 		JScrollPane scrollPane = new JScrollPane(listPanel);
 		
-		for(LoggerConfigurator logger : loggerList) {
+		for(AbstractLoggerView logger : loggerList) {
 			LoggerItemRenderer renderer = new LoggerItemRenderer(logger, this);
 			listPanel.add(renderer);
 		}
@@ -43,16 +43,16 @@ public class AddLoggerFrame extends JFrame {
 	 * Build the list of available loggers to be represented in this frame
 	 */
 	private void importLoggers() {
-		loggerList.add(new StateLoggerConfig() );
-		loggerList.add(new BPDensityConfig() );
-		loggerList.add(new BPLocationConfig() );
+		loggerList.add(new StateLoggerView(new StateLoggerModel()) );
+		loggerList.add(new BPDensityView(new BPDensityModel()) );
+		loggerList.add(new BPLocationView(new BPLocationModel()) );
 	}
 
 	/**
 	 * Adds the given logger to the LoggersPanel associated with this frame
 	 * @param config
 	 */
-	public void addLoggerToPanel(LoggerConfigurator config) {
+	public void addLoggerToPanel(AbstractLoggerView config) {
 		parentPanel.addLogger(config);
 	}
 	

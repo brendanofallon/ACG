@@ -15,11 +15,11 @@ import javax.swing.ListCellRenderer;
 public class LoggerItemRenderer extends JPanel {
 
 	AddLoggerFrame frame;
-	LoggerConfigurator config;
+	AbstractLoggerView config;
 	JLabel nameLabel;
 	JButton addButton;
 	
-	public LoggerItemRenderer(LoggerConfigurator config, AddLoggerFrame frame) {
+	public LoggerItemRenderer(AbstractLoggerView config, AddLoggerFrame frame) {
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
 		this.frame = frame;
 		this.config = config;
