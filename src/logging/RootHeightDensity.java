@@ -145,6 +145,7 @@ public class RootHeightDensity extends PropertyLogger {
 			return strB.toString();
 		}
 		strB.append("\n# Histogram of root heights across sites : \n");
+		strB.append("\n# lower95\t lower90\t lower80\t mean\t upper80\t upper90\t upper95: \n");
 		
 		int site = 0;
 		
@@ -157,16 +158,16 @@ public class RootHeightDensity extends PropertyLogger {
 		}
 		
 		site = 0;
-		strB.append("\n Mean marginal tree height across sites \n");
-
-		for(int i=0; i<rootHeights.length; i++) {
-			int mappedSite = site;
-			if (siteMap != null)
-				mappedSite = siteMap.getOriginalSite(site);
-			
-			strB.append(mappedSite + "\t" + heightHistos[i].getMean() );
-			site += binStep;
-		}
+//		strB.append("\n Mean marginal tree height across sites \n");
+//
+//		for(int i=0; i<rootHeights.length; i++) {
+//			int mappedSite = site;
+//			if (siteMap != null)
+//				mappedSite = siteMap.getOriginalSite(site);
+//			
+//			strB.append(mappedSite + "\t" + heightHistos[i].getMean() );
+//			site += binStep;
+//		}
 		
 		return strB.toString();
 	}

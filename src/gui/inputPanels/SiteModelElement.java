@@ -63,15 +63,25 @@ public class SiteModelElement extends ModelElement {
 	public SiteModelElement() {
 		ttRatioElement.setLabel(ttRatioLabel);
 		ttRatioElement.setModifierLabel(ttRatioLabel + "Mod");
+		ttRatioElement.setModifierType(ModType.Scale);
+		ttRatioElement.setLowerBound(0);
+		
 		kappaRElement.setLabel(kappaRLabel);
 		kappaRElement.setModifierLabel(kappaRLabel + "Mod");
+		kappaRElement.setModifierType(ModType.Scale);
+		kappaRElement.setLowerBound(0);
+		
 		kappaYElement.setModifierLabel(kappaYLabel + "Mod");
 		kappaYElement.setLabel(kappaYLabel);
+		kappaYElement.setModifierType(ModType.Scale);
+		kappaYElement.setLowerBound(0);
 		
 		alphaParamElement.setLabel(defaultAlphaParamLabel);
 		alphaParamElement.setValue(1.0);
 		alphaParamElement.setLowerBound(0.01);
 		alphaParamElement.setUpperBound(50.0);
+		alphaParamElement.setModifierLabel(defaultAlphaParamLabel + "Mod");
+		alphaParamElement.setModifierType(ModType.Simple);
 	}
 	
 	public void setConstantRate(double rate) {

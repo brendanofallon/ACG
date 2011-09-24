@@ -38,8 +38,8 @@ public class PopSizeModelElement extends ModelElement {
 		constSizeModel = new DoubleParamElement();
 		constSizeModel.setLabel(constSizeLabel);
 		constSizeModel.setValue(0.005);
-		constSizeModel.setLowerBound(1e-10);
-		constSizeModel.setUpperBound(1e20);
+		constSizeModel.setLowerBound(0);
+		constSizeModel.setUpperBound(Double.POSITIVE_INFINITY);
 		constSizeModel.setModifierType(ModType.Scale);
 		constSizeModel.setModifierLabel(constSizeLabel + "Modifier");
 

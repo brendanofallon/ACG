@@ -35,7 +35,7 @@ public class ConsensusTreeModel extends LoggerModel {
 		if (argRef == null)
 			throw new InputConfigException("ARG reference not set for ConsensusTree logger");
 		
-		Element el = createElement(doc, getModelLabel(), logging.RootHeightDensity.class );
+		Element el = createElement(doc, getModelLabel(), logging.ConsensusTreeLogger.class );
 		el.setAttribute(PropertyLogger.FILENAME, getOutputFilename());
 		el.setAttribute(PropertyLogger.FREQUENCY, "" + getLogFrequency());
 		el.setAttribute(ConsensusTreeLogger.XML_SITE, "" + site);

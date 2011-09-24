@@ -50,6 +50,7 @@ public class AddLoggerFrame extends JFrame {
 		loggerList.add(new BPDensityView(new BPDensityModel()) );
 		loggerList.add(new BPLocationView(new BPLocationModel()) );
 		loggerList.add(new RootHeightView(new RootHeightModel()) );
+		loggerList.add(new ConsensusTreeView(new ConsensusTreeModel()) );
 	}
 	
 	/**

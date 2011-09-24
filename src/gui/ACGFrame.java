@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -375,6 +376,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 		
 		bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
+		bottomPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
 		progressBar = new JProgressBar(0, 1000);
 		progressBar.setPreferredSize(new Dimension(400, 12));
 		progressBar.setMaximumSize(new Dimension(4000, 18));
