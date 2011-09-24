@@ -15,7 +15,9 @@ import gui.document.ACGDocument;
 import gui.document.ACGDocumentBuilder;
 import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.loggerConfigs.LoggersPanel;
+import gui.widgets.BorderlessButton;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -52,7 +54,7 @@ public class DocMemberConfigPanel extends JPanel {
 	
 	ACGFrame acgParent;
 	
-	public DocMemberConfigPanel(ACGFrame acgParent) {
+	public DocMemberConfigPanel(final ACGFrame acgParent) {
 		this.setLayout(new BorderLayout());
 		this.acgParent = acgParent;
 		
@@ -85,6 +87,19 @@ public class DocMemberConfigPanel extends JPanel {
 		tabPane.insertTab("Loggers", null, loggersPanel, "Logging and output options", 2);
 		
 		this.add(tabPane, BorderLayout.CENTER);
+		
+		JPanel bottomPanel = new JPanel();
+		bottomPanel.setOpaque(false);
+		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		ImageIcon runIcon = ACGFrame.getIcon("icons/rightArrow.png");
+		BorderlessButton runButton = new BorderlessButton("Run with GUI", runIcon);
+		runButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				acgParent.startNewRun();
+			}
+		});
+		bottomPanel.add(runButton);
+		this.add(bottomPanel, BorderLayout.SOUTH);
 	}
 	
 	public void loadSettingsFromDocument(ACGDocument doc) {
@@ -218,7 +233,6 @@ public class DocMemberConfigPanel extends JPanel {
 			Alignment aln = new Alignment(selectedFile);
 			alignmentEl.setElement(aln);
 			updateTopLabel(shortname);
-			acgParent.enableRunButton();
 		}
 	}
 	

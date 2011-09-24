@@ -279,7 +279,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 			if (centerPanel instanceof DocMemberConfigPanel) {
 				DocMemberConfigPanel configPanel = (DocMemberConfigPanel)centerPanel;
 				configPanel.loadSettingsFromDocument(doc);
-				toolBar.enableRunButton();
+				//toolBar.enableRunButton();
 			}
 			
 		}
@@ -297,7 +297,6 @@ public class ACGFrame extends JFrame implements WindowListener {
 			return;
 		}
 		
-		this.remove(toolBar);
 		PickMonitorsPanel pickMonitors = new PickMonitorsPanel(this, acgDoc);
 		replaceCenterPanel(pickMonitors);
 	}
@@ -523,7 +522,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 	private JFileChooser fileChooser; //Used on non-mac platforms
 	private FileDialog fileDialog; //Used on mac systems
 	
-	private TopToolBar toolBar;
+	//private TopToolBar toolBar;
 
 	
 
