@@ -1,6 +1,9 @@
 package gui;
 
 import gui.document.ACGDocument;
+import gui.widgets.BorderlessButton;
+import gui.widgets.Style;
+import gui.widgets.Stylist;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -8,6 +11,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -15,7 +19,9 @@ import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -39,10 +45,10 @@ import mcmc.MCMC;
  */
 public class StartFrame extends JPanel {
 	
-	ACGFrame acgParent;
+	final ACGFrame acgParent;
 	boolean macMode = false;
 	
-	public StartFrame(ACGFrame acgParentFrame, boolean macMode) {
+	public StartFrame(final ACGFrame acgParentFrame, boolean macMode) {
 		this.acgParent = acgParentFrame;
 		this.macMode = macMode;
 		initComponents();
@@ -51,71 +57,58 @@ public class StartFrame extends JPanel {
 	
 	private void initComponents() {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setBackground(ACGFrame.backgroundColor);
-		
-		
-		JPanel topPanel = new JPanel();
-		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
-		topPanel.add(Box.createVerticalStrut(50));
-		topPanel.setBackground(ACGFrame.backgroundColor);
-		//Add a logo or something to the top panel....?
-		add(topPanel);
-		
-		JPanel centerPanel = new FancyInputBox();
-		
-		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
-		centerPanel.setBackground(ACGFrame.backgroundColor);
-		centerPanel.add(Box.createHorizontalStrut(50));
-		centerPanel.setPreferredSize(new Dimension(300, 150));
-		centerPanel.setMaximumSize(new Dimension(400, 200));
-		
-		
-		filenameField = new JTextField("Enter name of input file");
-		filenameField.setPreferredSize(new Dimension(150, 24));
-		filenameField.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				clearSelectedFile();
+		this.add(Box.createVerticalStrut(50));
+
+		Stylist stylist = new Stylist();
+		stylist.addStyle(new Style() {
+			public void apply(JComponent comp) {
+				comp.setMinimumSize(new Dimension(230, 60));
+				comp.setPreferredSize(new Dimension(230, 60));
+				comp.setMaximumSize(new Dimension(230, 60));
+				comp.setFont( new Font("Serif", Font.BOLD, 14));
+				Font font = ACGFrame.getFont("fonts/Neuton-Regular.ttf");
+				if (comp instanceof BorderlessButton) {
+					((BorderlessButton)comp).setIconGap(5);
+				}
+				if (font != null)
+					comp.setFont(font);
 			}
 		});
-		filenameField.setMaximumSize(new Dimension(800, 30));
-		centerPanel.add(filenameField);
+
 		
-		JButton browse = new JButton("Browse");
+		ImageIcon createIcon = ACGFrame.getIcon("icons/addIcon.png");
+		BorderlessButton createButton = new BorderlessButton("Create a new input file", createIcon);
+		stylist.applyStyle(createButton);
+		createButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				acgParent.showDocMemberConfigPanel();
+			}
+		});
+		add(createButton);
 		
-		browse.addActionListener(new ActionListener() {
+		ImageIcon loadIcon = ACGFrame.getIcon("icons/upArrow.png");
+		BorderlessButton loadButton = new BorderlessButton("Load an input file", loadIcon);
+		stylist.applyStyle(loadButton);
+		loadButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				acgParent.showDocMemberConfigPanel();
+			}
+		});
+		add(loadButton);
+		
+		ImageIcon runIcon = ACGFrame.getIcon("icons/rightArrow.png");
+		BorderlessButton runButton = new BorderlessButton("Run an input file", runIcon);
+		stylist.applyStyle(runButton);
+		runButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				browseForFile();
 			}
 		});
-		centerPanel.add(browse);
-		centerPanel.add(Box.createHorizontalStrut(50));
-		add(centerPanel);
-		
-		JPanel bottomPanel = new JPanel();
-		bottomPanel.setMaximumSize(new Dimension(2000, 40));
-		bottomPanel.setAlignmentY(BOTTOM_ALIGNMENT);
-		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		bottomPanel.setBackground(ACGFrame.backgroundColor);
-		runInGUIButton = new JButton("Run with UI");
-		runInGUIButton.setEnabled(false);
-		runInGUIButton.addActionListener( new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				loadFile();
-			}
-		});
-		bottomPanel.add(runInGUIButton);
+		add(runButton);
 		
 		
-		runNoGUIButton = new JButton("Run in background");
-		runNoGUIButton.setEnabled(false);
-		runNoGUIButton.addActionListener( new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				loadAndRunInBackground();
-			}
-		});
-		bottomPanel.add(runNoGUIButton);
-		add(Box.createGlue());
-		add(bottomPanel);	
+
+		this.add(Box.createVerticalStrut(50));
 	}
 
 
@@ -123,15 +116,7 @@ public class StartFrame extends JPanel {
 	 * Attempt to load the file selected, run it in the background, and
 	 * destroy the acgParent (and this object as well)
 	 */
-	protected void loadAndRunInBackground() {
-		File inputFile = null;
-		if (selectedFile != null) {
-			inputFile = selectedFile;
-		}
-		else {
-			inputFile = new File( filenameField.getText() );
-		}
-		
+	protected void loadAndRunInBackground(File inputFile) {
 		if (inputFile == null || (! inputFile.exists())) {
 			String filename = inputFile == null ? "(empty)" : inputFile.getName();
 			JOptionPane.showMessageDialog(getRootPane(), "The file " + filename + " cannot be found.");
@@ -153,14 +138,7 @@ public class StartFrame extends JPanel {
 	 * filenameField), and replace the center panel with the PickParameters 
 	 * panel
 	 */
-	protected void loadFile() {
-		File inputFile = null;
-		if (selectedFile != null) {
-			inputFile = selectedFile;
-		}
-		else {
-			inputFile = new File( filenameField.getText() );
-		}
+	protected void loadFile(File inputFile) {
 		
 		if (inputFile == null || (! inputFile.exists())) {
 			String filename = inputFile == null ? "(empty)" : inputFile.getName();
@@ -173,18 +151,12 @@ public class StartFrame extends JPanel {
 		acgParent.pickParameters(inputFile.getName(), acgDocument);
 	}
 	
-
-
-
-	private void clearSelectedFile() {
-		selectedFile = null;
-	}
-	
 	/**
 	 * Called when user clicks 'Browse' button 
 	 */
 	protected void browseForFile() {
-		//If we're on a mac then a FileDialog looks better and supports a few mac-specific options 
+		//If we're on a mac then a FileDialog looks better and supports a few mac-specific options
+		File selectedFile = null;
 		if (macMode) {
 			FileDialog fileDialog = new FileDialog(acgParent, "Choose a file");
 			fileDialog.setMode(FileDialog.LOAD);
@@ -215,17 +187,10 @@ public class StartFrame extends JPanel {
 		
 		//If we found a valid selected file, set the info in the text field (a a couple other things)
 		if (selectedFile != null && selectedFile.exists()) {
-			filenameField.setText(selectedFile.getName());
-			runInGUIButton.setEnabled(true);
-			runNoGUIButton.setEnabled(true);
+			loadFile(selectedFile);
 		}
 	}
 	
-	//Stores the file the user selected from the file chooser, or null
-	JButton runNoGUIButton;
-	JButton runInGUIButton;
-	private File selectedFile = null;
 	private JFileChooser fileChooser = null;
-	private JTextField filenameField;
 
 }

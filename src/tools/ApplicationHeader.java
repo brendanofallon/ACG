@@ -22,8 +22,8 @@ import xml.XMLLoader;
  */
 public class ApplicationHeader {
 
-	public final static String version = "0.5";
-	public final static String versionDate = "August 4, 2011";
+	public final static String version = "0.8";
+	public final static String versionDate = "September, 2011";
 	
 	public static String getHeader() {
 		StringBuilder header = new StringBuilder();
@@ -56,7 +56,6 @@ public class ApplicationHeader {
 			launchGUI();
 			return;
 		}
-		
 		
 		//If some args are present, then assume we're running from the command line
 		//and print out the header

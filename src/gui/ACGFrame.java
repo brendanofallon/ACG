@@ -8,14 +8,18 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FileDialog;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -155,6 +159,23 @@ public class ACGFrame extends JFrame implements WindowListener {
 		return icon;
 	}
 	
+	public static Font getFont(String url) {
+		Font font = null;
+		try {
+			InputStream fontStream = ACGFrame.class.getResourceAsStream(url);
+			font = Font.createFont(Font.TRUETYPE_FONT, fontStream);
+			font = font.deriveFont(22f);
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return font;
+	}
+	
 	/**
 	 * Set the value of the progress bar
 	 * @param prog
@@ -185,9 +206,9 @@ public class ACGFrame extends JFrame implements WindowListener {
 		}
 	}
 	
-	public void enableRunButton() {
-		toolBar.enableRunButton();
-	}
+//	public void enableRunButton() {
+//		toolBar.enableRunButton();
+//	}
 	
 	/**
 	 * Called when user clicks on 'pause' button
@@ -359,18 +380,22 @@ public class ACGFrame extends JFrame implements WindowListener {
 		}
 	}
 		
+	public void showDocMemberConfigPanel() {
+		DocMemberConfigPanel configPanel = new DocMemberConfigPanel(this);
+		replaceCenterPanel(configPanel);
+	}
 	
 	private void initComponents() {
 		BorderLayout layout = new BorderLayout();
 		Container mainContainer = this.getContentPane();
 		mainContainer.setLayout(layout);
 		
-		toolBar = new TopToolBar(this);
-		this.add(toolBar, BorderLayout.NORTH);
+		//toolBar = new TopToolBar(this);
+		//this.add(toolBar, BorderLayout.NORTH);
 		
-		centerPanel = new DocMemberConfigPanel(this);
+		//centerPanel = new DocMemberConfigPanel(this);
 		//centerPanel = new BuildPanel(this);
-		//centerPanel = new StartFrame(this, onAMac);
+		centerPanel = new StartFrame(this, onAMac);
 		
 		mainContainer.add(centerPanel, BorderLayout.CENTER);
 		

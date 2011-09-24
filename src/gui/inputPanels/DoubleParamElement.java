@@ -1,8 +1,5 @@
 package gui.inputPanels;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import gui.document.ACGDocument;
 
 import modifier.AbstractModifier;
@@ -12,9 +9,6 @@ import modifier.SimpleModifier;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.NodeType;
-import com.sun.tools.javac.util.Name;
 
 import parameter.DoubleParameter;
 

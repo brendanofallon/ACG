@@ -37,6 +37,11 @@ public class BorderlessButton extends JPanel {
 	private int yDif = 0;
 	private int xDif = 0;
 	
+	//Pixels between icon and text
+	private int iconGap = 3;
+	
+	
+
 	List<ActionListener> actionListeners = new ArrayList<ActionListener>();
 	
 	public BorderlessButton(String label) {
@@ -71,6 +76,14 @@ public class BorderlessButton extends JPanel {
 	
 	public BorderlessButton(ImageIcon icon) {
 		this(null, icon);
+	}
+	
+	public int getIconGap() {
+		return iconGap;
+	}
+
+	public void setIconGap(int iconGap) {
+		this.iconGap = iconGap;
 	}
 	
 	public void fireActionEvent(MouseEvent me) {
@@ -147,9 +160,10 @@ public class BorderlessButton extends JPanel {
 		int dx = 1;
 		if (icon != null) {
 			g2d.drawImage(icon.getImage(), 2+xDif, Math.max(0, getHeight()/2-icon.getIconHeight()/2)+yDif , null);
-			dx += icon.getIconWidth()+2;
+			dx += icon.getIconWidth()+iconGap;
 		}
 		if (text != null) {
+			g2d.setFont(getFont());
 			g2d.setColor(new Color(0.99f, 0.99f, 0.99f, 0.5f));
 			g2d.drawString(text, dx+3+xDif, getHeight()/2+7);
 			g2d.setColor(new Color(0.2f, 0.2f, 0.2f));
