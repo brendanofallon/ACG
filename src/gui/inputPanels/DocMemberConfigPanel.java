@@ -1,11 +1,15 @@
 package gui.inputPanels;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,9 +25,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -91,14 +97,29 @@ public class DocMemberConfigPanel extends JPanel {
 		JPanel bottomPanel = new JPanel();
 		bottomPanel.setOpaque(false);
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		
+		ImageIcon saveIcon = ACGFrame.getIcon("icons/downArrow.png");
+		BorderlessButton saveButton = new BorderlessButton("Save", saveIcon);
+		saveButton.setPreferredSize(new Dimension(75, 36));
+		saveButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				saveSettings();
+			}
+		});
+		bottomPanel.add(saveButton);
+		
 		ImageIcon runIcon = ACGFrame.getIcon("icons/rightArrow.png");
-		BorderlessButton runButton = new BorderlessButton("Run with GUI", runIcon);
+		BorderlessButton runButton = new BorderlessButton("Run", runIcon);
+		runButton.setPreferredSize(new Dimension(75, 36));
 		runButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				acgParent.startNewRun();
 			}
 		});
 		bottomPanel.add(runButton);
+		
+		
+
 		this.add(bottomPanel, BorderLayout.SOUTH);
 	}
 	
@@ -119,12 +140,96 @@ public class DocMemberConfigPanel extends JPanel {
 		}
 	}
 	
+	
+	/**
+	 * Save the settings to a new file. We always save as a new file so it's clear that
+	 * any old one will be overwritten. 
+	 */
+	public void saveSettings() {
+		String os = System.getProperty("os.name");
+		boolean onAMac = false;
+        if (os.contains("Mac") || os.contains("mac")) {
+        	onAMac = true;
+        }
+       
+        
+		File selectedFile = null;
+		if (onAMac) {
+			if (fileDialog == null)
+				fileDialog = new FileDialog(acgParent, "Save settings");
+			fileDialog.setMode(FileDialog.SAVE);
+			String userDir = System.getProperty("user.dir");
+			if (userDir != null)
+				fileDialog.setDirectory(userDir);
+
+			fileDialog.setVisible(true);
+
+			String filename = fileDialog.getFile();
+			String path = fileDialog.getDirectory();
+			selectedFile = new File(path + filename);
+		}
+		else {
+			//Not on a mac, use a JFileChooser instead of a FileDialog
+
+			//Construct a new file choose whose default path is the path to this executable, which 
+			//is returned by System.getProperty("user.dir")
+			if (fileChooser == null)
+				fileChooser = new JFileChooser( System.getProperty("user.dir"));
+
+			int option = fileChooser.showSaveDialog(getRootPane());
+			if (option == JFileChooser.APPROVE_OPTION) {
+				selectedFile = fileChooser.getSelectedFile();
+			}
+			
+			//Check about overwriting the existing file
+			if (selectedFile != null && selectedFile.exists()) {
+				Object[] options = {"Overwrite", "Cancel"};
+				int n = JOptionPane.showOptionDialog(getRootPane(),
+						"Overwrite existing file  " + selectedFile.getName() + "?",
+						"File exists",
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.WARNING_MESSAGE,
+						null,
+						options,
+						options[1]);
+				//Abort
+				if (n == 1) 
+					return;
+				
+			}
+		}
+
+		
+		
+		if (selectedFile != null) {
+			try {
+				BufferedWriter writer;
+				ACGDocument acgDoc = this.getACGDocument();
+				acgDoc.setSourceFile(selectedFile);
+				String docText;
+				docText = acgDoc.getXMLString();
+				
+				writer = new BufferedWriter(new FileWriter(selectedFile));
+				writer.write(docText + "\n");
+				writer.close();
+			} catch (TransformerException ex) {
+				ErrorWindow.showErrorWindow(ex);
+			} catch (IOException e) {
+				ErrorWindow.showErrorWindow(e);
+			} catch (InputConfigException e) {
+				ErrorWindow.showErrorWindow(e);
+			}
+			
+			
+		}
+	}
 	/**
 	 * Build an ACGDocument given the current settings 
 	 * @return
+	 * @throws InputConfigException 
 	 * @throws ParserConfigurationException 
 	 */
-	public ACGDocument getACGDocument() {
+	public ACGDocument getACGDocument() throws InputConfigException {
 		ACGDocumentBuilder docBuilder = null;
 		try {
 			docBuilder = new ACGDocumentBuilder();
@@ -183,9 +288,7 @@ public class DocMemberConfigPanel extends JPanel {
 			
 		} catch (ParserConfigurationException e) {
 			ErrorWindow.showErrorWindow(e);
-		} catch (InputConfigException e) {
-			ErrorWindow.showErrorWindow(e);
-		}
+		} 
 		
 		if (docBuilder != null)
 			return docBuilder.getACGDocument();
@@ -245,5 +348,7 @@ public class DocMemberConfigPanel extends JPanel {
 	}
 	
 	private File selectedFile = null;
+	private JFileChooser fileChooser; //Used on non-mac platforms
+	private FileDialog fileDialog; //Used on mac systems
 	
 }

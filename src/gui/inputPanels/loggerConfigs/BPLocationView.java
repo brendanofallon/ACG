@@ -29,6 +29,9 @@ import org.w3c.dom.Element;
 
 import xml.XMLLoader;
 
+
+import gui.inputPanels.Configurator.InputConfigException;
+
 public class BPLocationView extends AbstractLoggerView {
 
 	JSpinner seqBinsSpinner;
@@ -37,11 +40,23 @@ public class BPLocationView extends AbstractLoggerView {
 	JCheckBox setHeightBox;
 	BPLocationModel bpModel = null;
 	
+	public BPLocationView() {
+		this(new BPLocationModel());
+	}
+	
 	public BPLocationView(final BPLocationModel model) {
 		super(model);
 		this.bpModel = model;
 	}
 	
+	
+	public void updateFields() throws InputConfigException {
+		String filename = filenameField.getText();
+		if (setHeightBox.isSelected())
+			updateHeightField();
+		filename.replaceAll(" ", "_");
+		model.setOutputFilename(filename);
+	}
 	
 	/** Default preferred size
 	 * @return
@@ -72,7 +87,11 @@ public class BPLocationView extends AbstractLoggerView {
 		filenameField = new JTextField( model.getDefaultLabel() + ".log");
 		filenameField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				updateFields();
+				try {
+					updateFields();
+				} catch (InputConfigException e1) {
+					//handled elsewhere
+				}
 			}
 		});
 		topPanel.add(new JLabel("File name:"));
@@ -101,7 +120,7 @@ public class BPLocationView extends AbstractLoggerView {
 		topPanel.add(freqSpinner);
 		
 		
-		SpinnerNumberModel binsModel = new SpinnerNumberModel(500, 1, 50000, 10);
+		SpinnerNumberModel binsModel = new SpinnerNumberModel(250, 1, 50000, 10);
 		seqBinsSpinner = new JSpinner(binsModel);
 		seqBinsSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
@@ -111,7 +130,7 @@ public class BPLocationView extends AbstractLoggerView {
 		bottomPanel.add(new JLabel("Seq. Bins:"));
 		bottomPanel.add(seqBinsSpinner);
 		
-		binsModel = new SpinnerNumberModel(500, 1, 50000, 10);
+		binsModel = new SpinnerNumberModel(250, 1, 50000, 10);
 		timeBinsSpinner = new JSpinner(binsModel);
 		timeBinsSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
@@ -121,7 +140,8 @@ public class BPLocationView extends AbstractLoggerView {
 		bottomPanel.add(new JLabel("Time Bins:"));
 		bottomPanel.add(timeBinsSpinner);
 		
-		setHeightBox = new JCheckBox("Set max. depth");
+		setHeightBox = new JCheckBox("Set max. height");
+		setHeightBox.setToolTipText("If checked, use the given value as the max. height of the tree to collect information. \n If unchecked, the value will be the mean of the ARG height during burnin");
 		setHeightBox.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				updateHeightBox();
@@ -132,22 +152,27 @@ public class BPLocationView extends AbstractLoggerView {
 		
 		bottomPanel.add(new JLabel("Max height:"));
 		heightField = new JTextField("0.01");
+		heightField.setToolTipText("Maximum depth at which to collect breakpoint locations");
 		heightField.setPreferredSize(new Dimension(50, 30));
 		heightField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				updateHeightField();
+				try {
+					updateHeightField();
+				} catch (InputConfigException e1) {
+				}
 			}
 		});
+		heightField.setEnabled(false);
 		bottomPanel.add(heightField);
 	} 
 	
-	protected void updateHeightField() {
+	protected void updateHeightField() throws InputConfigException {
 		try {
 			Double height = Double.parseDouble( heightField.getText() );
 			bpModel.setMaxDepth(height);
 		}
 		catch (NumberFormatException nfe) {
-			JOptionPane.showMessageDialog(this, "Please enter a valid number");
+			throw new InputConfigException("Please enter a single positive value for the maximum collection depth");
 		}
 	}
 

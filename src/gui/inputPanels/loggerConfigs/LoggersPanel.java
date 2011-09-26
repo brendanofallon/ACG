@@ -70,8 +70,20 @@ public class LoggersPanel extends JPanel {
 		this.ARGref = argRef;
 	}
 	
+	
 	public void addLogger(AbstractLoggerView logger) {
-		LoggerWrapper wrapped = new LoggerWrapper(logger);
+		Class<AbstractLoggerView> loggerClass = null;
+		AbstractLoggerView newView = null;
+		try {
+			loggerClass = (Class<AbstractLoggerView>) logger.getClass();
+			newView = loggerClass.newInstance();
+		}
+		catch (Exception ex) {
+			System.out.println("Whoa, couldn't do that cast : " + ex);
+		}
+		
+		LoggerWrapper wrapped = new LoggerWrapper(newView);
+		
 		loggers.add(wrapped);
 		this.remove(addButton);
 		add(wrapped);

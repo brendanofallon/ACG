@@ -33,7 +33,7 @@ public class ExponentialPrior extends AbstractPrior {
 	}
 	
 	public ExponentialPrior(DoubleParameter param, double mean) {
-		super(new HashMap<String, String>());
+		super(new HashMap<String, String>(), param);
 		addParameter(param);
 		this.param = param;
 		this.mean = mean;

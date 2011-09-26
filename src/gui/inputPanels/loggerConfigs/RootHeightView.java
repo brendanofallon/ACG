@@ -12,6 +12,10 @@ public class RootHeightView extends AbstractLoggerView {
 	JSpinner binsSpinner;
 	RootHeightModel rootHeightModel;
 	
+	public RootHeightView() {
+		this(new RootHeightModel());
+	}
+	
 	public RootHeightView(final RootHeightModel model) {
 		super(model);
 		this.rootHeightModel = model;

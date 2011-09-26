@@ -39,6 +39,7 @@ public class BPDensityModel extends LoggerModel {
 		
 		Element el = createElement(doc, getModelLabel(), logging.BreakpointDensity.class );
 		el.setAttribute(PropertyLogger.FILENAME, getOutputFilename());
+		el.setAttribute(PropertyLogger.BURNIN, "" + getBurnin());
 		el.setAttribute(PropertyLogger.FREQUENCY, "" + getLogFrequency());
 		el.setAttribute(BreakpointDensity.BINS, "" + bins);
 		

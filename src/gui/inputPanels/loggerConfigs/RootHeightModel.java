@@ -41,6 +41,7 @@ public class RootHeightModel extends LoggerModel {
 		Element el = createElement(doc, getModelLabel(), logging.RootHeightDensity.class );
 		el.setAttribute(PropertyLogger.FILENAME, getOutputFilename());
 		el.setAttribute(PropertyLogger.FREQUENCY, "" + getLogFrequency());
+		el.setAttribute(PropertyLogger.BURNIN, "" + getBurnin());
 		el.setAttribute(BreakpointDensity.BINS, "" + bins);
 		
 		Element argEl = doc.createElement( argRef.getModelLabel() );

@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import gui.inputPanels.Configurator;
+import gui.inputPanels.Configurator.InputConfigException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -56,7 +57,11 @@ public abstract class AbstractLoggerView extends JPanel {
 		filenameField = new JTextField( model.getDefaultLabel() + ".log");
 		filenameField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				updateFields();
+				try {
+					updateFields();
+				} catch (InputConfigException e1) {
+					//Exception is handle in model.getLoggerNodes(...) 
+				}
 			}
 		});
 		add(new JLabel("File name:"));
@@ -97,7 +102,7 @@ public abstract class AbstractLoggerView extends JPanel {
 		return model;
 	}
 	
-	public void updateFields() {
+	public void updateFields() throws InputConfigException {
 		String filename = filenameField.getText();
 		filename.replaceAll(" ", "_");
 		model.setOutputFilename(filename);

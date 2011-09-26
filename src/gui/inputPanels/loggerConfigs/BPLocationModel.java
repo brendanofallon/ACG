@@ -49,6 +49,7 @@ public class BPLocationModel extends LoggerModel {
 		
 		Element el = createElement(doc, getModelLabel(), BreakpointLocation.class );
 		el.setAttribute(PropertyLogger.FILENAME, getOutputFilename());
+		el.setAttribute(PropertyLogger.BURNIN, "" + getBurnin());
 		el.setAttribute(PropertyLogger.FREQUENCY, "" + getLogFrequency());
 		el.setAttribute(BreakpointLocation.XML_SEQBINS, "" + seqBins);
 		el.setAttribute(BreakpointLocation.XML_HEIGHTBINS, "" + timeBins);

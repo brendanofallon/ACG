@@ -18,8 +18,6 @@ public class AddLoggerFrame extends JFrame {
 	LoggersPanel parentPanel;
 	List<AbstractLoggerView> loggerList = new ArrayList<AbstractLoggerView>();
 	
-	
-	
 	public AddLoggerFrame(LoggersPanel parentPanel) {
 		this.parentPanel = parentPanel;
 		this.setLayout(new BorderLayout());
@@ -46,11 +44,11 @@ public class AddLoggerFrame extends JFrame {
 	 * Build the list of available loggers to be represented in this frame
 	 */
 	private void importLoggers() {
-		loggerList.add(new StateLoggerView(new StateLoggerModel()) );
-		loggerList.add(new BPDensityView(new BPDensityModel()) );
-		loggerList.add(new BPLocationView(new BPLocationModel()) );
-		loggerList.add(new RootHeightView(new RootHeightModel()) );
-		loggerList.add(new ConsensusTreeView(new ConsensusTreeModel()) );
+		loggerList.add(new StateLoggerView() );
+		loggerList.add(new BPDensityView() );
+		loggerList.add(new BPLocationView() );
+		loggerList.add(new RootHeightView() );
+		loggerList.add(new ConsensusTreeView() );
 	}
 	
 	/**
@@ -74,6 +72,6 @@ public class AddLoggerFrame extends JFrame {
 	public void addLoggerToPanel(AbstractLoggerView config) {
 		parentPanel.addLogger(config);
 	}
-	
+
 	
 }

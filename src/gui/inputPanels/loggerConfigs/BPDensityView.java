@@ -29,6 +29,11 @@ public class BPDensityView extends AbstractLoggerView {
 	JSpinner binsSpinner;
 	BPDensityModel bpModel;
 	
+	
+	public BPDensityView() {
+		this(new BPDensityModel());
+	}
+	
 	public BPDensityView(final BPDensityModel model) {
 		super(model);
 		this.bpModel = model;

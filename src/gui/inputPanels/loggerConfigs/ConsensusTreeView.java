@@ -8,35 +8,51 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import gui.ErrorWindow;
+import gui.inputPanels.Configurator.InputConfigException;
+
 public class ConsensusTreeView extends AbstractLoggerView {
 
 	JTextField siteField;
 	ConsensusTreeModel bpModel;
 	
+	public ConsensusTreeView() {
+		this( new ConsensusTreeModel() );
+	}
+	
 	public ConsensusTreeView(final ConsensusTreeModel model) {
 		super(model);
-		JOptionPane.showMessageDialog(this, "You need to refactor things so that multiple of these can be made - right now there's only one that always lives in addLoggerFrame");
 		this.bpModel = model;
 		siteField = new JTextField("Enter site");
-		siteField.setMinimumSize(new Dimension(40, 10));
-		siteField.setPreferredSize(new Dimension(40, 32));
-		siteField.setMaximumSize(new Dimension(40, 1000));
+		siteField.setMinimumSize(new Dimension(60, 10));
+		siteField.setMaximumSize(new Dimension(60, 1000));
 		siteField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				updateSiteField();
+				try {
+					updateSiteField();
+				} catch (InputConfigException e) {
+					
+				}
 			}
 		});
 		add(new JLabel("Site :"));
 		add(siteField);
 	}
 	
-	protected void updateSiteField() {
+	public void updateFields() throws InputConfigException {
+		String filename = filenameField.getText();
+		updateSiteField();
+		filename.replaceAll(" ", "_");
+		model.setOutputFilename(filename);
+	}
+	
+	protected void updateSiteField() throws InputConfigException {
 		try {
 			Integer site = Integer.parseInt(siteField.getText());
 			bpModel.setSite(site);
 		}
 		catch (NumberFormatException nfe) {
-			JOptionPane.showMessageDialog(this, "Please enter an integer");
+			throw new InputConfigException("Please enter an integer for the site at which to build the consensus tree");
 		}
 	}
 

@@ -38,7 +38,7 @@ public class BorderlessButton extends JPanel {
 	private int xDif = 0;
 	
 	//Pixels between icon and text
-	private int iconGap = 3;
+	private int iconGap = 5;
 	
 	
 
@@ -147,7 +147,7 @@ public class BorderlessButton extends JPanel {
 
 			GradientPaint gp;
 			if (clicking)
-				gp = new GradientPaint(1, 0, new Color(0.75f, 0.75f, 0.75f), 3, getHeight(), new Color(0.88f, 0.88f, 0.88f));
+				gp = new GradientPaint(1, 0, new Color(0.79f, 0.79f, 0.79f), 3, getHeight(), new Color(0.88f, 0.88f, 0.88f));
 			else
 				gp = new GradientPaint(1, 0, new Color(1f, 1f, 1f), 3, getHeight(), new Color(0.88f, 0.88f, 0.88f));
 			g2d.setPaint(gp);
@@ -159,7 +159,7 @@ public class BorderlessButton extends JPanel {
 		
 		int dx = 1;
 		if (icon != null) {
-			g2d.drawImage(icon.getImage(), 2+xDif, Math.max(0, getHeight()/2-icon.getIconHeight()/2)+yDif , null);
+			g2d.drawImage(icon.getImage(), 4+xDif, Math.max(0, getHeight()/2-icon.getIconHeight()/2)+yDif , null);
 			dx += icon.getIconWidth()+iconGap;
 		}
 		if (text != null) {

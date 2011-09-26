@@ -287,97 +287,22 @@ public class ACGFrame extends JFrame implements WindowListener {
 	
 	
 	public void startNewRun() {
-		ACGDocument acgDoc = ((DocMemberConfigPanel)centerPanel).getACGDocument();
 		try {
+			ACGDocument acgDoc = ((DocMemberConfigPanel)centerPanel).getACGDocument();
 			acgDoc.loadAndVerifyClasses();
 			acgDoc.turnOffMCMC();
 			acgDoc.instantiateAll();
+			PickMonitorsPanel pickMonitors = new PickMonitorsPanel(this, acgDoc);
+			replaceCenterPanel(pickMonitors);
 		} catch (Exception e1) {
 			ErrorWindow.showErrorWindow(e1);
 			return;
 		}
 		
-		PickMonitorsPanel pickMonitors = new PickMonitorsPanel(this, acgDoc);
-		replaceCenterPanel(pickMonitors);
+		
 	}
 	
-	/**
-	 * Save the settings to a new file. We always save as a new file so it's clear that
-	 * any old one will be overwritten. 
-	 */
-	public void saveSettings() {
-		File selectedFile = null;
-		if (onAMac) {
-			if (fileDialog == null)
-				fileDialog = new FileDialog(this, "Save settings");
-			fileDialog.setMode(FileDialog.SAVE);
-			String userDir = System.getProperty("user.dir");
-			if (userDir != null)
-				fileDialog.setDirectory(userDir);
 
-			fileDialog.setVisible(true);
-
-			String filename = fileDialog.getFile();
-			String path = fileDialog.getDirectory();
-			selectedFile = new File(path + filename);
-		}
-		else {
-			//Not on a mac, use a JFileChooser instead of a FileDialog
-
-			//Construct a new file choose whose default path is the path to this executable, which 
-			//is returned by System.getProperty("user.dir")
-			if (fileChooser == null)
-				fileChooser = new JFileChooser( System.getProperty("user.dir"));
-
-			int option = fileChooser.showSaveDialog(getRootPane());
-			if (option == JFileChooser.APPROVE_OPTION) {
-				selectedFile = fileChooser.getSelectedFile();
-			}
-			
-			//Check about overwriting the existing file
-			if (selectedFile != null && selectedFile.exists()) {
-				Object[] options = {"Overwrite", "Cancel"};
-				int n = JOptionPane.showOptionDialog(getRootPane(),
-						"Overwrite existing file  " + selectedFile.getName() + "?",
-						"File exists",
-						JOptionPane.YES_NO_OPTION,
-						JOptionPane.WARNING_MESSAGE,
-						null,
-						options,
-						options[1]);
-				//Abort
-				if (n == 1) 
-					return;
-				
-			}
-		}
-
-		
-		
-		if (selectedFile != null) {
-			ACGDocument acgDoc = ((DocMemberConfigPanel)centerPanel).getACGDocument();
-			acgDoc.setSourceFile(selectedFile);
-			String docText;
-			try {
-				docText = acgDoc.getXMLString();
-			} catch (TransformerException ex) {
-				ErrorWindow.showErrorWindow(ex);
-				return;
-			} catch (IOException e) {
-				ErrorWindow.showErrorWindow(e);
-				return;
-			}
-			
-			BufferedWriter writer;
-			try {
-				writer = new BufferedWriter(new FileWriter(selectedFile));
-				writer.write(docText + "\n");
-				writer.close();
-			} catch (IOException e) {
-				ErrorWindow.showErrorWindow(e);
-			}
-		}
-	}
 		
 	public void showDocMemberConfigPanel() {
 		DocMemberConfigPanel configPanel = new DocMemberConfigPanel(this);
@@ -442,9 +367,6 @@ public class ACGFrame extends JFrame implements WindowListener {
 		
 		mainContainer.add(bottomPanel, BorderLayout.SOUTH);
 	}
-
-
-
 
 
 
@@ -519,11 +441,10 @@ public class ACGFrame extends JFrame implements WindowListener {
 	private JButton resumeButton;
 	private JButton pauseButton;
 	
-	private JFileChooser fileChooser; //Used on non-mac platforms
-	private FileDialog fileDialog; //Used on mac systems
 	
 	//private TopToolBar toolBar;
-
+	private JFileChooser fileChooser; //Used on non-mac platforms
+	private FileDialog fileDialog; //Used on mac systems
 	
 
 }

@@ -29,6 +29,9 @@ import xml.XMLLoader;
  */
 public class StateLoggerView extends AbstractLoggerView {
 
+	public StateLoggerView() {
+		this(new StateLoggerModel() );
+	}
 	
 	public StateLoggerView(StateLoggerModel model) {
 		super(model);
