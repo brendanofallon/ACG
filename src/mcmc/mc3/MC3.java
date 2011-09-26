@@ -54,7 +54,11 @@ import dlCalculation.substitutionModels.MutationModel;
  *
  */
 public class MC3 {
-
+	
+	public static final String XML_THREADS = "threads";
+	public static final String XML_CHAINS = "chains";
+	public static final String XML_SWAPSTEPS = "swap.steps";
+	
 	int numThreads = 4;
 	ThreadPoolExecutor threadPool = null;
 	
@@ -79,11 +83,11 @@ public class MC3 {
 	
 	public MC3(Map<String, String> attrs, MCMC chain, ChainHeats heatModel, List<Object> listeners) {
 		threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(numThreads);
-		this.numThreads = XMLUtils.getIntegerOrFail("threads", attrs);
+		this.numThreads = XMLUtils.getIntegerOrFail(XML_THREADS, attrs);
 		this.chainHeats = heatModel;
-		int numChains = XMLUtils.getIntegerOrFail("chains", attrs);
-		this.runLength = XMLUtils.getIntegerOrFail("length", attrs);
-		Integer swapStepOp = XMLUtils.getOptionalInteger("swap.steps", attrs);
+		int numChains = XMLUtils.getIntegerOrFail(XML_CHAINS, attrs);
+		this.runLength = XMLUtils.getIntegerOrFail(MCMC.XML_RUNLENGTH, attrs);
+		Integer swapStepOp = XMLUtils.getOptionalInteger(XML_SWAPSTEPS, attrs);
 		if (swapStepOp != null)
 			this.swapSteps = swapStepOp;
 		
@@ -127,7 +131,7 @@ public class MC3 {
 		}
 		
 		//Run unless the attributes say not to
-		Boolean runNow = XMLUtils.getOptionalBoolean("run", attrs);
+		Boolean runNow = XMLUtils.getOptionalBoolean(MCMC.XML_RUNNOW, attrs);
 		if (runNow == null || runNow) {
 			run();
 		}

@@ -135,6 +135,28 @@ public abstract class ModelElement implements ElementProvider {
 	}
 	
 	/**
+	 * Attempt to find an attribute with the given key and parse a Integer from its value. 
+	 * If no value if found, null is returned. If a value is found but we can't parse a double from it,
+	 * an InputConfigException is thrown
+	 * @param el
+	 * @param key
+	 * @return
+	 * @throws InputConfigException
+	 */
+	protected static Integer getOptionalIntegerAttribute(Element el, String key) throws InputConfigException {
+		String valStr = el.getAttribute(key);
+		if (valStr == null)
+			return null;
+		try {
+			Integer val = Integer.parseInt(valStr);
+			return val;
+		}
+		catch (NumberFormatException nfe) {
+			throw new InputConfigException("Could not parse a value for attribute : " + key + " from element with label: " + el.getNodeName());
+		}
+	}
+	
+	/**
 	 * Create an element with the given label and of the class provided
 	 * @param doc
 	 * @param label

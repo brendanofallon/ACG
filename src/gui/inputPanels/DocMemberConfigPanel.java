@@ -53,6 +53,7 @@ public class DocMemberConfigPanel extends JPanel {
 	SiteModelView siteModelPanel;
 	CoalescentView coalescentModelPanel;
 	LoggersPanel loggersPanel;
+	MCMCModelView mcView;
 	
 	AlignmentElement alignmentEl;
 	MCMCModelElement mcElement;
@@ -113,7 +114,8 @@ public class DocMemberConfigPanel extends JPanel {
 		runButton.setPreferredSize(new Dimension(75, 36));
 		runButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				acgParent.startNewRun();
+				runButtonPressed();
+				//acgParent.startNewRun();
 			}
 		});
 		bottomPanel.add(runButton);
@@ -123,6 +125,20 @@ public class DocMemberConfigPanel extends JPanel {
 		this.add(bottomPanel, BorderLayout.SOUTH);
 	}
 	
+	protected void runButtonPressed() {
+		if (mcView == null) {
+			mcView = new MCMCModelView( mcElement  );
+			this.remove(tabPane);
+			this.add(mcView, BorderLayout.CENTER);
+			this.revalidate();
+			this.repaint();
+		}
+		else {
+			acgParent.startNewRun();
+		}
+		
+	}
+
 	public void loadSettingsFromDocument(ACGDocument doc) {
 		try {
 			alignmentEl.readElement(doc);
@@ -282,7 +298,7 @@ public class DocMemberConfigPanel extends JPanel {
 			}
 			
 			
-			mcElement.setRunLength((long)1e7);
+			mcElement.setRunLength(25000000);
 			docBuilder.appendNodes( mcElement );
 				
 			
