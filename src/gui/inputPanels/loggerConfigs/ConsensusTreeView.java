@@ -18,6 +18,7 @@ public class ConsensusTreeView extends AbstractLoggerView {
 	
 	public ConsensusTreeView() {
 		this( new ConsensusTreeModel() );
+		filenameField.setText("ConsensusTree.tre");
 	}
 	
 	public ConsensusTreeView(final ConsensusTreeModel model) {
@@ -39,12 +40,6 @@ public class ConsensusTreeView extends AbstractLoggerView {
 		add(siteField);
 	}
 	
-	public void updateFields() throws InputConfigException {
-		String filename = filenameField.getText();
-		updateSiteField();
-		filename.replaceAll(" ", "_");
-		model.setOutputFilename(filename);
-	}
 	
 	protected void updateSiteField() throws InputConfigException {
 		try {
@@ -64,6 +59,11 @@ public class ConsensusTreeView extends AbstractLoggerView {
 	@Override
 	public String getDescription() {
 		return "Consensus of trees at single site";
+	}
+
+	@Override
+	protected void updateModelFromView() throws InputConfigException {
+		updateSiteField();
 	}
 
 }

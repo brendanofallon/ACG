@@ -46,6 +46,11 @@ public class StateLoggerView extends AbstractLoggerView {
 	public String getDescription() {
 		return "Writes parameter values to a log file";
 	}
+
+	@Override
+	protected void updateModelFromView() throws InputConfigException {
+		//No-op on purpose, nothing to do here
+	}
 	
 
 }

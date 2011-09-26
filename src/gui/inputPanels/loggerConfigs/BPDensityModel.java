@@ -53,6 +53,7 @@ public class BPDensityModel extends LoggerModel {
 		Element el = getSingleElementForClass(doc, BreakpointDensity.class);
 		readFilename(el);
 		readBurnin(el);
+		readFrequency(el);
 		String echoStr = el.getAttribute(BreakpointDensity.BINS);
 		if (echoStr != null && echoStr.length()>0) {
 			try {

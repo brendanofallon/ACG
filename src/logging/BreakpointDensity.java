@@ -24,10 +24,15 @@ import arg.RecombNode;
  */
 public class BreakpointDensity extends HistogramCollector  {
 
-	
 	ARG arg;
 	
 	NumberFormat formatter = new DecimalFormat("0.0####");
+	
+	//We keep track of the number of states sampled because we want to normalize by
+	//the number of states, not over sites. This way we can compare peak heights 
+	//between different runs - otherwise if one run had two bps both peaks would only
+	//be half as high as a run with one bp, which seems like it doesn't make sense. 
+	private int statesSampled = 0;
 
 	public BreakpointDensity(Map<String, String> attrs, ARG arg) {
 		super(attrs, arg, "Breakpoint density", 0, arg.getSiteCount(), 100);
@@ -69,6 +74,9 @@ public class BreakpointDensity extends HistogramCollector  {
 			histo.addValue(rNodes.get(i).getInteriorBP());
 		}
 		
+		statesSampled++;
+		
+		//Debugging stuff, make sure we're collecting only from the cold chain
 		double heat = chain.getTemperature();
 		if (heat != 1.0) {
 			throw new IllegalStateException("Chain heat is not 1.0, BreakpointDensity is collecting data from the wrong chain");
@@ -97,7 +105,9 @@ public class BreakpointDensity extends HistogramCollector  {
 	public String getSummaryString() {
 		StringBuilder strB = new StringBuilder();
 		
-		strB.append("\n Breakpoint densities for parameter " + param.getName() + "\n");
+		strB.append("\n#Fraction of sampled states with recombination breakpoints at given position for ARG \'" + param.getName() + "\' \n");
+		strB.append("\n#Site \t Density \n");
+
 		if (histo.getCount()==0) {
 			strB.append("Histogram is empty, burnin (" + burnin + " states) has probably not been exceeded.");
 		}
@@ -106,9 +116,9 @@ public class BreakpointDensity extends HistogramCollector  {
 				int site = (int)Math.round(i*histo.getBinWidth());
 				if (siteMap != null)
 					site = siteMap.getOriginalSite(site);
-				strB.append(site + "\t" + formatter.format( histo.getFreq(i)) + "\n");
+				strB.append(site + "\t" + formatter.format( histo.getCount(i) / (double)statesSampled ) + "\n");
 			}
-			strB.append("Count : " + histo.getCount() + "\n");
+			strB.append("States sampled : " + statesSampled + "\n");
 		}
 		
 		return strB.toString();

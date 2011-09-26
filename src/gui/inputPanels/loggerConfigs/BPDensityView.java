@@ -58,5 +58,10 @@ public class BPDensityView extends AbstractLoggerView {
 		return "Locations of recombination breakpoints along sequence";
 	}
 
+	@Override
+	protected void updateModelFromView() throws InputConfigException {
+		bpModel.setBins( (Integer)binsSpinner.getValue() );
+	}
+
 
 }

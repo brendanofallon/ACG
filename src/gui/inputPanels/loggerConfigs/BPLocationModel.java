@@ -1,6 +1,5 @@
 package gui.inputPanels.loggerConfigs;
 
-import logging.BreakpointDensity;
 import logging.BreakpointLocation;
 import logging.PropertyLogger;
 import gui.document.ACGDocument;
@@ -66,6 +65,7 @@ public class BPLocationModel extends LoggerModel {
 		Element el = getSingleElementForClass(doc, BreakpointLocation.class);
 		readFilename(el);
 		readBurnin(el);
+		readFrequency(el);
 		String echoStr = el.getAttribute(BreakpointLocation.XML_SEQBINS);
 		if (echoStr != null && echoStr.length()>0) {
 			try {

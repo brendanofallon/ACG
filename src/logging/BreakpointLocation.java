@@ -1,7 +1,5 @@
 package logging;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.Collections;
 import java.util.List;
@@ -11,10 +9,7 @@ import parameter.AbstractParameter;
 import sequence.SiteMap;
 import xml.XMLUtils;
 
-import math.Histogram;
 import mcmc.MCMC;
-import mcmc.MCMCListener;
-
 import arg.ARG;
 import arg.CoalNode;
 import arg.RecombNode;
@@ -30,9 +25,9 @@ public class BreakpointLocation extends PropertyLogger {
 	int seqBins = 200;
 	int depthBins = 400;
 	int count = 0;
-	double maxTreeHeight;
+	Double maxTreeHeight = null;
 	
-	Double userMaxHeight = null;
+	//Double userMaxHeight = null;
 	
 	int[][] hist = new int[seqBins][depthBins];
 		
@@ -50,7 +45,7 @@ public class BreakpointLocation extends PropertyLogger {
 		if (hBins != null)
 			depthBins = hBins;
 		
-		userMaxHeight = XMLUtils.getOptionalDouble(XML_HEIGHT, attrs); //This can be null
+		maxTreeHeight = XMLUtils.getOptionalDouble(XML_HEIGHT, attrs); //This can be null
 		
 		this.arg = arg;
 		hist = new int[seqBins][depthBins];
@@ -76,8 +71,7 @@ public class BreakpointLocation extends PropertyLogger {
 	 * @param height
 	 */
 	public void setMaxHeight(double height) {
-		this.userMaxHeight = height;
-		maxTreeHeight = userMaxHeight;
+		maxTreeHeight = height;
 	}
 	
 	/**
@@ -89,7 +83,7 @@ public class BreakpointLocation extends PropertyLogger {
 	}
 	
 	public void addValue(int stateNumber) {
-		if (userMaxHeight == null && stateNumber == burnin) {
+		if (maxTreeHeight == null && stateNumber >= burnin) {
 			List<CoalNode> dlNodes = arg.getDLCoalNodes();
 			Collections.sort(dlNodes, arg.getNodeHeightComparator());
 			double maxDLHeight = dlNodes.get( dlNodes.size()-1).getHeight();
@@ -105,9 +99,9 @@ public class BreakpointLocation extends PropertyLogger {
 			int depthBin = (int) ((double)depthBins*height/(double)maxTreeHeight);
 			if (locBin < seqBins && depthBin < depthBins) {
 				hist[locBin][depthBin]++;
-				count++;
 			}
 		}
+		count++;
 	}
 	
 	@Override
@@ -131,8 +125,10 @@ public class BreakpointLocation extends PropertyLogger {
 	@Override
 	public String getSummaryString() {
 		StringBuilder strB = new StringBuilder();
-		strB.append("\n Density of breakpoints : \n");
-		strB.append("Max depth : " + maxTreeHeight + "\n");
+		strB.append("# Fraction of states with a recombination breakpoint at the given position.\n");
+		strB.append("# Rows of following matrix describe sites along sequence, columns are depths in ARG with rightmost column being the greatest depth\n");
+		strB.append("# Max depth : " + maxTreeHeight + "\n");
+		strB.append("# States sampled : " + count + "\n");
 		
 		double site = 0;
 		double siteBinStep =  (double)arg.getSiteCount() / (double)seqBins;

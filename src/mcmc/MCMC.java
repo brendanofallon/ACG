@@ -5,19 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import arg.ARG;
-
-import logging.StateLogger;
 import logging.StringUtils;
-import logging.TreeLogger;
 import math.RandomSource;
 import modifier.IllegalModificationException;
 import modifier.ModificationImpossibleException;
 import modifier.Modifier;
 
 import component.LikelihoodComponent;
-import dlCalculation.DataLikelihood;
-
 import parameter.AbstractParameter;
 import parameter.InvalidParameterValueException;
 import parameter.Parameter;
@@ -129,6 +123,8 @@ public class MCMC {
 		this.attrs = attrs;
 		for(Object comp : comps) {
 			try {
+				if (verbose)
+					System.out.println("Adding likelihood " + comp);
 				compList.add( (LikelihoodComponent)comp);
 			}
 			catch (ClassCastException cce) {
@@ -176,6 +172,8 @@ public class MCMC {
 		}
 		int modCount = 0;
 		for(AbstractParameter<?> param : params) {
+			if (verbose)
+				System.out.println("Adding parameter " + param);
 			addParameter(param);
 			modCount += param.getModifierCount();
 		}
@@ -204,6 +202,8 @@ public class MCMC {
 		if (listeners != null) {
 			for(Object listenObj : listeners) {
 				try {
+					if (verbose)
+						System.out.println("Adding listener " + listenObj);
 					MCMCListener listener = (MCMCListener)listenObj;
 					listener.setMCMC(this);
 					addListener(listener);
@@ -576,6 +576,10 @@ public class MCMC {
 			propL = 0.0;
 			for(LikelihoodComponent comp : components) {
 				double lnL = comp.getProposedLogLikelihood();
+				if (verbose && Double.isNaN(lnL))
+					System.out.println("Likelihood is NaN for component : " + comp);
+				if (verbose && Double.isInfinite(lnL))
+					System.out.println("Likelihood is " + lnL + " for component : " + comp);
 				propL += lnL;
 				propLikeList[i] = lnL;
 				i++;

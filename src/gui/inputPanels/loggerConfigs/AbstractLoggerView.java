@@ -9,7 +9,6 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import gui.inputPanels.Configurator;
 import gui.inputPanels.Configurator.InputConfigException;
 
 import javax.swing.BorderFactory;
@@ -20,8 +19,6 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import org.w3c.dom.Element;
 
 /**
  * Base class for individual logger views that appear in the loggers panel. These graphically
@@ -102,10 +99,17 @@ public abstract class AbstractLoggerView extends JPanel {
 		return model;
 	}
 	
+	
+	protected abstract void updateModelFromView() throws InputConfigException;
+	
+	
 	public void updateFields() throws InputConfigException {
 		String filename = filenameField.getText();
 		filename.replaceAll(" ", "_");
 		model.setOutputFilename(filename);
+		model.setBurnin( (Integer)burninSpinner.getValue());
+		model.setLogFrequency( (Integer)freqSpinner.getValue() );
+		updateModelFromView();
 	}
 	
 	/**

@@ -48,15 +48,7 @@ public class BPLocationView extends AbstractLoggerView {
 		super(model);
 		this.bpModel = model;
 	}
-	
-	
-	public void updateFields() throws InputConfigException {
-		String filename = filenameField.getText();
-		if (setHeightBox.isSelected())
-			updateHeightField();
-		filename.replaceAll(" ", "_");
-		model.setOutputFilename(filename);
-	}
+
 	
 	/** Default preferred size
 	 * @return
@@ -167,12 +159,17 @@ public class BPLocationView extends AbstractLoggerView {
 	} 
 	
 	protected void updateHeightField() throws InputConfigException {
-		try {
-			Double height = Double.parseDouble( heightField.getText() );
-			bpModel.setMaxDepth(height);
+		if (setHeightBox.isSelected()) {
+			try {
+				Double height = Double.parseDouble( heightField.getText() );
+				bpModel.setMaxDepth(height);
+			}
+			catch (NumberFormatException nfe) {
+				throw new InputConfigException("Please enter a single positive value for the maximum collection depth");
+			}
 		}
-		catch (NumberFormatException nfe) {
-			throw new InputConfigException("Please enter a single positive value for the maximum collection depth");
+		else {
+			bpModel.setMaxDepth(null);
 		}
 	}
 
@@ -182,6 +179,7 @@ public class BPLocationView extends AbstractLoggerView {
 		}
 		else {
 			heightField.setEnabled(false);
+			bpModel.setMaxDepth(null);
 		}
 	}
 
@@ -196,6 +194,15 @@ public class BPLocationView extends AbstractLoggerView {
 	@Override
 	public String getDescription() {
 		return "Locations of breakpoints along sequence and in time	";
+	}
+
+	@Override
+	protected void updateModelFromView() throws InputConfigException {	
+		updateHeightField();
+		bpModel.setSeqBins( (Integer)seqBinsSpinner.getValue() );
+		bpModel.setTimeBins( (Integer)timeBinsSpinner.getValue() );
+		model.setBurnin( (Integer)burninSpinner.getValue());
+		model.setLogFrequency( (Integer)freqSpinner.getValue() );
 	}
 	
 

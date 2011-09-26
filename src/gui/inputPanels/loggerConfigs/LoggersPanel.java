@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import gui.ACGFrame;
 import gui.ErrorWindow;
 import gui.document.ACGDocument;
 import gui.inputPanels.ARGModelElement;
@@ -38,7 +39,7 @@ public class LoggersPanel extends JPanel {
 	//Maybe there should be one logger panel per ARG? per alignment? 
 	ARGModelElement ARGref = null;
 	
-	static final ImageIcon removeIcon = getIcon("icons/removeButton.png");
+	static final ImageIcon removeIcon = ACGFrame.getIcon("inputPanels/loggerConfigs/icons/removeButton.png");
 	
 	public LoggersPanel() {
 		this.setOpaque(false);
@@ -123,20 +124,6 @@ public class LoggersPanel extends JPanel {
 		
 		return nodes;
 	}
-
-
-	private static ImageIcon getIcon(String url) {
-		ImageIcon icon = null;
-		try {
-			java.net.URL imageURL = LoggersPanel.class.getResource(url);
-			icon = new ImageIcon(imageURL);
-		}
-		catch (Exception ex) {
-			System.err.println("Could not load icon from url: " + url +"\n Message : " + ex);
-		}
-		return icon;
-	}
-	
 	
 	public void removeAllLoggers() {
 		for(LoggerWrapper wrapper : loggers) {

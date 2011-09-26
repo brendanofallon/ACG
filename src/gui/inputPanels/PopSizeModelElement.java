@@ -84,6 +84,7 @@ public class PopSizeModelElement extends ModelElement {
 				modEl.setLabel( constSizeModel.getModLabel() );
 				modEl.setFrequency( constSizeModel.getModifierFrequency() );
 				modEl.setType( constSizeModel.getModType() );
+				popEl.appendChild( modEl.getElement(doc) );
 			}
 			constSizeModel.setLabel(modelLabel); //Make sure it has the same name as
 			params.add( constSizeModel );

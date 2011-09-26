@@ -28,12 +28,28 @@ public abstract class LoggerModel extends ModelElement {
 	protected int burnin = 1000000;	
 	protected ARGModelElement argRef = null; //Many loggers need a reference to the ARG
 	
+	//We maintain a link to a view object so we can be sure all fields have been "updated" before we 
+	//create any XML nodes
+	private AbstractLoggerView view = null;
+	
 	public LoggerModel() {
 		modelLabel = getDefaultLabel();
 	}
 	
+	/**
+	 * Set the "view" associated with this model. 
+	 * @param view
+	 */
+	public void setView(AbstractLoggerView view) {
+		this.view = view;
+	}
+	
 	public abstract Class getLoggerClass();
 	
+	/**
+	 * A reference to the ARGModelElement associated with this logger. May be null if no reference is required. 
+	 * @return
+	 */
 	public ARGModelElement getArgRef() {
 		return argRef;
 	}
@@ -55,6 +71,16 @@ public abstract class LoggerModel extends ModelElement {
 			Integer burnin = Integer.parseInt(burnStr);
 			setBurnin(burnin);
 			return burnin;
+		}
+		return null;
+	}
+	
+	protected Integer readFrequency(Element el) {
+		String freqStr = el.getAttribute(PropertyLogger.FREQUENCY);
+		if (freqStr != null && freqStr.length()>0) {
+			Integer freq = Integer.parseInt(freqStr);
+			setBurnin(freq);
+			return freq;
 		}
 		return null;
 	}
@@ -108,6 +134,8 @@ public abstract class LoggerModel extends ModelElement {
 	@Override
 	public List<Node> getElements(ACGDocument doc) throws InputConfigException {
 		List<Node> nodes = new ArrayList<Node>();
+		if (view != null)
+			view.updateFields();
 		nodes.add( getElement(doc) );
 		return nodes;
 	}

@@ -51,6 +51,7 @@ public class ConsensusTreeModel extends LoggerModel {
 		Element el = getSingleElementForClass(doc, ConsensusTreeLogger.class);
 		readFilename(el);
 		readBurnin(el);
+		readFrequency(el);
 		String echoStr = el.getAttribute(ConsensusTreeLogger.XML_SITE);
 		if (echoStr != null && echoStr.length()>0) {
 			try {

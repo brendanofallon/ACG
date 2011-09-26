@@ -75,21 +75,22 @@ public class SpinArrow extends JPanel implements MouseListener, ActionListener {
 	
 	
 	private void initializeImages() {
-		closedHighlight = (getIcon("triangle_highlight.png")).getImage();
-		one = getIcon("triangle_1.png");
-		two = getIcon("triangle_2.png");
-		three = getIcon("triangle_3.png");
-		four = getIcon("triangle_4.png");
-		five = getIcon("triangle_5.png");
-		six = getIcon("triangle_highlight6.png");
+		closedHighlight = (getIcon("/gui/icons/triangle_highlight.png")).getImage();
+		one = getIcon("/gui/icons/triangle_1.png");
+		two = getIcon("/gui/icons/triangle_2.png");
+		three = getIcon("/gui/icons/icons/triangle_3.png");
+		four = getIcon("/gui/icons/triangle_4.png");
+		five = getIcon("/gui/icons/triangle_5.png");
+		six = getIcon("/gui/icons/triangle_highlight6.png");
 		triArray = new Image[6];
 		triArray[0] = one.getImage();
 		triArray[1] = two.getImage();
 		triArray[2] = three.getImage();
 		triArray[3] = four.getImage();
 		triArray[4] = five.getImage();
+		
 		triArray[5] = six.getImage();
-		openHighlight = (getIcon("triangle_highlight6.png")).getImage();
+		openHighlight = (getIcon("/gui/icons/triangle_highlight6.png")).getImage();
 		initialized = true;
 	}
 	

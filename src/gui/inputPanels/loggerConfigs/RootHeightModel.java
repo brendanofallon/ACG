@@ -53,6 +53,7 @@ public class RootHeightModel extends LoggerModel {
 	public void readElements(ACGDocument doc) throws InputConfigException {
 		Element el = getSingleElementForClass(doc, RootHeightDensity.class);
 		readFilename(el);
+		readFrequency(el);
 		readBurnin(el);
 		String echoStr = el.getAttribute(BreakpointDensity.BINS);
 		if (echoStr != null && echoStr.length()>0) {

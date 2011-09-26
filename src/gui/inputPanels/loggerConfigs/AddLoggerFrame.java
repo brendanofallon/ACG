@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -19,6 +21,7 @@ public class AddLoggerFrame extends JFrame {
 	List<AbstractLoggerView> loggerList = new ArrayList<AbstractLoggerView>();
 	
 	public AddLoggerFrame(LoggersPanel parentPanel) {
+		super("Choose loggers");
 		this.parentPanel = parentPanel;
 		this.setLayout(new BorderLayout());
 				
@@ -32,9 +35,11 @@ public class AddLoggerFrame extends JFrame {
 		for(AbstractLoggerView logger : loggerList) {
 			LoggerItemRenderer renderer = new LoggerItemRenderer(logger, this);
 			listPanel.add(renderer);
+			listPanel.add(Box.createVerticalStrut(3));
 		}
 		
 		add(scrollPane, BorderLayout.CENTER);
+		this.getRootPane().setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
 		pack();
 		setLocationRelativeTo(parentPanel);
 		setVisible(false);
@@ -49,6 +54,7 @@ public class AddLoggerFrame extends JFrame {
 		loggerList.add(new BPLocationView() );
 		loggerList.add(new RootHeightView() );
 		loggerList.add(new ConsensusTreeView() );
+		loggerList.add(new MPEARGView() );
 	}
 	
 	/**

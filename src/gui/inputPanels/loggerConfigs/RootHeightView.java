@@ -1,6 +1,8 @@
 package gui.inputPanels.loggerConfigs;
 
 
+import gui.inputPanels.Configurator.InputConfigException;
+
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
@@ -29,6 +31,7 @@ public class RootHeightView extends AbstractLoggerView {
 		add(new JLabel("Bins:"));
 		add(binsSpinner);
 	}
+
 	
 	@Override
 	public String getName() {
@@ -38,6 +41,11 @@ public class RootHeightView extends AbstractLoggerView {
 	@Override
 	public String getDescription() {
 		return "Root height along length of sequence";
+	}
+
+	@Override
+	protected void updateModelFromView() throws InputConfigException {
+		rootHeightModel.setBins( (Integer)binsSpinner.getValue() );
 	}
 	
 }

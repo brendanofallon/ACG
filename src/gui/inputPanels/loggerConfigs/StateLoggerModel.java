@@ -11,6 +11,10 @@ public class StateLoggerModel extends LoggerModel {
 
 	private boolean echoToScreen = false;
 
+	public StateLoggerModel() {
+		setOutputFilename("StateLog.log");
+	}
+	
 	public boolean getEchoToScreen() {
 		return echoToScreen;
 	}
@@ -28,6 +32,7 @@ public class StateLoggerModel extends LoggerModel {
 	public void readElements(ACGDocument doc) throws InputConfigException {
 		Element el = getSingleElementForClass(doc, StateLogger.class);
 		readFilename(el);
+		readFrequency(el);
 		readBurnin(el);
 		String echoStr = el.getAttribute(StateLogger.XML_ECHOTOSCREEN);
 		if (echoStr != null && echoStr.length()>0) {
