@@ -24,14 +24,13 @@ import coalescent.RecombinationParameter;
  */
 public class RecombRateModel extends ModelElement {
 
-	DoubleParamElement recModel = new DoubleParamElement();
+	final DoubleParamElement recModel = new DoubleParamElement();
 	
 	public RecombRateModel() {
 		initialize();
 	}
 	
 	private void initialize() {
-		recModel = new DoubleParamElement();
 		recModel.setLabel("RecombinationRate");
 		recModel.setValue( 1.0);
 		recModel.setLowerBound(0);
@@ -71,11 +70,11 @@ public class RecombRateModel extends ModelElement {
 	public void readElements(ACGDocument doc) throws InputConfigException {
 		Element recRateEl = getOptionalElementForClass(doc, RecombinationParameter.class);
 		if (recRateEl == null) {
-			recModel = null;
+			recModel.setValue(0);
+			recModel.setModifierType(null);
 			return;
 		}
 		
-		recModel = new DoubleParamElement();
 		setModelLabel(recRateEl.getNodeName());
 		
 		Double recRate = getOptionalDoubleAttribute(recRateEl, DoubleParameter.XML_VALUE);

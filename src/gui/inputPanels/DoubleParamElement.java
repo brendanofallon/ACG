@@ -29,6 +29,9 @@ public class DoubleParamElement {
 	String modifierLabel = null;
 	Double modifierFrequency = 1.0;
 	
+	double frequency = 1.0;
+	
+
 	double value = 1.0; 
 	double upperBound = Double.POSITIVE_INFINITY;
 	double lowerBound = Double.NEGATIVE_INFINITY;
@@ -70,6 +73,14 @@ public class DoubleParamElement {
 			return true;
 		
 		return false;
+	}
+	
+	public double getFrequency() {
+		return frequency;
+	}
+
+	public void setFrequency(double frequency) {
+		this.frequency = frequency;
 	}
 	
 	public ModType getModType() {
@@ -154,6 +165,19 @@ public class DoubleParamElement {
 			throw new InputConfigException("Could not parse value for DoubleParameter with label " + elementName + ", got : " + valStr);
 		}
 		
+		
+		valStr = el.getAttribute(DoubleParameter.XML_PARAM_FREQUENCY);
+		if (valStr != null && valStr.length()>0) {
+			try {
+				Double val = Double.parseDouble(valStr);
+				setFrequency(val);
+			}
+			catch (NumberFormatException ex) {
+				throw new InputConfigException("Could not parse frequency for DoubleParameter with label " + elementName + ", got : " + valStr);
+			}
+		}
+		
+		
 		String lowerStr = el.getAttribute(DoubleParameter.XML_LOWERBOUND);
 		if (lowerStr != null && lowerStr.length()>0) {
 			try {
@@ -224,6 +248,7 @@ public class DoubleParamElement {
 		Element el = doc.createElement(elementName);
 		el.setAttribute(XMLLoader.CLASS_NAME_ATTR, DoubleParameter.class.getCanonicalName());
 		el.setAttribute(DoubleParameter.XML_VALUE, "" + value);
+		el.setAttribute(DoubleParameter.XML_PARAM_FREQUENCY, "" + frequency);
 		el.setAttribute(DoubleParameter.XML_LOWERBOUND, "" + lowerBound);
 		el.setAttribute(DoubleParameter.XML_UPPERBOUND, "" + upperBound);
 		

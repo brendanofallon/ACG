@@ -135,6 +135,10 @@ public class ParamConfigFrame extends JFrame {
 		paramNameField = new JTextField(model.getLabel());
 		addComps(valuesPanel, "Param. label : ", paramNameField);
 		
+		paramFreqField = new JTextField("" + model.getFrequency() );
+		paramFreqField.setToolTipText("Relative frequency of new proposals for this parameter");
+		addComps(valuesPanel,"Sample rate : ", paramFreqField);
+		
 		initValueField = new JTextField("" + model.getValue() );
 		addComps(valuesPanel,"Initial value : ", initValueField);
 		lowerBoundField = new JTextField("" + model.getLowerBound() );
@@ -309,6 +313,9 @@ public class ParamConfigFrame extends JFrame {
 		if (field == initValueField) {
 			model.setValue( value );
 		}
+		if (field == paramFreqField) {
+			model.setFrequency( value );
+		}
 		if (field == lowerBoundField)
 			model.setLowerBound(value);
 		if (field == upperBoundField)
@@ -319,6 +326,7 @@ public class ParamConfigFrame extends JFrame {
 	
 	private JPanel mainPanel;
 	private Stylist stylist = new Stylist();
+	private JTextField paramFreqField; 
 	private JTextField paramNameField; 
 	private JTextField initValueField;
 	private JTextField lowerBoundField;

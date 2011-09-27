@@ -91,7 +91,7 @@ public class StartFrame extends JPanel {
 		stylist.applyStyle(loadButton);
 		loadButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				acgParent.showDocMemberConfigPanel();
+				browseAndLoad();
 			}
 		});
 		add(loadButton);
@@ -101,7 +101,7 @@ public class StartFrame extends JPanel {
 		stylist.applyStyle(runButton);
 		runButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				browseForFile();
+				browseAndRun();
 			}
 		});
 		add(runButton);
@@ -109,6 +109,35 @@ public class StartFrame extends JPanel {
 		
 
 		this.add(Box.createVerticalStrut(50));
+	}
+
+
+	protected void browseAndLoad() {
+		File file = browseForFile();
+		loadFile(file);
+	}
+
+
+	/**
+	 * Cause the given file to be shown in a docMemberConfigPanel
+	 * @param file
+	 */
+	private void loadFile(File inputFile) {
+		if (inputFile == null || (! inputFile.exists())) {
+			String filename = inputFile == null ? "(empty)" : inputFile.getName();
+			JOptionPane.showMessageDialog(getRootPane(), "The file " + filename + " cannot be found.");
+			return;
+		}
+		
+
+		ACGDocument acgDocument = new ACGDocument(inputFile);
+		acgParent.loadDocMemberConfig(acgDocument);
+	}
+
+
+	protected void browseAndRun() {
+		File file = browseForFile();
+		runFile(file);
 	}
 
 
@@ -138,7 +167,7 @@ public class StartFrame extends JPanel {
 	 * filenameField), and replace the center panel with the PickParameters 
 	 * panel
 	 */
-	protected void loadFile(File inputFile) {
+	protected void runFile(File inputFile) {
 		
 		if (inputFile == null || (! inputFile.exists())) {
 			String filename = inputFile == null ? "(empty)" : inputFile.getName();
@@ -154,7 +183,7 @@ public class StartFrame extends JPanel {
 	/**
 	 * Called when user clicks 'Browse' button 
 	 */
-	protected void browseForFile() {
+	protected File browseForFile() {
 		//If we're on a mac then a FileDialog looks better and supports a few mac-specific options
 		File selectedFile = null;
 		if (macMode) {
@@ -185,10 +214,7 @@ public class StartFrame extends JPanel {
 			}
 		}
 		
-		//If we found a valid selected file, set the info in the text field (a a couple other things)
-		if (selectedFile != null && selectedFile.exists()) {
-			loadFile(selectedFile);
-		}
+		return selectedFile;
 	}
 	
 	private JFileChooser fileChooser = null;

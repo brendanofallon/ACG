@@ -2,6 +2,7 @@ package gui.inputPanels;
 
 import gui.document.ACGDocument;
 import gui.inputPanels.Configurator.InputConfigException;
+import gui.inputPanels.DoubleModifierElement.ModType;
 import gui.inputPanels.PopSizeModelElement.PopSizeModel;
 
 import java.util.ArrayList;
@@ -21,8 +22,8 @@ import coalescent.CoalescentLikelihood;
  */
 public class CoalescentModelElement extends ModelElement {
 	
-	private PopSizeModelElement popSizeModel;
-	private RecombRateModel recRateModel;
+	private final PopSizeModelElement popSizeModel;
+	private final RecombRateModel recRateModel;
 	
 	private ARGModelElement argRef;
 	
@@ -44,16 +45,14 @@ public class CoalescentModelElement extends ModelElement {
 		
 		nodes.addAll(popSizeModel.getElements(doc));
 		params.addAll(popSizeModel.getDoubleParameters());
-		
-		if (recRateModel != null)
-			nodes.addAll(recRateModel.getElements(doc));
+		nodes.addAll(recRateModel.getElements(doc));
 		
 		Element coalEl = createElement(doc, modelLabel, CoalescentLikelihood.class);
 		coalEl.appendChild( doc.createElement(popSizeModel.getModelLabel()));
-		if (recRateModel != null) {
-			coalEl.appendChild( doc.createElement(recRateModel.getModelLabel()));
-			params.addAll(recRateModel.getDoubleParameters());
-		}
+		
+		coalEl.appendChild( doc.createElement(recRateModel.getModelLabel()));
+		params.addAll(recRateModel.getDoubleParameters());
+		
 		
 		coalEl.appendChild( doc.createElement(argRef.getModelLabel()));
 		
@@ -66,10 +65,8 @@ public class CoalescentModelElement extends ModelElement {
 		Element coalEl = getSingleElementForClass(doc, CoalescentLikelihood.class);
 		this.setModelLabel(coalEl.getNodeName());
 		
-		popSizeModel = new PopSizeModelElement();
 		popSizeModel.readElements(doc);
 		
-		recRateModel = new RecombRateModel();
 		recRateModel.readElements(doc);
 	}
 	
@@ -87,12 +84,12 @@ public class CoalescentModelElement extends ModelElement {
 	
 	public void setUseRecombination(boolean useRecomb) {
 		if (! useRecomb) {
-			recRateModel = null;
+			recRateModel.getModel().setValue(0);
+			recRateModel.getModel().setModifierType(null);
 		}
 		else {
-			if (recRateModel == null) {
-				recRateModel = new RecombRateModel();
-			}
+			recRateModel.getModel().setValue(1.0);
+			recRateModel.getModel().setModifierType(ModType.Scale);
 		}
 	}
 	

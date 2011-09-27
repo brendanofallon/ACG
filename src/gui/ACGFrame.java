@@ -211,6 +211,17 @@ public class ACGFrame extends JFrame implements WindowListener {
 //	}
 	
 	/**
+	 * Replace the center panel with a new DocMemberConfigPanel and cause it to
+	 * show settings read from the given document
+	 * @param doc
+	 */
+	public void loadDocMemberConfig(ACGDocument doc) {
+		DocMemberConfigPanel configPanel = new DocMemberConfigPanel(this);
+		configPanel.loadSettingsFromDocument(doc);
+		replaceCenterPanel(configPanel);
+	}
+	
+	/**
 	 * Called when user clicks on 'pause' button
 	 */
 	protected void pauseButtonPressed() {
@@ -221,69 +232,69 @@ public class ACGFrame extends JFrame implements WindowListener {
 		}
 	}
 	
-	public void clearAndMakeNew() {
-		centerPanel = new DocMemberConfigPanel(this);
-		this.getContentPane().add(centerPanel, BorderLayout.CENTER);
-		this.getContentPane().validate();
-		repaint();
-	}
+//	public void clearAndMakeNew() {
+//		centerPanel = new DocMemberConfigPanel(this);
+//		this.getContentPane().add(centerPanel, BorderLayout.CENTER);
+//		this.getContentPane().validate();
+//		repaint();
+//	}
 	
-	public ACGDocument readDocumentFromFile() {
-		//If we're on a mac then a FileDialog looks better and supports a few mac-specific options 
-		File selectedFile = null;
-		if (onAMac) {
-			if (fileDialog == null)
-				fileDialog = new FileDialog(this, "Choose a file");
-			fileDialog.setMode(FileDialog.LOAD);
-			String userDir = System.getProperty("user.dir");
-			if (userDir != null)
-				fileDialog.setDirectory(userDir);
-
-			fileDialog.setVisible(true);
-
-			String filename = fileDialog.getFile();
-			String path = fileDialog.getDirectory();
-			selectedFile = new File(path + filename);
-		}
-		else {
-			//Not on a mac, use a JFileChooser instead of a FileDialog
-
-			//Construct a new file choose whose default path is the path to this executable, which 
-			//is returned by System.getProperty("user.dir")
-			if (fileChooser == null)
-				fileChooser = new JFileChooser( System.getProperty("user.dir"));
-
-			int option = fileChooser.showOpenDialog(getRootPane());
-			if (option == JFileChooser.APPROVE_OPTION) {
-				selectedFile = fileChooser.getSelectedFile();
-			}
-		}
-
-		//If we found a valid selected file, set the info in the text field (a a couple other things)
-		if (selectedFile != null && selectedFile.exists()) {
-			ACGDocument doc = new ACGDocument(selectedFile);
-			return doc;
-		}
-		
-		return null;
-	}
+//	public ACGDocument readDocumentFromFile() {
+//		//If we're on a mac then a FileDialog looks better and supports a few mac-specific options 
+//		File selectedFile = null;
+//		if (onAMac) {
+//			if (fileDialog == null)
+//				fileDialog = new FileDialog(this, "Choose a file");
+//			fileDialog.setMode(FileDialog.LOAD);
+//			String userDir = System.getProperty("user.dir");
+//			if (userDir != null)
+//				fileDialog.setDirectory(userDir);
+//
+//			fileDialog.setVisible(true);
+//
+//			String filename = fileDialog.getFile();
+//			String path = fileDialog.getDirectory();
+//			selectedFile = new File(path + filename);
+//		}
+//		else {
+//			//Not on a mac, use a JFileChooser instead of a FileDialog
+//
+//			//Construct a new file choose whose default path is the path to this executable, which 
+//			//is returned by System.getProperty("user.dir")
+//			if (fileChooser == null)
+//				fileChooser = new JFileChooser( System.getProperty("user.dir"));
+//
+//			int option = fileChooser.showOpenDialog(getRootPane());
+//			if (option == JFileChooser.APPROVE_OPTION) {
+//				selectedFile = fileChooser.getSelectedFile();
+//			}
+//		}
+//
+//		//If we found a valid selected file, set the info in the text field (a a couple other things)
+//		if (selectedFile != null && selectedFile.exists()) {
+//			ACGDocument doc = new ACGDocument(selectedFile);
+//			return doc;
+//		}
+//		
+//		return null;
+//	}
 	
 	/**
 	 * Allow user to pick a file and then attempt to read an ACG document from it, and 
 	 * display the associated settings in a new buildPanel that replaces the current centerPanel.
 	 * 
 	 */
-	public void loadDocumentFromFile() {
-		ACGDocument doc = readDocumentFromFile();
-		if (doc != null) {
-			if (centerPanel instanceof DocMemberConfigPanel) {
-				DocMemberConfigPanel configPanel = (DocMemberConfigPanel)centerPanel;
-				configPanel.loadSettingsFromDocument(doc);
-				//toolBar.enableRunButton();
-			}
-			
-		}
-	}
+//	public void loadDocumentFromFile() {
+//		ACGDocument doc = readDocumentFromFile();
+//		if (doc != null) {
+//			if (centerPanel instanceof DocMemberConfigPanel) {
+//				DocMemberConfigPanel configPanel = (DocMemberConfigPanel)centerPanel;
+//				configPanel.loadSettingsFromDocument(doc);
+//				//toolBar.enableRunButton();
+//			}
+//			
+//		}
+//	}
 	
 	/**
 	 * Start a new run from the document described by the DocMemberConfigPanel

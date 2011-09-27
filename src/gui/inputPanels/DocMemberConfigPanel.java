@@ -157,6 +157,9 @@ public class DocMemberConfigPanel extends JPanel {
 			siteModelPanel.readNodesFromDocument(doc);
 			coalescentModelPanel.readNodesFromDocument(doc);
 			loggersPanel.readNodesFromDocument(doc);
+			mcElement.readElements(doc);
+			revalidate();
+			repaint();
 		}
 		catch (InputConfigException e) {
 			ErrorWindow.showErrorWindow(e);

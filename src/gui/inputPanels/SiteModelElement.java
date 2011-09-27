@@ -19,7 +19,7 @@ import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.DoubleModifierElement.ModType;
 
 /**
- * A class for reading and writing site model info to/ from XML
+ * A class for reading and writing the mutation model and site rate model info to/ from XML
  * @author brendano
  *
  */
@@ -35,10 +35,12 @@ public class SiteModelElement extends ModelElement {
 	private MutModelType modelType = MutModelType.F84;
 	private RateModelType rateModelType = RateModelType.Constant;
 	
-	private BaseFreqsModelElement baseFreqsElement = new BaseFreqsModelElement();
-	private DoubleParamElement ttRatioElement = new DoubleParamElement();
-	private DoubleParamElement kappaRElement = new DoubleParamElement();
-	private DoubleParamElement kappaYElement = new DoubleParamElement();
+	//Important that we don't reassign these since views have references to these as well
+	private final BaseFreqsModelElement baseFreqsElement = new BaseFreqsModelElement();
+	private final DoubleParamElement ttRatioElement = new DoubleParamElement();
+	private final DoubleParamElement kappaRElement = new DoubleParamElement();
+	private final DoubleParamElement kappaYElement = new DoubleParamElement();
+	private final DoubleParamElement alphaParamElement = new DoubleParamElement();
 	
 	//Default labels for some parameters
 	private String ttRatioLabel = "Kappa";
@@ -58,7 +60,6 @@ public class SiteModelElement extends ModelElement {
 	private String defaultAlphaParamLabel = "AlphaShape";
 	
 	
-	private DoubleParamElement alphaParamElement = new DoubleParamElement();
 	
 	public SiteModelElement() {
 		ttRatioElement.setLabel(ttRatioLabel);
@@ -217,57 +218,23 @@ public class SiteModelElement extends ModelElement {
 			if (mutModelClass.equals( F84Matrix.class.getCanonicalName() )) {
 				setMutModelType(MutModelType.F84);
 				
-				List<String> refs = doc.getChildrenForLabel(nodeLabel);
-				for (String ref : refs) {
-					Element childRef = doc.getElementForLabel(ref);
-					if (DoubleParamElement.isAcceptable(childRef)) 
-						ttRatioElement = new DoubleParamElement( childRef );
-										
-					
-					if (BaseFreqsModelElement.isAcceptable(childRef)) {
-						baseFreqsElement = new BaseFreqsModelElement();
-						baseFreqsElement.readSettings( childRef );
-					}
-				}
+				if ( getChildCount(doc, mutModelElement) != 2)
+					throw new InputConfigException("Expected exactly two children of node " + mutModelElement.getNodeName() + ", base frequencies and tt ratio");
+				baseFreqsElement.readSettings( getChild(doc, mutModelElement, 0));
+				ttRatioElement.readSettings( getChild(doc, mutModelElement, 0) );
 			}
 			
 			
 			if (mutModelClass.equals( TN93Matrix.class.getCanonicalName() )) {
 				setMutModelType(MutModelType.TN93);
-								
-				List<String> refs = doc.getChildrenForLabel(nodeLabel);
-				boolean kappaRFound = false;
-				for (String ref : refs) {
-					Element childRef = doc.getElementForLabel(ref);
 					
-					if (BaseFreqsModelElement.isAcceptable(childRef))
-						continue;
-					
-					if (DoubleParamElement.isAcceptable(childRef)) {
-						//Kappa R element is first, then ew fill kappa Y
-						if (! kappaRFound) {
-							kappaRElement = new DoubleParamElement(childRef);
-							kappaRFound = true;
-							continue;
-						}
-						if (kappaRFound) {
-							kappaYElement = new DoubleParamElement(childRef);
-							continue;
-						}
-						
-						
-						throw new InputConfigException("Wrong number of parameters (>2) given to TN93 model");
-					}
-					
-					if (BaseFreqsModelElement.isAcceptable(childRef)) {
-						baseFreqsElement = new BaseFreqsModelElement();
-						baseFreqsElement.readSettings( childRef );
-						continue;
-					}
-					
-					throw new InputConfigException("Unknown parameter type found in TN93 model");
-				}
-				
+				if ( getChildCount(doc, mutModelElement) != 3)
+					throw new InputConfigException("Expected exactly three children of node " + mutModelElement.getNodeName() + ", base frequencies, kappaR and kappa Y");
+
+				baseFreqsElement.readSettings( getChild(doc, mutModelElement, 0));
+				kappaRElement.readSettings( getChild(doc, mutModelElement, 1) );
+				kappaYElement.readSettings( getChild(doc, mutModelElement, 2) );
+			
 			}
 			
 			
@@ -345,7 +312,7 @@ public class SiteModelElement extends ModelElement {
 				//If there's a child, it must be a DoubleParameter
 				Element childEl = doc.getElementForLabel( refLabels.get(0));
 				if (DoubleParamElement.isAcceptable(childEl)) {
-					alphaParamElement = new DoubleParamElement(childEl);
+					alphaParamElement.readSettings( childEl);
 				}
 			}
 			

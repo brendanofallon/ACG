@@ -217,13 +217,33 @@ public class MCMCModelElement extends ModelElement {
 			if (attrSwapSteps != null) 
 				this.swapSteps = attrSwapSteps;
 			
+			
+			Element chainHeatsEl = getChild(doc, mc3El, 1);
+			if ( getChildCount(doc, chainHeatsEl) != 0) {
+				Element lambdaEl = getChild(doc, chainHeatsEl, 0);
+				if ( DoubleParamElement.isAcceptable(lambdaEl)) {
+					lambda = new DoubleParamElement( lambdaEl );
+					if (lambda.getModType() != null) {
+						useAdaptiveMC3 = true;
+					}
+					
+				}
+			}
+			
+			Element listenerListEl = getChild(doc, mc3El, 2);
+			NodeList childList = listenerListEl.getChildNodes();
+			for(int i=0; i<childList.getLength(); i++) {
+				Node child = childList.item(i);
+				if (child.getNodeType() == Node.ELEMENT_NODE)
+					addListenerRef( (Element)child );
+			}
 		}
 		else {
 			useMC3 = false;
 		}
 		
 		int childCount = getChildCount(doc, mcEl);
-		if (childCount != 3) {
+		if (childCount < 2 || childCount > 3) {
 			throw new InputConfigException("Need exactly three children of type list for MCMC object");
 		}
 		
@@ -243,13 +263,17 @@ public class MCMCModelElement extends ModelElement {
 				addLikelihoodRef( (Element)child );
 		}
 		
-		Element listenerListEl = getChild(doc, mcEl, 2);
-		childList = listenerListEl.getChildNodes();
-		for(int i=0; i<childList.getLength(); i++) {
-			Node child = childList.item(i);
-			if (child.getNodeType() == Node.ELEMENT_NODE)
-				addListenerRef( (Element)child );
+		if (childCount > 2) {
+			Element listenerListEl = getChild(doc, mcEl, 2);
+			childList = listenerListEl.getChildNodes();
+			for(int i=0; i<childList.getLength(); i++) {
+				Node child = childList.item(i);
+				if (child.getNodeType() == Node.ELEMENT_NODE)
+					addListenerRef( (Element)child );
+			}
 		}
+		
+		
 	}
 	
 	

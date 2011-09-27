@@ -57,13 +57,13 @@ public class DoubleParamView extends JPanel {
 		add(Box.createHorizontalGlue());
 		add(infoLabel);
 		
-		ImageIcon configIcon = ACGFrame.getIcon("icons/settings2.png");
+		ImageIcon configIcon = ACGFrame.getIcon("icons/settings3.png");
 		BorderlessButton configButton;
 		if (configIcon != null) {
 			configButton = new BorderlessButton(configIcon);
-			configButton.setPreferredSize(new Dimension(34, 20));
+			configButton.setPreferredSize(new Dimension(34, 32));
 			configButton.setMaximumSize(new Dimension(34, 32));
-			configButton.setYDif(-3);
+			//configButton.setYDif(-3);
 			configButton.setXDif(2);
 		}
 		else {

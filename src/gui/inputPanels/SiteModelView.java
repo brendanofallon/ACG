@@ -75,8 +75,9 @@ public class SiteModelView extends JPanel {
 		if (siteModel.getModelType().equals( MutModelType.F84)) 
 			mutBox.setSelectedIndex(0);
 		
-		if (siteModel.getModelType().equals( MutModelType.TN93))
+		if (siteModel.getModelType().equals( MutModelType.TN93)) {
 			mutBox.setSelectedIndex(1);
+		}
 		
 		if (siteModel.getRateModelType().equals( RateModelType.Constant)) {
 			rateBox.setSelectedIndex(0);
@@ -90,6 +91,11 @@ public class SiteModelView extends JPanel {
 			rateBox.setSelectedIndex(2);
 		}
 		
+		alphaView.updateView();
+		kappaView.updateView();
+		kappaRView.updateView();
+		kappaYView.updateView();
+		repaint();
 	}
 
 

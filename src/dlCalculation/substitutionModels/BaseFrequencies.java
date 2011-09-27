@@ -46,8 +46,8 @@ public class BaseFrequencies extends AbstractParameter<double[]> {
 		
 		String statStr = XMLUtils.getOptionalString(TN93Matrix.XML_STATIONARIES, attrs);
 		if (statStr != null) {
-			String[] stats = statStr.split("[\\s\\t]+");
-			if (stats.length != 4) {
+			String[] stats = statStr.split("\\s+");
+			if (stats.length < 4) {
 				throw new IllegalArgumentException("Could not parse stationaries from argument list, got : " + statStr + " (" + stats.length + " elements)");
 			}
 

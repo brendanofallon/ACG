@@ -142,17 +142,13 @@ public class LoggersPanel extends JPanel {
 		for(String loggerLabel : docLoggers) {
 			Element el = doc.getElementForLabel(loggerLabel);
 			String className = el.getAttribute(XMLLoader.CLASS_NAME_ATTR);
-			System.out.println("Found logger with class name: " + className);
 			AbstractLoggerView view = addFrame.getViewForClass( className );
 			try {
 				if (view!= null) {
 					view.getModel().readElements(doc);
 					addLogger(view);
-					System.out.println(" found view for it");
 				}
-				else {
-					System.out.println(" could not find associated view");
-				}
+
 			} catch (InputConfigException e) {
 				ErrorWindow.showErrorWindow(e);
 			}
@@ -184,6 +180,8 @@ public class LoggersPanel extends JPanel {
 			BorderlessButton remove = new BorderlessButton(removeIcon);
 			remove.setAlignmentY(TOP_ALIGNMENT);
 			remove.setToolTipText("Remove " + conf.getModel().getModelLabel() );
+			remove.setXDif(-2);
+			remove.setYDif(-2);
 			remove.setMinimumSize(new Dimension(24, 30));
 			remove.setPreferredSize(new Dimension(24, 30));
 			

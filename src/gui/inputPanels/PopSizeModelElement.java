@@ -26,16 +26,16 @@ public class PopSizeModelElement extends ModelElement {
 
 	enum PopSizeModel { Constant, ExpGrowth }
 	private PopSizeModel modelType = PopSizeModel.Constant;
-	DoubleParamElement constSizeModel = new DoubleParamElement(); //Used to store info for constant pop size model
 	
-	private DoubleParamElement baseSizeElement = new DoubleParamElement();
-	private DoubleParamElement growthRateElement = new DoubleParamElement();
-	private String constSizeLabel = "PopulationSize";
+	//Following elements must not be reassigned since views store references to original models
+	private final DoubleParamElement constSizeModel = new DoubleParamElement(); //Used to store info for constant pop size model
+	private final DoubleParamElement baseSizeElement = new DoubleParamElement();
+	private final DoubleParamElement growthRateElement = new DoubleParamElement();
+	private final String constSizeLabel = "PopulationSize";
 	private String baseSizeLabel = "BaseSize";
 	private String growthRateLabel = "GrowthRate";
 	
 	public PopSizeModelElement() {
-		constSizeModel = new DoubleParamElement();
 		constSizeModel.setLabel(constSizeLabel);
 		constSizeModel.setValue(0.005);
 		constSizeModel.setLowerBound(0);
@@ -43,14 +43,12 @@ public class PopSizeModelElement extends ModelElement {
 		constSizeModel.setModifierType(ModType.Scale);
 		constSizeModel.setModifierLabel(constSizeLabel + "Modifier");
 
-		baseSizeElement = new DoubleParamElement();
 		baseSizeElement.setLabel(baseSizeLabel);
 		baseSizeElement.setValue(0.005);
 		baseSizeElement.setLowerBound(0);
 		baseSizeElement.setModifierType(ModType.Scale);
 		baseSizeElement.setModifierLabel(baseSizeLabel + "Modifier");
 		
-		growthRateElement = new DoubleParamElement();
 		growthRateElement.setLabel(growthRateLabel);
 		growthRateElement.setLowerBound(Double.NEGATIVE_INFINITY);
 		growthRateElement.setValue(0.0); //Zero is OK if we use a 'simple' modifier 
@@ -131,8 +129,8 @@ public class PopSizeModelElement extends ModelElement {
 			if ( getChildCount(doc, popSizeElement) != 2) 
 				throw new InputConfigException("Exponential pop size requires exactly two child elements (base size and growth rate)");
 			
-			baseSizeElement = new DoubleParamElement( getChild(doc, popSizeElement, 0));
-			growthRateElement = new DoubleParamElement( getChild( doc, popSizeElement, 1));
+			baseSizeElement.readSettings(  getChild(doc, popSizeElement, 0));
+			growthRateElement.readSettings(  getChild( doc, popSizeElement, 1));
 		}
 	}
 

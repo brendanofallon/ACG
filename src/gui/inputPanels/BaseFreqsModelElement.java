@@ -28,6 +28,14 @@ public class BaseFreqsModelElement {
 	private String defaultLabel = "BaseFrequencies";
 	private String label = defaultLabel;
 	
+	public BaseFreqsModelElement()  {
+		//Blank on purpose
+	}
+	
+	public BaseFreqsModelElement(Element el) throws InputConfigException {
+		readSettings(el);
+	}
+
 	public void setLabel(String label) {
 		this.label = label;
 	}
@@ -53,7 +61,7 @@ public class BaseFreqsModelElement {
 		
 		String statStr = el.getAttribute(TN93Matrix.XML_STATIONARIES);
 		if (statStr != null) {
-			String[] stats = statStr.split(" ");
+			String[] stats = statStr.split("\\s+");
 			if (stats.length != 4) {
 				throw new InputConfigException("Could not parse stationaries from argument list, got : " + statStr);
 			}
