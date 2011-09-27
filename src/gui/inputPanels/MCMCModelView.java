@@ -35,6 +35,11 @@ public class MCMCModelView extends JPanel {
 
 		SpinnerNumberModel lengthModel = new SpinnerNumberModel(25000000, 1, Integer.MAX_VALUE, 10000);
 		lengthSpinner = new JSpinner(lengthModel);
+		lengthSpinner.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				model.setRunLength( (Integer)lengthSpinner.getValue() );
+			}
+		});
 		add(new JLabel("Markov chain properties"));
 		
 		addComp("Run length :", lengthSpinner);
@@ -88,6 +93,19 @@ public class MCMCModelView extends JPanel {
 		lambdaField.setEnabled(false);
 		addComp("Heating value (lambda): ", lambdaField);
 		
+	}
+	
+	/**
+	 * Update widgets to reflect changes in model settings
+	 */
+	public void updateFromModel() {
+		lengthSpinner.setValue( model.getRunLength() );
+		useHeatingBox.setSelected( model.isUseMC3());
+		adaptiveHeatingBox.setSelected(model.isUseAdaptiveMC3());
+		chainsSpinner.setValue( model.getChains() );
+		threadsSpinner.setValue( model.getThreads() );
+		revalidate();
+		repaint();
 	}
 	
 	protected void adaptiveHeatingBoxChanged() {

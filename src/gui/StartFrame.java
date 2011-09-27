@@ -66,9 +66,11 @@ public class StartFrame extends JPanel {
 				comp.setPreferredSize(new Dimension(250, 60));
 				comp.setMaximumSize(new Dimension(250, 60));
 				Font font = ACGFrame.getFont("fonts/glasnostlightfwf.ttf");
-				font = font.deriveFont(16f);
+				font = font.deriveFont(18f);
+				
 				if (comp instanceof BorderlessButton) {
 					((BorderlessButton)comp).setIconGap(8);
+					((BorderlessButton)comp).setYDif(-2);
 				}
 				if (font != null)
 					comp.setFont(font);
@@ -88,6 +90,7 @@ public class StartFrame extends JPanel {
 		
 		ImageIcon loadIcon = ACGFrame.getIcon("icons/upArrow.png");
 		BorderlessButton loadButton = new BorderlessButton("Load an input file", loadIcon);
+		loadButton.setIconGap(9);
 		stylist.applyStyle(loadButton);
 		loadButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {

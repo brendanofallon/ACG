@@ -138,6 +138,7 @@ public class DocMemberConfigPanel extends JPanel {
 			bottomPanel.add(runButton);
 			
 			mcView = new MCMCModelView( mcElement  );
+			mcView.updateFromModel();
 			this.remove(tabPane);
 			this.add(mcView, BorderLayout.CENTER);
 			this.revalidate();
@@ -158,6 +159,7 @@ public class DocMemberConfigPanel extends JPanel {
 			coalescentModelPanel.readNodesFromDocument(doc);
 			loggersPanel.readNodesFromDocument(doc);
 			mcElement.readElements(doc);
+			
 			revalidate();
 			repaint();
 		}
