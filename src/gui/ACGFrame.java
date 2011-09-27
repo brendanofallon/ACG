@@ -164,7 +164,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 		try {
 			InputStream fontStream = ACGFrame.class.getResourceAsStream(url);
 			font = Font.createFont(Font.TRUETYPE_FONT, fontStream);
-			font = font.deriveFont(22f);
+			font = font.deriveFont(12f);
 		} catch (FontFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -285,16 +285,20 @@ public class ACGFrame extends JFrame implements WindowListener {
 		}
 	}
 	
-	
+	/**
+	 * Start a new run from the document described by the DocMemberConfigPanel
+	 */
 	public void startNewRun() {
 		try {
 			ACGDocument acgDoc = ((DocMemberConfigPanel)centerPanel).getACGDocument();
 			acgDoc.loadAndVerifyClasses();
 			acgDoc.turnOffMCMC();
-			acgDoc.instantiateAll();
-			PickMonitorsPanel pickMonitors = new PickMonitorsPanel(this, acgDoc);
-			replaceCenterPanel(pickMonitors);
-		} catch (Exception e1) {
+			String title = null;
+			if (acgDoc.getSourceFile() != null)
+				title = acgDoc.getSourceFile().getName();
+			pickParameters(title, acgDoc);
+		}
+		catch (Exception e1) {
 			ErrorWindow.showErrorWindow(e1);
 			return;
 		}

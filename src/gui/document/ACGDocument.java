@@ -67,6 +67,8 @@ public class ACGDocument {
 	
 	ValidityChecker validityChecker = new ACGValidityChecker();
 	
+	private boolean objectsCreated = false;
+	
 	public ACGDocument(File file) {
 		sourceFile = file;
 		
@@ -164,6 +166,15 @@ public class ACGDocument {
 	}
 	
 	/**
+	 * Get the 'source' file of this document, which is typically used to store a reference to the file from
+	 * which these settings were most recently read from / written to. It may be null.
+	 * @param file
+	 */
+	public File getSourceFile() {
+		return this.sourceFile;
+	}
+	
+	/**
 	 * Load all classes referenced by this document and perform some simple validity checking
 	 * @throws Exception
 	 */
@@ -177,8 +188,13 @@ public class ACGDocument {
 	 * @throws InvalidInputFileException
 	 */
 	public void instantiateAll()  {
+		if (objectsCreated) {
+			throw new IllegalStateException("Objects have already been created for document");
+		}
+		
 		try {
 			loader.instantiateAll();
+			this.objectsCreated = true;
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 			throw new InvalidInputFileException(e.getTargetException().getMessage());
@@ -507,6 +523,8 @@ public class ACGDocument {
 		String className;
 		Map<String, String> attrs = new HashMap<String, String>();
 	}
+
+	
 	
 	
 }

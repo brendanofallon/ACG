@@ -34,6 +34,7 @@ import logging.BreakpointLocation;
 import logging.LastARGLogger;
 import logging.MPEARG;
 import logging.MarginalTreeLogger;
+import logging.PropertyLogger;
 import logging.RootHeightDensity;
 import logging.StateLogger;
 import math.RandomSource;
@@ -187,7 +188,10 @@ public class RecombMC3 {
 		rhDensity.setMCMC(chain0);
 		listeners.add(rhDensity);	
 		
-		MPEARG mpeARG = new MPEARG(dl, fileStem + "_mpe_arg.xml", sampleFrequency);
+		Map<String, String> mpeAttrs = new HashMap<String, String>();
+		mpeAttrs.put(PropertyLogger.FILENAME, fileStem + "_mpe_arg.xml");
+		mpeAttrs.put(PropertyLogger.FREQUENCY, "" + sampleFrequency);
+		MPEARG mpeARG = new MPEARG(mpeAttrs);
 		mpeARG.setMCMC(chain0);
 		listeners.add(mpeARG);
 		

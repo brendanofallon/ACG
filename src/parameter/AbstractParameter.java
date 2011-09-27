@@ -44,10 +44,6 @@ public abstract class AbstractParameter<T> implements Parameter<T>, LogItemProvi
 	
 	protected Map<String, String> attrs = new HashMap<String, String>();
 	
-//	public AbstractParameter() {
-//		//Intentionally blank, sample frequency will be 1.0
-//	}
-	
 	public AbstractParameter(Map<String, String> attrs) {
 		String freqStr = attrs.get(XML_PARAM_FREQUENCY);
 		this.attrs = attrs;

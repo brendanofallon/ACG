@@ -1,7 +1,9 @@
 package dlCalculation.substitutionModels;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import modifier.ModificationImpossibleException;
 import modifier.Modifier;
@@ -27,9 +29,15 @@ public abstract class MutationModel<Void> extends CompoundParameter<Void> {
 	
 	protected BaseFrequencies stationaries = null;
 	
-	public MutationModel(int numStates, BaseFrequencies stationaries) {
+	
+	public MutationModel(Map<String, String> attrs, int numStates, BaseFrequencies stationaries) {
+		super(attrs);
 		matrix = new double[numStates][numStates];
 		this.stationaries = stationaries;
+	}
+	
+	public MutationModel(int numStates, BaseFrequencies stationaries) {
+		this(new HashMap<String, String>(), numStates, stationaries);
 	}
 	
 	

@@ -2,6 +2,7 @@ package dlCalculation.computeCore;
 
 import gnu.trove.list.array.TIntArrayList;
 
+import java.util.HashMap;
 import java.util.List;
 
 import dlCalculation.siteRateModels.SingleRateModel;
@@ -26,12 +27,12 @@ public abstract class AbstractComputeCore implements ComputeCore {
 	public final int rateCount;
 
 	public AbstractComputeCore(double constSiteRate) {
-		siteRateModel = new SingleRateModel(constSiteRate);
+		siteRateModel = new SingleRateModel(new HashMap<String, String>(), constSiteRate);
 		rateCount = 1;
 	}
 	
 	public AbstractComputeCore() {
-		siteRateModel = new SingleRateModel(1.0);
+		siteRateModel = new SingleRateModel(new HashMap<String, String>(), 1.0);
 		rateCount = 1;
 	}
 	

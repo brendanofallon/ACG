@@ -1,5 +1,7 @@
 package gui.widgets;
 
+import gui.ACGFrame;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -75,13 +77,13 @@ public class SpinArrow extends JPanel implements MouseListener, ActionListener {
 	
 	
 	private void initializeImages() {
-		closedHighlight = (getIcon("/gui/icons/triangle_highlight.png")).getImage();
-		one = getIcon("/gui/icons/triangle_1.png");
-		two = getIcon("/gui/icons/triangle_2.png");
-		three = getIcon("/gui/icons/icons/triangle_3.png");
-		four = getIcon("/gui/icons/triangle_4.png");
-		five = getIcon("/gui/icons/triangle_5.png");
-		six = getIcon("/gui/icons/triangle_highlight6.png");
+		closedHighlight = ACGFrame.getIcon("icons/triangle_highlight.png").getImage();
+		one = ACGFrame.getIcon("icons/triangle_1.png");
+		two = ACGFrame.getIcon("icons/triangle_2.png");
+		three = ACGFrame.getIcon("icons/triangle_3.png");
+		four = ACGFrame.getIcon("icons/triangle_4.png");
+		five = ACGFrame.getIcon("icons/triangle_5.png");
+		six = ACGFrame.getIcon("icons/triangle_highlight6.png");
 		triArray = new Image[6];
 		triArray[0] = one.getImage();
 		triArray[1] = two.getImage();
@@ -90,7 +92,7 @@ public class SpinArrow extends JPanel implements MouseListener, ActionListener {
 		triArray[4] = five.getImage();
 		
 		triArray[5] = six.getImage();
-		openHighlight = (getIcon("/gui/icons/triangle_highlight6.png")).getImage();
+		openHighlight = ACGFrame.getIcon("icons/triangle_highlight6.png").getImage();
 		initialized = true;
 	}
 	

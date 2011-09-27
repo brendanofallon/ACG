@@ -1,5 +1,6 @@
 package dlCalculation.siteRateModels;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import cern.jet.random.AbstractContinousDistribution;
@@ -28,8 +29,8 @@ public class GammaSiteRates extends AbstractSiteRateModel {
 	final int categories;
 
 	
-	public GammaSiteRates(int categories, double alpha) {
-		super(categories);
+	public GammaSiteRates(Map<String, String> attrs, int categories, double alpha) {
+		super(attrs, categories);
 		this.categories = categories;
 		
 		equalProbs = new double[categories];
@@ -50,15 +51,15 @@ public class GammaSiteRates extends AbstractSiteRateModel {
 	}
 	
 	public GammaSiteRates(Map<String, String> attrs, DoubleParameter alphaParam) {
-		this( XMLUtils.getIntegerOrFail(XML_CATEGORIES, attrs), alphaParam);
+		this(attrs, XMLUtils.getIntegerOrFail(XML_CATEGORIES, attrs), alphaParam);
 	}
 	
 	public GammaSiteRates(Map<String, String> attrs) {
-		this( XMLUtils.getIntegerOrFail(XML_CATEGORIES, attrs), XMLUtils.getDoubleOrFail(XML_ALPHA, attrs));
+		this(attrs, XMLUtils.getIntegerOrFail(XML_CATEGORIES, attrs), XMLUtils.getDoubleOrFail(XML_ALPHA, attrs));
 	}
 	
-	public GammaSiteRates(int categories, DoubleParameter alphaParam) {
-		super(categories);
+	public GammaSiteRates(Map<String, String> attrs, int categories, DoubleParameter alphaParam) {
+		super(attrs, categories);
 
 		this.categories = categories;
 		equalProbs = new double[categories];
@@ -254,7 +255,7 @@ public class GammaSiteRates extends AbstractSiteRateModel {
 		Gamma cD = new Gamma(alpha, alpha, null);
 		
 		DoubleParameter alphaParam = new DoubleParameter(alpha, "alpha", "alpha", 0, 100);
-		GammaSiteRates gRates = new GammaSiteRates(4, alphaParam);
+		GammaSiteRates gRates = new GammaSiteRates(new HashMap<String, String>(), 4, alphaParam);
 		
 		
 		for(double x=0.1; x<10; x+=0.1) {

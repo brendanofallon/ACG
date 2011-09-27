@@ -20,6 +20,7 @@ import logging.StringUtils;
 import math.RandomSource;
 import mcmc.MCMC;
 import mcmc.MCMCListener;
+import modifier.AbstractModifier;
 import modifier.BreakpointShifter;
 import modifier.BreakpointSwapper;
 import modifier.DirichletModifier;
@@ -104,14 +105,28 @@ public class MC3 {
 
 		//loader.setVerbose(false); //Suppress output when we create additional objects
 		
+		
 		for(int i=0; i<numChains-1; i++) {
 			loader.clearObjectMap();
+			
 			try {
 				MCMC newChain = (MCMC) loader.getObjectForLabel(mcLabel);
 				newChain.setUseTimers(false);
 				addChain(newChain);
 			} catch (Exception ex) {
 				throw new IllegalArgumentException("Error loading additional chains from MC3 : \n" + ex);
+			}
+		}
+		
+		//Kind of clumsy, but there are a few things we must add BACK into the map after we've cleared it. Namely, 
+		//anything having to do with chain heating
+
+		List<AbstractParameter<?>> chainHeatParams = heatModel.getGlobalParameters();
+		for(AbstractParameter<?> param : chainHeatParams) {
+			loader.addToObjectMap(param.getAttribute(XMLLoader.NODE_ID), param);
+			for(int i=0; i<param.getModifierCount(); i++) {
+				AbstractModifier<?> mod = (AbstractModifier<?>) param.getModifier(i);
+				loader.addToObjectMap(mod.getAttribute(XMLLoader.NODE_ID) , mod);
 			}
 		}
 		

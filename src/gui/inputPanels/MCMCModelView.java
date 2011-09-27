@@ -10,6 +10,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
@@ -38,7 +39,11 @@ public class MCMCModelView extends JPanel {
 		
 		addComp("Run length :", lengthSpinner);
 		
+		JSeparator sep = new JSeparator( JSeparator.HORIZONTAL);
+		add(sep);
+		
 		useHeatingBox = new JCheckBox("Use Metropolis coupling");
+		useHeatingBox.setToolTipText("Use multiple chains with heating to improve mixing");
 		useHeatingBox.setSelected( model.isUseMC3() );
 		useHeatingBox.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
@@ -48,6 +53,7 @@ public class MCMCModelView extends JPanel {
 		add(useHeatingBox);
 		
 		chainsSpinner = new JSpinner(new SpinnerNumberModel( model.getChains(), 2, 128, 1));
+		chainsSpinner.setToolTipText("Total number of Markov chains, including cold chain");
 		chainsSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				model.setChains( (Integer)chainsSpinner.getValue() );
@@ -57,6 +63,7 @@ public class MCMCModelView extends JPanel {
 		chainsSpinner.setEnabled(false);
 		
 		threadsSpinner = new JSpinner(new SpinnerNumberModel( model.getThreads(), 1, 64, 1));
+		threadsSpinner.setToolTipText("Number of processor threads to use");
 		threadsSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				model.setThreads( (Integer)threadsSpinner.getValue() );
@@ -65,6 +72,15 @@ public class MCMCModelView extends JPanel {
 		addComp("Threads : ", threadsSpinner);
 		threadsSpinner.setEnabled(false);		
 		
+		adaptiveHeatingBox = new JCheckBox("Use adaptive heating");
+		adaptiveHeatingBox.setToolTipText("Heating amount will be adjusted autmatically (recommended)");
+		adaptiveHeatingBox.setSelected(true);
+		adaptiveHeatingBox.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				adaptiveHeatingBoxChanged();
+			}
+		});
+		add(adaptiveHeatingBox);
 		
 		lambdaField = new JTextField( model.getLambda().getValue() + "" );
 		lambdaField.setMinimumSize(new Dimension(100, 36));
@@ -74,15 +90,35 @@ public class MCMCModelView extends JPanel {
 		
 	}
 	
+	protected void adaptiveHeatingBoxChanged() {
+		if (adaptiveHeatingBox.isSelected()) {
+			lambdaField.setEnabled(false);
+			model.setUseAdaptiveMC3(true);
+		}
+		else {
+			if (useHeatingBox.isSelected())
+				lambdaField.setEnabled(true);
+
+			model.setUseAdaptiveMC3(false);
+		}
+	}
+	
 	protected void heatingBoxChanged() {
 		if (useHeatingBox.isSelected()) {
 			threadsSpinner.setEnabled(true);
 			chainsSpinner.setEnabled(true);
-			lambdaField.setEnabled(true);
+			adaptiveHeatingBox.setEnabled(true);
+			if (adaptiveHeatingBox.isSelected()) {
+				lambdaField.setEnabled(false);
+			}
+			else {
+				lambdaField.setEnabled(true);	
+			}
 			model.setUseMC3(true);
 		}
 		else {
 			threadsSpinner.setEnabled(false);
+			adaptiveHeatingBox.setEnabled(false);
 			chainsSpinner.setEnabled(false);
 			lambdaField.setEnabled(false);
 			model.setUseMC3(false);

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mcmc.MCMC;
+import mcmc.mc3.ChainHeats;
+import mcmc.mc3.ExpChainHeats;
 import mcmc.mc3.MC3;
 
 import org.w3c.dom.Element;
@@ -44,7 +46,8 @@ public class MCMCModelElement extends ModelElement {
 		lambda.setValue(0.001);
 		lambda.setUpperBound(0.5);
 		lambda.setLowerBound(1e-10);
-		lambda.setModifierLabel("ChainsHeatsModifier");
+		lambda.setLabel("Lambda");
+		lambda.setModifierLabel("ChainHeatsModifier");
 	}
 	
 	public void clearReferences() {
@@ -143,7 +146,7 @@ public class MCMCModelElement extends ModelElement {
 		
 		Element mcEl = createElement(doc, label, MCMC.class);
 		mcEl.setAttribute(MCMC.XML_RUNLENGTH, "" + runLength);
-		mcEl.setAttribute(MCMC.XML_RUNNOW, "true");
+		mcEl.setAttribute(MCMC.XML_RUNNOW, "true"); //Will get set to false if MC3
 		nodes.add(mcEl);
 		
 		Element paramList = createList(doc, "MCParams");
@@ -169,16 +172,19 @@ public class MCMCModelElement extends ModelElement {
 		else {
 			Element mc3El = createElement(doc, getMc3Label(), MC3.class);
 			mc3El.appendChild( doc.createElement( mcEl.getNodeName() ));
+			mcEl.setAttribute(MCMC.XML_RUNNOW, "false");
 			mc3El.setAttribute(MC3.XML_CHAINS, "" + chains);
 			mc3El.setAttribute(MC3.XML_THREADS, "" + threads);
 			mc3El.setAttribute(MC3.XML_SWAPSTEPS, "" + swapSteps);
 			mc3El.setAttribute(MCMC.XML_RUNLENGTH, "" + runLength);
 			
-			Element chainHeatsEl = doc.createElement("ChainHeats");
+			Element chainHeatsEl = createElement(doc, "ChainHeats", ExpChainHeats.class);
+			chainHeatsEl.setAttribute(ChainHeats.XML_CHAINNUMBER, "" + chains);
 			chainHeatsEl.appendChild( lambda.getElement(doc) );
+			mc3El.appendChild( chainHeatsEl );
 			
 			Element listenerList = createList(doc, "MCListeners");
-			mcEl.appendChild(listenerList);
+			mc3El.appendChild(listenerList);
 			for(Element listener : listenerRefs) {
 				listenerList.appendChild( doc.createElement(listener.getNodeName()) );
 			}

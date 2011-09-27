@@ -131,7 +131,7 @@ public class DataLikelihood extends LikelihoodComponent {
 		this.siteRateModel = siteRateModel;
 		if (siteRateModel == null) {
 			//If no explicit model is supplied we assume there's a single rate model with rate = 1.0
-			this.siteRateModel = new ConstantSiteRates(new double[]{1.0}, new double[]{1.0});
+			this.siteRateModel = new ConstantSiteRates(new HashMap<String, String>(), new double[]{1.0}, new double[]{1.0});
 		}
 		else {
 			addParameter(siteRateModel);
@@ -155,7 +155,7 @@ public class DataLikelihood extends LikelihoodComponent {
 		
 		proposedLogLikelihood = computeProposedLikelihood();
 		
-		System.out.println("Likelihood of initial ARG: " + proposedLogLikelihood);
+		//System.out.println("Likelihood of initial ARG: " + proposedLogLikelihood);
 		
 		stateAccepted();
 		tree.acceptValue();

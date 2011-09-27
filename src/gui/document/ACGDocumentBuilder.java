@@ -30,6 +30,7 @@ import org.w3c.dom.NodeList;
 import component.LikelihoodComponent;
 
 import parameter.AbstractParameter;
+import parameter.CompoundParameter;
 
 import xml.XMLLoader;
 
@@ -134,8 +135,12 @@ public class ACGDocumentBuilder {
 			return false;
 		
 		try {
-			Class clazz = ClassLoader.getSystemClassLoader().loadClass(className);
+			Class<?> clazz = ClassLoader.getSystemClassLoader().loadClass(className);
 			if (AbstractParameter.class.isAssignableFrom(clazz)) {
+				//Don't load CompoundParameters by default
+				if (CompoundParameter.class.isAssignableFrom(clazz))
+					return false;
+				
 				//System.out.println("Class " + clazz + " is assignable from AbstractParam");
 				return true;
 			}

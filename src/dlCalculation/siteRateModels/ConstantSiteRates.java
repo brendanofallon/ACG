@@ -1,5 +1,6 @@
 package dlCalculation.siteRateModels;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import modifier.ModificationImpossibleException;
@@ -19,7 +20,7 @@ public class ConstantSiteRates extends AbstractSiteRateModel {
 	public static final String XML_RATE = "rate";
 	
 	public ConstantSiteRates(Map<String, String> attrs) {
-		super(1);
+		super(attrs, 1);
 		Double rate = XMLUtils.getOptionalDouble(XML_RATE, attrs);
 		if (rate == null) {
 			rate = 1.0;
@@ -31,11 +32,11 @@ public class ConstantSiteRates extends AbstractSiteRateModel {
 	 * Construct a constant site rate model with a single class which has rate 1.0
 	 */
 	public ConstantSiteRates() {
-		this(new double[]{1.0}, new double[]{1.0});
+		this(new HashMap<String, String>(), new double[]{1.0}, new double[]{1.0});
 	}
 	
-	public ConstantSiteRates(double[] rates, double[] probabilities) {
-		super(rates.length);
+	public ConstantSiteRates(Map<String, String> attrs, double[] rates, double[] probabilities) {
+		super(attrs, rates.length);
 		initialize(rates, probabilities);
 	}
 	

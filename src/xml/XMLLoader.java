@@ -134,6 +134,13 @@ public class XMLLoader {
 	public void clearObjectMap() {
 		objMap.clear();
 	}
+
+	/**
+	 * Add the given item to the object map
+	 */
+	public void addToObjectMap(String label, Object obj) {
+		objMap.put(label, obj);
+	}
 	
 	/**
 	 * Returns the Class corresponding to object with the given label 
@@ -181,7 +188,7 @@ public class XMLLoader {
 	
 	/**
 	 * Examines the children of a given node and gathers the information required to call a constructor for the 
-	 * class associated with this node. Attributes (including class) are put into a map, and lists of the
+	 * class associated with this node. Attributes (including class and node label) are put into a map, and lists of the
 	 * labels and classes referenced by all children are put into arrays. This information is all encapsulated
 	 * into a ConstructorItem, and put into a map that is referenced by this node's label.
 	 * 
@@ -207,14 +214,13 @@ public class XMLLoader {
 		for(int i=0; i<namedAttrMap.getLength(); i++) {
 			Node attrNode = namedAttrMap.item(i);
 			attrMap.put(attrNode.getNodeName(), attrNode.getNodeValue());
-			//System.out.println("Node : " + nodeLabel + " : Putting " + attrNode.getNodeName() + " = " + attrNode.getNodeValue() + " into attr Map");
 		}
 
 		//Also put the label of the node into the attr map, so objects can know what their label is
 		attrMap.put(NODE_ID, nodeLabel);
 		
 		List<String> refList  = new ArrayList<String>();
-		List<Class> refClasses  = new ArrayList<Class>();
+		List<Class<?>> refClasses  = new ArrayList<Class<?>>();
 
 		NodeList kids = node.getChildNodes();
 		for(int i=0; i<kids.getLength(); i++) {
@@ -222,7 +228,7 @@ public class XMLLoader {
 				Element kidEl = (Element)kids.item(i);
 				String className = kidEl.getAttribute(CLASS_NAME_ATTR);
 				String label = kidEl.getNodeName();
-				Class refClass = findClass(label, className); 
+				Class<?> refClass = findClass(label, className); 
 				refList.add(label);
 				refClasses.add(refClass);
 			}
@@ -243,7 +249,7 @@ public class XMLLoader {
 		for(int i=0; i<refList.size(); i++)
 			labelList[i] = refList.get(i);
 
-		Class[] classes = new Class[refClasses.size()];
+		Class<?>[] classes = new Class<?>[refClasses.size()];
 		for(int i=0; i<refClasses.size(); i++) {
 			classes[i] = refClasses.get(i);
 		}
@@ -266,8 +272,8 @@ public class XMLLoader {
 	 * @param className The fully qualified name of the class (i.e. package.Class)
 	 * @return A class object 
 	 */
-	private Class findClass(String label, String className) {		
-		Class clz = classMap.get(label);
+	private Class<?> findClass(String label, String className) {		
+		Class<?> clz = classMap.get(label);
 		
 		if (className.equals(LIST_ATTR)) {
 			className = "java.util.List";
@@ -300,10 +306,10 @@ public class XMLLoader {
 	 * @param clz
 	 * @return
 	 */
-	public List<String> getObjLabelsForClass(Class clz) {
+	public List<String> getObjLabelsForClass(Class<?> clz) {
 		List<String> labels = new ArrayList<String>();
 		for(String label : classMap.keySet()) {
-			Class c = classMap.get(label);
+			Class<?> c = classMap.get(label);
 			if (clz.isAssignableFrom(c)) {
 				labels.add(label);
 			}
@@ -336,7 +342,7 @@ public class XMLLoader {
 				//System.out.println("Node name: " + el.getNodeName() + " className: " + className + " label: " + label);
 				loadConstructorInfo(node);
 				loadClasses(el);
-				Class loadedClass = findClass(label, className); //Puts label=className mapping into classMap
+				Class<?> loadedClass = findClass(label, className); //Puts label=className mapping into classMap
 			}
 			
 		}	
@@ -465,7 +471,7 @@ public class XMLLoader {
 		Object obj = objMap.get(label);
 
 		if (obj == null) {
-			Class clazz = classMap.get(label);
+			Class<?> clazz = classMap.get(label);
 			if (clazz == null) {
 				throw new IllegalArgumentException("No class or object exists for label : " + label);
 			}
@@ -475,56 +481,52 @@ public class XMLLoader {
 			if (consItems == null) {
 				throw new IllegalArgumentException("No constructor info found for object with label: " + label);
 			}
-			consItems.attrMap.put("xml.label", label);
-			if (consItems.attrMap.size()==0 && consItems.refClasses.length==0) {
-				//System.out.println("No cons. args found for " + label + ", using nullary constructor");
-				obj = clazz.newInstance();
-			}
-			else {
+			consItems.attrMap.put(NODE_ID, label);
 
-				try {
-					//A bit of special case code : if we're dealing with an XMLList element, the argument list
-					//is always {attributes, Object[]} with the elements in the Object array being the children 
-					if (consItems.isList) {
-						Object[] list = new Object[consItems.refLabels.length];
 
-						//Potential for confusion : The first item is always the attribute map, we then add
-						//all of the subsequent classes after that, for a total of refClasses.length+1 total items
-						for(int j=0; j<consItems.refLabels.length; j++) {
-							list[j] = getObjectForLabel( consItems.refLabels[j]);
-						}
-						
-						obj = new ArrayList<Object>();
-						for(int j=0; j<list.length; j++)
-							((ArrayList<Object>)obj).add(list[j]);
-						
+			try {
+				//A bit of special case code : if we're dealing with an XMLList element, the argument list
+				//is always {attributes, Object[]} with the elements in the Object array being the children 
+				if (consItems.isList) {
+					Object[] list = new Object[consItems.refLabels.length];
+
+					//Potential for confusion : The first item is always the attribute map, we then add
+					//all of the subsequent classes after that, for a total of refClasses.length+1 total items
+					for(int j=0; j<consItems.refLabels.length; j++) {
+						list[j] = getObjectForLabel( consItems.refLabels[j]);
 					}
-					else {
-						//Potential for confusion : The first item is always the attribute map, we then add
-						//all of the subsequent classes after that, for a total of refClasses.length+1 total items
-						Constructor cons = findConstructor(clazz, consItems.refClasses); 
 
-						Object[] args = new Object[consItems.refClasses.length];
-						args[0] = consItems.attrMap;
-						for(int j=1; j<consItems.refClasses.length; j++) {
-							args[j] = getObjectForLabel( consItems.refLabels[j-1]);
-						}
-						
-						if (verbose)
-							System.out.println("Creating object of class " + clazz + " with label " + label);
-						obj = cons.newInstance(args);
-						
+					obj = new ArrayList<Object>();
+					for(int j=0; j<list.length; j++)
+						((ArrayList<Object>)obj).add(list[j]);
+
+				}
+				else {
+					//Potential for confusion : The first item is always the attribute map, we then add
+					//all of the subsequent classes after that, for a total of refClasses.length+1 total items
+					Constructor<?> cons = findConstructor(clazz, consItems.refClasses); 
+
+					Object[] args = new Object[consItems.refClasses.length];
+					args[0] = consItems.attrMap;
+					for(int j=1; j<consItems.refClasses.length; j++) {
+						args[j] = getObjectForLabel( consItems.refLabels[j-1]);
 					}
-					
 
-				} catch (SecurityException e) {
-					System.out.println("\n Security exception when trying to get constructor for node with label " + label);
-					System.exit(0);
-				} catch (IllegalArgumentException e) {
-					System.out.println("\n Illegal arg exception when trying to instantiate : " + label + "\n" + e);
-					//System.exit(0);
-				} 
-			}
+					if (verbose)
+						System.out.println("Creating object of class " + clazz + " with label " + label);
+					obj = cons.newInstance(args);
+
+				}
+
+
+			} catch (SecurityException e) {
+				System.out.println("\n Security exception when trying to get constructor for node with label " + label);
+				System.exit(0);
+			} catch (IllegalArgumentException e) {
+				System.out.println("\n Illegal arg exception when trying to instantiate : " + label + "\n" + e);
+				//System.exit(0);
+			} 
+
 
 			objMap.put(label, obj);
 		}

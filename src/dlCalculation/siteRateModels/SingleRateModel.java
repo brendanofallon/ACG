@@ -1,5 +1,8 @@
 package dlCalculation.siteRateModels;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import modifier.Modifier;
 import parameter.InvalidParameterValueException;
 import parameter.Parameter;
@@ -11,11 +14,9 @@ import parameter.ParameterListener;
  *
  */
 public class SingleRateModel extends AbstractSiteRateModel {
-
 	
-	public SingleRateModel(double rate) {
-		super(1);
-
+	public SingleRateModel(Map<String, String> attrs, double rate) {
+		super(attrs, 1);
 		proposedValue.rates[0] = rate;
 		proposedValue.probabilities[0] = 1.0;
 		activeValue = proposedValue;

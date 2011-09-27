@@ -91,11 +91,20 @@ public class ParamMonitor extends MonitorPanel {
 			boolean found = false;
 			final String id = param.getAttribute(XMLLoader.NODE_ID);
 			if (id == null)
-				throw new IllegalStateException("Can't perform chain switch because likelihood " + param + " doesn't have NODE_ID defined");
+				throw new IllegalStateException("Can't perform chain switch because param " + param + " doesn't have NODE_ID defined");
 
 			for(AbstractParameter<?> par : params) {
 				
-				if (par.getAttribute(XMLLoader.NODE_ID).equals(id)) {
+				//Debugging, remove me later
+				String nodeID = par.getAttribute(XMLLoader.NODE_ID);
+//				if (nodeID == null) {
+//					throw new IllegalArgumentException("Parameter " + par + " does not have a node_id set");
+//				}
+//				else {
+//					System.out.println("Found id for param " + nodeID);
+//				}
+				
+				if (nodeID.equals(id)) {
 					param = par;
 					found = true;
 					break;

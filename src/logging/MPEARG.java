@@ -30,11 +30,18 @@ public class MPEARG extends PropertyLogger {
 	int frequency = 10000;
 	String argStr = null; //Stores string representation of max-lnl ARG
 
+
+	
+	public MPEARG(Map<String, String> attrs) {
+		super(attrs);
+		this.dataLikelihood = null;
+	}
 	
 	public MPEARG(Map<String, String> attrs, ARG arg) {
 		super(attrs);
 		this.dataLikelihood = null;
 	}
+
 
 	public void addValue(int stateNumber) {
 		if (stateNumber > burnin && stateNumber % frequency == 0) {

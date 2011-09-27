@@ -32,11 +32,13 @@ public abstract class AbstractModifier<T extends Parameter> implements Modifier<
 	
 	String modStr = "Generic modifier";
 
+	protected Map<String, String> attrs;
 	/**
 	 * XML-friendly constructor. We look for the optional attribute frequency and attempt to parse a double from its value
 	 * @param attributes
 	 */
 	public AbstractModifier(Map<String, String> attributes) {
+		this.attrs = attributes;
 		String freq = attributes.get(XML_FREQUENCY);
 		if (freq != null) {
 			try {
@@ -55,13 +57,19 @@ public abstract class AbstractModifier<T extends Parameter> implements Modifier<
 	 * @param highRatio
 	 * @param frequency
 	 */
-	protected AbstractModifier(T param, double lowRatio, double highRatio, double frequency) {
-		this.param = param;
-		this.lowRatio = lowRatio;
-		this.highRatio = highRatio;
-		this.frequency = frequency;
+//	protected AbstractModifier(T param, double lowRatio, double highRatio, double frequency) {
+//		this.param = param;
+//		this.lowRatio = lowRatio;
+//		this.highRatio = highRatio;
+//		this.frequency = frequency;
+//	}
+
+	public String getAttribute(String key) {
+		if (attrs == null)
+			throw new IllegalArgumentException("Attributes have not been set for AbstractModifier " + this);
+		else
+			return attrs.get(key);
 	}
-	
 	/**
 	 * Set the parameter this modifier modifies
 	 */

@@ -773,8 +773,9 @@ public class AxesElement extends FigureElement {
 					g.setColor(yGridColor);
 					g.drawLine(round(graphAreaLeft)+1, tickY, round(graphAreaLeft+graphAreaWidth), tickY);
 				}
-				g.setStroke(origStroke);
-				g.setColor(origColor);
+				
+				//g.setStroke(origStroke);
+				//g.setColor(origColor);
 				//Minor tick
 				
 				if (round(xAxisPos-i*tickStep + tickStep/2.0) < graphAreaBottom )
@@ -864,8 +865,8 @@ public class AxesElement extends FigureElement {
 					g.drawLine(iTickX, round(graphAreaTop), iTickX, round(graphAreaBottom));
 				}
 			
-				g.setStroke(origStroke);
-				g.setColor(origColor);
+//				g.setStroke(origStroke);
+//				g.setColor(origColor);
 				//Minor tick
 				if (drawMinorXTicks &&  (tickX-minorTickOffset) > graphAreaLeft) {
 					g.drawLine(round(tickX-minorTickOffset), round(xAxisPos), round(tickX-minorTickOffset), Math.max(round(xAxisPos+2),round(xAxisPos+xTickWidth*yFactor/2.0)));

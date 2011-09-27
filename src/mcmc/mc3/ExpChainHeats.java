@@ -1,11 +1,14 @@
 package mcmc.mc3;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import logging.StringUtils;
 import modifier.AbstractModifier;
 import modifier.ModificationImpossibleException;
 import modifier.ScaleModifier;
+import parameter.AbstractParameter;
 import parameter.DoubleParameter;
 import parameter.Parameter;
 import parameter.ParameterListener;
@@ -30,7 +33,7 @@ public class ExpChainHeats implements ChainHeats, ParameterListener {
 	private int tuneFrequency = 200;
 
 	public ExpChainHeats(Map<String, String> attrs, DoubleParameter lambda) {
-		int numberOfChains = XMLUtils.getIntegerOrFail("numberOfChains", attrs);
+		int numberOfChains = XMLUtils.getIntegerOrFail(ChainHeats.XML_CHAINNUMBER, attrs);
 		this.lambdaParam = lambda;
 
 		if (lambda.getModifierCount()>0) {
@@ -94,6 +97,7 @@ public class ExpChainHeats implements ChainHeats, ParameterListener {
 	 * Recalculate all chain heats based on the current value of lambda. Heat if chain i is Exp[ -lambda * i ]
 	 */
 	private void recalcHeats() {
+		System.out.println("Recalculating heats with lambda = " + lambdaParam.getValue() );
 		for(int i=0; i<heats.length; i++) {
 			heats[i] = Math.exp(-lambdaParam.getValue()*i);
 		}
@@ -129,25 +133,33 @@ public class ExpChainHeats implements ChainHeats, ParameterListener {
 	 * Adjust lambda parameter to get appropriate level of mixing of chains
 	 */
 	private void changeTuning() {
-		//System.out.println("Changing tuning, calls since reset: " + lambdaMod.getCallsSinceReset() + " total calls: " + lambdaMod.getTotalCalls());
+		System.out.println("Changing tuning, calls since reset: " + lambdaMod.getCallsSinceReset() + " total calls: " + lambdaMod.getTotalCalls());
 		if (lambdaMod.getRecentAcceptanceRatio() < 0.3 && lambdaParam.getValue()>lambdaParam.getLowerBound()) {
 			try {
 				lambdaParam.proposeValue( lambdaParam.getValue()*0.9 );
-				//System.out.println("Too few acceptances ( " + StringUtils.format(lambdaMod.getRecentAcceptanceRatio(), 4) + " ), reducing lambda to : " + lambdaParam.getValue());
+				System.out.println("Too few acceptances ( " + StringUtils.format(lambdaMod.getRecentAcceptanceRatio(), 4) + " ), reducing lambda to : " + lambdaParam.getValue());
 			} catch (ModificationImpossibleException e) {
 				//Should never happen
 			}
 			lambdaParam.acceptValue();
 		}
+		
 		if (lambdaMod.getRecentAcceptanceRatio() > 0.6 && lambdaParam.getValue()<lambdaParam.getUpperBound()) {
 			try {
 				lambdaParam.proposeValue( lambdaParam.getValue()*1.1 );
-				//System.out.println("Too many acceptances ( " + StringUtils.format(lambdaMod.getRecentAcceptanceRatio(), 4) + " ), increasing lambda to : " + lambdaParam.getValue());
+				System.out.println("Too many acceptances ( " + StringUtils.format(lambdaMod.getRecentAcceptanceRatio(), 4) + " ), increasing lambda to : " + lambdaParam.getValue());
 			} catch (ModificationImpossibleException e) {
 				//Should never happen
 			}
 			lambdaParam.acceptValue();
 		}
+	}
+
+	@Override
+	public List<AbstractParameter<?>> getGlobalParameters() {
+		List<AbstractParameter<?>> params = new ArrayList<AbstractParameter<?>>();
+		params.add(lambdaParam);
+		return params;
 	}
 
 }

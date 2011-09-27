@@ -19,6 +19,7 @@ public class ExponentialGrowth extends CompoundParameter<Void> implements Demogr
 	DoubleParameter growthRate;
 	
 	public ExponentialGrowth(Map<String, String> attrs, DoubleParameter baseSize, DoubleParameter growthRate) {	
+		super(attrs);
 		this.baseSize = baseSize;
 		addParameter(baseSize);
 		this.growthRate = growthRate;

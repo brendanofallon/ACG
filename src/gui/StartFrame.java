@@ -62,13 +62,13 @@ public class StartFrame extends JPanel {
 		Stylist stylist = new Stylist();
 		stylist.addStyle(new Style() {
 			public void apply(JComponent comp) {
-				comp.setMinimumSize(new Dimension(230, 60));
-				comp.setPreferredSize(new Dimension(230, 60));
-				comp.setMaximumSize(new Dimension(230, 60));
-				comp.setFont( new Font("Serif", Font.BOLD, 14));
-				Font font = ACGFrame.getFont("fonts/Neuton-Regular.ttf");
+				comp.setMinimumSize(new Dimension(250, 60));
+				comp.setPreferredSize(new Dimension(250, 60));
+				comp.setMaximumSize(new Dimension(250, 60));
+				Font font = ACGFrame.getFont("fonts/glasnostlightfwf.ttf");
+				font = font.deriveFont(16f);
 				if (comp instanceof BorderlessButton) {
-					((BorderlessButton)comp).setIconGap(5);
+					((BorderlessButton)comp).setIconGap(8);
 				}
 				if (font != null)
 					comp.setFont(font);

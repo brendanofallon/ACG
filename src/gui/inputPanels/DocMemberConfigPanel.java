@@ -95,48 +95,58 @@ public class DocMemberConfigPanel extends JPanel {
 		
 		this.add(tabPane, BorderLayout.CENTER);
 		
-		JPanel bottomPanel = new JPanel();
+		bottomPanel = new JPanel();
 		bottomPanel.setOpaque(false);
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		
 		ImageIcon saveIcon = ACGFrame.getIcon("icons/downArrow.png");
-		BorderlessButton saveButton = new BorderlessButton("Save", saveIcon);
+		saveButton = new BorderlessButton("Save", saveIcon);
 		saveButton.setPreferredSize(new Dimension(75, 36));
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				saveSettings();
 			}
 		});
-		bottomPanel.add(saveButton);
+		//bottomPanel.add(saveButton);
 		
 		ImageIcon runIcon = ACGFrame.getIcon("icons/rightArrow.png");
-		BorderlessButton runButton = new BorderlessButton("Run", runIcon);
+		continueButton = new BorderlessButton("Continue", runIcon);
+		continueButton.setPreferredSize(new Dimension(100, 36));
+		continueButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				continueToMCMC();
+			}
+		});
+		bottomPanel.add(continueButton);
+		
+		runButton = new BorderlessButton("Run", runIcon);
 		runButton.setPreferredSize(new Dimension(75, 36));
 		runButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				runButtonPressed();
-				//acgParent.startNewRun();
 			}
 		});
-		bottomPanel.add(runButton);
-		
-		
+		//bottomPanel.add(runButton);
 
 		this.add(bottomPanel, BorderLayout.SOUTH);
 	}
 	
-	protected void runButtonPressed() {
+	protected void continueToMCMC() {
 		if (mcView == null) {
+			bottomPanel.removeAll();
+			bottomPanel.add(saveButton);
+			bottomPanel.add(runButton);
+			
 			mcView = new MCMCModelView( mcElement  );
 			this.remove(tabPane);
 			this.add(mcView, BorderLayout.CENTER);
 			this.revalidate();
 			this.repaint();
 		}
-		else {
-			acgParent.startNewRun();
-		}
-		
+	}
+
+	protected void runButtonPressed() {
+			acgParent.startNewRun();		
 	}
 
 	public void loadSettingsFromDocument(ACGDocument doc) {
@@ -363,6 +373,12 @@ public class DocMemberConfigPanel extends JPanel {
 		topLabel.revalidate();
 	}
 	
+
+
+	private BorderlessButton continueButton;
+	private BorderlessButton runButton;
+	private BorderlessButton saveButton;
+	private JPanel bottomPanel;
 	private File selectedFile = null;
 	private JFileChooser fileChooser; //Used on non-mac platforms
 	private FileDialog fileDialog; //Used on mac systems

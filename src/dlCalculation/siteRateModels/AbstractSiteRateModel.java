@@ -1,5 +1,7 @@
 package dlCalculation.siteRateModels;
 
+import java.util.Map;
+
 import parameter.CompoundParameter;
 
 /**
@@ -11,7 +13,8 @@ import parameter.CompoundParameter;
  */
 public abstract class AbstractSiteRateModel extends CompoundParameter<SiteRates> implements SiteRateModel {
 
-	public AbstractSiteRateModel(int categories) {
+	public AbstractSiteRateModel(Map<String, String> attrs, int categories) {
+		super(attrs);
 		currentValue = new SiteRates();
 		currentValue.probabilities = new double[categories];
 		currentValue.rates = new double[categories];

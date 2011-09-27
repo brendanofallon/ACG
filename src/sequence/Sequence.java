@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import xml.XMLLoader;
 import xml.XMLUtils;
 
 /**
@@ -20,7 +21,7 @@ public class Sequence {
 	public static final char GAP = '-';
 	public static final char UNKNOWN = '?';
 	public static final char UNKNOWN2 = 'N';
-	public static final String LABEL = "xml.label";
+	public static final String LABEL = XMLLoader.NODE_ID;
 	
 	/**
 	 * XML-happy constructor
