@@ -29,6 +29,9 @@ import testing.Timer;
  */
 public abstract class LikelihoodComponent implements ParameterListener, AcceptRejectListener {
 
+	//Whether to use Timers to do some simple profiling. Nice for debugging, not should be turned off for releases. 
+	private final boolean useTimers = false;
+	
 	private Timer timer = new Timer();
 	
 	protected List<Parameter<?>> parameters = new ArrayList<Parameter<?>>();
@@ -128,12 +131,15 @@ public abstract class LikelihoodComponent implements ParameterListener, AcceptRe
 	 * @return
 	 */
 	public Double getProposedLogLikelihood() {
-		timer.start();
+		
 		if (recalculateLikelihood) {
+			if (useTimers)
+				timer.start();
 			proposedLogLikelihood = computeProposedLikelihood();
 			recalculateLikelihood = false;
+			if (useTimers)
+				timer.stop();
 		}
-		timer.stop();
 		return proposedLogLikelihood;
 	}
 	
