@@ -89,9 +89,11 @@
 	<kappaMod class="modifier.SimpleModifier" />
 </Kappa>
 
-<!-- A model specifying the transition matrix for nucleotide evolution, in this case the F84 model.
-	This model also requires a reference to the parameter we defined above that it will use for the Ts / Tv ratio. -->
+<!-- A model specifying the transition matrix for nucleotide evolution, in this case the F84 model. It also
+	requires an element of the class "BaseFrequencies" and a reference to the Kappa parameter that
+	will be used for the transition / transversion ratio -->
 <mutationModel class="dlCalculation.substitutionModels.F84Matrix" stationaries="0.25 0.25 0.25 0.25">
+	<BaseFrequencies class="dlCalculation.substitutionModels.BaseFrequencies" stationaries="0.25 0.25 0.25 0.25" />
 	<Kappa />
 </mutationModel>
 
@@ -102,6 +104,7 @@
 	<ARG />
 </DataLikelihood>
 
+
 <!-- =======================  Coalescent model and likelihood  ==============================  --> 
 <!-- This section specifies the pieces needed to compute the probability of the ARG given the
    population size and recombination parameters (not the input alignment). In this case both population
@@ -109,12 +112,12 @@
    values are 'constant' across time (for population size) and sites (for the rec rate) -->
 
 <!--  Parameter specifying population size (theta / 2.0)  -->
-<PopSize class="coalescent.ConstantPopSize" frequency="1.0" value="1">
+<PopSize class="coalescent.ConstantPopSize" frequency="1.0" value="1.0">
 	<popSizeScaler class="modifier.ScaleModifier"/>
 </PopSize>
 
 <!-- Simple, constant recombination rate across sites -->
-<RecRate class="coalescent.ConstantRecombination" value="1">
+<RecRate class="coalescent.ConstantRecombination" value="1.0">
 	<recRateScaler class="modifier.ScaleModifier"/>
 </RecRate>
 
@@ -133,6 +136,7 @@
 	<RecRate />
 	<ARG />
 </coalescentLikelihood>
+
 
 <!-- ==============================   Logging and output   ==================================== --> 
 <!-- This section contains a few things that will produce output as the chain runs. There are lots of 
@@ -164,10 +168,11 @@
 	
 	The run="true" attribute means that we should start the chain running as soon as we create this
 	object -->
-<mc class="mcmc.MCMC" length="5000000" run="true">
+<MCMC class="mcmc.MCMC" length="5000000" run="true">
 	<parameters class="list">
 		<PopSize />
 		<RecRate />
+		<BaseFrequencies />
 		<Kappa />
 		<ARG />  
 	</parameters>
@@ -180,6 +185,6 @@
 		<statelogger />
 		<bplogger />
 	</loggers>
-</mc>
+</MCMC>
 
 </ACG>

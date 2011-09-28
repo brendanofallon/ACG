@@ -246,6 +246,9 @@ public class MCMCModelElement extends ModelElement {
 			useMC3 = false;
 		}
 		
+		Integer runLength = getIntegerAttribute(mcEl, MCMC.XML_RUNLENGTH);
+		setRunLength(runLength);
+		
 		int childCount = getChildCount(doc, mcEl);
 		if (childCount < 2 || childCount > 3) {
 			throw new InputConfigException("Need exactly three children of type list for MCMC object");

@@ -123,7 +123,7 @@ public abstract class ModelElement implements ElementProvider {
 	 */
 	protected static Double getOptionalDoubleAttribute(Element el, String key) throws InputConfigException {
 		String valStr = el.getAttribute(key);
-		if (valStr == null)
+		if (valStr == null || valStr.length()==0)
 			return null;
 		try {
 			Double val = Double.parseDouble(valStr);
@@ -146,7 +146,7 @@ public abstract class ModelElement implements ElementProvider {
 	 */
 	protected Double getDoubleAttribute(Element el, String key) throws InputConfigException {
 		String valStr = el.getAttribute(key);
-		if (valStr == null)
+		if (valStr == null || valStr.length()==0)
 			throw new InputConfigException("Could not find required attribute : " + key + " from element with label: " + el.getNodeName());
 		
 		try {
@@ -170,8 +170,30 @@ public abstract class ModelElement implements ElementProvider {
 	 */
 	protected static Integer getOptionalIntegerAttribute(Element el, String key) throws InputConfigException {
 		String valStr = el.getAttribute(key);
-		if (valStr == null)
+		if (valStr == null || valStr.length()==0)
 			return null;
+		try {
+			Integer val = Integer.parseInt(valStr);
+			return val;
+		}
+		catch (NumberFormatException nfe) {
+			throw new InputConfigException("Could not parse a value for attribute : " + key + " from element with label: " + el.getNodeName());
+		}
+	}
+	
+	/**
+	 * Attempt to find an attribute with the given key and parse a Integer from its value. 
+	 * If no value if found, null is returned. If a value is found but we can't parse a double from it,
+	 * an InputConfigException is thrown
+	 * @param el
+	 * @param key
+	 * @return
+	 * @throws InputConfigException
+	 */
+	protected static Integer getIntegerAttribute(Element el, String key) throws InputConfigException {
+		String valStr = el.getAttribute(key);
+		if (valStr == null || valStr.length()==0)
+			throw new InputConfigException("Could not find required attribute : " + key + " from element with label: " + el.getNodeName());;
 		try {
 			Integer val = Integer.parseInt(valStr);
 			return val;

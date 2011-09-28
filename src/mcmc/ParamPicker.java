@@ -12,7 +12,7 @@ import xml.XMLLoader;
 
 /**
  * Assists in picking of parameters in proportion to their frequency. We do this a lot so its nice to
- * have something fairly efficient here
+ * have something fairly efficient here. 
  * @author brendano
  *
  */
@@ -22,10 +22,7 @@ public class ParamPicker {
 	ParFreq[] params;
 	
 	public ParamPicker(List<AbstractParameter<?>> paramList) {
-		
 		buildList(paramList);
-		
-		System.out.println("Creating parameter list : \n" + this);
 	}
 	
 	/**

@@ -1,5 +1,6 @@
 package gui.inputPanels.loggerConfigs;
 
+import gui.ErrorWindow;
 import gui.widgets.RoundedPanel;
 
 import java.awt.Component;
@@ -18,8 +19,8 @@ import javax.swing.ListCellRenderer;
 
 public class LoggerItemRenderer extends RoundedPanel {
 
-	AddLoggerFrame frame;
-	AbstractLoggerView config;
+	final AddLoggerFrame frame;
+	final AbstractLoggerView config;
 	JLabel nameLabel;
 	JButton addButton;
 	
@@ -52,8 +53,25 @@ public class LoggerItemRenderer extends RoundedPanel {
 		add(addButton);
 	}
 
+	/**
+	 * Adds a CLONE of this type of logger to the logger panel
+	 */
 	public void addLogger() {
-		frame.addLoggerToPanel(config);
+		Class<AbstractLoggerView> loggerClass = null;
+		AbstractLoggerView newView = null;
+		try {
+			loggerClass = (Class<AbstractLoggerView>) config.getClass();
+			newView = loggerClass.newInstance();
+		}
+		catch (Exception ex) {
+			System.out.println("Whoa, couldn't do that cast : " + ex);
+		}
+		
+		if (newView != null)
+			frame.addLoggerToPanel(newView);
+		else {
+			ErrorWindow.showErrorWindow(new Exception("Could not create a logger of type : " + config.getModel().getLoggerClass()));
+		}
 		frame.setVisible(false);
 	}
 }

@@ -60,8 +60,10 @@ public abstract class LoggerModel extends ModelElement {
 	
 	protected String readFilename(Element el) {
 		String filename = el.getAttribute(StateLogger.XML_FILENAME);
-		if (filename != null && filename.length()>0)
+		if (filename != null && filename.length()>0) {
+			System.out.println("Logger " + this.getDefaultLabel() + " setting output filename to : " + filename);
 			setOutputFilename(filename);
+		}
 		return filename;
 	}
 	

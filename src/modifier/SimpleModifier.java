@@ -26,16 +26,6 @@ public class SimpleModifier extends AbstractModifier<DoubleParameter> {
 		super(attributes);
 	}
 	
-	public SimpleModifier() {
-		this(new HashMap<String, String>());
-	}
-	
-	private SimpleModifier(DoubleParameter param, double windowMin, double windowWidth, double windowMax, double lowRatio, double highRatio, double frequency) {
-		super(param, lowRatio, highRatio, frequency);
-		this.windowMin = windowMin;
-		this.windowWidth = windowWidth;
-		this.windowMax = windowMax;
-	}
 	
 	public Double modify() throws InvalidParameterValueException, IllegalModificationException, ModificationImpossibleException {
 		if (! param.isProposeable()) {

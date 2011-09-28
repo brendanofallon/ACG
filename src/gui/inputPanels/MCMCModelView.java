@@ -44,7 +44,6 @@ public class MCMCModelView extends JPanel {
 		add(new JLabel("Markov chain properties"));
 		
 		addComp("Run length :", lengthSpinner);
-		System.out.println("Initializing, run length spinner has value " + lengthSpinner.getValue());
 		
 		JSeparator sep = new JSeparator( JSeparator.HORIZONTAL);
 		add(sep);
@@ -102,7 +101,6 @@ public class MCMCModelView extends JPanel {
 	 */
 	public void updateFromModel() {
 		lengthSpinner.setValue( model.getRunLength() );
-		System.out.println("Setting run length in view to " + model.getRunLength() );
 		useHeatingBox.setSelected( model.isUseMC3());
 		adaptiveHeatingBox.setSelected(model.isUseAdaptiveMC3());
 		chainsSpinner.setValue( model.getChains() );

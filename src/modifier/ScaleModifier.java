@@ -14,7 +14,7 @@ public class ScaleModifier extends AbstractModifier<DoubleParameter> {
 	DoubleParameter param = null;
 	
 	double scaleMin = 0.02;
-	double scaleMax = 1.5;
+	double scaleMax = 0.5;
 	double scaleSize = 0.1;
 
 	public ScaleModifier() {
@@ -25,13 +25,6 @@ public class ScaleModifier extends AbstractModifier<DoubleParameter> {
 		super(attributes);
 		
 		modStr="Scale modifier for pop size";
-	}
-	
-	private ScaleModifier(DoubleParameter param, double scaleMin, double scaleMax, double scaleSize, double lowRatio, double highRatio, double frequency) {
-		super(param, lowRatio, highRatio, frequency);
-		this.scaleMin = scaleMin;
-		this.scaleMax = scaleMax;
-		this.scaleSize = scaleSize;
 	}
 	
 	public Double modify() throws InvalidParameterValueException, IllegalModificationException, ModificationImpossibleException {
@@ -102,7 +95,7 @@ public class ScaleModifier extends AbstractModifier<DoubleParameter> {
 //			if (param.getName().equals("kappa"))
 //				System.out.println("Acceptances too big (" + getRecentAcceptanceRatio() + "), shrinking window to : " + scaleSize);
 		}
-		//Hard upper bound makes it so that we never multiply by more than exp(2.0*0.5)=exp(1)=2.718
+		//Hard upper bound makes it so that we never multiply by more than exp(1.0*0.5)=exp(1)=1.648
 		if (getRecentAcceptanceRatio() > highRatio && scaleSize < scaleMax) { //We're accepting too manu, grow the window
 			scaleSize *= 1.1;
 //			if (param.getName().equals("kappa"))

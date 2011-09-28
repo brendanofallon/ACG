@@ -28,7 +28,7 @@ import javax.swing.event.ChangeListener;
  */
 public abstract class AbstractLoggerView extends JPanel {
 	
-	LoggerModel model;
+	final LoggerModel model;
 	JTextField filenameField;
 	JSpinner burninSpinner;
 	JSpinner freqSpinner;
@@ -117,7 +117,10 @@ public abstract class AbstractLoggerView extends JPanel {
 	 */
 	public void updateView() {
 		filenameField.setText( model.getOutputFilename() );
+		//System.out.println("Updating view for " + this.getModel().getModelLabel() + " output filename : " + model.getOutputFilename());
+		filenameField.repaint();
 		burninSpinner.setValue( model.getBurnin() );
+		burninSpinner.repaint();
 		freqSpinner.setValue( model.getLogFrequency() );
 		revalidate();
 		repaint();

@@ -313,7 +313,6 @@ public class DocMemberConfigPanel extends JPanel {
 			}
 			
 			
-			mcElement.setRunLength(25000000);
 			docBuilder.appendNodes( mcElement );
 				
 			
