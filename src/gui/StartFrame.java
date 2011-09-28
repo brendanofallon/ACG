@@ -15,6 +15,8 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import javax.swing.Box;
@@ -30,11 +32,18 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import component.LikelihoodComponent;
 
 import parameter.DoubleParameter;
 import xml.InvalidInputFileException;
+import xml.XMLLoader;
 
 import mcmc.MCMC;
 
@@ -122,6 +131,44 @@ public class StartFrame extends JPanel {
 
 
 	/**
+	 * Perform a few very basic correctness checks and pop up a friendly error-message windows
+	 * if something is awry.  
+	 * @param file
+	 */
+	protected boolean checkValidity(File file) {
+		if (! file.exists()) {
+			JOptionPane.showMessageDialog(this, "The file " + file.getName() + " cannot be found");
+			return false;
+		}
+		
+		if (! file.getName().endsWith(".xml")) {
+			JOptionPane.showMessageDialog(this, "The file " + file.getName() + " does not appear to be valid xml");
+			return false;
+		}
+		
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder;
+		try {
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.parse(file);
+			
+		} catch (ParserConfigurationException e) {
+			
+			JOptionPane.showMessageDialog(this, "Error reading file " + file.getName() + ", it does not appear to be valid xml.");
+			return false;
+		} catch (SAXException e) {
+			JOptionPane.showMessageDialog(this, "Error reading file " + file.getName() + ", it does not appear to be valid xml.");
+			return false;
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(this, "IO Error reading file " + file.getName() + ", the file cannot be read.");
+			return false;
+		}
+			
+		return true;
+	}
+	
+	
+	/**
 	 * Cause the given file to be shown in a docMemberConfigPanel
 	 * @param file
 	 */
@@ -132,9 +179,16 @@ public class StartFrame extends JPanel {
 			return;
 		}
 		
-
-		ACGDocument acgDocument = new ACGDocument(inputFile);
-		acgParent.loadDocMemberConfig(acgDocument);
+		try {
+			boolean ok = checkValidity(inputFile);
+			if (ok) {
+				ACGDocument acgDocument = new ACGDocument(inputFile);
+				acgParent.loadDocMemberConfig(acgDocument);
+			}
+		}
+		catch (InvalidInputFileException ex) {
+			ErrorWindow.showErrorWindow(ex);
+		}
 	}
 
 
@@ -178,9 +232,11 @@ public class StartFrame extends JPanel {
 			return;
 		}
 		
-
-		ACGDocument acgDocument = new ACGDocument(inputFile);
-		acgParent.pickParameters(inputFile.getName(), acgDocument);
+		boolean ok = checkValidity(inputFile);
+		if (ok) {
+			ACGDocument acgDocument = new ACGDocument(inputFile);
+			acgParent.pickParameters(inputFile.getName(), acgDocument);
+		}
 	}
 	
 	/**
