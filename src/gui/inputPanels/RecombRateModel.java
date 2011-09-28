@@ -77,9 +77,18 @@ public class RecombRateModel extends ModelElement {
 		
 		setModelLabel(recRateEl.getNodeName());
 		
-		Double recRate = getOptionalDoubleAttribute(recRateEl, DoubleParameter.XML_VALUE);
-		if (recRate != null)
-			recModel.setValue( recRate );
+		Double recRate = getDoubleAttribute(recRateEl, DoubleParameter.XML_VALUE);
+		recModel.setValue( recRate );
+		Double freq = getOptionalDoubleAttribute(recRateEl, DoubleParameter.XML_PARAM_FREQUENCY);
+		if (freq != null)
+			recModel.setFrequency(freq);
+		Double lowerBound = getOptionalDoubleAttribute(recRateEl, DoubleParameter.XML_LOWERBOUND);
+		if (lowerBound != null)
+			recModel.setLowerBound(lowerBound);
+		Double upperBound = getOptionalDoubleAttribute(recRateEl, DoubleParameter.XML_UPPERBOUND);
+		if (upperBound != null)
+			recModel.setUpperBound(upperBound);
+		
 		
 		if ( getChildCount(doc, recRateEl) > 0) {
 			Element child = getChild(doc, recRateEl, 0);
@@ -91,6 +100,7 @@ public class RecombRateModel extends ModelElement {
 			}
 		}
 	}
+
 
 	public void setUseModifier(boolean use) {
 		if (use) {

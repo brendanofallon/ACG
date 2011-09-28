@@ -134,6 +134,31 @@ public abstract class ModelElement implements ElementProvider {
 		}
 	}
 	
+	
+	/**
+	 * Attempt to find an attribute with the given key and parse a Double from its value. 
+	 * If no value if found or if a double cannot be parsed from the value an 
+	 * InputConfigException is thrown
+	 * @param el
+	 * @param key
+	 * @return
+	 * @throws InputConfigException
+	 */
+	protected Double getDoubleAttribute(Element el, String key) throws InputConfigException {
+		String valStr = el.getAttribute(key);
+		if (valStr == null)
+			throw new InputConfigException("Could not find required attribute : " + key + " from element with label: " + el.getNodeName());
+		
+		try {
+			Double val = Double.parseDouble(valStr);
+			return val;
+		}
+		catch (NumberFormatException nfe) {
+			throw new InputConfigException("Could not parse a value for attribute : " + key + " from element with label: " + el.getNodeName());
+		}
+	}
+	
+	
 	/**
 	 * Attempt to find an attribute with the given key and parse a Integer from its value. 
 	 * If no value if found, null is returned. If a value is found but we can't parse a double from it,

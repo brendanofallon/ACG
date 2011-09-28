@@ -75,6 +75,7 @@ public class PopSizeModelElement extends ModelElement {
 		if (modelType == PopSizeModel.Constant) {
 			popEl.setAttribute(XMLLoader.CLASS_NAME_ATTR, ConstantPopSize.class.getCanonicalName());
 			popEl.setAttribute(DoubleParameter.XML_VALUE, "" + constSizeModel.getValue());
+			popEl.setAttribute(DoubleParameter.XML_PARAM_FREQUENCY, "" + constSizeModel.getFrequency());
 			popEl.setAttribute(DoubleParameter.XML_LOWERBOUND, "" + constSizeModel.getLowerBound());
 			popEl.setAttribute(DoubleParameter.XML_UPPERBOUND, "" + constSizeModel.getUpperBound());
 			if (constSizeModel.getModType() != null) {

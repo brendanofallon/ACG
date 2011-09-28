@@ -134,6 +134,11 @@ public class CoalescentView extends JPanel {
 			recombModelBox.setSelectedIndex(1);
 		}
 		
+		constPopView.updateView();
+		baseSizeView.updateView();
+		growthRateView.updateView();
+		recView.updateView();
+		
 		repaint();
 	}
 	

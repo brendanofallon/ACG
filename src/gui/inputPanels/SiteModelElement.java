@@ -221,7 +221,7 @@ public class SiteModelElement extends ModelElement {
 				if ( getChildCount(doc, mutModelElement) != 2)
 					throw new InputConfigException("Expected exactly two children of node " + mutModelElement.getNodeName() + ", base frequencies and tt ratio");
 				baseFreqsElement.readSettings( getChild(doc, mutModelElement, 0));
-				ttRatioElement.readSettings( getChild(doc, mutModelElement, 0) );
+				ttRatioElement.readSettings( getChild(doc, mutModelElement, 1) );
 			}
 			
 			
