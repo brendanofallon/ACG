@@ -205,6 +205,23 @@ public class BPLocationView extends AbstractLoggerView {
 		model.setLogFrequency( (Integer)freqSpinner.getValue() );
 	}
 	
-
+	/**
+	 * Updates widgets with info from model
+	 */
+	public void updateView() {
+		filenameField.setText( model.getOutputFilename() );
+		filenameField.repaint();
+		burninSpinner.setValue( model.getBurnin() );
+		burninSpinner.repaint();
+		freqSpinner.setValue( model.getLogFrequency() );
+		seqBinsSpinner.setValue( bpModel.getSeqBins());
+		timeBinsSpinner.setValue( bpModel.getTimeBins());
+		setHeightBox.setSelected( bpModel.getMaxDepth()!=null );
+		if (bpModel.getMaxDepth()!= null) {
+			heightField.setText( bpModel.getMaxDepth() + "");
+		}
+		revalidate();
+		repaint();
+	}
 
 }

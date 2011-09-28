@@ -117,7 +117,6 @@ public abstract class AbstractLoggerView extends JPanel {
 	 */
 	public void updateView() {
 		filenameField.setText( model.getOutputFilename() );
-		//System.out.println("Updating view for " + this.getModel().getModelLabel() + " output filename : " + model.getOutputFilename());
 		filenameField.repaint();
 		burninSpinner.setValue( model.getBurnin() );
 		burninSpinner.repaint();

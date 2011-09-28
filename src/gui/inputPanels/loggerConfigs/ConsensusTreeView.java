@@ -45,6 +45,9 @@ public class ConsensusTreeView extends AbstractLoggerView {
 		try {
 			Integer site = Integer.parseInt(siteField.getText());
 			bpModel.setSite(site);
+			if (bpModel.getUseDefaultFilename()) {
+				filenameField.setText("ConsensusTree" + site + ".tre");
+			}
 		}
 		catch (NumberFormatException nfe) {
 			throw new InputConfigException("Please enter an integer for the site at which to build the consensus tree");
@@ -66,4 +69,17 @@ public class ConsensusTreeView extends AbstractLoggerView {
 		updateSiteField();
 	}
 
+	/**
+	 * Updates widgets with info from model
+	 */
+	public void updateView() {
+		filenameField.setText( model.getOutputFilename() );
+		filenameField.repaint();
+		burninSpinner.setValue( model.getBurnin() );
+		burninSpinner.repaint();
+		freqSpinner.setValue( model.getLogFrequency() );
+		siteField.setText( bpModel.getSite() + "");
+		revalidate();
+		repaint();
+	}
 }

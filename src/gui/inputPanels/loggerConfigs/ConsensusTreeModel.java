@@ -11,7 +11,13 @@ public class ConsensusTreeModel extends LoggerModel {
 	
 	//Site at which to consense trees
 	int site = 0;
+	boolean useDefaultFilename = true;
 
+	
+	public boolean getUseDefaultFilename() {
+		return useDefaultFilename;
+	}
+	
 	public int getSite() {
 		return site;
 	}
@@ -25,6 +31,13 @@ public class ConsensusTreeModel extends LoggerModel {
 		return ConsensusTreeLogger.class;
 	}
 
+	public void setOutputFilename(String outputFilename) {
+		if (! outputFilename.equals( this.outputFilename)) {
+			useDefaultFilename = false;
+		}
+		this.outputFilename = outputFilename;
+	}
+	
 	@Override
 	public String getDefaultLabel() {
 		return "ConsensusTree";
@@ -36,7 +49,10 @@ public class ConsensusTreeModel extends LoggerModel {
 			throw new InputConfigException("ARG reference not set for ConsensusTree logger");
 		
 		Element el = createElement(doc, getModelLabel() + site, logging.ConsensusTreeLogger.class );
-		el.setAttribute(PropertyLogger.FILENAME, getOutputFilename());
+		if (useDefaultFilename)
+			el.setAttribute(PropertyLogger.FILENAME, getModelLabel() + getSite() + ".tre");
+		else
+			el.setAttribute(PropertyLogger.FILENAME, getOutputFilename());
 		el.setAttribute(PropertyLogger.FREQUENCY, "" + getLogFrequency());
 		el.setAttribute(PropertyLogger.BURNIN, "" + getBurnin());
 		el.setAttribute(ConsensusTreeLogger.XML_SITE, "" + site);

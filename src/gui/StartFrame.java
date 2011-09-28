@@ -88,7 +88,7 @@ public class StartFrame extends JPanel {
 
 		
 		ImageIcon createIcon = ACGFrame.getIcon("icons/addIcon.png");
-		BorderlessButton createButton = new BorderlessButton("Create a new input file", createIcon);
+		BorderlessButton createButton = new BorderlessButton("Create a new model", createIcon);
 		stylist.applyStyle(createButton);
 		createButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
