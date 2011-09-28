@@ -8,6 +8,7 @@ import java.util.List;
 import math.RandomSource;
 
 import parameter.AbstractParameter;
+import xml.XMLLoader;
 
 /**
  * Assists in picking of parameters in proportion to their frequency. We do this a lot so its nice to
@@ -23,6 +24,8 @@ public class ParamPicker {
 	public ParamPicker(List<AbstractParameter<?>> paramList) {
 		
 		buildList(paramList);
+		
+		System.out.println("Creating parameter list : \n" + this);
 	}
 	
 	/**
@@ -43,6 +46,11 @@ public class ParamPicker {
 		return param;
 	}
 	
+	/**
+	 * Created list of parameters and probabilities and sort by descending frequency so we often dont
+	 * have to go past the first few entries
+	 * @param paramList
+	 */
 	private void buildList(List<AbstractParameter<?>> paramList) {
 		double frequencySum = 0;
 		List<AbstractParameter<?>> paramsToModify = new ArrayList<AbstractParameter<?>>();
@@ -62,6 +70,15 @@ public class ParamPicker {
 		Arrays.sort( params, new FreqComparator());
 	}
 	
+	
+	public String toString() {
+		StringBuilder strB = new StringBuilder();
+		for(int i=0; i<params.length; i++) {
+			strB.append( params[i].param.getAttribute(XMLLoader.NODE_ID) + "\t : " + params[i].freq + "\n");
+
+		}
+		return strB.toString();
+	}
 	
 	class FreqComparator implements Comparator<ParFreq> {
 

@@ -90,6 +90,9 @@ public class MCMC {
 	//Stores attributes given to constructor so we can reference them later
 	private Map<String, String> attrs = new HashMap<String, String>();
 	
+	//Helps in picking params in proportion to their relative frequency
+	protected ParamPicker paramPicker;
+	
 	public MCMC( ) {
 		
 	}
@@ -363,23 +366,6 @@ public class MCMC {
 	 * 
 	 * @return
 	 */
-	private AbstractParameter<?> pickParameter() {
-		if (modParams == null) {
-			createModParams();
-		}
-		
-		double r = RandomSource.getNextUniform();
-		AbstractParameter<?> param;
-		int count = 0;
-		while(r > modParams.get(count).getSampleFrequency()/paramFreqSum) {
-			r -= modParams.get(count).getSampleFrequency()/paramFreqSum;
-			count++;
-		}
-		
-		param = modParams.get(count);
-		
-		return param; 
-	}
 	
 	/**
 	 * Set the heating of this chain
@@ -484,13 +470,14 @@ public class MCMC {
 	 * Performs actual running of the chain for the given number of states. 
 	 * @param states
 	 */
-	public void advance(int states) {
-		String modStr = "";
-		
+	public void advance(int states) {		
 		if (currentLikelist == null)
 			currentLikelist = new double[components.size()];
 		if (propLikeList == null)
 			propLikeList = new double[components.size()];
+		if (paramPicker == null) {
+			paramPicker = new ParamPicker( getParameters() );
+		}
 		
 		
 		if (getCurrentState()==0 && useTimers) {
@@ -517,29 +504,28 @@ public class MCMC {
 			
 			//1) Compute the current likelihood
 			int i = 0;
-			//if (verifyRejection) {
-				currentL = 0.0;
-				for(LikelihoodComponent comp : components) {
-					double currentLike = comp.getCurrentLogLikelihood();
-					currentL += currentLike;
-					currentLikelist[i] = currentLike;
-					//System.out.println("Likelihood of component : " + comp + "\n " + currentLike);
-					i++;
-				}
+			currentL = 0.0;
+			for(LikelihoodComponent comp : components) {
+				double currentLike = comp.getCurrentLogLikelihood();
+				currentL += currentLike;
+				currentLikelist[i] = currentLike;
+				//System.out.println("Likelihood of component : " + comp + "\n " + currentLike);
+				i++;
+			}
 
-				//Test to make sure that after an accept step the current likelihood is equal to the likelihood that was proposed
-				if ((!neverAccept) && acceptedStates>0 && acceptedLogL != currentL ) {
-					System.out.flush();
-					System.err.println("Error: Probability of previously accepted state is not the next state's current probability!");
-					System.err.println("Current likelihood: " + currentL);
-					System.err.println("Accepted likelihood: " + acceptedLogL);
-					System.exit(0);
-				}
-			//}
-			
+			//Test to make sure that after an accept step the current likelihood is equal to the likelihood that was proposed
+			if ((!neverAccept) && acceptedStates>0 && acceptedLogL != currentL ) {
+				System.out.flush();
+				System.err.println("Error: Probability of previously accepted state is not the next state's current probability!");
+				System.err.println("Current likelihood: " + currentL);
+				System.err.println("Accepted likelihood: " + acceptedLogL);
+				System.exit(0);
+			}
+
+
 			//Propose a new state by 
 			//2) picking a parameter to change
-			AbstractParameter<?> param = pickParameter();
+			AbstractParameter<?> param = paramPicker.pickParameter();
 			lastParam = param;
 			
 			//3) changing it and noting the hastings ratio
@@ -556,7 +542,6 @@ public class MCMC {
 				modTimer.clear();
 				modTimer.start();
 				hastingsRatio = mod.modify();
-				modStr = mod.getModStr();
 			} catch (InvalidParameterValueException e) {
 				System.err.println("Caught invalid param value exception : " + e);
 				System.exit(0);
@@ -571,7 +556,6 @@ public class MCMC {
 			
 			
 			// 4) Computing the proposed likelihood
-
 			i = 0;
 			propL = 0.0;
 			for(LikelihoodComponent comp : components) {
