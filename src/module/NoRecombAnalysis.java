@@ -116,7 +116,7 @@ public class NoRecombAnalysis extends AbstractModule {
 		
 		
 		DoubleParameter kappa = new DoubleParameter(2.0, "kappa", "kappa", 0, 1000);
-		kappa.addModifier(new SimpleModifier());
+		kappa.addModifier(new SimpleModifier(new HashMap<String, String>()));
 		kappa.setFrequency(0.1);
 		parameters.add(kappa);
 		

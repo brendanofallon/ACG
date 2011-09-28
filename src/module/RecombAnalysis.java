@@ -104,7 +104,7 @@ public class RecombAnalysis extends NoRecombAnalysis {
 		
 		
 		DoubleParameter kappa = new DoubleParameter(2.0, "kappa", "kappa", 0, 1000);
-		kappa.addModifier(new SimpleModifier());
+		kappa.addModifier(new SimpleModifier(new HashMap<String, String>()));
 		parameters.add(kappa);
 		
 		BaseFrequencies freqs = new BaseFrequencies(new double[]{0.25, 0.25, 0.25, 0.25});
