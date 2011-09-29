@@ -22,6 +22,7 @@ package gui.inputPanels;
 import gui.document.ACGDocument;
 import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.DoubleModifierElement.ModType;
+import gui.inputPanels.DoublePriorModel.PriorType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -245,7 +246,8 @@ public class MCMCModelElement extends ModelElement {
 			if ( getChildCount(doc, chainHeatsEl) != 0) {
 				Element lambdaEl = getChild(doc, chainHeatsEl, 0);
 				if ( DoubleParamElement.isAcceptable(lambdaEl)) {
-					lambda = new DoubleParamElement( lambdaEl );
+					lambda = new DoubleParamElement(doc, lambdaEl);
+					lambda.getPriorModel().setType(PriorType.Uniform);
 					if (lambda.getModType() != null) {
 						useAdaptiveMC3 = true;
 					}

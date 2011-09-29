@@ -149,8 +149,8 @@ public class PopSizeModelElement extends ModelElement {
 			if ( getChildCount(doc, popSizeElement) != 2) 
 				throw new InputConfigException("Exponential pop size requires exactly two child elements (base size and growth rate)");
 			
-			baseSizeElement.readSettings(  getChild(doc, popSizeElement, 0));
-			growthRateElement.readSettings(  getChild( doc, popSizeElement, 1));
+			baseSizeElement.readSettings(doc, getChild(doc, popSizeElement, 0));
+			growthRateElement.readSettings(doc, getChild( doc, popSizeElement, 1));
 		}
 	}
 

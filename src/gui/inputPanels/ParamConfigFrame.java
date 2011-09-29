@@ -141,6 +141,28 @@ public class ParamConfigFrame extends JFrame {
 		initValueField.setText("" + model.getValue() );
 		lowerBoundField.setText("" + model.getLowerBound());
 		upperBoundField.setText("" + model.getUpperBound());
+		
+		PriorType priorType = model.getPriorModel().getType();
+		System.out.println("Updating param config frame view, prior type is : " + priorType);
+		if (priorType == PriorType.Uniform) {
+			priorBox.setSelectedIndex(0);
+		}
+		if (priorType == PriorType.Gaussian) {
+			priorBox.setSelectedIndex(1);
+			priorMeanField.setText( model.getPriorModel().getMean() + "");
+			priorStdevField.setText( model.getPriorModel().getStdev() + "");
+		}
+		if (priorType == PriorType.Exponential) {
+			priorBox.setSelectedIndex(2);
+			priorMeanField.setText( model.getPriorModel().getMean() + "");
+		}
+		if (priorType == PriorType.Gamma) {
+			priorBox.setSelectedIndex(3);
+			priorMeanField.setText( model.getPriorModel().getMean() + "");
+			priorStdevField.setText( model.getPriorModel().getStdev() + "");
+		}
+		
+		
 		view.updateView();
 		repaint();
 	}

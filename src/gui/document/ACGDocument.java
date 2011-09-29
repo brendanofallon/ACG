@@ -27,6 +27,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -407,6 +408,23 @@ public class ACGDocument {
 	public Element getElementForLabel(String label) {
 		return loader.getElementForLabel(label);
 	}	
+	
+	/**
+	 * Returns all Elements read by the loader
+	 * @return
+	 */
+	public Collection<Element> getElements() {
+		return loader.getElements();
+	}
+	
+	/**
+	 * Returns the class associated with the element with the given label
+	 * @param label
+	 * @return
+	 */
+	public Class<?> getClassForLabel(String label) {
+		return loader.getClassForLabel(label);
+	}
 	
 	/**
 	 * Returns true if the element provided has any child element with the given label

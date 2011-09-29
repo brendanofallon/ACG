@@ -51,8 +51,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
 import sequence.Alignment;
 
 /**
@@ -177,8 +175,7 @@ public class DocMemberConfigPanel extends JPanel {
 			siteModelPanel.readNodesFromDocument(doc);
 			coalescentModelPanel.readNodesFromDocument(doc);
 			loggersPanel.readNodesFromDocument(doc);
-			mcElement.readElements(doc);
-			
+			mcElement.readElements(doc);			
 			revalidate();
 			repaint();
 		}

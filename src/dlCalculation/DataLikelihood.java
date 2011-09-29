@@ -61,7 +61,7 @@ import dlCalculation.substitutionModels.F84Matrix;
 import dlCalculation.substitutionModels.MutationModel;
 
 /**
- * Given a mutation model and a tree, this calculates the probability of observing the data given the tree.
+ * Given a mutation model and an ARG, this calculates the probability of observing the data given the ARG.
  * 
  * @author brendan
  *

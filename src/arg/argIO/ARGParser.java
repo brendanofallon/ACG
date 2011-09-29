@@ -115,8 +115,10 @@ public class ARGParser implements ARGReader, ARGWriter {
 	
 	/**
 	 * Generate a unique integer from the two given nodes. Not trivial since
-	 * node numbers may be very high, especially after a long mcmc run. One could
-	 * also concatenate the the five or six least-significant digits  
+	 * node numbers may be very high, especially after a long mcmc run. (Actually,
+	 * not a concern anymore since we recycle nodes now, numbers will likely never
+	 * be greater than a few thousand). One could also concatenate the the five 
+	 * or six least-significant digits  
 	 * @param a
 	 * @param b
 	 * @return
@@ -531,7 +533,7 @@ public class ARGParser implements ARGReader, ARGWriter {
 	
 	
 	/**
-	 * Primary class for converting the xml into a tree. We recurse through the xml nodes looking for <clade> elements, creating new
+	 * Primary class for converting the xml into a ARG. We recurse through the xml nodes looking for  elements, creating new
 	 * kids whenever we see them. Nearly all other information is added as attributes to the tree nodes.
 	 * 
 	 * @param doc
@@ -543,7 +545,7 @@ public class ARGParser implements ARGReader, ARGWriter {
 		Node documentRoot = doc.getDocumentElement();
 		Node topLevelChild = documentRoot.getFirstChild();
 				
-		//Search for (the first) phylogeny element
+		//Search for (the first) "graph" element
 		while(topLevelChild != null) {
 			if (topLevelChild.getNodeType() == Node.ELEMENT_NODE && topLevelChild.getNodeName().equalsIgnoreCase(XML_GRAPH))
 				break;
@@ -557,6 +559,7 @@ public class ARGParser implements ARGReader, ARGWriter {
 			throw new ARGParseException("No GRAPH tag found in XML, cannot find arg");
 		}
 		
+		//Find range (site) min and max attributes
 		String rangeMinStr = getAttributeForNode(topLevelChild, XML_RANGEMIN);
 		String rangeMaxStr = getAttributeForNode(topLevelChild, XML_RANGEMAX);
 		Integer rangeStart;
@@ -575,6 +578,8 @@ public class ARGParser implements ARGReader, ARGWriter {
 		
 		Node graphChild = topLevelChild.getFirstChild(); 
 		
+		//Protonodes are items that will be converted into real ARG nodes once all the information is
+		//collected. They're temporary holders 
 		List<ProtoNode> protoNodes = new ArrayList<ProtoNode>();
 		
 		//First we read in all nodes, and then all the edges
@@ -589,8 +594,12 @@ public class ARGParser implements ARGReader, ARGWriter {
 			graphChild = graphChild.getNextSibling();
 		}
 		
+		//If we encounter a "single link", which is a node with only one child and one parent, 
+		//(which TreesimJ sometimes produces) we automatically remove it
 		removeSingleLinks(protoNodes);
 		
+		//If we encounter multifurcations (nodes with more than two offspring or parents) we "split" them
+		//until we have only nodes with with one or two parents and one or two offspring 
 		boolean found = true;
 		int count = 0;
 		while (found) {
@@ -601,8 +610,10 @@ public class ARGParser implements ARGReader, ARGWriter {
 //		if (count>0)
 //			System.out.println("Resolved " + count + " multifurcations in tree");
 		
+		//Above procedure can generate more single links, so remove those too
 		removeSingleLinks(protoNodes);
 		
+		//Finally, convert the protoNodes to real ARG nodes
 		List<ARGNode> argNodes = convertToARGNodes(protoNodes, arg);
 		
 		return argNodes;

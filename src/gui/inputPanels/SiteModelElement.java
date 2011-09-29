@@ -240,7 +240,7 @@ public class SiteModelElement extends ModelElement {
 				if ( getChildCount(doc, mutModelElement) != 2)
 					throw new InputConfigException("Expected exactly two children of node " + mutModelElement.getNodeName() + ", base frequencies and tt ratio");
 				baseFreqsElement.readSettings( getChild(doc, mutModelElement, 0));
-				ttRatioElement.readSettings( getChild(doc, mutModelElement, 1) );
+				ttRatioElement.readSettings(doc, getChild(doc, mutModelElement, 1) );
 			}
 			
 			
@@ -251,8 +251,8 @@ public class SiteModelElement extends ModelElement {
 					throw new InputConfigException("Expected exactly three children of node " + mutModelElement.getNodeName() + ", base frequencies, kappaR and kappa Y");
 
 				baseFreqsElement.readSettings( getChild(doc, mutModelElement, 0));
-				kappaRElement.readSettings( getChild(doc, mutModelElement, 1) );
-				kappaYElement.readSettings( getChild(doc, mutModelElement, 2) );
+				kappaRElement.readSettings(doc, getChild(doc, mutModelElement, 1) );
+				kappaYElement.readSettings(doc, getChild(doc, mutModelElement, 2) );
 			
 			}
 			
@@ -331,7 +331,7 @@ public class SiteModelElement extends ModelElement {
 				//If there's a child, it must be a DoubleParameter
 				Element childEl = doc.getElementForLabel( refLabels.get(0));
 				if (DoubleParamElement.isAcceptable(childEl)) {
-					alphaParamElement.readSettings( childEl);
+					alphaParamElement.readSettings(doc, childEl);
 				}
 			}
 			
@@ -356,6 +356,7 @@ public class SiteModelElement extends ModelElement {
 		
 		Element dlNode = createElement(doc, "DataLikelihood", DataLikelihood.class);
 		dlNode.appendChild( doc.createElement(mutModelNode.getNodeName()) );
+		dlNode.appendChild( doc.createElement( getRateModelLabel() ) );
 		dlNode.appendChild( doc.createElement( argRef.getModelLabel() ) );
 		elements.add( dlNode );
 		

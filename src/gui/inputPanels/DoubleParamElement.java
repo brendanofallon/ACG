@@ -19,6 +19,8 @@
 
 package gui.inputPanels;
 
+import java.util.List;
+
 import gui.document.ACGDocument;
 
 import modifier.AbstractModifier;
@@ -63,8 +65,8 @@ public class DoubleParamElement {
 		priorModel.setType(PriorType.Uniform);
 	}
 	
-	public DoubleParamElement(Element el) throws InputConfigException {
-		this.readSettings(el);
+	public DoubleParamElement(ACGDocument doc, Element el) throws InputConfigException {
+		this.readSettings(doc, el);
 	}
 	
 	/**
@@ -164,7 +166,7 @@ public class DoubleParamElement {
 	 * @param el
 	 * @throws InputConfigException
 	 */
-	public void readSettings(Element el) throws InputConfigException {
+	public void readSettings(ACGDocument doc, Element el) throws InputConfigException {
 		String className = el.getAttribute(XMLLoader.CLASS_NAME_ATTR);
 		if (className == null || (!className.equals(DoubleParameter.class.getCanonicalName()))) {
 			throw new InputConfigException("Element is not of class DoubleParameter");
@@ -219,6 +221,7 @@ public class DoubleParamElement {
 			}
 		}
 		
+		
 		NodeList childNodes = el.getChildNodes();
 		boolean found = false;
 		for(int i=0; i<childNodes.getLength(); i++) {
@@ -258,6 +261,16 @@ public class DoubleParamElement {
 			}
 		}
 		
+		Element prior = ModelElement.getPriorForParam(doc, getLabel());
+		if (prior != null) {
+			System.out.println(" Got prior with label: " + prior.getNodeName() + " and class type: " + prior.getAttribute(XMLLoader.CLASS_NAME_ATTR) + " for element " + getLabel());
+			getPriorModel().readSettings(prior);
+		}
+		else {
+			System.out.println("WARNING: No prior found for parameter : " + getLabel() + " defaulting to uniform prior");
+			getPriorModel().setType(PriorType.Uniform);
+		}
+		
 	}
 	
 	public Element getElement(ACGDocument doc) throws InputConfigException {		
@@ -282,5 +295,7 @@ public class DoubleParamElement {
 		
 		return el;
 	}
+
+
 	
 }

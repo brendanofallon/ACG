@@ -27,12 +27,14 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import parameter.DoubleParameter;
 import priors.ExponentialPrior;
 import priors.GammaPrior;
 import priors.GaussianPrior;
 import priors.UniformPrior;
+import xml.XMLLoader;
 
 /**
  * Model implementation for priors that are applicable for DoubleParameters
@@ -46,12 +48,15 @@ public class DoublePriorModel {
 	private PriorType type = PriorType.Uniform;
 	private double mean = 1.0;
 	private double stdev = 1.0;
-	private DoubleParamElement param;
+	private final DoubleParamElement param;
 	
 	
 	public DoublePriorModel(DoubleParamElement param) {
 		this.param = param;
-		
+	}
+	
+	public PriorType getType() {
+		return type;
 	}
 	
 	public void setLabel(String label) {
@@ -98,6 +103,76 @@ public class DoublePriorModel {
 		el.appendChild( doc.createElement( param.getLabel() ));
 		
 		return el;
+	}
+	
+	
+	public void readSettings(Element el) throws InputConfigException {
+		String className = el.getAttribute(XMLLoader.CLASS_NAME_ATTR);
+		
+		if (className == null)
+			throw new InputConfigException("Could not read class for element with label : " + el.getNodeName());
+		
+		if ( el.getChildNodes().getLength() == 0) {
+			throw new InputConfigException("Prior element with label " + el.getNodeName() + " does not refer to any parameter");
+		}
+		
+		//Make sure this element is a prior for the right double param model
+		NodeList nodes = el.getChildNodes();
+		for(int i=0; i<nodes.getLength(); i++) {
+			if (nodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
+				Element child = (Element)nodes.item(i);
+				if (child.getNodeName() != param.getLabel())
+					throw new InputConfigException("Prior element with label " + el.getNodeName() + " does not refer to correct parameter (should be " + param.getLabel() + ", but its " + child.getNodeName());
+			}
+		}
+		
+		
+		setLabel(el.getNodeName());
+		
+		String meanStr = el.getAttribute(GammaPrior.XML_MEAN);
+		String stdevStr = el.getAttribute(GammaPrior.XML_STDEV);
+		if (meanStr != null && meanStr.length()>0) {
+			try {
+				Double mean = Double.parseDouble(meanStr);
+				setMean(mean);
+			}
+			catch (NumberFormatException nfe) {
+				throw new InputConfigException("Could not parse mean for prior with label: " + el.getNodeName());
+			}
+		}
+		
+		if (stdevStr != null && stdevStr.length()>0) {
+			try {
+				Double stdev = Double.parseDouble(stdevStr);
+				setStdev(stdev);
+			}
+			catch (NumberFormatException nfe) {
+				throw new InputConfigException("Could not parse stdev for prior with label: " + el.getNodeName());
+			}
+		}
+		
+		if (className.equals( UniformPrior.class.getCanonicalName())) {
+			setType(PriorType.Uniform);
+			if (meanStr != null && meanStr.length()>0) {
+				throw new InputConfigException("Cannot set mean for uniform prior (use param bounds instead)");
+			}
+			if (stdevStr != null && stdevStr.length()>0) {
+				throw new InputConfigException("Cannot set std. dev. for uniform prior (use param bounds instead)");
+			}
+		}
+		if (className.equals( GammaPrior.class.getCanonicalName())) {
+			setType(PriorType.Gamma);	
+		}
+		if (className.equals( GaussianPrior.class.getCanonicalName())) {
+			setType(PriorType.Gaussian);
+		}
+		if (className.equals( ExponentialPrior.class.getCanonicalName())) {
+			setType(PriorType.Exponential);
+			if (stdevStr != null && stdevStr.length()>0) {
+				throw new InputConfigException("Cannot set std. dev. for exponential prior");
+			}
+		}
+		
 	}
 	
 	public void setType(PriorType type) {

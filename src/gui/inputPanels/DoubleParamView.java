@@ -104,6 +104,7 @@ public class DoubleParamView extends JPanel {
 	protected void showConfigFrame() {
 		if (configFrame == null)
 			configFrame = new ParamConfigFrame(this);
+		configFrame.updateView();
 		configFrame.setVisible(true);
 	}
 

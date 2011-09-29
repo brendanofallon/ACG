@@ -26,11 +26,10 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-import coalescent.DemographicParameter;
-
-import parameter.DoubleParameter;
 import xml.XMLLoader;
+import priors.AbstractPrior;
 
 /**
  * Base class of many objects that can read data from XML and can generate XML nodes to reflect the 
@@ -80,6 +79,29 @@ public abstract class ModelElement implements ElementProvider {
 	}
 	
 	/**
+	 * Returns the first element encountered that whose class isAssignableFrom AbstractPrior and 
+	 * which has a reference to a node with the given label. This is pretty likely to be the prior
+	 * for the given parameter
+	 * @param doc
+	 * @param paramLabel
+	 * @return
+	 */
+	protected static Element getPriorForParam(ACGDocument doc, String paramLabel) {
+		for(Element el : doc.getElements()) {
+			Class<?> elementClass = doc.getClassForLabel(el.getNodeName());
+			if (AbstractPrior.class.isAssignableFrom( elementClass )) {
+				if (doc.getElementRefersToLabel(el, paramLabel)) {
+					System.out.println("Found prior with label : " + el.getNodeName() + " for param with label " + paramLabel);
+					return el;
+				}
+			}
+			
+		}
+		System.out.println("Could not find any priors for parameter with label : " + paramLabel);
+		return null;
+	}
+	
+	/**
 	 * Search the document for an element of the given class. An exception is thrown if there
 	 * is more than one element of the class
 	 * @param doc
@@ -102,6 +124,16 @@ public abstract class ModelElement implements ElementProvider {
 	 * @param el
 	 * @return
 	 */
+	protected static int getChildCount(Element el) {
+		int count = 0;
+		NodeList nodes = el.getChildNodes();
+		for(int i=0; i<nodes.getLength(); i++) {
+			if (nodes.item(i).getNodeType()==Node.ELEMENT_NODE)
+				count++;
+		}
+		return count;
+	}
+	
 	protected static int getChildCount(ACGDocument doc, Element el) {
 		return doc.getChildrenForLabel(el.getNodeName()).size();
 	}

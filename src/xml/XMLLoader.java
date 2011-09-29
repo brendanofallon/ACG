@@ -24,9 +24,11 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -193,6 +195,14 @@ public class XMLLoader {
 		}
 	}
 	
+	/**
+	 * Return a collection of all elements loaded so far via calls to loadConstructorInfo
+	 * This is available before instantiation, but only after loadAllClasses() has been called 
+	 * @return
+	 */
+	public Collection<Element> getElements() {
+		return elementMap.values();
+	}
 	
 	/**
 	 * Returns the DOM element associated with the given label. This always returns the Element
