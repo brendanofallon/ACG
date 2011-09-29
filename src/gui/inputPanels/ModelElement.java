@@ -91,13 +91,12 @@ public abstract class ModelElement implements ElementProvider {
 			Class<?> elementClass = doc.getClassForLabel(el.getNodeName());
 			if (AbstractPrior.class.isAssignableFrom( elementClass )) {
 				if (doc.getElementRefersToLabel(el, paramLabel)) {
-					System.out.println("Found prior with label : " + el.getNodeName() + " for param with label " + paramLabel);
 					return el;
 				}
 			}
 			
 		}
-		System.out.println("Could not find any priors for parameter with label : " + paramLabel);
+		
 		return null;
 	}
 	

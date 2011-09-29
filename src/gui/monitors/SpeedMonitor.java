@@ -19,7 +19,6 @@
 
 package gui.monitors;
 
-import gui.MonitorPanel;
 
 /**
  * A simple monitor that displays the "speed" (mc states / sec) of the chains

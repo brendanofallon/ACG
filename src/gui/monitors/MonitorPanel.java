@@ -17,7 +17,7 @@
 ***********************************************************************/
 
 
-package gui;
+package gui.monitors;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -61,8 +61,6 @@ import gui.figure.series.HistogramSeries;
 import gui.figure.series.XYSeries;
 import gui.figure.series.XYSeriesElement;
 import gui.figure.series.XYSeriesFigure;
-import gui.monitors.HistoOptionsFrame;
-import gui.monitors.MonitorHeader;
 import gui.widgets.FloatingPanel;
 import parameter.AbstractParameter;
 import parameter.DoubleParameter;
@@ -511,7 +509,7 @@ public abstract class MonitorPanel extends FloatingPanel {
 				XYSeriesElement el = traceFigure.addDataSeries(histoSeries[i]);
 				el.setMode(XYSeriesElement.BOXES);				
 			}
-
+			//traceFigure.placeBoxSeries();
 			switchItem.setText("Switch to trace");
 			traceFigure.setXLabel(titles[0]);
 		}

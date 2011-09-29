@@ -19,7 +19,6 @@
 
 	package gui.monitors;
 
-import gui.MonitorPanel;
 
 import java.util.List;
 

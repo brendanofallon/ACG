@@ -66,7 +66,7 @@ public class SiteModelView extends JPanel {
 	//The 'model' portion that stores the data
 	private SiteModelElement siteModel = new SiteModelElement();
 		
-	private final String[] rateTypes = new String[]{"One rate", "Gamma rates", "Custom rates"};
+	private final String[] rateTypes = new String[]{"One rate", "Gamma rates" /* "Custom rates" */};
 	
 	private Stylist stylist = new Stylist();
 
@@ -186,8 +186,8 @@ public class SiteModelView extends JPanel {
 			    	siteModel.setRateModelType( SiteModelElement.RateModelType.Constant);
 			    if (rateBox.getSelectedIndex()==1)
 			    	siteModel.setRateModelType( SiteModelElement.RateModelType.Gamma);
-			    if (rateBox.getSelectedIndex()==0)
-			    	siteModel.setRateModelType( SiteModelElement.RateModelType.Custom);
+			  //  if (rateBox.getSelectedIndex()==2)
+			   // 	siteModel.setRateModelType( SiteModelElement.RateModelType.Custom);
 
 			    rateConfigPanel.repaint();
 			}
@@ -233,9 +233,9 @@ public class SiteModelView extends JPanel {
 		gammaPanel.setOpaque(false);
 		rateConfigPanel.add(gammaPanel, rateTypes[1]);
 		
-		customPanel.add(new JTextField("Custom rate stuff"));
-		customPanel.setOpaque(false);
-		rateConfigPanel.add(customPanel,rateTypes[2]);
+		//customPanel.add(new JTextField("Custom rate stuff"));
+		//customPanel.setOpaque(false);
+		//rateConfigPanel.add(customPanel,rateTypes[2]);
 		
 		this.add(Box.createHorizontalGlue());
 	}

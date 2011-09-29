@@ -356,6 +356,15 @@ public class XYSeries extends AbstractSeries {
 		return pointList.size();
 	}
 
+	/**
+	 * Series may optionally provide information about the width of boxes used to represent data columns when
+	 * we're displaying this series in an XYSeriesElement. If we return null here, the Element attempts to
+	 * make a best guess.If a value is returned, it is assumed to be in data coordinates. 
+	 * @return
+	 */
+	public Double getBoxWidth() {
+		return null;
+	}
 	
 	/**
 	 * Returns the Point at the given index in this list of points, or null if  i> this.size()

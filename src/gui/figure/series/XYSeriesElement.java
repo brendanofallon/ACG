@@ -325,9 +325,14 @@ public class XYSeriesElement extends SeriesElement {
 	 * @return
 	 */
 	private double calculateBoxWidth() {
-		double boxesShowing = xySeries.size()*(axes.maxXVal-axes.minXVal)/(xySeries.getMaxX()-xySeries.getMinX());
-		double boxWidth = axes.getGraphAreaBounds().width / boxesShowing / (double)boxWidthDivisor;
-		//System.out.println("Series size: " + xySeries.size() + " boxes showing: " + boxesShowing + " Box width: " + boxWidth);
+		double boxWidth;
+		if (xySeries.getBoxWidth() != null) {
+			boxWidth = (axes.dataXtoFigureX( xySeries.getBoxWidth() ) - axes.dataXtoFigureX( 0 )) / (double)boxWidthDivisor ;
+		}
+		else {
+			double boxesShowing = xySeries.size()*(axes.maxXVal-axes.minXVal)/(xySeries.getMaxX()-xySeries.getMinX());
+			boxWidth = axes.getGraphAreaBounds().width / boxesShowing / (double)boxWidthDivisor;
+		}
 		return boxWidth;
 	}
 	

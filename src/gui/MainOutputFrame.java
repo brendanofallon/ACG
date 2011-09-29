@@ -20,6 +20,7 @@
 package gui;
 
 import gui.monitors.LikelihoodMonitor;
+import gui.monitors.MonitorPanel;
 import gui.monitors.ParamMonitor;
 
 import java.awt.Color;

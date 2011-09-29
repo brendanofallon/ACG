@@ -393,6 +393,8 @@ public class XYSeriesFigure extends SeriesFigure {
 		if (!seriesElements.contains(el)) {
 			seriesElements.add(el);
 			addElement(el);
+			if (el.getType().equals( SeriesElement.BOXES ))
+				placeBoxSeries();
 		}
 		else {
 			System.err.println("Series list already contain element, not adding it");

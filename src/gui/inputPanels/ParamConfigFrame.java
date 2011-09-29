@@ -143,7 +143,6 @@ public class ParamConfigFrame extends JFrame {
 		upperBoundField.setText("" + model.getUpperBound());
 		
 		PriorType priorType = model.getPriorModel().getType();
-		System.out.println("Updating param config frame view, prior type is : " + priorType);
 		if (priorType == PriorType.Uniform) {
 			priorBox.setSelectedIndex(0);
 		}

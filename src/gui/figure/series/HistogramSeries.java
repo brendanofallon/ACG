@@ -186,13 +186,12 @@ public class HistogramSeries extends XYSeries {
 	 */
 	public int size() {
 		return histo.getBinCount();
-		
-//		return (int)Math.round( (getMaxX()-getMinX())/histo.getBinWidth() );
+	}
+	
+	public Double getBoxWidth() {
+		return histo.getBinWidth();
 	}
 
-//	public int getCount() {
-//		return histo.getCount();
-//	}
 	
 	/**
 	 * Returns the Point at the given index in this list of points, or null if  i> this.size()

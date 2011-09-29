@@ -263,7 +263,6 @@ public class DoubleParamElement {
 		
 		Element prior = ModelElement.getPriorForParam(doc, getLabel());
 		if (prior != null) {
-			System.out.println(" Got prior with label: " + prior.getNodeName() + " and class type: " + prior.getAttribute(XMLLoader.CLASS_NAME_ATTR) + " for element " + getLabel());
 			getPriorModel().readSettings(prior);
 		}
 		else {

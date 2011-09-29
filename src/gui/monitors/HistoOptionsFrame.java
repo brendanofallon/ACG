@@ -25,7 +25,6 @@ import java.awt.FlowLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import gui.MonitorPanel;
 import gui.figure.series.HistogramSeries;
 import gui.figure.series.XYSeriesElement;
 
