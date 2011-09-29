@@ -17,7 +17,7 @@
 ***********************************************************************/
 
 
-package gui;
+package gui.monitors;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -25,6 +25,7 @@ import java.awt.FlowLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import gui.MonitorPanel;
 import gui.figure.series.HistogramSeries;
 import gui.figure.series.XYSeriesElement;
 

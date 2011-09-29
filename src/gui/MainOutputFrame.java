@@ -19,6 +19,9 @@
 
 package gui;
 
+import gui.monitors.LikelihoodMonitor;
+import gui.monitors.ParamMonitor;
+
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.util.ArrayList;

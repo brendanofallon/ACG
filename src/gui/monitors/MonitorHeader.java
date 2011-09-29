@@ -17,7 +17,7 @@
 ***********************************************************************/
 
 
-package gui;
+package gui.monitors;
 
 import java.awt.Color;
 import java.awt.Dimension;
