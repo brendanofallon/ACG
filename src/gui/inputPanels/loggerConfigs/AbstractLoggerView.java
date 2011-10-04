@@ -83,7 +83,7 @@ public abstract class AbstractLoggerView extends JPanel {
 		add(new JLabel("File name:"));
 		add(filenameField);
 		
-		SpinnerNumberModel burninModel = new SpinnerNumberModel(1000000, 0, Integer.MAX_VALUE, 10000);
+		SpinnerNumberModel burninModel = new SpinnerNumberModel(1000000, 0, Integer.MAX_VALUE, 1000);
 		burninSpinner = new JSpinner(burninModel);
 		burninSpinner.setPreferredSize(new Dimension(130, 30));
 		burninSpinner.addChangeListener(new ChangeListener() {
