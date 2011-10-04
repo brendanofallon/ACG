@@ -100,7 +100,7 @@ public abstract class LoggerModel extends ModelElement {
 		String freqStr = el.getAttribute(PropertyLogger.FREQUENCY);
 		if (freqStr != null && freqStr.length()>0) {
 			Integer freq = Integer.parseInt(freqStr);
-			setBurnin(freq);
+			setLogFrequency(freq);
 			return freq;
 		}
 		return null;

@@ -44,7 +44,7 @@ import org.w3c.dom.NodeList;
 public class MCMCModelElement extends ModelElement {
 
 	String label = "MCMC";
-	private int runLength = 25000000; 
+	private int runLength = 10000000; 
 	private boolean verbose = false;
 	
 	private boolean useMC3 = false;

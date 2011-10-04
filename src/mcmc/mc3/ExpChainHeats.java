@@ -152,11 +152,11 @@ public class ExpChainHeats implements ChainHeats, ParameterListener {
 	 * Adjust lambda parameter to get appropriate level of mixing of chains
 	 */
 	private void changeTuning() {
-		System.out.println("Changing tuning, calls since reset: " + lambdaMod.getCallsSinceReset() + " total calls: " + lambdaMod.getTotalCalls());
+		//System.out.println("Changing tuning, calls since reset: " + lambdaMod.getCallsSinceReset() + " total calls: " + lambdaMod.getTotalCalls());
 		if (lambdaMod.getRecentAcceptanceRatio() < 0.3 && lambdaParam.getValue()>lambdaParam.getLowerBound()) {
 			try {
 				lambdaParam.proposeValue( lambdaParam.getValue()*0.9 );
-				System.out.println("Too few acceptances ( " + StringUtils.format(lambdaMod.getRecentAcceptanceRatio(), 4) + " ), reducing lambda to : " + lambdaParam.getValue());
+				//System.out.println("Too few acceptances ( " + StringUtils.format(lambdaMod.getRecentAcceptanceRatio(), 4) + " ), reducing lambda to : " + lambdaParam.getValue());
 			} catch (ModificationImpossibleException e) {
 				//Should never happen
 			}
@@ -166,7 +166,7 @@ public class ExpChainHeats implements ChainHeats, ParameterListener {
 		if (lambdaMod.getRecentAcceptanceRatio() > 0.6 && lambdaParam.getValue()<lambdaParam.getUpperBound()) {
 			try {
 				lambdaParam.proposeValue( lambdaParam.getValue()*1.1 );
-				System.out.println("Too many acceptances ( " + StringUtils.format(lambdaMod.getRecentAcceptanceRatio(), 4) + " ), increasing lambda to : " + lambdaParam.getValue());
+				//System.out.println("Too many acceptances ( " + StringUtils.format(lambdaMod.getRecentAcceptanceRatio(), 4) + " ), increasing lambda to : " + lambdaParam.getValue());
 			} catch (ModificationImpossibleException e) {
 				//Should never happen
 			}

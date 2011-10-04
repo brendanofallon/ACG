@@ -19,6 +19,9 @@
 
 package gui.inputPanels;
 
+import gui.ErrorWindow;
+import gui.inputPanels.Configurator.InputConfigException;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -38,7 +41,7 @@ import javax.swing.event.ChangeListener;
 
 public class MCMCModelView extends JPanel {
 
-	private MCMCModelElement model;
+	private final MCMCModelElement model;
 	JSpinner lengthSpinner;
 	
 	JCheckBox useHeatingBox;
@@ -52,7 +55,7 @@ public class MCMCModelView extends JPanel {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setBorder(BorderFactory.createEmptyBorder(10, 10, 5, 10));
 
-		SpinnerNumberModel lengthModel = new SpinnerNumberModel(25000000, 1, Integer.MAX_VALUE, 10000);
+		SpinnerNumberModel lengthModel = new SpinnerNumberModel(model.getRunLength(), 1, Integer.MAX_VALUE, 10000);
 		lengthSpinner = new JSpinner(lengthModel);
 		lengthSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
@@ -126,6 +129,37 @@ public class MCMCModelView extends JPanel {
 		threadsSpinner.setValue( model.getThreads() );
 		revalidate();
 		repaint();
+	}
+	
+	/**
+	 * Update all values in model to reflect selections in view widgets. This should be called before
+	 * the beginning of any MCMC run  (or file save) to make sure changes are reflected in model. 
+	 */
+	public void updateToModel() throws InputConfigException {
+		System.out.println("Updating model from view! Run length is : " + lengthSpinner.getValue() );
+		adaptiveHeatingBoxChanged();
+		heatingBoxChanged();
+		
+		Integer length = (Integer)lengthSpinner.getValue();
+		model.setRunLength(  length );
+		
+		Integer chains = (Integer)chainsSpinner.getValue();
+		model.setChains(chains);
+		
+		Integer threads = (Integer)threadsSpinner.getValue();
+		model.setThreads(threads);
+		
+		if (useHeatingBox.isSelected() && (!adaptiveHeatingBox.isSelected())) {
+			String lambdaText = lambdaField.getText();
+			try {
+				Double lambda = Double.parseDouble(lambdaText);
+				model.getLambda().setValue(lambda);
+			}
+			catch (NumberFormatException nfe) {
+				throw new InputConfigException("Please enter an value into the lambda field");
+			}
+		}
+		
 	}
 	
 	protected void adaptiveHeatingBoxChanged() {

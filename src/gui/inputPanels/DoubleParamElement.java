@@ -58,10 +58,9 @@ public class DoubleParamElement {
 	double lowerBound = Double.NEGATIVE_INFINITY;
 	String elementName = null;
 	
-	private DoublePriorModel priorModel; 
+	private DoublePriorModel priorModel = new DoublePriorModel(this); 
 	
 	public DoubleParamElement() {
-		priorModel = new DoublePriorModel(this);
 		priorModel.setType(PriorType.Uniform);
 	}
 	

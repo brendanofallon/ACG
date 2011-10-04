@@ -82,70 +82,7 @@ public class DocMemberConfigPanel extends JPanel {
 		this.setLayout(new BorderLayout());
 		this.acgParent = acgParent;
 		
-		alignmentEl = new AlignmentElement();
-		mcElement = new MCMCModelElement();
-		argModel = new ARGModelElement();
-		
-		topPanel = new JPanel();
-		topPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-		topLabel = new JLabel("Choose an alignment");
-		chooseButton = new JButton("Choose");
-		chooseButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				browseForFile();
-			}
-		});
-		
-		topPanel.add(topLabel);
-		topPanel.add(chooseButton);
-		this.add(topPanel, BorderLayout.NORTH);
-		
-		tabPane = new JTabbedPane();
-		siteModelPanel = new SiteModelView();
-		tabPane.insertTab("Site model", null, siteModelPanel, "Substitution model for this alignment", 0);
-		
-		coalescentModelPanel = new CoalescentView();
-		tabPane.insertTab("Coalescent model", null, coalescentModelPanel, "Coalescent model for this alignment", 1);
-		
-		loggersPanel = new LoggersPanel();
-		tabPane.insertTab("Loggers", null, loggersPanel, "Logging and output options", 2);
-		
-		this.add(tabPane, BorderLayout.CENTER);
-		
-		bottomPanel = new JPanel();
-		bottomPanel.setOpaque(false);
-		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		
-		ImageIcon saveIcon = ACGFrame.getIcon("icons/downArrow.png");
-		saveButton = new BorderlessButton("Save", saveIcon);
-		saveButton.setPreferredSize(new Dimension(75, 36));
-		saveButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				saveSettings();
-			}
-		});
-		//bottomPanel.add(saveButton);
-		
-		ImageIcon runIcon = ACGFrame.getIcon("icons/rightArrow.png");
-		continueButton = new BorderlessButton("Continue", runIcon);
-		continueButton.setPreferredSize(new Dimension(100, 36));
-		continueButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				continueToMCMC();
-			}
-		});
-		bottomPanel.add(continueButton);
-		
-		runButton = new BorderlessButton("Run", runIcon);
-		runButton.setPreferredSize(new Dimension(75, 36));
-		runButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				runButtonPressed();
-			}
-		});
-		//bottomPanel.add(runButton);
-
-		this.add(bottomPanel, BorderLayout.SOUTH);
+		initComponents();
 	}
 	
 	protected void continueToMCMC() {
@@ -279,9 +216,13 @@ public class DocMemberConfigPanel extends JPanel {
 	public ACGDocument getACGDocument() throws InputConfigException {
 		ACGDocumentBuilder docBuilder = null;
 		try {
+			if (mcView == null) {
+				throw new InputConfigException("MCMC settings have not been specified yet");
+			}
+			mcView.updateToModel();
+			
 			docBuilder = new ACGDocumentBuilder();
-			docBuilder.appendHeader();
-			docBuilder.appendTimeAndDateComment();
+
 			docBuilder.addRandomSource();
 			
 			docBuilder.appendNodes( alignmentEl );
@@ -331,6 +272,8 @@ public class DocMemberConfigPanel extends JPanel {
 			
 			docBuilder.appendNodes( mcElement );
 				
+			docBuilder.appendHeader();
+			docBuilder.appendTimeAndDateComment();
 			
 		} catch (ParserConfigurationException e) {
 			ErrorWindow.showErrorWindow(e);
@@ -393,6 +336,75 @@ public class DocMemberConfigPanel extends JPanel {
 		topLabel.revalidate();
 	}
 	
+	private void initComponents() {
+		alignmentEl = new AlignmentElement();
+		mcElement = new MCMCModelElement();
+		argModel = new ARGModelElement();
+		
+		topPanel = new JPanel();
+		topPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		topLabel = new JLabel("Choose an alignment");
+		chooseButton = new JButton("Choose");
+		chooseButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				browseForFile();
+			}
+		});
+		
+		topPanel.add(topLabel);
+		topPanel.add(chooseButton);
+		this.add(topPanel, BorderLayout.NORTH);
+		
+		tabPane = new JTabbedPane();
+		siteModelPanel = new SiteModelView();
+		tabPane.insertTab("Site model", null, siteModelPanel, "Substitution model for this alignment", 0);
+		
+		coalescentModelPanel = new CoalescentView();
+		tabPane.insertTab("Coalescent model", null, coalescentModelPanel, "Coalescent model for this alignment", 1);
+		
+		loggersPanel = new LoggersPanel();
+		tabPane.insertTab("Loggers", null, loggersPanel, "Logging and output options", 2);
+		
+		this.add(tabPane, BorderLayout.CENTER);
+		
+		bottomPanel = new JPanel();
+		bottomPanel.setOpaque(false);
+		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+
+		
+		ImageIcon runIcon = ACGFrame.getIcon("icons/rightArrow.png");
+		continueButton = new BorderlessButton("Continue", runIcon);
+		continueButton.setPreferredSize(new Dimension(100, 36));
+		continueButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				continueToMCMC();
+			}
+		});
+		bottomPanel.add(continueButton);
+
+		
+
+		//This gets added to the bottom panel when the user presses the continueToMCMC button
+		ImageIcon saveIcon = ACGFrame.getIcon("icons/downArrow.png");
+		saveButton = new BorderlessButton("Save", saveIcon);
+		saveButton.setPreferredSize(new Dimension(75, 36));
+		saveButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				saveSettings();
+			}
+		});
+		
+		//This gets added to the bottom panel when the user presses the continueToMCMC button
+		runButton = new BorderlessButton("Run", runIcon);
+		runButton.setPreferredSize(new Dimension(75, 36));
+		runButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				runButtonPressed();
+			}
+		});
+
+		this.add(bottomPanel, BorderLayout.SOUTH);
+	}
 
 
 	private BorderlessButton continueButton;
