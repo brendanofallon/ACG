@@ -21,6 +21,8 @@ package gui;
 
 import gui.document.ACGDocument;
 import gui.inputPanels.DocMemberConfigPanel;
+import gui.widgets.ButtonBar;
+import gui.widgets.ButtonBarItem;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -348,6 +350,18 @@ public class ACGFrame extends JFrame implements WindowListener {
 		Container mainContainer = this.getContentPane();
 		mainContainer.setLayout(layout);
 		
+		ButtonBar buttonBar = new ButtonBar();
+		
+		ButtonBarItem item0 = new ButtonBarItem("Item 0");
+		buttonBar.addButton(item0);
+
+		ButtonBarItem item1 = new ButtonBarItem("Run");
+		buttonBar.addButton(item1);
+		
+		ButtonBarItem item2 = new ButtonBarItem("Save");
+		buttonBar.addButton(item2);
+		
+		this.add(buttonBar, BorderLayout.NORTH);
 		//toolBar = new TopToolBar(this);
 		//this.add(toolBar, BorderLayout.NORTH);
 		
