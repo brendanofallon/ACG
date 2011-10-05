@@ -28,10 +28,11 @@ public class ButtonBarItem extends JPanel {
 	private ImageIcon icon = null;
 	static final Color textShadowColor = new Color(0.95f, 0.95f, 0.95f, 0.5f);
 	static final Color textColor = Color.DARK_GRAY;
-	private Dimension defaultSize = new Dimension(70, 50);
+	private Dimension defaultSize = new Dimension(70, 55);
 	static final Color backgroundColor = new Color(0.7f, 0.7f, 0.7f);
-	static final Color hoverColor = new Color(0.92f, 0.92f, 0.92f); //Color when mouse hovers
-	static final Color pressedColor = new Color(0.85f, 0.85f, 0.85f, 0.6f); //Color when mouse is pressed
+	static final Color hoverColor = new Color(0.75f, 0.75f, 0.75f); //Color when mouse hovers
+	static final Color pressedTopColor = new Color(0.85f, 0.85f, 0.85f); //Color when mouse is pressed
+	static final Color pressedBottomColor = new Color(0.92f, 0.92f, 0.92f); //Color when mouse is pressed
 	private boolean mouseIsOver = false; //True when mouse has entered but not exited
 	private boolean mouseIsPressed = false; //True when mouse button is depressed
 	
@@ -51,6 +52,10 @@ public class ButtonBarItem extends JPanel {
 		this.icon = icon;
 	}
 	
+	public void setIcon(ImageIcon icon) {
+		this.icon = icon;
+	}
+	
 	public void buttonClicked() {
 		if (listeners != null) {
 			ActionEvent evt = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, text + " buttonbar item clicked");
@@ -60,7 +65,7 @@ public class ButtonBarItem extends JPanel {
 		}
 	}
 	
-	public void addListener(ActionListener listener) {
+	public void addActionListener(ActionListener listener) {
 		if (listeners == null)
 			listeners = new ArrayList<ActionListener>(4);
 		listeners.add(listener);
@@ -84,27 +89,40 @@ public class ButtonBarItem extends JPanel {
 		}
 		
 		if (mouseIsPressed) {
-			topColor = pressedColor;
+			topColor = pressedTopColor;
+			bottomColor = pressedBottomColor;
 		}
 		
-		GradientPaint gp = new GradientPaint(0, 1, topColor, 2, getHeight()-1, bottomColor);
+
+		GradientPaint gp = new GradientPaint(getWidth()/2, 0, topColor, getWidth()/2+1, getHeight()+10, bottomColor);
 		g2d.setPaint(gp);
-		g2d.fillRect(0, 1, getWidth(), getHeight()-1);
+		g2d.fillRect(0, 1, getWidth(), getHeight()-2);
 		
 		
 		
 		//Darker bar on edge
 		g2d.setColor( backgroundColor );
 		g2d.drawLine(getWidth()-2, 0, getWidth()-2, getHeight()+2);
-		g2d.setColor( ButtonBar.lightColor );
-		g2d.drawLine(getWidth()-1, 0, getWidth()-1, getHeight());
+		if ( ! mouseIsPressed) {
+			g2d.setColor(  new Color(0.98f, 0.98f, 0.98f, 0.5f) );
+			g2d.drawLine(getWidth()-1, 0, getWidth()-1, getHeight());
+		}
+		
+		//Icon painting
+		int dy = getHeight()/2 + 10; //Y position for text, centered if no icon, otherwise at bottom
+		
+		if (icon != null) {
+			g2d.drawImage(icon.getImage(), Math.max(1, getWidth()/2 - icon.getIconWidth()/2), Math.max(1, getHeight()/2-icon.getIconHeight()/2-5), null);
+			dy = getHeight()-4;
+		}
 		
 		//Text painting
+		
 		int strWidth = g2d.getFontMetrics().stringWidth(text);
 		g2d.setColor(textShadowColor);
-		g2d.drawString(text, Math.max(2, getWidth()/2-strWidth/2+1), getHeight()/2+11);
+		g2d.drawString(text, Math.max(2, getWidth()/2-strWidth/2+1), Math.min(getHeight(), dy+1));
 		g2d.setColor( textColor );
-		g2d.drawString(text, Math.max(1, getWidth()/2-strWidth/2), getHeight()/2+10);
+		g2d.drawString(text, Math.max(1, getWidth()/2-strWidth/2), Math.min(getHeight(), dy));
 		
 		
 	}

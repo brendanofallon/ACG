@@ -20,6 +20,7 @@
 package gui.inputPanels;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
@@ -337,11 +338,13 @@ public class DocMemberConfigPanel extends JPanel {
 	}
 	
 	private void initComponents() {
+		setBackground(ACGFrame.backgroundColor);
 		alignmentEl = new AlignmentElement();
 		mcElement = new MCMCModelElement();
 		argModel = new ARGModelElement();
 		
 		topPanel = new JPanel();
+		topPanel.setOpaque(false);
 		topPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		topLabel = new JLabel("Choose an alignment");
 		chooseButton = new JButton("Choose");

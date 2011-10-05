@@ -54,7 +54,13 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import xml.InvalidInputFileException;
 
@@ -71,7 +77,7 @@ import mcmc.MCMCListener;
  */
 public class ACGFrame extends JFrame implements WindowListener {
 	
-	public static final Color backgroundColor = new Color(140, 140, 140);
+	public static final Color backgroundColor = new Color(0.85f, 0.85f, 0.85f);
 	private final boolean onAMac; //This gets set to true if we're on a mac, and we do a couple things differently
 	
 	public ACGFrame( /* might be nice to get some properties here */ ) {
@@ -118,6 +124,11 @@ public class ACGFrame extends JFrame implements WindowListener {
 	}
 	
 	public void initializeProgressBar(MCMC chain, int maxValue) {
+		Container mainContainer = this.getContentPane();
+		mainContainer.add(bottomPanel, BorderLayout.SOUTH);
+		mainContainer.validate();
+		repaint();
+		
 		progressBar.setMaximum(maxValue);
 		chain.addListener(new MCMCListener() {
 			@Override
@@ -345,32 +356,147 @@ public class ACGFrame extends JFrame implements WindowListener {
 		replaceCenterPanel(configPanel);
 	}
 	
+	protected void browseAndLoad() {
+		File file = browseForFile();
+		if (file != null)
+			loadFile(file);
+	}
+	
+	/**
+	 * Called when user clicks 'Browse' button, returns file user has selected or null if no file
+	 */
+	private File browseForFile() {
+		//If we're on a mac then a FileDialog looks better and supports a few mac-specific options
+		File selectedFile = null;
+		if (onAMac()) {
+			FileDialog fileDialog = new FileDialog(this, "Choose a file");
+			fileDialog.setMode(FileDialog.LOAD);
+			String userDir = System.getProperty("user.dir");
+			if (userDir != null)
+				fileDialog.setDirectory(userDir);
+			
+			fileDialog.setVisible(true);
+			
+			String filename = fileDialog.getFile();
+			if (filename == null)
+				return null; //User aborted selecting file
+			String path = fileDialog.getDirectory();
+			selectedFile = new File(path + filename);
+			
+		}
+		else {
+			//Not on a mac, use a JFileChooser instead of a FileDialog
+			
+			//Construct a new file choose whose default path is the path to this executable, which 
+			//is returned by System.getProperty("user.dir")
+			if (fileChooser == null)
+				fileChooser = new JFileChooser( System.getProperty("user.dir"));
+
+			
+			int option = fileChooser.showOpenDialog(getRootPane());
+			if (option == JFileChooser.APPROVE_OPTION) {
+				selectedFile = fileChooser.getSelectedFile();
+			}
+		}
+		
+		return selectedFile;
+	}
+	
+	/**
+	 * Cause the given file to be shown in a docMemberConfigPanel
+	 * @param file
+	 */
+	private void loadFile(File inputFile) {
+		if (inputFile == null || (! inputFile.exists())) {
+			String filename = inputFile == null ? "(empty)" : inputFile.getName();
+			JOptionPane.showMessageDialog(getRootPane(), "The file " + filename + " cannot be found.");
+			return;
+		}
+		
+		try {
+			boolean ok = checkValidity(inputFile);
+			if (ok) {
+				ACGDocument acgDocument = new ACGDocument(inputFile);
+				loadDocMemberConfig(acgDocument);
+			}
+		}
+		catch (InvalidInputFileException ex) {
+			ErrorWindow.showErrorWindow(ex);
+		}
+	}
+	
+	/**
+	 * Perform a few very basic correctness checks and pop up a friendly error-message windows
+	 * if something is awry.  
+	 * @param file
+	 */
+	protected boolean checkValidity(File file) {
+		if (! file.exists()) {
+			JOptionPane.showMessageDialog(this, "The file " + file.getName() + " cannot be found");
+			return false;
+		}
+		
+		if (! file.getName().endsWith(".xml")) {
+			JOptionPane.showMessageDialog(this, "The file " + file.getName() + " does not appear to be valid xml");
+			return false;
+		}
+		
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder;
+		try {
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.parse(file);
+			
+		} catch (ParserConfigurationException e) {
+			
+			JOptionPane.showMessageDialog(this, "Error reading file " + file.getName() + ", it does not appear to be valid xml.");
+			return false;
+		} catch (SAXException e) {
+			JOptionPane.showMessageDialog(this, "Error reading file " + file.getName() + ", it does not appear to be valid xml.");
+			return false;
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(this, "IO Error reading file " + file.getName() + ", the file cannot be read.");
+			return false;
+		}
+			
+		return true;
+	}
+	
 	private void initComponents() {
 		BorderLayout layout = new BorderLayout();
 		Container mainContainer = this.getContentPane();
 		mainContainer.setLayout(layout);
+		setBackground(backgroundColor);
+		this.getContentPane().setBackground(backgroundColor);
 		
 		ButtonBar buttonBar = new ButtonBar();
+		buttonBar.setBackground(backgroundColor);
+		buttonBar.setRightIcon( getIcon("icons/acgImage.png"));
+		ButtonBarItem newButton = new ButtonBarItem("New", getIcon("icons/addIcon.png"));
+		newButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				showDocMemberConfigPanel();
+			}
+		});
+		buttonBar.addButton(newButton);
 		
-		ButtonBarItem item0 = new ButtonBarItem("Item 0");
-		buttonBar.addButton(item0);
-
-		ButtonBarItem item1 = new ButtonBarItem("Run");
-		buttonBar.addButton(item1);
+		ButtonBarItem saveButton = new ButtonBarItem("Save", getIcon("icons/downArrow.png"));
+		buttonBar.addButton(saveButton);
 		
-		ButtonBarItem item2 = new ButtonBarItem("Save");
-		buttonBar.addButton(item2);
+		ButtonBarItem loadButton = new ButtonBarItem("Load", getIcon("icons/upArrow.png"));
+		loadButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				browseAndLoad();
+			}
+		});
+		buttonBar.addButton(loadButton);
+		
+		
+		ButtonBarItem runButton = new ButtonBarItem("Run", getIcon("icons/rightArrow.png"));
+		buttonBar.addButton(runButton);
 		
 		this.add(buttonBar, BorderLayout.NORTH);
-		//toolBar = new TopToolBar(this);
-		//this.add(toolBar, BorderLayout.NORTH);
-		
-		//centerPanel = new DocMemberConfigPanel(this);
-		//centerPanel = new BuildPanel(this);
-		centerPanel = new StartFrame(this, onAMac);
-		
-		mainContainer.add(centerPanel, BorderLayout.CENTER);
-		
+				
 		bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
 		bottomPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
@@ -412,8 +538,6 @@ public class ACGFrame extends JFrame implements WindowListener {
 		bottomPanel.add(resumeButton);
 		
 		bottomPanel.add(pauseButton);
-		
-		mainContainer.add(bottomPanel, BorderLayout.SOUTH);
 	}
 
 

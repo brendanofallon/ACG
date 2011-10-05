@@ -115,14 +115,18 @@ public class PickMonitorsPanel extends JPanel {
 	
 	private void initComponents() {
 		this.setLayout(new BorderLayout());
-		
+		this.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		this.setBackground( ACGFrame.backgroundColor );
 		JPanel topPanel = new JPanel();
-		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
-		JLabel topLabel = new JLabel("Choose properties to monitor from the lists below");
+		//topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+		JLabel topLabel = new JLabel("Choose items to monitor from the options below");
+		topPanel.setOpaque(false);
 		topPanel.add(topLabel);
 		add(topPanel, BorderLayout.NORTH);
 		
 		JPanel centerPanel = new JPanel();
+		centerPanel.setOpaque(false);
+		centerPanel.setBackground( ACGFrame.backgroundColor );
 		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
 		
 		DefaultMutableTreeNode paramRoot = new DefaultMutableTreeNode("Root");
@@ -182,8 +186,6 @@ public class PickMonitorsPanel extends JPanel {
 		});
 		
 		
-		//plottables.add(speedInfo);
-		
 		JPanel paramPanel = new JPanel();
 		paramPanel.setLayout(new BorderLayout());
 		JScrollPane paramScrollPane = new JScrollPane(paramTree);
@@ -191,6 +193,7 @@ public class PickMonitorsPanel extends JPanel {
 		JLabel paramTopLabel = new JLabel("<html><b>Parameter properties:</b><html>");
 		paramPanel.add(paramTopLabel, BorderLayout.NORTH);
 		paramPanel.add(paramScrollPane, BorderLayout.CENTER);
+		paramPanel.setOpaque(false);
 		centerPanel.add(paramPanel);
 		
 		
@@ -243,7 +246,8 @@ public class PickMonitorsPanel extends JPanel {
 		JLabel likeTopLabel = new JLabel("<html><b>Likelihood components:</b><html>");
 		likesPanel.add(likeTopLabel, BorderLayout.NORTH);
 		likesPanel.add(likesScrollPane, BorderLayout.CENTER);
-		centerPanel.add(Box.createHorizontalStrut(4));
+		centerPanel.add(Box.createHorizontalStrut(6));
+		likesPanel.setOpaque(false);
 		centerPanel.add(likesPanel);
 		
 		JPanel infoPanel = new JPanel();
@@ -314,7 +318,9 @@ public class PickMonitorsPanel extends JPanel {
 		
 		bottomInfoPanel.add(startButton);
 		infoPanel.add(bottomInfoPanel);
+		centerPanel.add(Box.createHorizontalStrut(6));
 		centerPanel.add(infoPanel);
+		infoPanel.setOpaque(false);
 		this.add(centerPanel, BorderLayout.CENTER);	
 	}
 	
