@@ -19,6 +19,7 @@
 
 package gui.inputPanels;
 
+import gui.ACGFrame;
 import gui.ErrorWindow;
 import gui.inputPanels.Configurator.InputConfigException;
 
@@ -52,6 +53,7 @@ public class MCMCModelView extends JPanel {
 	
 	public MCMCModelView(final MCMCModelElement model) {
 		this.model = model;
+		this.setOpaque( false );
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setBorder(BorderFactory.createEmptyBorder(10, 10, 5, 10));
 
@@ -199,6 +201,7 @@ public class MCMCModelView extends JPanel {
 
 	private void addComp(String label, JComponent comp) {
 		JPanel panel = new JPanel();
+		panel.setOpaque( false );
 		panel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		panel.add(new JLabel(label));

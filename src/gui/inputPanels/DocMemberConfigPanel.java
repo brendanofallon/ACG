@@ -85,21 +85,6 @@ public class DocMemberConfigPanel extends JPanel {
 		
 		initComponents();
 	}
-	
-	protected void continueToMCMC() {
-		if (mcView == null) {
-			bottomPanel.removeAll();
-			bottomPanel.add(saveButton);
-			bottomPanel.add(runButton);
-			
-			mcView = new MCMCModelView( mcElement  );
-			mcView.updateFromModel();
-			this.remove(tabPane);
-			this.add(mcView, BorderLayout.CENTER);
-			this.revalidate();
-			this.repaint();
-		}
-	}
 
 	protected void runButtonPressed() {
 			acgParent.startNewRun();		
@@ -326,6 +311,8 @@ public class DocMemberConfigPanel extends JPanel {
 			Alignment aln = new Alignment(selectedFile);
 			alignmentEl.setElement(aln);
 			updateTopLabel(shortname);
+			acgParent.enableRunButton();
+			acgParent.enableSaveButton();
 		}
 	}
 	
@@ -368,45 +355,48 @@ public class DocMemberConfigPanel extends JPanel {
 		loggersPanel = new LoggersPanel();
 		tabPane.insertTab("Loggers", null, loggersPanel, "Logging and output options", 2);
 		
+		mcView = new MCMCModelView( mcElement  );
+		mcView.updateFromModel();
+		tabPane.insertTab("Markov chain", null, mcView, "Options for Markov chain", 3);
 		this.add(tabPane, BorderLayout.CENTER);
 		
-		bottomPanel = new JPanel();
-		bottomPanel.setOpaque(false);
-		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+//		bottomPanel = new JPanel();
+//		bottomPanel.setOpaque(false);
+//		bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
 		
-		ImageIcon runIcon = ACGFrame.getIcon("icons/rightArrow.png");
-		continueButton = new BorderlessButton("Continue", runIcon);
-		continueButton.setPreferredSize(new Dimension(100, 36));
-		continueButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				continueToMCMC();
-			}
-		});
-		bottomPanel.add(continueButton);
+//		ImageIcon runIcon = ACGFrame.getIcon("icons/rightArrow.png");
+//		continueButton = new BorderlessButton("Continue", runIcon);
+//		continueButton.setPreferredSize(new Dimension(100, 36));
+//		continueButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				continueToMCMC();
+//			}
+//		});
+//		bottomPanel.add(continueButton);
 
 		
 
 		//This gets added to the bottom panel when the user presses the continueToMCMC button
-		ImageIcon saveIcon = ACGFrame.getIcon("icons/downArrow.png");
-		saveButton = new BorderlessButton("Save", saveIcon);
-		saveButton.setPreferredSize(new Dimension(75, 36));
-		saveButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				saveSettings();
-			}
-		});
+//		ImageIcon saveIcon = ACGFrame.getIcon("icons/downArrow.png");
+//		saveButton = new BorderlessButton("Save", saveIcon);
+//		saveButton.setPreferredSize(new Dimension(75, 36));
+//		saveButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				saveSettings();
+//			}
+//		});
 		
 		//This gets added to the bottom panel when the user presses the continueToMCMC button
-		runButton = new BorderlessButton("Run", runIcon);
-		runButton.setPreferredSize(new Dimension(75, 36));
-		runButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				runButtonPressed();
-			}
-		});
+//		runButton = new BorderlessButton("Run", runIcon);
+//		runButton.setPreferredSize(new Dimension(75, 36));
+//		runButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				runButtonPressed();
+//			}
+//		});
 
-		this.add(bottomPanel, BorderLayout.SOUTH);
+		//this.add(bottomPanel, BorderLayout.SOUTH);
 	}
 
 

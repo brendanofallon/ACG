@@ -301,6 +301,7 @@ public class PickMonitorsPanel extends JPanel {
 		bottomInfoPanel.setLayout(new BoxLayout(bottomInfoPanel, BoxLayout.X_AXIS));
 		bottomInfoPanel.setPreferredSize(new Dimension(250, 30));
 		bottomInfoPanel.setMaximumSize(new Dimension(1050, 30));
+		bottomInfoPanel.setOpaque(false);
 		
 		SpinnerNumberModel model = new SpinnerNumberModel((int)(chainLength*0.10), 0, chainLength, 1000);
 		burninSpinner = new JSpinner(model);

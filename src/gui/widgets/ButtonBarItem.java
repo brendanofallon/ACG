@@ -27,6 +27,7 @@ public class ButtonBarItem extends JPanel {
 	private String text = "";
 	private ImageIcon icon = null;
 	static final Color textShadowColor = new Color(0.95f, 0.95f, 0.95f, 0.5f);
+	static final Color disabledTextColor = Color.GRAY;
 	static final Color textColor = Color.DARK_GRAY;
 	private Dimension defaultSize = new Dimension(70, 55);
 	static final Color backgroundColor = new Color(0.7f, 0.7f, 0.7f);
@@ -36,6 +37,8 @@ public class ButtonBarItem extends JPanel {
 	private boolean mouseIsOver = false; //True when mouse has entered but not exited
 	private boolean mouseIsPressed = false; //True when mouse button is depressed
 	
+	private boolean enabled = true;
+
 	public ButtonBarItem(String label) {
 		this.text = label;
 		setMinimumSize(defaultSize);
@@ -54,6 +57,21 @@ public class ButtonBarItem extends JPanel {
 	
 	public void setIcon(ImageIcon icon) {
 		this.icon = icon;
+	}
+	
+	/**
+	 * Whether or not this button is enabled, in the manner of most JComponents
+	 */
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	/**
+	 * Set the enabled property of this button. If false, appearence changes and the button does not respond to clicks. 
+	 */
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+		repaint();
 	}
 	
 	public void buttonClicked() {
@@ -84,11 +102,11 @@ public class ButtonBarItem extends JPanel {
 		//Gradient background
 		Color bottomColor = ButtonBar.darkColor;
 		Color topColor = ButtonBar.lightColor;
-		if (mouseIsOver) {
+		if (enabled && mouseIsOver) {
 			bottomColor = hoverColor;
 		}
 		
-		if (mouseIsPressed) {
+		if (enabled && mouseIsPressed) {
 			topColor = pressedTopColor;
 			bottomColor = pressedBottomColor;
 		}
@@ -99,11 +117,10 @@ public class ButtonBarItem extends JPanel {
 		g2d.fillRect(0, 1, getWidth(), getHeight()-2);
 		
 		
-		
 		//Darker bar on edge
 		g2d.setColor( backgroundColor );
 		g2d.drawLine(getWidth()-2, 0, getWidth()-2, getHeight()+2);
-		if ( ! mouseIsPressed) {
+		if (enabled && (! mouseIsPressed)) {
 			g2d.setColor(  new Color(0.98f, 0.98f, 0.98f, 0.5f) );
 			g2d.drawLine(getWidth()-1, 0, getWidth()-1, getHeight());
 		}
@@ -121,7 +138,10 @@ public class ButtonBarItem extends JPanel {
 		int strWidth = g2d.getFontMetrics().stringWidth(text);
 		g2d.setColor(textShadowColor);
 		g2d.drawString(text, Math.max(2, getWidth()/2-strWidth/2+1), Math.min(getHeight(), dy+1));
-		g2d.setColor( textColor );
+		if (enabled)
+			g2d.setColor( textColor );
+		else
+			g2d.setColor( disabledTextColor );
 		g2d.drawString(text, Math.max(1, getWidth()/2-strWidth/2), Math.min(getHeight(), dy));
 		
 		
@@ -151,7 +171,8 @@ public class ButtonBarItem extends JPanel {
 		}
 		
 		public void mouseClicked(MouseEvent me) {
-			buttonClicked();
+			if (enabled)
+				buttonClicked();
 			repaint();
 		}
 	}

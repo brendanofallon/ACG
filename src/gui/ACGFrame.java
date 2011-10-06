@@ -20,6 +20,7 @@
 package gui;
 
 import gui.document.ACGDocument;
+import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.DocMemberConfigPanel;
 import gui.widgets.ButtonBar;
 import gui.widgets.ButtonBarItem;
@@ -77,7 +78,7 @@ import mcmc.MCMCListener;
  */
 public class ACGFrame extends JFrame implements WindowListener {
 	
-	public static final Color backgroundColor = new Color(0.85f, 0.85f, 0.85f);
+	public static final Color backgroundColor = new Color(0.89f, 0.89f, 0.89f);
 	private final boolean onAMac; //This gets set to true if we're on a mac, and we do a couple things differently
 	
 	public ACGFrame( /* might be nice to get some properties here */ ) {
@@ -125,6 +126,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 	
 	public void initializeProgressBar(MCMC chain, int maxValue) {
 		Container mainContainer = this.getContentPane();
+		mainContainer.remove(buttonBar);
 		mainContainer.add(bottomPanel, BorderLayout.SOUTH);
 		mainContainer.validate();
 		repaint();
@@ -263,103 +265,89 @@ public class ACGFrame extends JFrame implements WindowListener {
 			pauseButton.setEnabled(false);
 		}
 	}
-	
-//	public void clearAndMakeNew() {
-//		centerPanel = new DocMemberConfigPanel(this);
-//		this.getContentPane().add(centerPanel, BorderLayout.CENTER);
-//		this.getContentPane().validate();
-//		repaint();
-//	}
-	
-//	public ACGDocument readDocumentFromFile() {
-//		//If we're on a mac then a FileDialog looks better and supports a few mac-specific options 
-//		File selectedFile = null;
-//		if (onAMac) {
-//			if (fileDialog == null)
-//				fileDialog = new FileDialog(this, "Choose a file");
-//			fileDialog.setMode(FileDialog.LOAD);
-//			String userDir = System.getProperty("user.dir");
-//			if (userDir != null)
-//				fileDialog.setDirectory(userDir);
-//
-//			fileDialog.setVisible(true);
-//
-//			String filename = fileDialog.getFile();
-//			String path = fileDialog.getDirectory();
-//			selectedFile = new File(path + filename);
-//		}
-//		else {
-//			//Not on a mac, use a JFileChooser instead of a FileDialog
-//
-//			//Construct a new file choose whose default path is the path to this executable, which 
-//			//is returned by System.getProperty("user.dir")
-//			if (fileChooser == null)
-//				fileChooser = new JFileChooser( System.getProperty("user.dir"));
-//
-//			int option = fileChooser.showOpenDialog(getRootPane());
-//			if (option == JFileChooser.APPROVE_OPTION) {
-//				selectedFile = fileChooser.getSelectedFile();
-//			}
-//		}
-//
-//		//If we found a valid selected file, set the info in the text field (a a couple other things)
-//		if (selectedFile != null && selectedFile.exists()) {
-//			ACGDocument doc = new ACGDocument(selectedFile);
-//			return doc;
-//		}
-//		
-//		return null;
-//	}
+
 	
 	/**
-	 * Allow user to pick a file and then attempt to read an ACG document from it, and 
-	 * display the associated settings in a new buildPanel that replaces the current centerPanel.
-	 * 
-	 */
-//	public void loadDocumentFromFile() {
-//		ACGDocument doc = readDocumentFromFile();
-//		if (doc != null) {
-//			if (centerPanel instanceof DocMemberConfigPanel) {
-//				DocMemberConfigPanel configPanel = (DocMemberConfigPanel)centerPanel;
-//				configPanel.loadSettingsFromDocument(doc);
-//				//toolBar.enableRunButton();
-//			}
-//			
-//		}
-//	}
-	
-	/**
-	 * Start a new run from the document described by the DocMemberConfigPanel
+	 * Assumes the centerPanel is a DocMemberConfigPanel, and attempts to load the Document from it and
+	 * then display the pickParameters panel from it. 
 	 */
 	public void startNewRun() {
+		ACGDocument acgDoc = null;
 		try {
-			ACGDocument acgDoc = ((DocMemberConfigPanel)centerPanel).getACGDocument();
-			acgDoc.loadAndVerifyClasses();
-			acgDoc.turnOffMCMC();
+			acgDoc = ((DocMemberConfigPanel)centerPanel).getACGDocument();
+			startRunFromDocument(acgDoc);
+		} catch (InputConfigException e) {
+			ErrorWindow.showErrorWindow(e);
+			return;
+		}
+	}
+	
+	/**
+	 * Show the pickParametersPanel based on the given document
+	 * @param doc
+	 */
+	public void startRunFromDocument(ACGDocument doc) {
+		try {
+			doc.loadAndVerifyClasses();
+			doc.turnOffMCMC();
 			String title = null;
-			if (acgDoc.getSourceFile() != null)
-				title = acgDoc.getSourceFile().getName();
-			pickParameters(title, acgDoc);
+			if (doc.getSourceFile() != null)
+				title = doc.getSourceFile().getName();
+			pickParameters(title, doc);
 		}
 		catch (Exception e1) {
 			ErrorWindow.showErrorWindow(e1);
 			return;
 		}
-		
-		
 	}
 	
-
+	/**
+	 * Assumes the centerPanel is a DocMemberConfigPanel, and attempts to load the Document from it and
+	 * then display the pickParameters panel from it. 
+	 */
+	public void saveSettings() {
+		DocMemberConfigPanel docPanel = null;
+		try {
+			docPanel = ((DocMemberConfigPanel)centerPanel);
+		}
+		catch (Exception e1) {
+			//Dont worry about it, we just wont save the settings
+		}
 		
+		if (docPanel != null) {
+			docPanel.saveSettings();
+		}
+	}
+	
+	/**
+	 * Create and display and new DocMemberConfigPanel in the center area of this frame
+	 */
 	public void showDocMemberConfigPanel() {
 		DocMemberConfigPanel configPanel = new DocMemberConfigPanel(this);
 		replaceCenterPanel(configPanel);
+		runButton.setEnabled(false);
+		saveButton.setEnabled(false);
 	}
 	
+	/**
+	 * Prompt to use to select an input file, and upon selection load and display the file
+	 * in a DocMemberConfigPanel
+	 */
 	protected void browseAndLoad() {
 		File file = browseForFile();
 		if (file != null)
 			loadFile(file);
+	}
+	
+	/**
+	 * Prompt to user to select a file (via browseForFile) and run the document 
+	 */
+	protected void loadAndRun() {
+		File file = browseForFile();
+		if (file != null) {
+			ACGDocument doc = new ACGDocument(file);
+			startRunFromDocument(doc);
+		}
 	}
 	
 	/**
@@ -418,6 +406,8 @@ public class ACGFrame extends JFrame implements WindowListener {
 			if (ok) {
 				ACGDocument acgDocument = new ACGDocument(inputFile);
 				loadDocMemberConfig(acgDocument);
+				enableRunButton();
+				enableSaveButton();
 			}
 		}
 		catch (InvalidInputFileException ex) {
@@ -469,10 +459,11 @@ public class ACGFrame extends JFrame implements WindowListener {
 		setBackground(backgroundColor);
 		this.getContentPane().setBackground(backgroundColor);
 		
-		ButtonBar buttonBar = new ButtonBar();
+		buttonBar = new ButtonBar();
 		buttonBar.setBackground(backgroundColor);
 		buttonBar.setRightIcon( getIcon("icons/acgImage.png"));
 		ButtonBarItem newButton = new ButtonBarItem("New", getIcon("icons/addIcon.png"));
+		newButton.setToolTipText("Clear settings and create a new analysis");
 		newButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				showDocMemberConfigPanel();
@@ -480,10 +471,10 @@ public class ACGFrame extends JFrame implements WindowListener {
 		});
 		buttonBar.addButton(newButton);
 		
-		ButtonBarItem saveButton = new ButtonBarItem("Save", getIcon("icons/downArrow.png"));
-		buttonBar.addButton(saveButton);
+		
 		
 		ButtonBarItem loadButton = new ButtonBarItem("Load", getIcon("icons/upArrow.png"));
+		loadButton.setToolTipText("Load analysis settings from a saved file");
 		loadButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				browseAndLoad();
@@ -491,9 +482,35 @@ public class ACGFrame extends JFrame implements WindowListener {
 		});
 		buttonBar.addButton(loadButton);
 		
+		saveButton = new ButtonBarItem("Save", getIcon("icons/downArrow.png"));
+		saveButton.setToolTipText("Save settings to a file");
+		saveButton.setEnabled(false);
+		saveButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				saveSettings();
+			}
+		});
+		buttonBar.addButton(saveButton);
 		
-		ButtonBarItem runButton = new ButtonBarItem("Run", getIcon("icons/rightArrow.png"));
+		runButton = new ButtonBarItem("Run", getIcon("icons/rightArrow.png"));
+		runButton.setToolTipText("Run an analysis");
+		runButton.setEnabled(false);
+		runButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				startNewRun();
+			}
+		});
 		buttonBar.addButton(runButton);
+		
+		
+		ButtonBarItem runFileButton = new ButtonBarItem("Run file", getIcon("icons/rightArrowFile.png"));
+		runFileButton.setToolTipText("Run an analysis from an external file");
+		runFileButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				loadAndRun();
+			}
+		});
+		buttonBar.addButton(runFileButton);
 		
 		this.add(buttonBar, BorderLayout.NORTH);
 				
@@ -541,7 +558,14 @@ public class ACGFrame extends JFrame implements WindowListener {
 	}
 
 
-
+	public void enableRunButton() {
+		runButton.setEnabled(true);
+	}
+	
+	public void enableSaveButton() {
+		saveButton.setEnabled(true);
+	}
+	
 	@Override
 	public void windowClosed(WindowEvent e) { }
 
@@ -607,6 +631,9 @@ public class ACGFrame extends JFrame implements WindowListener {
 	
 	private ExecutingChain runner = null;
 	
+	private ButtonBar buttonBar;
+	private ButtonBarItem runButton;
+	private ButtonBarItem saveButton;
 	private JPanel centerPanel;
 	private JPanel bottomPanel;
 	private JProgressBar progressBar;
