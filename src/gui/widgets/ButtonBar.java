@@ -30,7 +30,7 @@ public class ButtonBar extends JPanel {
 	
 	static final Color lightColor = new Color(0.98f, 0.98f, 0.98f);
 	static final Color darkColor = new Color(0.7f, 0.7f, 0.7f);
-	static final Color edgeColor = new Color(0.9f, 0.9f, 0.9f, 0.7f);
+	static final Color edgeColor = new Color(0.3f, 0.3f, 0.3f, 0.5f);
 	
 	private Component glueBox;
 	

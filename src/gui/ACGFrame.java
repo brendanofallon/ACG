@@ -345,6 +345,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 	protected void loadAndRun() {
 		File file = browseForFile();
 		if (file != null) {
+			this.setTitle("ACG : " + file.getName());
 			ACGDocument doc = new ACGDocument(file);
 			startRunFromDocument(doc);
 		}
