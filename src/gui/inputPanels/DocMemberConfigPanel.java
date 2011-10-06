@@ -104,6 +104,11 @@ public class DocMemberConfigPanel extends JPanel {
 			acgParent.startNewRun();		
 	}
 
+	/**
+	 * Attempt to read all model settings, including alignment, site model, loggers, and MCMC settings, from the
+	 * given document. This also catches InputConfigExceptions and presents an ErrorWindow if one is caught
+	 * @param doc
+	 */
 	public void loadSettingsFromDocument(ACGDocument doc) {
 		try {
 			alignmentEl.readElement(doc);
@@ -364,6 +369,8 @@ public class DocMemberConfigPanel extends JPanel {
 		
 		loggersPanel = new LoggersPanel();
 		tabPane.insertTab("Loggers", null, loggersPanel, "Logging and output options", 2);
+		
+		
 		
 		this.add(tabPane, BorderLayout.CENTER);
 		
