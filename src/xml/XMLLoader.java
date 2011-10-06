@@ -114,9 +114,9 @@ public class XMLLoader {
 	 * @throws IOException
 	 */
 	public XMLLoader(File xmlFile) throws ParserConfigurationException, SAXException, IOException {
-		if (primaryLoader != null) {
-			System.out.println("Warning: Multiple XML loaders operating concurrently, problems may arise");
-		}
+//		if (primaryLoader != null) {
+//			System.out.println("Warning: Multiple XML loaders operating concurrently, problems may arise");
+//		}
 		primaryLoader = this;
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
@@ -125,9 +125,9 @@ public class XMLLoader {
 
 	
 	public XMLLoader(Document doc) throws ParserConfigurationException, SAXException, IOException {
-		if (primaryLoader != null) {
-			System.out.println("Warning: Multiple XML loaders operating concurrently, problems may arise");
-		}
+//		if (primaryLoader != null) {
+//			System.out.println("Warning: Multiple XML loaders operating concurrently, problems may arise");
+//		}
 		primaryLoader = this;
 		this.doc = doc;
 	}

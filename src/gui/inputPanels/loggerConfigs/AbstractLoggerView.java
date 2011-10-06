@@ -71,6 +71,11 @@ public abstract class AbstractLoggerView extends JPanel {
 		add(new JLabel(model.getDefaultLabel()));
 		
 		filenameField = new JTextField( model.getDefaultLabel() + ".log");
+		Dimension fieldSize = new Dimension(160, 30);
+		filenameField.setMinimumSize( fieldSize );
+		filenameField.setPreferredSize( fieldSize );
+		filenameField.setMaximumSize( fieldSize );
+		filenameField.setHorizontalAlignment(JTextField.RIGHT);
 		filenameField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
