@@ -30,6 +30,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +42,8 @@ import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.loggerConfigs.LoggersPanel;
 import gui.widgets.BorderlessButton;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -86,9 +89,6 @@ public class DocMemberConfigPanel extends JPanel {
 		initComponents();
 	}
 
-	protected void runButtonPressed() {
-			acgParent.startNewRun();		
-	}
 
 	/**
 	 * Attempt to read all model settings, including alignment, site model, loggers, and MCMC settings, from the
@@ -104,6 +104,7 @@ public class DocMemberConfigPanel extends JPanel {
 			coalescentModelPanel.readNodesFromDocument(doc);
 			loggersPanel.readNodesFromDocument(doc);
 			mcElement.readElements(doc);			
+			argView.updateViewFromModel();
 			revalidate();
 			repaint();
 		}
@@ -198,6 +199,8 @@ public class DocMemberConfigPanel extends JPanel {
 			
 		}
 	}
+	
+	
 	/**
 	 * Build an ACGDocument given the current settings 
 	 * @return
@@ -218,6 +221,7 @@ public class DocMemberConfigPanel extends JPanel {
 			
 			docBuilder.appendNodes( alignmentEl );
 
+			argView.updateModelFromView();
 			argModel.setAlignmentRef(alignmentEl);
 			docBuilder.appendNodes( argModel );			
 
@@ -276,7 +280,7 @@ public class DocMemberConfigPanel extends JPanel {
 			return null;
 	}
 	
-	protected void browseForFile() {
+	private void browseForAlignmentFile() {
 		boolean macMode = false;
 		String os = System.getProperty("os.name");
         if (os.contains("Mac") || os.contains("mac")) {
@@ -325,7 +329,8 @@ public class DocMemberConfigPanel extends JPanel {
 	 * Reset info in top label to reflect changes in alignment
 	 */
 	private void updateTopLabel(String alnName) {
-		topLabel.setText("Alignment \"" + alnName + "\" : " + alignmentEl.getSequenceCount() + " sequences of length  " + alignmentEl.getSequenceLength() + " sites");
+		DecimalFormat formatter = new DecimalFormat("###,###");
+		topLabel.setText("Alignment \"" + alnName + "\" : " + alignmentEl.getSequenceCount() + " sequences of length " + formatter.format(alignmentEl.getSequenceLength()) + " sites");
 		topLabel.revalidate();
 	}
 	
@@ -337,17 +342,27 @@ public class DocMemberConfigPanel extends JPanel {
 		
 		topPanel = new JPanel();
 		topPanel.setOpaque(false);
-		topPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+		topPanel.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 0));
+		
+		JPanel alnPanel = new JPanel();
+		alnPanel.setOpaque(false);
+		alnPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		topLabel = new JLabel("Choose an alignment");
 		chooseButton = new JButton("Choose");
 		chooseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				browseForFile();
+				browseForAlignmentFile();
 			}
 		});
+
 		
-		topPanel.add(topLabel);
-		topPanel.add(chooseButton);
+		alnPanel.add(topLabel);
+		alnPanel.add(chooseButton);
+		topPanel.add(alnPanel);
+		
+		argView = new ARGModelView(argModel);
+		topPanel.add(argView);
 		this.add(topPanel, BorderLayout.NORTH);
 		
 		tabPane = new JTabbedPane();
@@ -366,12 +381,8 @@ public class DocMemberConfigPanel extends JPanel {
 		this.add(tabPane, BorderLayout.CENTER);
 		
 	}
-
-
-	private BorderlessButton continueButton;
-	private BorderlessButton runButton;
-	private BorderlessButton saveButton;
-	private JPanel bottomPanel;
+	
+	private ARGModelView argView;
 	private File selectedFile = null;
 	private JFileChooser fileChooser; //Used on non-mac platforms
 	private FileDialog fileDialog; //Used on mac systems
