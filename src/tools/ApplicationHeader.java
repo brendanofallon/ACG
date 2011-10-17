@@ -34,8 +34,11 @@ import xml.XMLLoader;
 /**
  * Main entry point for application. 
  * This class is a container for some general info about the entire application, including version, a header string with credits, etc.
- * It's main method does a small bit of argument parsing, if no args are given then the gui is launched. If args are present, we
- * search for a) .jar or class files or directories to add to the plugin loader, and .xml files to run. 
+ * 
+ * Its main method does a small bit of argument parsing, if no args are given then the gui is launched. 
+ * If args are present, we search for a) .jar or class files or directories to add to the plugin loader, 
+ * and .xml files to run.
+ *  
  * @author brendano
  *
  */

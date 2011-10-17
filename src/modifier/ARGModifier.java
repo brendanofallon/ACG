@@ -53,21 +53,12 @@ public abstract class ARGModifier extends AbstractModifier<ARG> {
 	//and then sorted and traversed after the rearrangement has taken place
 	private List<ARGNode> nodesToUpdate = new ArrayList<ARGNode>(50);
 	
-	//private Map<Integer, Integer> nodeRefCounts = new HashMap<Integer, Integer>();
-	
-	//If set to true, modifier will truncate propagting range proposals at the MRCA 
-	//of the nodes that are changed. 
-	//private boolean usePropagationShortcut = false;
-	
-	ARG arg;
+	protected ARG arg = null;
 	
 	public ARGModifier(Map<String, String> attributes) {
 		super(attributes);
 	}
 
-	protected void setUsePropagationShortcut(boolean useIt) {
-		//usePropagationShortcut = useIt;
-	}
 	
 	/**
 	 * Actually perform the modification
@@ -84,7 +75,7 @@ public abstract class ARGModifier extends AbstractModifier<ARG> {
 					IllegalModificationException, ModificationImpossibleException {
 		
 		
-		Timer.startTimer("ARGModifier");
+		//Timer.startTimer("ARGModifier");
 		
 		arg.clearVisitedFlags(); //Set all visited flags to false so we can re-flag nodes for site range update
 		nodesToUpdate.clear(); //List will contain all nodes whose site range info must be recomputed
@@ -92,14 +83,13 @@ public abstract class ARGModifier extends AbstractModifier<ARG> {
 		//Perform actual modification
 		double hastingsRatio = modifyARG();
 		
+		//Timer.stopTimer("ARGModifier");
 		
-		Timer.stopTimer("ARGModifier");
-		
-		Timer.startTimer("Range1");
+		//Timer.startTimer("Range1");
 		
 		updateAllRangeProposals(); //Traverse 'nodesToUpdate' list and recompute site range information
 		
-		Timer.stopTimer("Range1");
+		//Timer.stopTimer("Range1");
 		
 		//Sets appropriate update flags in ARG based on the types of modifications we've made
 		tallyCall();
@@ -127,109 +117,19 @@ public abstract class ARGModifier extends AbstractModifier<ARG> {
 			if (! node.isVisited()) {
 				node.setVisited(true);
 				nodesToUpdate.add(node);
-				//nodeRefCounts.put(node.getNumber(), 1);
 				if (node.getParent(0) != null) {
 					stack.push(node.getParent(0));
 					if (node.getNumParents()==2)
 						stack.push(node.getParent(1));
 				}
 			}
-			else {
-				//nodeRefCounts.put(node.getNumber(), 2);
-			}
+			
 		}
 		
 		
 	}
 
-	/**
-	 * Update range information for all nodes we may have affected 
-	 * ..dubious non-optimizations below
-	 */
-//	protected void updateAllRangeProposals() {
-//		//Make sure we traverse nodes in ascending height order
-//
-//
-//		Collections.sort(nodesToUpdate, ARG.getNodeHeightComparator());
-//		
-//		ARGNode mrca = null;
-//		
-//		if (usePropagationShortcut && nodesToUpdate.size()>3) {
-//			int index = 0;
-//			for(int i=nodesToUpdate.size()-1; i>1; i--) {
-//				index = i;
-//				ARGNode node = nodesToUpdate.get(i);
-//
-//				Integer count = nodeRefCounts.get(node.getNumber());
-//				if (count == null) {
-//					throw new IllegalArgumentException("Uh oh, no node with number " + node.getNumber());
-//				}
-//				if (count==2) {
-//					mrca = node; //First node with two refs is the mrca
-//					break;
-//				}
-//			}
-//			//System.out.println("Found MRCA of change : " + mrca + " skipping " + (nodesToUpdate.size()-index) + " of " + nodesToUpdate.size() + " nodes");
-//		}
-//		
-//		
-//		//Truncation of range propagation only works 
-//		//if there are no recombinations in the cycle,
-//		//so keep a flag indicating whether we've seen
-//		//any don't abort if so
-//		boolean foundRecomb = false; 
-//		int count = 0;
-//		for(ARGNode aNode : nodesToUpdate) {
-//			if (aNode.getActiveRanges().size()>1) {
-//				foundRecomb = true;
-//			}
-//			
-//			aNode.computeProposedRanges();
-//			count++;
-//			
-////			if (! aNode.getCurrentRanges().sameRanges( aNode.getActiveRanges() )) {
-////				foundRecomb = true;
-////			}
-//			
-//			if (aNode.getActiveRanges().size()>1) {
-//				foundRecomb = true;
-//			}
-//			
-//			if (aNode == mrca && (!foundRecomb))
-//				break;
-//		}
-//		int saved = nodesToUpdate.size()-count;
-//		if (saved > 0)
-//			System.out.println("Saved calculation of " + saved + " nodes");
-//	}
 	
-	/**
-	 * When node structure is modified, we need to inform all nodes above it that the range
-	 * information (which sites descend from and coalesce at certain nodes) must be recomputed.
-	 * This traverses rootward in the tree from the given node and adds all no
-	 * @param node
-	 */
-//	protected void propogateRangeProposals(ARGNode node) {
-//		Stack<ARGNode> stack = new Stack<ARGNode>();
-//		stack.push(node);
-//		
-//		//Stack based traversal toward root of network, setting visited flags for each node 
-//		//we encounter to ensure that we don't visit nodes more than once
-//		while(! stack.isEmpty()) {
-//			node = stack.pop();
-//			if (! node.isVisited()) {
-//				node.setVisited(true);
-//				nodesToUpdate.add(node);
-//				if (node.getParent(0) != null) {
-//					stack.push(node.getParent(0));
-//					if (node.getNumParents()==2)
-//						stack.push(node.getParent(1));
-//				}
-//			}
-//		}
-//		
-//	}
-//
 	
 	/**
 	 * Update range information for all nodes we may have affected 
@@ -243,19 +143,6 @@ public abstract class ARGModifier extends AbstractModifier<ARG> {
 
 	}
 	
-	/**
-	 * This is called by the subclasses whenever their .modify method is used, it just tallies
-	 * another call so we can calculate acceptance ratios appropriately
-	 */
-//	protected void tallyCall() {
-//		totalCalls++;
-//		callsSinceReset++;
-//		//System.out.println("Scaling tree.. total calls: " + totalCalls + " recent acceptance ratio: " + getRecentAcceptances());
-//		if (totalCalls % resetFrequency==0) {
-//			callsSinceReset = 1;
-//			acceptsSinceReset = 0;
-//		}
-//	}
 	
 	/**
 	 * Returns the parent index of the given parent node from the kid, such that kid.getParent(index)== parent,
