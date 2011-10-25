@@ -114,14 +114,7 @@ public class ACGDocument {
 			ex.printStackTrace();
 			throw new InvalidInputFileException(ex.getTargetException().getMessage());
 		} catch (Exception e) {
-			try {
-				System.out.println("Input file is : " + getXMLString());
-			} catch (Exception ex) {
-				// TODO Auto-generated catch block
-				ex.printStackTrace();
-			}
-			System.out.println(e.getMessage());
-			e.printStackTrace();
+			
 			throw new InvalidInputFileException(e.getMessage());
 		}
 	}
