@@ -88,6 +88,7 @@ public class MCMC {
 	private boolean paramFreqsKnown = false;
 	private double paramFreqSum = 0;
 
+	//Emit a bunch of output to System.out
 	boolean verbose = false;
 	
 	boolean verifyRejection = true; //These get turned off after the 'careful period'
@@ -431,6 +432,13 @@ public class MCMC {
 		run(userRunLength);
 	}
 	
+	/**
+	 * If true, emits lots of debugging into to system.out
+	 * @param verbose
+	 */
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
+	}
 	
 	/**
 	 * Run the MCMC chain for the given number of states

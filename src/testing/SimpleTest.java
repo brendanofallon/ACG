@@ -42,15 +42,24 @@ public class SimpleTest {
 		
 		
 		//Periodically records values of parameter and emits them to System.out or a file
+		//Default recording frequency is 1000 steps,  
 		StateLogger logger = new StateLogger();
 		logger.addStream(System.out); //Just emit values to system.out
 		
+		
+		//Finally, make the MCMC chain, add the various elements to it, and run it. 
 		MCMC chain = new MCMC();
 		chain.addComponent(likelihood);
 		chain.addParameter(param);
 		chain.addListener(logger);
 		
-		chain.run(10000);
+		//Try this if you want to see lots of output about what the chain is doing
+		//chain.setVerbose(true);
+		//logger.setFrequency(1); //Might be useful to see values every step if you have verbose on
+		
+		//Run the chain for a few steps. Value of parameter should converge to mean of GaussianLikelihood
+		//and then meander about it. Output can be imported directly into R for plotting, etc. 
+		chain.run(100000);
 		
 		
 	}
