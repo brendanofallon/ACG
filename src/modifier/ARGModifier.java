@@ -21,22 +21,15 @@ package modifier;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
 import math.RandomSource;
-import mcmc.MCMC;
-
 import arg.ARG;
-import arg.ARGIntervals;
 import arg.ARGNode;
 import arg.CoalNode;
-import arg.RecombNode;
-
 import parameter.InvalidParameterValueException;
-import parameter.Parameter;
 import testing.Timer;
 
 /**
@@ -74,8 +67,8 @@ public abstract class ARGModifier extends AbstractModifier<ARG> {
 	public final Double modify() throws InvalidParameterValueException,
 					IllegalModificationException, ModificationImpossibleException {
 		
-		
-		//Timer.startTimer("ARGModifier");
+	
+		Timer.startTimer("ARGModifier");
 		
 		arg.clearVisitedFlags(); //Set all visited flags to false so we can re-flag nodes for site range update
 		nodesToUpdate.clear(); //List will contain all nodes whose site range info must be recomputed
@@ -83,13 +76,13 @@ public abstract class ARGModifier extends AbstractModifier<ARG> {
 		//Perform actual modification
 		double hastingsRatio = modifyARG();
 		
-		//Timer.stopTimer("ARGModifier");
+		Timer.stopTimer("ARGModifier");
 		
-		//Timer.startTimer("Range1");
+		Timer.startTimer("Range1");
 		
 		updateAllRangeProposals(); //Traverse 'nodesToUpdate' list and recompute site range information
 		
-		//Timer.stopTimer("Range1");
+		Timer.stopTimer("Range1");
 		
 		//Sets appropriate update flags in ARG based on the types of modifications we've made
 		tallyCall();
@@ -140,7 +133,6 @@ public abstract class ARGModifier extends AbstractModifier<ARG> {
 		for(ARGNode aNode : nodesToUpdate) {
 			aNode.computeProposedRanges();
 		}
-
 	}
 	
 	

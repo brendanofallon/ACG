@@ -54,7 +54,6 @@ public class SubtreeSwap extends WideSwap {
 		if (!attributes.containsKey("frequency")) {
 			frequency = 2.0;
 		}
-		setUsePropagationShortcut(true);
 	}
 
 	public SubtreeSwap() {

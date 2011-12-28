@@ -89,8 +89,10 @@ public class DataLikelihood extends LikelihoodComponent {
 	String modStr = "";
 	String prevMod = "";
 	
+	//The mutation model that describes how nucleotides change over time
 	MutationModel mutationModel = null;
 	
+	//Actually handles the computations
 	ComputeCore computeCore;
 
 		

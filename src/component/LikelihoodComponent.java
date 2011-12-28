@@ -48,7 +48,7 @@ import testing.Timer;
  */
 public abstract class LikelihoodComponent implements ParameterListener, AcceptRejectListener {
 
-	//Whether to use Timers to do some simple profiling. Nice for debugging, not should be turned off for releases. 
+	//Whether to use Timers to do some simple profiling. Nice for debugging, but should be turned off for releases. 
 	private final boolean useTimers = false;
 	
 	private Timer timer = new Timer();
