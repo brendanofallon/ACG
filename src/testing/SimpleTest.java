@@ -57,10 +57,10 @@ public class SimpleTest {
 		//chain.setVerbose(true);
 		//logger.setFrequency(1); //Might be useful to see values every step if you have verbose on
 		
-		//Run the chain for a few steps. Value of parameter should converge to mean of GaussianLikelihood
-		//and then meander about it. Output can be imported directly into R for plotting, etc. 
+		//Run the chain for a few steps. The density of the values sampled should converge
+		//to a Gaussian curve with the mean and stdev given in GaussianLikelihood
+		//Output can be imported directly into R for plotting, etc. 
 		chain.run(100000);
-		
 		
 	}
 }
