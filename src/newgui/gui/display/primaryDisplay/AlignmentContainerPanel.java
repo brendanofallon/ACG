@@ -11,9 +11,10 @@ import newgui.alignment.AlignmentSummary;
 
 
 /**
- * A panel that contains one or more alignment summaries. This usually appears in the
- * upper half of the AlignmentPrepPanel. This also stores references to all of the alignments
- * we're currently tracking. 
+ * A panel that contains one or more alignment summaries (and their alignments). This 
+ * object is used to store a list of Alignments during the alignment prep, and typically 
+ * appears in the upper half of the AlignmentPrepPanel. This also stores references to 
+ * all of the alignments we're currently tracking. 
  * @author brendan
  *
  */
@@ -83,6 +84,16 @@ public class AlignmentContainerPanel extends JPanel {
 			alignments.remove(toRemove);
 		}
 		layoutAlignments();
+	}
+
+	/**
+	 * Obtain a new list containing all of the alignment summary objects 
+	 * @return
+	 */
+	public List<AlignmentSummary> getSummaries() {
+		List<AlignmentSummary> summaries = new ArrayList<AlignmentSummary>();
+		summaries.addAll(alignments);
+		return summaries;
 	}
 	
 }
