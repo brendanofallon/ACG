@@ -26,21 +26,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A type of tree node that always has exactly two offspring. In BinaryTrees, all BinaryTreeNodes also have 
- * a parent, with the exception of the tree root which has a null parent. 
+ * Base class of all nodes in an ARG. These things have 0-2 children and 0-2 parent nodes, 
+ * depending on their type. They also contain a reference to their owner ARG
  * 
- * BinaryTreeNodes currently operate as the unit of 'data likelihood' computation. They're not independent
- * of course, but each is a discrete component of the total data likelihood. 
- * 
- * We also maintain at least two levels of mapping. First, there's the global mapping from site to global pattern, which
- * is constructed a single time when the DataMatrix is first constructed. The getPatternIndexForSite() method
- * in data matrix then returns the global pattern index corresponding to a particular site.
- * 
- * TreeNodes, however, maintain an additional mapping from the global pattern index to a 'local', or 'subtree',
- * pattern index. This mapping is in the field subtreePatternMap( ), in which lookups index the 'states' list. 
- * Thus, to find the state probability vector for site i at node n, first find the global pattern index
- * via dataMatrix.getPatternIndexForSite( ), and then use n.getStates(globalIndex), which references the
- * subtreePatternMap to find the appropriate state vector.
+ * Current subclasses are TipNode (no children, 1 parent), CoalNode (2 children 1 parent) and
+ * RecombNode (1 child, two parents)
  * 
  *  
  * @author brendan
@@ -58,7 +48,7 @@ public abstract class ARGNode implements Comparable<ARGNode> {
 	
 	//Some traversal algorithms require setting a visited flag to mark when a node has been 
 	//reached. These can be cleared for all nodes by invoking arg.clearVisitedFlags
-	boolean visited = false;
+	protected boolean visited = false;
 	
 	//A bunch annotations, so we can set, check, and write properties for nodes
 	protected Map<String, String> annotations = new HashMap<String, String>();
@@ -136,13 +126,13 @@ public abstract class ARGNode implements Comparable<ARGNode> {
 	 * descend from this node, and in the case of coalescent nodes all sites that coalesce
 	 * at the node. 
 	 */
-	public abstract void computeProposedRanges();
+	public abstract int computeProposedRanges();
 
 	/**
 	 * Compute proposed range info. If force is true then do not use shortcutting. 
 	 * @param force
 	 */
-	public abstract void computeProposedRanges(boolean force);
+	public abstract int computeProposedRanges(boolean force);
 	
 	/**
 	 * Return the parent associated with the given site.

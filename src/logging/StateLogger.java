@@ -140,6 +140,13 @@ public class StateLogger implements MCMCListener {
 		}
 	}
 
+	/**
+	 * Set the number of steps between emission of state (default is 1000)
+	 * @param steps
+	 */
+	public void setFrequency(int steps) {
+		this.logFrequency = steps;
+	}
 	
 	public String getLogHeader() {
 		StringBuilder str = new StringBuilder();

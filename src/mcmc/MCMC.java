@@ -37,10 +37,29 @@ import parameter.Parameter;
 import testing.Timer;
 import xml.XMLUtils;
 
+/**
+ * This class implements a (single) Markov-chain Monte Carlo ...chain, which consists of a (probably large)
+ * number of repeated steps. Each step in the chain consists of the following sub-steps:
+ *  1. Select a Parameter to modify in proportion to its frequency value
+ *  2. Select a Modifier from that Parameter's list of available modifiers (most params will have just one)
+ *  3. Call the Modifier's .modify() method (and record the Hasting's ratio returned)
+ *  4. Recompute the full likelihood of the model by calling .getProposedLogLikelihood() on all LikelihoodComponents
+ *  5. Decide whether to accept or reject the new state using the Metropolis-Hastings algorithm
+ *  6. Inform all LikelihoodComponents and the Parameter that was changed of the new state 
+ *  7. repeat 1-6 ad nauseum 
+ *  
+ *  The basic players are hence a) One or more LikelihoodComponents, b) one or more Parameters, upon which
+ *  the LikelihoodComponents depend, and c) One or more Modifiers, which propose new states for the Parameters.
+ *  
+ * Finally, one may provide a list of MCMCListeners, which are informed of new states of the model, and
+ * can collect/ record various statistics.  
+ * @author brendan
+ *
+ */
 public class MCMC {
 
+	//Names of some XML attributes that can be used to 
 	public static final String XML_RUNLENGTH = "length";
-
 	public static final String XML_RUNNOW = "run";
 	
 	//Keeps track of current state numbers
@@ -69,6 +88,7 @@ public class MCMC {
 	private boolean paramFreqsKnown = false;
 	private double paramFreqSum = 0;
 
+	//Emit a bunch of output to System.out
 	boolean verbose = false;
 	
 	boolean verifyRejection = true; //These get turned off after the 'careful period'
@@ -91,6 +111,7 @@ public class MCMC {
 	//Chain heating parameter, used for MC3
 	private double heat = 1.0;
 	
+	//Some buffers that are used for error checking
 	private double[] currentLikelist = null; 
 	private double[] propLikeList = null; 
 	private double acceptedLogL = Double.NEGATIVE_INFINITY;
@@ -98,6 +119,7 @@ public class MCMC {
 	//Just for debugging, its nice to have this accessible from several places
 	private int currentState = 0;
 	
+	//Whether to use Timers for some simple profiling stuff. 
 	private boolean useTimers = true;
 	
 	//User-supplied value for run length
@@ -113,7 +135,7 @@ public class MCMC {
 	protected ParamPicker paramPicker;
 	
 	public MCMC( ) {
-		
+		//Blank on purpose
 	}
 
 	public MCMC(List<Object> params, List<Object> comps) {
@@ -179,6 +201,14 @@ public class MCMC {
 		initialize(attrs, parList, compList, listList);
 	}
 	
+	/**
+	 * Go through the various lists of Parameters, Likelihoods, etc, and add them to the appropriate
+	 * fields
+	 * @param attrs
+	 * @param params
+	 * @param comps
+	 * @param listeners
+	 */
 	private void initialize(Map<String, String> attrs, List<AbstractParameter<?>> params, List<LikelihoodComponent> comps, List<MCMCListener> listeners) {
 		this.attrs = attrs;
 		
@@ -402,6 +432,13 @@ public class MCMC {
 		run(userRunLength);
 	}
 	
+	/**
+	 * If true, emits lots of debugging into to system.out
+	 * @param verbose
+	 */
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
+	}
 	
 	/**
 	 * Run the MCMC chain for the given number of states

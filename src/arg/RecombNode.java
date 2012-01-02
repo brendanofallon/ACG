@@ -107,25 +107,25 @@ public class RecombNode extends ARGNode {
 	}
 
 	
-	public void computeProposedRanges() {
-		computeProposedRanges(false);
+	public int computeProposedRanges() {
+		return computeProposedRanges(false);
 	}
 	
 	/**
 	 * Site ranges for RecombNodes are identical to whatever its descendant site ranges are
 	 */
-	public void computeProposedRanges(boolean force) {
+	public int computeProposedRanges(boolean force) {
 
 		//Skip all this if there's no compute core
 		if (parentARG != null  && ! parentARG.hasComputeCore()  ) {
-			return;
+			return 0;
 		}
 		
 		proposedState.siteRanges.clear();
 
 		if (activeState.child.getActiveRanges().size()==0) {		
 			activeState.siteRanges = proposedState.siteRanges;
-			return;
+			return 0;
 		}
 
 		
@@ -143,7 +143,9 @@ public class RecombNode extends ARGNode {
 			}
 		}
 		
+		
 		activeState.siteRanges = proposedState.siteRanges;
+		return 0;
 	}
 	
 	@Override

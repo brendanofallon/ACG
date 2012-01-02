@@ -124,6 +124,20 @@ public class MC3 {
 
 		//loader.setVerbose(false); //Suppress output when we create additional objects
 		
+		//Construct all the listeners and add them to chain 0
+		if (listeners != null) {
+			MCMC chain0 = protoChains.get(0);
+			for(Object listenObj : listeners) {
+				try {
+					MCMCListener listener = (MCMCListener)listenObj;
+					listener.setMCMC(chain0);
+					chain0.addListener(listener);
+				}
+				catch (ClassCastException cce) {
+					System.out.println("Warning : Object  " + listenObj + " is not an MCMC listener, ignoring it.");
+				}
+			}
+		}
 		
 		for(int i=0; i<numChains-1; i++) {
 			loader.clearObjectMap();
@@ -149,20 +163,7 @@ public class MC3 {
 			}
 		}
 		
-		//Construct all the listeners and add them to chain 0
-		if (listeners != null) {
-			MCMC chain0 = protoChains.get(0);
-			for(Object listenObj : listeners) {
-				try {
-					MCMCListener listener = (MCMCListener)listenObj;
-					listener.setMCMC(chain0);
-					chain0.addListener(listener);
-				}
-				catch (ClassCastException cce) {
-					System.out.println("Warning : Object  " + listenObj + " is not an MCMC listener, ignoring it.");
-				}
-			}
-		}
+
 		
 		//Run unless the attributes say not to
 		Boolean runNow = XMLUtils.getOptionalBoolean(MCMC.XML_RUNNOW, attrs);

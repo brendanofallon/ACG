@@ -46,7 +46,6 @@ public class WideSwap extends ARGModifier {
 	
 	public WideSwap(Map<String, String> attributes) {
 		super(attributes);
-		setUsePropagationShortcut(true);
 	}
 
 	public WideSwap() {

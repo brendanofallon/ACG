@@ -30,7 +30,7 @@ import modifier.ModificationImpossibleException;
 import modifier.Modifier;
 
 /**
- * A simple parameter that encapsulates a single Double value. 
+ * A simple parameter that encapsulates a single Double-precision value. 
  * @author brendan
  *
  */

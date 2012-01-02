@@ -213,12 +213,15 @@ public class TipNode extends ARGNode {
 		return activeState.parent;
 	}
 	
-	@Override public void computeProposedRanges() {
+	@Override 
+	public int computeProposedRanges() {
 		//Nothing to do here, our range info never changes
+		return 0;
 	}
 	
-	public void computeProposedRanges(boolean force) {
+	public int computeProposedRanges(boolean force) {
 		//Nothing to do here either
+		return 0;
 	}
 	
 	/**

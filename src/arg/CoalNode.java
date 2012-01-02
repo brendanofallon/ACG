@@ -85,8 +85,8 @@ public class CoalNode extends ARGNode {
 		return proposedState.descendingSites != currentState.descendingSites;
 	}
 	
-	public void computeProposedRanges() {
-		computeProposedRanges(false);
+	public int computeProposedRanges() {
+		return computeProposedRanges(false);
 	}
 	
 	/**
@@ -94,11 +94,11 @@ public class CoalNode extends ARGNode {
 	 * node to the tips. This also notifies the compute core of any changes to the range information associated
 	 * with this node. Lots of crazy gymnastics and, likely, opportunities for performance improvements below
 	 */
-	public void computeProposedRanges(boolean force) { 
+	public int computeProposedRanges(boolean force) { 
 		
 		//Right now we don't attempt any of this if there's not a compute core active
 		if (computeCore == null) {
-			return;
+			return 0;
 		}	
 		
 		proposedState.descendingSites.clear();
@@ -108,7 +108,7 @@ public class CoalNode extends ARGNode {
 		if ( activeState.leftChild.getActiveRanges().size()==0	&& activeState.rightChild.getActiveRanges().size()==0) {
 			activeState.coalescingSites = proposedState.coalescingSites;
 			activeState.descendingSites = proposedState.descendingSites;
-			return;
+			return 0;
 		}
 				
 		SiteRange leftFilter = null; 
@@ -160,7 +160,7 @@ public class CoalNode extends ARGNode {
         activeState.coalescingSites = proposedState.coalescingSites;
         activeState.descendingSites = proposedState.descendingSites;
 
-        Timer.startTimer("Core-propose");
+        //Timer.startTimer("Core-propose");
 
         CoalRangeList cSites = activeState.coalescingSites;
         if (cSites.size()>0) {
@@ -176,8 +176,8 @@ public class CoalNode extends ARGNode {
         			cSites.getRChild(i));
         }
 
-
-        Timer.stopTimer("Core-propose");
+        return cSites.size();
+        //Timer.stopTimer("Core-propose");
 	}
 
 
