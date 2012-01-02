@@ -1,6 +1,5 @@
 package newgui.alignment;
 
-import gui.ViewerWindow;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -16,6 +15,8 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+
+import newgui.gui.ViewerWindow;
 
 /**
  * Works in an AlignmentView object to make a header for the rows containing the sequence names

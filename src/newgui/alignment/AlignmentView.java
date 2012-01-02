@@ -25,6 +25,8 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import newgui.trackView.MultiTrackPanel;
+
 
 /**
  * Simple viewer panel for alignments. This is just a MultiTrackView

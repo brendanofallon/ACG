@@ -54,10 +54,10 @@ public class PrimaryDisplay extends Display {
 	}
 	
 	public void showAnalysisPanel() {
-		List<Alignment> alignments = new ArrayList<Alignment>();
 
-		 CardLayout cl = (CardLayout)(mainPanel.getLayout());
-		 cl.show(mainPanel, ANALYSIS_PREP);
+		analPrepPanel.initialize(alnPrepPanel.getAlnSummaries());
+		CardLayout cl = (CardLayout)(mainPanel.getLayout());
+		cl.show(mainPanel, ANALYSIS_PREP);
 	}
 	
 }

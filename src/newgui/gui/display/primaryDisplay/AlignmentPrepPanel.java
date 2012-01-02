@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 import newgui.alignment.Alignment;
+import newgui.alignment.AlignmentSummary;
 import newgui.gui.display.Display;
 import newgui.gui.widgets.TextButton;
 import newgui.gui.widgets.VerticalTextButtons;
@@ -95,5 +96,9 @@ public class AlignmentPrepPanel extends JPanel {
 	
 	protected void showConfigAnalysisWindow() {
 		displayParent.showAnalysisPanel();
+	}
+
+	public List<AlignmentSummary> getAlnSummaries() {
+		return alnContainer.getSummaries();
 	}
 }
