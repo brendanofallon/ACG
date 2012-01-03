@@ -28,6 +28,13 @@ import java.lang.Double;
 
 import parameter.DoubleParameter;
 
+/**
+ * The simplest possible model of population size change: It doesn't. This assumes
+ * that the population has remained at the same size the whole time, and hence population
+ * size is just a single number. 
+ * @author brendan
+ *
+ */
 public class ConstantPopSize extends DoubleParameter implements DemographicParameter  {
 
 	public ConstantPopSize(Double size) {
@@ -59,11 +66,8 @@ public class ConstantPopSize extends DoubleParameter implements DemographicParam
 		return (t1-t0)/size;
 	}
 
-
 	public double getPopSize(double t) {
 		return getValue();
 	}
-
-	
 
 }

@@ -1,10 +1,11 @@
-package newgui.gui;
+package newgui.trackView;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 
 /**
  * A discrete (and immutable) list of adjacent ranges in a sub-interval of the 

@@ -2,6 +2,7 @@ package newgui.app;
 
 
 import java.awt.EventQueue;
+import java.util.Properties;
 
 import newgui.gui.ViewerWindow;
 
@@ -15,6 +16,7 @@ public class ViewerApp {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					Properties props = loadProperties(); 
 					ViewerWindow window = new ViewerWindow();
 					window.setVisible(true);
 				} catch (Exception e) {
@@ -26,8 +28,12 @@ public class ViewerApp {
 		
 	}
 	
-	private void loadProperties() {
-		
+	/**
+	 * Load some basic properties from a file...
+	 * @return
+	 */
+	private static Properties loadProperties() {
+		return null;
 	}
 	
 	/**

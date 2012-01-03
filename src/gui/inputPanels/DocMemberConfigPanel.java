@@ -71,14 +71,13 @@ public class DocMemberConfigPanel extends JPanel {
 	
 	JTabbedPane tabPane;
 	
+	//Various sub-views
 	SiteModelView siteModelPanel;
 	CoalescentView coalescentModelPanel;
 	LoggersPanel loggersPanel;
 	MCMCModelView mcView;
 	
-	AlignmentElement alignmentEl;
-	MCMCModelElement mcElement;
-	ARGModelElement argModel;
+	AnalysisModel analysisModel = new AnalysisModel();
 	
 	ACGFrame acgParent;
 	
@@ -97,23 +96,19 @@ public class DocMemberConfigPanel extends JPanel {
 	 */
 	public void loadSettingsFromDocument(ACGDocument doc) {
 		try {
-			alignmentEl.readElement(doc);
-			argModel.readElements(doc);
-			updateTopLabel(alignmentEl.getNodeLabel());
-			siteModelPanel.readNodesFromDocument(doc);
-			coalescentModelPanel.readNodesFromDocument(doc);
-			loggersPanel.readNodesFromDocument(doc);
-			mcElement.readElements(doc);			
-			argView.updateViewFromModel();
+			analysisModel.readFromDocument(doc);
+			siteModelPanel.updateView();
+			coalescentModelPanel.updateView();
+			loggersPanel.setLoggerModels(analysisModel.getLoggerModels());
+			mcView.updateFromModel();
+			
 			revalidate();
 			repaint();
+		} catch (InputConfigException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		catch (InputConfigException e) {
-			ErrorWindow.showErrorWindow(e);
-		}
-		catch (Exception ex) {
-			ErrorWindow.showErrorWindow(ex);
-		}
+		
 	}
 	
 	
@@ -208,76 +203,9 @@ public class DocMemberConfigPanel extends JPanel {
 	 * @throws ParserConfigurationException 
 	 */
 	public ACGDocument getACGDocument() throws InputConfigException {
-		ACGDocumentBuilder docBuilder = null;
-		try {
-			if (mcView == null) {
-				throw new InputConfigException("MCMC settings have not been specified yet");
-			}
-			mcView.updateToModel();
-			
-			docBuilder = new ACGDocumentBuilder();
 
-			docBuilder.addRandomSource();
-			
-			docBuilder.appendNodes( alignmentEl );
+		return analysisModel.getACGDocument();
 
-			argView.updateModelFromView();
-			argModel.setAlignmentRef(alignmentEl);
-			docBuilder.appendNodes( argModel );			
-
-			siteModelPanel.getSiteModel().setARGRef( argModel );
-			docBuilder.appendNodes( siteModelPanel.getSiteModel() );
-			
-			coalescentModelPanel.getModel().setARGRef(argModel);
-			docBuilder.appendNodes( coalescentModelPanel.getModel() );
-			
-			//Prior stuff comes last
-			List<DoubleParamElement> paramModels = new ArrayList<DoubleParamElement>();
-			paramModels.addAll(siteModelPanel.getSiteModel().getDoubleParameters());
-			paramModels.addAll(coalescentModelPanel.getModel().getDoubleParameters());
-			
-			for(DoubleParamElement paramElement : paramModels) {
-				if (paramElement.getPriorModel() != null) {
-					Element priorNode = paramElement.getPriorModel().getElement(docBuilder.getACGDocument());
-					docBuilder.appendNode(priorNode);
-				}
-			}
-			
-			
-			mcElement.clearReferences();
-			
-			
-			loggersPanel.setARGReference(argModel);
-			List<Element> loggers = loggersPanel.getLoggerNodes(docBuilder.getACGDocument());
-			for(Element node : loggers) {
-				docBuilder.appendNode(node);
-				mcElement.addListenerRef(node);
-			}
-			
-			List<Element> params = docBuilder.getParameters();
-			for(Element param : params) {
-				mcElement.addParamRef(param);
-			}
-			
-			List<Element> likelihoods = docBuilder.getLikelihoods();
-			for(Element like : likelihoods) {
-				mcElement.addLikelihoodRef(like);
-			}
-			
-			
-			docBuilder.appendNodes( mcElement );
-				
-			docBuilder.appendHeader();
-			docBuilder.appendTimeAndDateComment();
-			
-		} catch (ParserConfigurationException e) {
-			ErrorWindow.showErrorWindow(e);
-		} 
-		
-		if (docBuilder != null)
-			return docBuilder.getACGDocument();
-		else
-			return null;
 	}
 	
 	private void browseForAlignmentFile() {
@@ -318,7 +246,8 @@ public class DocMemberConfigPanel extends JPanel {
 			String shortname = selectedFile.getName();
 			shortname = shortname.substring(0, shortname.lastIndexOf("."));
 			Alignment aln = new Alignment(selectedFile);
-			alignmentEl.setElement(aln);
+			analysisModel.setAlignment(aln);
+			//alignmentEl.setElement(aln);
 			updateTopLabel(shortname);
 			acgParent.enableRunButton();
 			acgParent.enableSaveButton();
@@ -330,16 +259,12 @@ public class DocMemberConfigPanel extends JPanel {
 	 */
 	private void updateTopLabel(String alnName) {
 		DecimalFormat formatter = new DecimalFormat("###,###");
-		topLabel.setText("Alignment \"" + alnName + "\" : " + alignmentEl.getSequenceCount() + " sequences of length " + formatter.format(alignmentEl.getSequenceLength()) + " sites");
+		topLabel.setText("Alignment \"" + alnName + "\" : " + analysisModel.getAlignmentModel().getSequenceCount() + " sequences of length  " + analysisModel.getAlignmentModel().getSequenceLength() + " sites");
 		topLabel.revalidate();
 	}
 	
 	private void initComponents() {
-		setBackground(ACGFrame.backgroundColor);
-		alignmentEl = new AlignmentElement();
-		mcElement = new MCMCModelElement();
-		argModel = new ARGModelElement();
-		
+		setBackground(ACGFrame.backgroundColor);		
 		topPanel = new JPanel();
 		topPanel.setOpaque(false);
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
@@ -361,7 +286,7 @@ public class DocMemberConfigPanel extends JPanel {
 		alnPanel.add(chooseButton);
 		topPanel.add(alnPanel);
 		
-		argView = new ARGModelView(argModel);
+		argView = new ARGModelView(analysisModel.getARGModel());
 		topPanel.add(argView);
 		this.add(topPanel, BorderLayout.NORTH);
 		
@@ -375,7 +300,7 @@ public class DocMemberConfigPanel extends JPanel {
 		loggersPanel = new LoggersPanel();
 		tabPane.insertTab("Loggers", null, loggersPanel, "Logging and output options", 2);
 		
-		mcView = new MCMCModelView( mcElement  );
+		mcView = new MCMCModelView( analysisModel.getMCModelElement()  );
 		mcView.updateFromModel();
 		tabPane.insertTab("Markov chain", null, mcView, "Options for Markov chain", 3);
 		this.add(tabPane, BorderLayout.CENTER);
@@ -383,6 +308,7 @@ public class DocMemberConfigPanel extends JPanel {
 	}
 	
 	private ARGModelView argView;
+
 	private File selectedFile = null;
 	private JFileChooser fileChooser; //Used on non-mac platforms
 	private FileDialog fileDialog; //Used on mac systems

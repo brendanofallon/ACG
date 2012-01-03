@@ -1,4 +1,4 @@
-package newgui.gui;
+package newgui.trackView;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -14,6 +14,7 @@ import javax.swing.BoundedRangeModel;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
 
 /**
  * A panel that 

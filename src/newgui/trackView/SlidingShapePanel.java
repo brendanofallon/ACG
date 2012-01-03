@@ -1,4 +1,4 @@
-package newgui.gui;
+package newgui.trackView;
 
 import java.awt.BorderLayout;
 import java.awt.event.AdjustmentEvent;
@@ -6,6 +6,7 @@ import java.awt.event.AdjustmentListener;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
+
 
 public class SlidingShapePanel extends JPanel {
 

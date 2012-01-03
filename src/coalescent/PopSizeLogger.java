@@ -30,7 +30,13 @@ import mcmc.MCMC;
 import mcmc.MCMCListener;
 
 /**
- * Creates histograms of population sizes over time
+ * Creates histograms of population sizes over time. At some point this should be
+ * converted to extend PropertyLogger so it can inherit all that functionality, but
+ * for now this mostly just exists for testing/debugging purposes. 
+ * 
+ * ACTUALLY ACG DOCUMENT READING DEPENDS ON THIS BEING A PROPERTYLOGGER! YOU WONT
+ * BE ABLE TO READ THESE SETTINGS FROM AN ACGDOCUMENT UNTIL THIS IS FIXED 
+ * 
  * @author brendano
  *
  */

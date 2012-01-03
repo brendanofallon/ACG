@@ -23,7 +23,7 @@ public class TopLeftPanel extends JPanel {
 		this.setBackground(Color.white);
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
 		this.setPreferredSize(new Dimension(200, 50));
-		ImageIcon openIcon = ViewerWindow.getIcon("icons/openFile.png");
+		ImageIcon openIcon = ViewerWindow.getIcon("icons/scaledRightArrow.png");
 		importButton = new BorderlessButton(null, openIcon);
 		importButton.setPreferredSize(new Dimension(30, 30));
 		this.add(importButton);

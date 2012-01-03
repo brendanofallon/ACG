@@ -1,7 +1,8 @@
-package newgui.gui;
+package newgui.trackView;
 
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
+
 
 public class RangeView extends RoundRectangle2D.Float {
 

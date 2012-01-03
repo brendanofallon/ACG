@@ -90,6 +90,17 @@ public class LoggersPanel extends JPanel {
 		this.ARGref = argRef;
 	}
 	
+	/**
+	 * Clear list of logger views and add brand new ones created from the given
+	 * list of models
+	 * @param newModels
+	 */
+	public void setLoggerModels(List<LoggerModel> newModels) {
+		loggers.clear();
+		for(LoggerModel model : newModels) {
+			addLogger(AvailableLoggers.createViewForModel(model));
+		}
+	}
 	
 	public void addLogger(AbstractLoggerView logger) {
 		LoggerWrapper wrapped = new LoggerWrapper(logger);
@@ -132,6 +143,19 @@ public class LoggersPanel extends JPanel {
 		}
 		
 		return nodes;
+	}
+	
+	public List<LoggerModel> getLoggerModels() throws InputConfigException {
+		List<LoggerModel> models = new ArrayList<LoggerModel>();
+
+		for(LoggerWrapper logger : loggers) {
+			AbstractLoggerView view = logger.config;
+			view.updateFields();
+			view.getModel().setArgRef( ARGref );
+			models.add(view.getModel());
+		}
+		
+		return models;
 	}
 	
 	public void removeAllLoggers() {
