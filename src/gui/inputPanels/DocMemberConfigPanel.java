@@ -74,6 +74,7 @@ public class DocMemberConfigPanel extends JPanel {
 	LoggersPanel loggersPanel;
 	MCMCModelView mcView;
 	
+	AnalysisModel analysisModel = new AnalysisModel();
 	//Various models.... a bit weird since we have references to some here,
 	//but in other places the model elements are contained within the views...
 	//AlignmentElement alignmentEl;
@@ -100,22 +101,19 @@ public class DocMemberConfigPanel extends JPanel {
 	 */
 	public void loadSettingsFromDocument(ACGDocument doc) {
 		try {
-			alignmentEl.readElement(doc);
-			argModel.readElements(doc);
-			updateTopLabel(alignmentEl.getNodeLabel());
-			siteModelPanel.readNodesFromDocument(doc);
-			coalescentModelPanel.readNodesFromDocument(doc);
-			loggersPanel.readNodesFromDocument(doc);
-			mcElement.readElements(doc);			
+			analysisModel.readFromDocument(doc);
+			siteModelPanel.updateView();
+			coalescentModelPanel.updateView();
+			loggersPanel.setLoggerModels(analysisModel.getLoggerModels());
+			mcView.updateFromModel();
+			
 			revalidate();
 			repaint();
+		} catch (InputConfigException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		catch (InputConfigException e) {
-			ErrorWindow.showErrorWindow(e);
-		}
-		catch (Exception ex) {
-			ErrorWindow.showErrorWindow(ex);
-		}
+		
 	}
 	
 	
@@ -208,75 +206,76 @@ public class DocMemberConfigPanel extends JPanel {
 	 * @throws ParserConfigurationException 
 	 */
 	public ACGDocument getACGDocument() throws InputConfigException {
-		ACGDocumentBuilder docBuilder = null;
-		try {
-			if (mcView == null) {
-				throw new InputConfigException("MCMC settings have not been specified yet");
-			}
-			mcView.updateToModel();
-			
-			docBuilder = new ACGDocumentBuilder();
-
-			docBuilder.addRandomSource();
-			
-			docBuilder.appendNodes( alignmentEl );
-
-			argModel.setAlignmentRef(alignmentEl);
-			docBuilder.appendNodes( argModel );			
-
-			siteModelPanel.getSiteModel().setARGRef( argModel );
-			docBuilder.appendNodes( siteModelPanel.getSiteModel() );
-			
-			coalescentModelPanel.getModel().setARGRef(argModel);
-			docBuilder.appendNodes( coalescentModelPanel.getModel() );
-			
-			//Prior stuff comes last
-			List<DoubleParamElement> paramModels = new ArrayList<DoubleParamElement>();
-			paramModels.addAll(siteModelPanel.getSiteModel().getDoubleParameters());
-			paramModels.addAll(coalescentModelPanel.getModel().getDoubleParameters());
-			
-			for(DoubleParamElement paramElement : paramModels) {
-				if (paramElement.getPriorModel() != null) {
-					Element priorNode = paramElement.getPriorModel().getElement(docBuilder.getACGDocument());
-					docBuilder.appendNode(priorNode);
-				}
-			}
-			
-			
-			mcElement.clearReferences();
-			
-			
-			loggersPanel.setARGReference(argModel);
-			List<Element> loggers = loggersPanel.getLoggerNodes(docBuilder.getACGDocument());
-			for(Element node : loggers) {
-				docBuilder.appendNode(node);
-				mcElement.addListenerRef(node);
-			}
-			
-			List<Element> params = docBuilder.getParameters();
-			for(Element param : params) {
-				mcElement.addParamRef(param);
-			}
-			
-			List<Element> likelihoods = docBuilder.getLikelihoods();
-			for(Element like : likelihoods) {
-				mcElement.addLikelihoodRef(like);
-			}
-			
-			
-			docBuilder.appendNodes( mcElement );
-				
-			docBuilder.appendHeader();
-			docBuilder.appendTimeAndDateComment();
-			
-		} catch (ParserConfigurationException e) {
-			ErrorWindow.showErrorWindow(e);
-		} 
-		
-		if (docBuilder != null)
-			return docBuilder.getACGDocument();
-		else
-			return null;
+		return analysisModel.getACGDocument();
+//		ACGDocumentBuilder docBuilder = null;
+//		try {
+//			if (mcView == null) {
+//				throw new InputConfigException("MCMC settings have not been specified yet");
+//			}
+//			mcView.updateToModel();
+//			
+//			docBuilder = new ACGDocumentBuilder();
+//
+//			docBuilder.addRandomSource();
+//			
+//			docBuilder.appendNodes( alignmentEl );
+//
+//			argModel.setAlignmentRef(alignmentEl);
+//			docBuilder.appendNodes( argModel );			
+//
+//			siteModelPanel.getSiteModel().setARGRef( argModel );
+//			docBuilder.appendNodes( siteModelPanel.getSiteModel() );
+//			
+//			coalescentModelPanel.getModel().setARGRef(argModel);
+//			docBuilder.appendNodes( coalescentModelPanel.getModel() );
+//			
+//			//Prior stuff comes last
+//			List<DoubleParamElement> paramModels = new ArrayList<DoubleParamElement>();
+//			paramModels.addAll(siteModelPanel.getSiteModel().getDoubleParameters());
+//			paramModels.addAll(coalescentModelPanel.getModel().getDoubleParameters());
+//			
+//			for(DoubleParamElement paramElement : paramModels) {
+//				if (paramElement.getPriorModel() != null) {
+//					Element priorNode = paramElement.getPriorModel().getElement(docBuilder.getACGDocument());
+//					docBuilder.appendNode(priorNode);
+//				}
+//			}
+//			
+//			
+//			mcElement.clearReferences();
+//			
+//			
+//			loggersPanel.setARGReference(argModel);
+//			List<Element> loggers = loggersPanel.getLoggerNodes(docBuilder.getACGDocument());
+//			for(Element node : loggers) {
+//				docBuilder.appendNode(node);
+//				mcElement.addListenerRef(node);
+//			}
+//			
+//			List<Element> params = docBuilder.getParameters();
+//			for(Element param : params) {
+//				mcElement.addParamRef(param);
+//			}
+//			
+//			List<Element> likelihoods = docBuilder.getLikelihoods();
+//			for(Element like : likelihoods) {
+//				mcElement.addLikelihoodRef(like);
+//			}
+//			
+//			
+//			docBuilder.appendNodes( mcElement );
+//				
+//			docBuilder.appendHeader();
+//			docBuilder.appendTimeAndDateComment();
+//			
+//		} catch (ParserConfigurationException e) {
+//			ErrorWindow.showErrorWindow(e);
+//		} 
+//		
+//		if (docBuilder != null)
+//			return docBuilder.getACGDocument();
+//		else
+//			return null;
 	}
 	
 	protected void browseForFile() {
@@ -317,7 +316,8 @@ public class DocMemberConfigPanel extends JPanel {
 			String shortname = selectedFile.getName();
 			shortname = shortname.substring(0, shortname.lastIndexOf("."));
 			Alignment aln = new Alignment(selectedFile);
-			alignmentEl.setElement(aln);
+			analysisModel.setAlignment(aln);
+			//alignmentEl.setElement(aln);
 			updateTopLabel(shortname);
 			acgParent.enableRunButton();
 			acgParent.enableSaveButton();
@@ -328,16 +328,12 @@ public class DocMemberConfigPanel extends JPanel {
 	 * Reset info in top label to reflect changes in alignment
 	 */
 	private void updateTopLabel(String alnName) {
-		topLabel.setText("Alignment \"" + alnName + "\" : " + alignmentEl.getSequenceCount() + " sequences of length  " + alignmentEl.getSequenceLength() + " sites");
+		topLabel.setText("Alignment \"" + alnName + "\" : " + analysisModel.getAlignmentModel().getSequenceCount() + " sequences of length  " + analysisModel.getAlignmentModel().getSequenceLength() + " sites");
 		topLabel.revalidate();
 	}
 	
 	private void initComponents() {
-		setBackground(ACGFrame.backgroundColor);
-		alignmentEl = new AlignmentElement();
-		mcElement = new MCMCModelElement();
-		argModel = new ARGModelElement();
-		
+		setBackground(ACGFrame.backgroundColor);		
 		topPanel = new JPanel();
 		topPanel.setOpaque(false);
 		topPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -363,7 +359,7 @@ public class DocMemberConfigPanel extends JPanel {
 		loggersPanel = new LoggersPanel();
 		tabPane.insertTab("Loggers", null, loggersPanel, "Logging and output options", 2);
 		
-		mcView = new MCMCModelView( mcElement  );
+		mcView = new MCMCModelView( analysisModel.getMCModelElement()  );
 		mcView.updateFromModel();
 		tabPane.insertTab("Markov chain", null, mcView, "Options for Markov chain", 3);
 		this.add(tabPane, BorderLayout.CENTER);

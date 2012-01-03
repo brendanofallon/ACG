@@ -7,6 +7,7 @@ import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.loggerConfigs.AbstractLoggerView;
 import gui.inputPanels.loggerConfigs.AvailableLoggers;
 import gui.inputPanels.loggerConfigs.LoggerModel;
+import gui.inputPanels.loggerConfigs.StateLoggerModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,8 @@ import logging.StateLogger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import sequence.Alignment;
+
 import xml.XMLLoader;
 
 /**
@@ -27,11 +30,17 @@ import xml.XMLLoader;
  * some MCMC settings (run length, Metropolis-coupling options, etc). 
  * 
  *   The various 'model elements' contained herein may be used as the data behind different
- * 'views' - for instance 
+ * 'views' which allow the user to see and manipulate the information. 
+ * 
+ * ...Would be nice at some point to specify a listener architecture where we fire events when
+ * various model elements change, so views can instantly update whenever their underlying
+ * model changes. Right now we do all updating manually through calls to updateView() 
+ * or updateModelFromView() when needed... but this is a bit tedious and error-prone as
+ * things become more complex
  * @author brendan
  *
  */
-public abstract class AnalysisModel {
+public class AnalysisModel {
 
 	protected AlignmentElement alignmentEl;
 	protected MCMCModelElement mcElement;
@@ -45,7 +54,14 @@ public abstract class AnalysisModel {
 		initializeElements();
 	}
 
-	protected abstract void initializeElements();
+	protected void initializeElements() {
+		alignmentEl = new AlignmentElement();
+		mcElement = new MCMCModelElement();
+		argModel = new ARGModelElement();
+		siteModel = new SiteModelElement();
+		coalModel = new CoalescentModelElement();
+		loggerModels.add(new StateLoggerModel() );
+	}
 
 	public void readFromDocument(ACGDocument doc) throws InputConfigException { 
 		alignmentEl.readElement(doc);
@@ -87,6 +103,9 @@ public abstract class AnalysisModel {
 		try {	
 			docBuilder = new ACGDocumentBuilder();
 
+			docBuilder.appendHeader();
+			docBuilder.appendTimeAndDateComment();
+
 			docBuilder.addRandomSource();
 
 			docBuilder.appendNodes( alignmentEl );
@@ -118,12 +137,9 @@ public abstract class AnalysisModel {
 			for(LoggerModel loggerModel : loggerModels) {
 				loggerModel.setArgRef(argModel);
 
-				List<Node> loggerNodes = loggerModel.getElements(docBuilder.getACGDocument());
-				for(Node node : loggerNodes) {
-					docBuilder.appendNode(node);
-					if (node.getNodeType() == Node.ELEMENT_NODE)
-						mcElement.addListenerRef((Element)node);
-				}
+				Element loggerNode = loggerModel.getElement(docBuilder.getACGDocument());
+				mcElement.addListenerRef(loggerNode);
+				
 			}
 
 			//			loggersPanel.setARGReference(argModel);
@@ -146,8 +162,6 @@ public abstract class AnalysisModel {
 
 			docBuilder.appendNodes( mcElement );
 
-			docBuilder.appendHeader();
-			docBuilder.appendTimeAndDateComment();
 
 		} catch (ParserConfigurationException e) {
 			ErrorWindow.showErrorWindow(e);
@@ -157,6 +171,38 @@ public abstract class AnalysisModel {
 			return docBuilder.getACGDocument();
 		else
 			return null;
+	}
+
+	/**
+	 * Obtain the list of loggermodels specifying which loggers we're using
+	 * @return
+	 */
+	public List<LoggerModel> getLoggerModels() {
+		return loggerModels;
+	}
+
+	/**
+	 * Obtain the model describing the MCMC settings
+	 * @return
+	 */
+	public MCMCModelElement getMCModelElement() {
+		return mcElement;
+	}
+
+	/**
+	 * Obtain the model describing the (single) alignment
+	 * @return
+	 */
+	public AlignmentElement getAlignmentModel() {
+		return alignmentEl;
+	}
+	
+	/**
+	 * Set the alignment backing the alignment element used in this analysis
+	 * @param aln
+	 */
+	public void setAlignment(Alignment aln) {
+		alignmentEl.setElement(aln);
 	}
 
 }
