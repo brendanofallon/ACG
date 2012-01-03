@@ -134,6 +134,19 @@ public class LoggersPanel extends JPanel {
 		return nodes;
 	}
 	
+	public List<LoggerModel> getLoggerModels() throws InputConfigException {
+		List<LoggerModel> models = new ArrayList<LoggerModel>();
+
+		for(LoggerWrapper logger : loggers) {
+			AbstractLoggerView view = logger.config;
+			view.updateFields();
+			view.getModel().setArgRef( ARGref );
+			models.add(view.getModel());
+		}
+		
+		return models;
+	}
+	
 	public void removeAllLoggers() {
 		for(LoggerWrapper wrapper : loggers) {
 			remove(wrapper);

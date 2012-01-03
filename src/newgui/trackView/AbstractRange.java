@@ -1,4 +1,5 @@
-package newgui.gui;
+package newgui.trackView;
+
 
 public class AbstractRange implements Range {
 

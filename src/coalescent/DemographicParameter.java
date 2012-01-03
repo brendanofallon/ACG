@@ -29,7 +29,7 @@ import parameter.AbstractParameter;
 public interface DemographicParameter {
 
 	/**
-	 * The integral of population size from time t0 to time t1 (t1 > t0)
+	 * The integral of coalescent rate from time t0 to time t1 (t1 > t0)
 	 * @param t0
 	 * @param t1
 	 * @return 

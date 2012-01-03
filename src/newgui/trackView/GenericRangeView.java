@@ -5,8 +5,6 @@ import java.awt.Graphics2D;
 import java.util.HashSet;
 import java.util.Set;
 
-import newgui.gui.Range;
-import newgui.gui.RangeBlock;
 
 /**
  * A class to draw a series of ranges in fairly generic fashion, mostly for testing 

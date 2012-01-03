@@ -34,6 +34,13 @@ import javax.swing.JScrollPane;
 
 import logging.StateLogger;
 
+/**
+ * A frame that allows users to pick from a variety of different loggers. There's not really
+ * a clean model / view separation here - we just store the list of all available views in a list
+ * (which is also created in this class), 
+ * @author brendan
+ *
+ */
 public class AddLoggerFrame extends JFrame {
 
 	LoggersPanel parentPanel;
@@ -58,7 +65,7 @@ public class AddLoggerFrame extends JFrame {
 		}
 		
 		add(scrollPane, BorderLayout.CENTER);
-		this.getRootPane().setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+		this.getRootPane().setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
 		pack();
 		setLocationRelativeTo(parentPanel);
 		setVisible(false);
@@ -68,12 +75,10 @@ public class AddLoggerFrame extends JFrame {
 	 * Build the list of available loggers to be represented in this frame
 	 */
 	private void importLoggers() {
-		loggerList.add(new StateLoggerView() );
-		loggerList.add(new BPDensityView() );
-		loggerList.add(new BPLocationView() );
-		loggerList.add(new RootHeightView() );
-		loggerList.add(new ConsensusTreeView() );
-		loggerList.add(new MPEARGView() );
+		List<LoggerModel> models = AvailableLoggers.getLoggers();
+		for(LoggerModel model : models) {
+			loggerList.add( AvailableLoggers.createViewForModel(model));
+		}
 	}
 	
 	/**
@@ -88,6 +93,19 @@ public class AddLoggerFrame extends JFrame {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Return the logger model associated with the given class
+	 * @param canonicalName
+	 * @return
+	 */
+	public LoggerModel getLoggerModelForClass(String canonicalName) {
+		AbstractLoggerView view = getViewForClass(canonicalName);
+		if (view == null)
+			return null;
+		else
+			return view.getModel();
 	}
 
 	/**

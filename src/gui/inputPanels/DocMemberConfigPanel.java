@@ -68,14 +68,17 @@ public class DocMemberConfigPanel extends JPanel {
 	
 	JTabbedPane tabPane;
 	
+	//Various sub-views
 	SiteModelView siteModelPanel;
 	CoalescentView coalescentModelPanel;
 	LoggersPanel loggersPanel;
 	MCMCModelView mcView;
 	
-	AlignmentElement alignmentEl;
-	MCMCModelElement mcElement;
-	ARGModelElement argModel;
+	//Various models.... a bit weird since we have references to some here,
+	//but in other places the model elements are contained within the views...
+	//AlignmentElement alignmentEl;
+	//MCMCModelElement mcElement;
+	//ARGModelElement argModel;
 	
 	ACGFrame acgParent;
 	
@@ -368,10 +371,6 @@ public class DocMemberConfigPanel extends JPanel {
 	}
 
 
-	private BorderlessButton continueButton;
-	private BorderlessButton runButton;
-	private BorderlessButton saveButton;
-	private JPanel bottomPanel;
 	private File selectedFile = null;
 	private JFileChooser fileChooser; //Used on non-mac platforms
 	private FileDialog fileDialog; //Used on mac systems

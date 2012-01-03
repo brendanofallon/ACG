@@ -1,4 +1,4 @@
-package newgui.gui;
+package newgui.trackView;
 
 import java.awt.Color;
 import java.awt.Graphics;

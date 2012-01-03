@@ -33,6 +33,14 @@ import arg.ARG;
 import arg.CoalNode;
 import arg.RecombNode;
 
+/**
+ * Keeps track of the locations of recombination breakpoints along the sequence AND over time as
+ * a 2D histogram. We always track all sites, but only go back in time as far as maxTreeHeight,
+ * which can optionally be specified as an argument to the xml node. If not specified, we
+ * use twice the "dl height" (deepest 'visible' node) in the ARG as the max height
+ * @author brendan
+ *
+ */
 public class BreakpointLocation extends PropertyLogger {
 
 	public static final String XML_SEQBINS = "sequence.bins";
@@ -46,12 +54,10 @@ public class BreakpointLocation extends PropertyLogger {
 	int count = 0;
 	Double maxTreeHeight = null;
 	
-	//Double userMaxHeight = null;
-	
 	int[][] hist = new int[seqBins][depthBins];
 		
 	//Optional mapping for sites, may be used in cases where columns have been removed from original alignment but 
-	//we want to map back to orig coords. for output purposes
+	//we want to map back to orig coords. for output purposes. Now defunct since we can handle gapped sequences
 	SiteMap siteMap = null;
 	
 	public BreakpointLocation(Map<String, String> attrs, ARG arg) {
