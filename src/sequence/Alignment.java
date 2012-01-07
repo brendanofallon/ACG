@@ -2,7 +2,6 @@ package sequence;
 
 import java.util.List;
 
-import newgui.alignment.Sequence;
 
 /**
  * A collection of Sequences
@@ -57,21 +56,21 @@ public interface Alignment {
 	 */
 	public boolean removeSequence(Sequence seqToRemove);
 	
-	/**
-	 * Get the reference sequence for this alignment
-	 * @return
-	 */
-	public Sequence getReference();
-	
-	/**
-	 * Set the reference sequence for this alignment and add Sequences it contains
-	 * @param ref
-	 */
-	public void setReference(Sequence ref);
-	
-	/**
-	 * Obtain a sequence representing the consensus of all sequences 
-	 * @return
-	 */
-	public Sequence getConsensus();
+//	/**
+//	 * Get the reference sequence for this alignment
+//	 * @return
+//	 */
+//	public Sequence getReference();
+//	
+//	/**
+//	 * Set the reference sequence for this alignment and add Sequences it contains
+//	 * @param ref
+//	 */
+//	public void setReference(Sequence ref);
+//	
+//	/**
+//	 * Obtain a sequence representing the consensus of all sequences 
+//	 * @return
+//	 */
+//	public Sequence getConsensus();
 }

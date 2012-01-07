@@ -16,6 +16,8 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 
+import sequence.BasicSequenceAlignment;
+
 import net.miginfocom.swing.MigLayout;
 import newgui.alignment.AlignmentSummary;
 import newgui.analysisTemplate.AnalysisTemplate;
@@ -140,6 +142,10 @@ public class AnalysisPrepPanel extends JPanel {
 				throw new IllegalArgumentException("No alignments have been added");
 			if (alignmentSums.size()>1)
 				throw new IllegalArgumentException("We currently cannot handle multiple alignments");
+			
+			List<S>
+			BasicSequenceAlignment aln = new BasicSequenceAlignment();
+			
 			model.setAlignment( alignmentSums.get(0).getAlignment() );
 		}
 	}

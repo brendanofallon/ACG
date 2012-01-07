@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import newgui.alignment.Sequence;
-import newgui.alignment.SimpleSequence;
 import newgui.alignment.UnrecognizedBaseException;
 
 
@@ -180,7 +178,7 @@ public class CompressedAlignment implements Alignment {
 		Sequence seq;
 		try {
 			seq = new SimpleSequence(label, strb.toString());
-			seq.setReference(reference);
+			//seq.setReference(reference);
 			return seq;
 		} catch (UnrecognizedBaseException e) {
 			// TODO Auto-generated catch block
@@ -200,17 +198,14 @@ public class CompressedAlignment implements Alignment {
 		return false;
 	}
 
-	@Override
 	public Sequence getReference() {
 		return reference;
 	}
 
-	@Override
 	public void setReference(Sequence ref) {
 		this.reference = ref;
 	}
 
-	@Override
 	public Sequence getConsensus() {
 		int[] refBases = new int[getSequenceLength()];
 		for(int i=0; i<getSequenceLength(); i++) {

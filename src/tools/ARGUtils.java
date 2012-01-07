@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 import sequence.BasicSequenceAlignment;
-import sequence.Sequence;
+import sequence.BasicSequence;
 
 import math.RandomSource;
 
@@ -382,7 +382,7 @@ public class ARGUtils {
 				
 				System.out.println("<alignment" + (i) + " class=\"sequence.Alignment\">");
 				System.out.println("\t<sequences" + i + " class=\"list\">");
-				for(Sequence seq : aln.getSequences()) {
+				for(BasicSequence seq : aln.getSequences()) {
 					String seqName = seq.getLabel();
 					System.out.println("\t\t<" + seqName + " class=\"sequence.Sequence\">");
 					System.out.println("\t\t\t" + seq.getSequence() );

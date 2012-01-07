@@ -37,14 +37,14 @@ import xml.InvalidInputFileException;
  * @author brendan
  *
  */
-public class BasicSequenceAlignment {
+public class BasicSequenceAlignment implements Alignment {
 
 	public static final String SEQUENCE_FILE_ATTR = "filename";
 	
 	//Stores some information about the alignment, like the locations of polymorphic sites and the global aliases
 	DataMatrix dataMatrix = null;
 	
-	List<Sequence> seqs = new ArrayList<Sequence>();
+	List<BasicSequence> seqs = new ArrayList<BasicSequence>();
 	
 	/**
 	 * XML-reading compatible constructor, assumes second arg is list of Sequences
@@ -52,8 +52,8 @@ public class BasicSequenceAlignment {
 	 */
 	public BasicSequenceAlignment(Map<String, String> attrs, List<Object> seqObjs) {
 		for(Object seqObj : seqObjs) {
-			if (seqObj instanceof Sequence) {
-				seqs.add( (Sequence)seqObj );
+			if (seqObj instanceof BasicSequence) {
+				seqs.add( (BasicSequence)seqObj );
 			}
 			else {
 				throw new IllegalArgumentException("Only objects of type sequence can be added to an alignment");
@@ -112,7 +112,7 @@ public class BasicSequenceAlignment {
 		//System.out.println("Read in " + seqs.size() + " sequences of length " + getSiteCount() + " from file : " + fileToRead.getPath());
 	}
 	
-	public void addSequence(Sequence seqToAdd) throws BadSequenceException {
+	public void addSequence(BasicSequence seqToAdd) throws BadSequenceException {
 		seqToAdd.checkValidity();
 		
 		if (seqs.size()==0) {
@@ -139,7 +139,7 @@ public class BasicSequenceAlignment {
 	 * @return
 	 */
 	public boolean containsLabel(String label) {
-		for(Sequence seq : seqs) {
+		for(BasicSequence seq : seqs) {
 			if (seq.label.equals(label))
 				return true;
 		}
@@ -153,7 +153,7 @@ public class BasicSequenceAlignment {
 	 */
 	public char getMaxFreqBase(int col) {
 		Map<Character, Integer> map = new HashMap<Character, Integer>();
-		for(Sequence seq : seqs) {
+		for(BasicSequence seq : seqs) {
 			char c= seq.getCharAt(col);
 			Integer count = map.get(c);
 			if (count == null)
@@ -182,7 +182,7 @@ public class BasicSequenceAlignment {
 	 * @param col Column to replace characters in
 	 */
 	public void conditionalMask(char nonMaskSymbol, int col) {
-		for(Sequence seq : seqs) {
+		for(BasicSequence seq : seqs) {
 			char c = seq.getCharAt(col);
 			if (c != nonMaskSymbol)
 				seq.mask(col);
@@ -221,9 +221,9 @@ public class BasicSequenceAlignment {
 	
 	public boolean isNonGapPolymorphic(int site) {
 		char c = seqs.get(0).getCharAt(site);
-		for(Sequence seq : seqs) {
+		for(BasicSequence seq : seqs) {
 			char comp = seq.getCharAt(site);
-			if (comp != c && (comp != Sequence.GAP) && (comp != Sequence.UNKNOWN) && (comp != Sequence.UNKNOWN2))
+			if (comp != c && (comp != BasicSequence.GAP) && (comp != BasicSequence.UNKNOWN) && (comp != BasicSequence.UNKNOWN2))
 				return true;
 		}
 		return false;
@@ -237,7 +237,7 @@ public class BasicSequenceAlignment {
 		List<Integer> toRemove = getGapColumns();
 		toRemove.addAll(getUnknownColumns());
 		
-		for(Sequence seq : seqs) {
+		for(BasicSequence seq : seqs) {
 			seq.remove(toRemove);
 		}
 				
@@ -249,7 +249,7 @@ public class BasicSequenceAlignment {
 	 * @param col
 	 */
 	public void removeColumn(int col) {
-		for(Sequence seq : seqs) {
+		for(BasicSequence seq : seqs) {
 			seq.remove(col);
 		}
 	}
@@ -259,7 +259,7 @@ public class BasicSequenceAlignment {
 	 * @param col
 	 */
 	public void maskColumn(int col) {
-		for(Sequence seq : seqs) {
+		for(BasicSequence seq : seqs) {
 			seq.mask(col);
 		}
 	}
@@ -296,8 +296,8 @@ public class BasicSequenceAlignment {
 	 * @return
 	 */
 	public boolean hasGap(int site) {
-		for(Sequence seq : seqs) {
-			if (seq.seq.charAt(site)==Sequence.GAP) {
+		for(BasicSequence seq : seqs) {
+			if (seq.seq.charAt(site)==BasicSequence.GAP) {
 				return true;
 			}
 		}
@@ -310,8 +310,8 @@ public class BasicSequenceAlignment {
 	 * @return
 	 */
 	public boolean hasUnknown(int site) {
-		for(Sequence seq : seqs) {
-			if (seq.seq.charAt(site)==Sequence.UNKNOWN || seq.seq.charAt(site)==Sequence.UNKNOWN2) {
+		for(BasicSequence seq : seqs) {
+			if (seq.seq.charAt(site)==BasicSequence.UNKNOWN || seq.seq.charAt(site)==BasicSequence.UNKNOWN2) {
 				return true;
 			}
 		}
@@ -369,7 +369,7 @@ public class BasicSequenceAlignment {
 			throw new FileParseException("Error parsing fasta file, could not find beginning of data.");
 		}
 
-		Sequence seq;
+		BasicSequence seq;
 		while(line != null) {
 			//System.out.println("Trying to read line " + lineNumber + " : " + line);
 			line = line.trim();
@@ -399,7 +399,7 @@ public class BasicSequenceAlignment {
 						line = line.trim();
 				}
 
-				seq = new Sequence(label, sq.toString().toUpperCase());
+				seq = new BasicSequence(label, sq.toString().toUpperCase());
 				//System.out.println("Adding sequence " + label + " : " + sq.toString().toUpperCase());
 				try {
 					addSequence(seq);
@@ -492,7 +492,7 @@ public class BasicSequenceAlignment {
             }//while reading new lines
             
             for(int i=0; i<numSequences; i++) {
-            	Sequence seq = new Sequence(seqNames[i], newSeqs[i].toString().toUpperCase());
+            	BasicSequence seq = new BasicSequence(seqNames[i], newSeqs[i].toString().toUpperCase());
             	try {
 					addSequence(seq);
 				} catch (BadSequenceException e) {
@@ -518,7 +518,7 @@ public class BasicSequenceAlignment {
 	 * Return a list of sequences in this alignment. 
 	 * @return
 	 */
-	public List<Sequence> getSequences() {
+	public List<BasicSequence> getSequences() {
 		return seqs;
 	}
 	
@@ -527,10 +527,40 @@ public class BasicSequenceAlignment {
 	 */
 	public String toString() {
 		StringBuilder str = new StringBuilder();
-		for(Sequence seq : seqs) {
+		for(BasicSequence seq : seqs) {
 			str.append(">" + seq.label + "\n" + seq.seq +"\n");
 		}
 		return str.toString();
+	}
+
+	@Override
+	public List<String> getLabels() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getSequenceLength() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public sequence.Sequence getSequenceForLabel(String label) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addSequence(sequence.Sequence seq) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean removeSequence(sequence.Sequence seqToRemove) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 //	public static void main(String[] args) {

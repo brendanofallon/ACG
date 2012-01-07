@@ -18,6 +18,20 @@ public class BaseMap {
 	public static final int Y = 6;
 	public static final int GAP = 7;
 	
+	private static BaseMap defaultBaseMap = null;
+	
+	/**
+	 * Obtain the default BaseMap. This is mostly just so we aren't creating a new BaseMap
+	 * every time we want to convert a single character or int
+	 * @return
+	 */
+	public static BaseMap getDefaultBaseMap() {
+		if (defaultBaseMap == null)
+			defaultBaseMap = new BaseMap();
+		return defaultBaseMap;
+	}
+	
+	
 	/**
 	 * Obtain the integer representation of the given base symbol, case insensitive
 	 * @param base Base to obtain value for, any case is OK

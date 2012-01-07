@@ -7,6 +7,7 @@ import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 
 import sequence.BaseMap;
+import sequence.Sequence;
 
 import newgui.gui.ViewerWindow;
 

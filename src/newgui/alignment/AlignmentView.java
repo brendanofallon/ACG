@@ -26,6 +26,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import sequence.Alignment;
+import sequence.Sequence;
 
 import newgui.trackView.MultiTrackPanel;
 

@@ -3,7 +3,6 @@ package sequence;
 import java.util.List;
 
 import newgui.alignment.BasicAlignment;
-import newgui.alignment.Sequence;
 
 
 /**
