@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import sequence.Alignment;
+
 /**
  * A class that reads in a fasta-formatted input file and converts it to an
  * alignment

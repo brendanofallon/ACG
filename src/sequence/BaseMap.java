@@ -1,4 +1,6 @@
-package newgui.alignment;
+package sequence;
+
+import newgui.alignment.UnrecognizedBaseException;
 
 /**
  * A simple mapping between characters representing nucleotide bases and integers
@@ -53,6 +55,19 @@ public class BaseMap {
 		if (val == Y) return 'Y';
 		if (val == GAP) return '-';
 		return '?';
+	}
+	
+	/**
+	 * Convert an array of integer base values to an array of character bases
+	 * @param vals
+	 * @return
+	 */
+	public char[] basesForVals(int[] vals) {
+		char[] bases = new char[vals.length];
+		for(int i=0; i<vals.length; i++) {
+			bases[i] = baseForVal(vals[i]);
+		}
+		return bases;
 	}
 	
 }

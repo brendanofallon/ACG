@@ -59,7 +59,7 @@ import modifier.WideSwap;
 import parameter.DoubleParameter;
 import parameter.Parameter;
 import priors.ExponentialPrior;
-import sequence.Alignment;
+import sequence.BasicSequenceAlignment;
 import sequence.DataMatrix;
 import arg.ARG;
 import arg.Newick;
@@ -158,7 +158,7 @@ public class DataLikelihoodTest {
 		
 		//Newick newick = new Newick("(one:1.0, two:1.0);");
 		
-		Alignment alignment = new Alignment(file);
+		BasicSequenceAlignment alignment = new BasicSequenceAlignment(file);
         //alignment.removeGapsAndUnknowns();
 		DataMatrix data = new DataMatrix(alignment);
 
@@ -330,7 +330,7 @@ public class DataLikelihoodTest {
 											double cFreq, 
 											double gFreq, 
 											double tFreq) {
-		Alignment alignment = new Alignment(sequences);
+		BasicSequenceAlignment alignment = new BasicSequenceAlignment(sequences);
 		DataMatrix data = new DataMatrix(alignment);
 		
 		System.out.println("Total number of patterns : " + data.getNumberOfPatterns());

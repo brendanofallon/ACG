@@ -5,8 +5,9 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import sequence.Alignment;
+
 import net.miginfocom.swing.MigLayout;
-import newgui.alignment.Alignment;
 import newgui.alignment.AlignmentSummary;
 
 

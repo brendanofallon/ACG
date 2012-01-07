@@ -33,7 +33,7 @@ import component.LikelihoodComponent;
 import parameter.AbstractParameter;
 import parameter.DoubleParameter;
 import priors.ExponentialPrior;
-import sequence.Alignment;
+import sequence.BasicSequenceAlignment;
 import sequence.DataMatrix;
 import sequence.RemovedColumnsMap;
 import testing.Timer;
@@ -89,7 +89,7 @@ public class RecombMC3 {
 	
 	MC3 mc3 = null;
 
-    private Alignment aln = null;
+    private BasicSequenceAlignment aln = null;
 	
 	public RecombMC3(int chains, 
 						int threads, 
@@ -146,7 +146,7 @@ public class RecombMC3 {
 		
 
 		//Temporarily make alignment to we can build the site map
-		aln = new Alignment(filename);
+		aln = new BasicSequenceAlignment(filename);
 		//RemovedColumnsMap siteMap = new RemovedColumnsMap( aln.getSiteCount() );
 		//List<Integer> removedCols = aln.removeGapsAndUnknowns();
 		//System.out.println("Removed " + removedCols.size() + " gapped and unknown columns from alignment");

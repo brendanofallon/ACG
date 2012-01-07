@@ -51,14 +51,16 @@ import parameter.AbstractParameter;
 import parameter.InvalidParameterValueException;
 import parameter.Parameter;
 import parameter.ParameterListener;
-import sequence.Alignment;
+import sequence.BasicSequenceAlignment;
 import sequence.CharacterColumn;
 import sequence.DNAUtils;
 import sequence.DataMatrix;
 import xml.InvalidInputFileException;
 
 /**
- * A collection of nodes joined by edges. Nodes are of 3 types, CoalNodes, RecombNodes, and TipNodes.  
+ * A collection of nodes joined by edges. Nodes are of 3 types, CoalNodes, RecombNodes, and TipNodes. 
+ * CoalNodes have exactly one parent and two children. RecombNodes have exactly two parents and one child.
+ * Tips have exactly zero children and one parent.  
  * @author brendan
  *
  */
@@ -71,13 +73,15 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 	public static final String XML_SITES = "sites";
 	public static final String XML_THETA = "theta";
 	
-	private List<CoalNode> coalNodes = new ArrayList<CoalNode>(200);
-	private List<RecombNode> recombNodes = new ArrayList<RecombNode>(200);
-	private List<TipNode> tips = new ArrayList<TipNode>(200);
+	//Storage for nodes that are currently in use
+	private List<CoalNode> coalNodes = new ArrayList<CoalNode>(128);
+	private List<RecombNode> recombNodes = new ArrayList<RecombNode>(128);
+	private List<TipNode> tips = new ArrayList<TipNode>(64);
 	
-	private ARGNode[] currentSortedNodes = null;
-	private ARGNode[] proposedSortedNodes = null;
-	private ARGNode[] activeSortedNodes = null;
+	//Don't think these is being used right now...
+//	private ARGNode[] currentSortedNodes = null;
+//	private ARGNode[] proposedSortedNodes = null;
+//	private ARGNode[] activeSortedNodes = null;
 	
 	//Stores nodes that have been proposed to be added. Note that these nodes are also added to 
 	//their respective list (coalNodes, recombNodes..), so that when we calculate something like ARGIntervals
@@ -168,11 +172,11 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 	 * @param alignment
 	 * @param data
 	 */
-	public ARG(Map<String, String> attrMap, Alignment alignment) {
+	public ARG(Map<String, String> attrMap, BasicSequenceAlignment alignment) {
 		this(attrMap, alignment, new ArrayList<Object>());
 	}
 	
-	public ARG(Map<String, String> attrMap, Newick newick, Alignment alignment) {
+	public ARG(Map<String, String> attrMap, Newick newick, BasicSequenceAlignment alignment) {
 		this(attrMap, newick, alignment, new ArrayList<Object>());
 	}
 
@@ -220,11 +224,11 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 	 * @param data
 	 * @param mods
 	 */
-	public ARG(Map<String, String> attrMap, Newick newick, Alignment alignment, List<Object> mods) {
+	public ARG(Map<String, String> attrMap, Newick newick, BasicSequenceAlignment alignment, List<Object> mods) {
 		super(attrMap); 
 		CoalNode root = TreeUtils.buildTreeFromNewick(newick.getNewick(), this);
 		addNodesFromTree(root);
-		initializeNodes(alignment);
+		initializeNodes(alignment.getDataMatrix());
 		this.siteCount = alignment.getSiteCount();
 		
 		//Set default frequency to 20, unless specified otherwise
@@ -239,9 +243,12 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 	
 
 	
-	public ARG(Map<String, String> attrMap, Alignment alignment, List<Object> mods) {
+	public ARG(Map<String, String> attrMap, BasicSequenceAlignment alignment, List<Object> mods) {
 		super(attrMap);
-		generateInitialTree(attrMap, alignment);
+		DataMatrix data = null;
+		if (alignment != null)
+			data = alignment.getDataMatrix();
+		generateInitialTree(attrMap, data);
 		this.siteCount = alignment.getSiteCount();
 				
 		for(int i=0; i<mods.size(); i++) {
@@ -255,7 +262,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 	 * @param alignment
 	 * @param data
 	 */
-	public ARG(Alignment alignment) {
+	public ARG(BasicSequenceAlignment alignment) {
 		this(new HashMap<String, String>(), alignment);
 		this.siteCount = alignment.getSiteCount();
 	}
@@ -287,7 +294,13 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 	public void initializeFromNodeList(List<ARGNode> nodes, int sites) {
 		initializeFromNodeList(nodes, sites, true);
 	}
-	
+
+	/**
+	 * Initialize this ARG from the given list of nodes 
+	 * @param nodes Nodes to form the ARG
+	 * @param sites Number of sites in sequence
+	 * @param jiggle Jiggle node height so no two nodes have exactly the same height
+	 */
 	public void initializeFromNodeList(List<ARGNode> nodes, int sites, boolean jiggle) {
 		boolean foundRoot = false;
 		this.siteCount = sites;
@@ -325,16 +338,16 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 	
 	/**
 	 * Generates an initial tree by examining the given attributes. If alignment is non-null, a 
-	 * random tree is generated with a number of tips equal to the number of sequences in the alignment. 
-	 * If alignment is null, we look for a 'tips=X' attribute in the map, and build a tree with the
-	 * given number of tips.
+	 * random (or UPGMA) tree is generated with a number of tips equal to the number of sequences 
+	 * in the alignment. If alignment is null, we look for a 'tips=X' attribute in the map, and 
+	 * build a tree with the given number of tips.
 	 * If theta is given, that value is used to for the tree generation. If theta is omitted, theta=1.0  
 	 * 
 	 * If a file attribute is supplied, we ignore all other data and read the tree from the file. 
 	 * @param attrs
 	 * @param alignment
 	 */
-	private void generateInitialTree(Map<String, String> attrs, Alignment alignment) {
+	private void generateInitialTree(Map<String, String> attrs, DataMatrix alignment) {
 		boolean hasTheta = false;
 		boolean hasTips = false;
 		
@@ -406,8 +419,8 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 					ARGParser parser = new ARGParser();
 					List<ARGNode> nodes = parser.readARGNodes(file, this);
 					int sites = parser.getSiteCountFromXML(file);
-					if (alignment != null && sites != alignment.getSiteCount()) {
-						throw new IllegalArgumentException("ARG and sequence file disagree as to number of sites, arg reports " + sites + ", but sequences reports " + alignment.getSiteCount() );
+					if (alignment != null && sites != alignment.getTotalColumnCount()) {
+						throw new IllegalArgumentException("ARG and sequence file disagree as to number of sites, arg reports " + sites + ", but sequences reports " + alignment.getTotalColumnCount() );
 					}
 					
 					initializeFromNodeList(nodes, sites, false);
@@ -437,8 +450,8 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 				
 				try {
 					siteCount = Integer.parseInt(sitesStr);
-					if (alignment != null && siteCount != alignment.getSiteCount()) {
-						System.err.println("Alignment and specified site count dot not agree on total number of sites (alignment thinks " + alignment.getSiteCount() + ", but sites was given as "  + siteCount);
+					if (alignment != null && siteCount != alignment.getTotalColumnCount()) {
+						System.err.println("Alignment and specified site count dot not agree on total number of sites (alignment thinks " + alignment.getTotalColumnCount() + ", but sites was given as "  + siteCount);
 					}
 				}
 				catch (NumberFormatException ex) {
@@ -448,7 +461,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 			}
 			else {
 				if (alignment != null) {
-					siteCount = alignment.getSiteCount();
+					siteCount = alignment.getTotalColumnCount();
 				}
 				else {
 					throw new InvalidInputFileException("You must specify a number of sites to generate an initial ARG");
@@ -469,7 +482,11 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 			if (upgmaStr != null) {
 				useUPGMA = Boolean.parseBoolean(upgmaStr);
 			}
-			
+		
+			//Here we generate an initial tree (and it will be a tree- no recombs added to start)
+			//If there's an alignment, we can use a UPGMABuilder to make an educated guess about a
+			//likely starting tree (UPGMA is an algorithm for inferring a tree from sequences).
+			//We can also just start out with a random one
 			if (alignment != null && useUPGMA) {
 				//Default is now to build a upgma tree to start searching. This really seems to help reduce
 				//convergence time
@@ -489,7 +506,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 		
 		if (alignment != null) {
 			initializeNodes(alignment);
-			siteCount = alignment.getSiteCount();
+			siteCount = alignment.getTotalColumnCount();
 		}
 		
 		proposedIntervals.assignIntervals(this);
@@ -709,18 +726,18 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 	 * @param alignment
 	 * @param data
 	 */
-	private void initializeNodes(Alignment alignment) {
+	private void initializeNodes(DataMatrix matrix) {
 		DNAUtils dna = new DNAUtils();
-		this.dataMatrix = alignment.getDataMatrix();
+		this.dataMatrix = matrix;
 		
-		for(int j=0; j<alignment.getSequenceCount(); j++) {
-			TipNode tip = (TipNode)getNodeForLabel( alignment.getSequenceLabel(j) );
+		for(int j=0; j<matrix.getSequenceCount(); j++) {
+			TipNode tip = (TipNode)getNodeForLabel( matrix.getSequenceLabel(j) );
 			if (tip == null ) {
-				throw new IllegalArgumentException("Could not find tip with label : " + alignment.getSequenceLabel(j));
+				throw new IllegalArgumentException("Could not find tip with label : " + matrix.getSequenceLabel(j));
 			}
-			int[] stateVec = dataMatrix.getStateVector(alignment.getSequenceLabel(j), dna);
+			int[] stateVec = dataMatrix.getStateVector(matrix.getSequenceLabel(j), dna);
 			if (stateVec == null) {
-				throw new IllegalArgumentException("Could not find state vector for tip #" + j + " with label: " + alignment.getSequenceLabel(j));
+				throw new IllegalArgumentException("Could not find state vector for tip #" + j + " with label: " + matrix.getSequenceLabel(j));
 			}
 			tip.addTipState(stateVec);
 
@@ -911,7 +928,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 	public void revertValue() {
 		calls++;
 		activeIntervals = currentIntervals;
-		activeSortedNodes = currentSortedNodes;
+		//activeSortedNodes = currentSortedNodes;
 		
 		//We're rejecting proposed node removals, so put the nodes back in to the right lists
 		for(ARGNode node : proposedNodeRemoves) {
@@ -1040,12 +1057,12 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 			activeIntervals = currentIntervals;
 		}
 		
-		if (activeSortedNodes == proposedSortedNodes) {
-			ARGNode[] tmp = proposedSortedNodes;
-			proposedSortedNodes = currentSortedNodes;
-			currentSortedNodes = tmp;
-			activeSortedNodes = currentSortedNodes;
-		}
+//		if (activeSortedNodes == proposedSortedNodes) {
+//			ARGNode[] tmp = proposedSortedNodes;
+//			proposedSortedNodes = currentSortedNodes;
+//			currentSortedNodes = tmp;
+//			activeSortedNodes = currentSortedNodes;
+//		}
 		
 		for(ARGNode node : coalNodes) {
 			node.acceptProposal();
@@ -1168,22 +1185,22 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 		activeIntervals = proposedIntervals;
 	}
 	
-	private void makeProposedSortedNodes() {
-		final int arraySize = coalNodes.size() + recombNodes.size();
-		if (proposedSortedNodes == null || proposedSortedNodes.length != arraySize) {
-			proposedSortedNodes = new ARGNode[arraySize];	
-		}
-		
-		//Dump all nodes into an array and sort it
-		int i;
-		for(i=0; i<coalNodes.size(); i++)
-			proposedSortedNodes[i] = coalNodes.get(i);
-		for(int j=0; j<recombNodes.size(); j++)
-			proposedSortedNodes[i+j] = recombNodes.get(j);
-		
-		Arrays.sort(proposedSortedNodes, getNodeHeightComparator());
-		
-	}
+//	private void makeProposedSortedNodes() {
+//		final int arraySize = coalNodes.size() + recombNodes.size();
+//		if (proposedSortedNodes == null || proposedSortedNodes.length != arraySize) {
+//			proposedSortedNodes = new ARGNode[arraySize];	
+//		}
+//		
+//		//Dump all nodes into an array and sort it
+//		int i;
+//		for(i=0; i<coalNodes.size(); i++)
+//			proposedSortedNodes[i] = coalNodes.get(i);
+//		for(int j=0; j<recombNodes.size(); j++)
+//			proposedSortedNodes[i+j] = recombNodes.get(j);
+//		
+//		Arrays.sort(proposedSortedNodes, getNodeHeightComparator());
+//		
+//	}
 	
 	/**
 	 * Return the node whose label matches the given label. Returns tips first, if there's

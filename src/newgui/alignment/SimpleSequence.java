@@ -1,5 +1,7 @@
 package newgui.alignment;
 
+import sequence.BaseMap;
+
 /**
  * A generic implementation of Sequence, where the entire sequence is stored as an array of ints
  * @author brendan

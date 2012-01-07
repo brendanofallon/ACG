@@ -20,12 +20,13 @@ import logging.StateLogger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import sequence.Alignment;
+import sequence.BasicSequenceAlignment;
 
 import xml.XMLLoader;
 
 /**
- * An AnalysisModel stores all the information required to run a markov chain with ACG.
+ * An AnalysisModel stores all the information required to run a markov chain with ACG. It can 
+ * both produce an ACGDocument and read settings from an ACG document.  
  * At minimum, this includes an Alignment, a substitution model, a coalescent model, and
  * some MCMC settings (run length, Metropolis-coupling options, etc). 
  * 
@@ -137,7 +138,8 @@ public class AnalysisModel {
 			for(LoggerModel loggerModel : loggerModels) {
 				loggerModel.setArgRef(argModel);
 
-				Element loggerNode = loggerModel.getElement(docBuilder.getACGDocument());
+				Element loggerNode = (Element) loggerModel.getElements(docBuilder.getACGDocument()).get(0);
+				docBuilder.appendNode(loggerNode);
 				mcElement.addListenerRef(loggerNode);
 				
 			}
@@ -198,10 +200,17 @@ public class AnalysisModel {
 	}
 	
 	/**
+	 * Add a new logger type to this analysis
+	 * @param model
+	 */
+	public void addLoggerModel(LoggerModel model) {
+		loggerModels.add(model);
+	}
+	/**
 	 * Set the alignment backing the alignment element used in this analysis
 	 * @param aln
 	 */
-	public void setAlignment(Alignment aln) {
+	public void setAlignment(BasicSequenceAlignment aln) {
 		alignmentEl.setElement(aln);
 	}
 

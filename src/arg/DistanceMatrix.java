@@ -19,7 +19,8 @@
 
 package arg;
 
-import sequence.Alignment;
+import sequence.BasicSequenceAlignment;
+import sequence.DataMatrix;
 import sequence.Sequence;
 
 /**
@@ -33,8 +34,15 @@ public class DistanceMatrix {
 	double[][] mat;
 	String[] taxLabels;
 	
+	public DistanceMatrix(DataMatrix alignmentData) {
+		createMatrix(alignmentData);
+		taxLabels = new String[alignmentData.getSequenceCount()];
+		for(int i=0; i<alignmentData.getSequenceCount(); i++) {
+			taxLabels[i] = new String( alignmentData.getSequenceLabel(i) );
+		}		
+	}
 	
-	public DistanceMatrix(Alignment aln) {
+	public DistanceMatrix(BasicSequenceAlignment aln) {
 		createMatrix(aln);
 		taxLabels = new String[aln.getSequenceCount()];
 		for(int i=0; i<aln.getSequenceCount(); i++) {
@@ -124,12 +132,28 @@ public class DistanceMatrix {
 	 * Create the distance matrix from the given alignment
 	 * @param aln
 	 */
-	private void createMatrix(Alignment aln) {
+	private void createMatrix(BasicSequenceAlignment aln) {
 		mat = new double[aln.getSequenceCount()][aln.getSequenceCount()];
 		
 		for(int i=0; i<mat.length; i++) {
 			for(int j=i+1; j<mat.length; j++) {
 				double dist = dist(aln.getSequence(i), aln.getSequence(j));
+				mat[i][j] = dist;
+				mat[j][i] = dist;
+			}
+		}
+	}
+	
+	/**
+	 * Create the initial distance matrix from the supplied DataMatrix
+	 * @param matrix
+	 */
+	private void createMatrix(DataMatrix matrix) {
+		mat = new double[matrix.getSequenceCount()][matrix.getSequenceCount()];
+		
+		for(int i=0; i<mat.length; i++) {
+			for(int j=i+1; j<mat.length; j++) {
+				double dist = dist(matrix, i, j); 
 				mat[i][j] = dist;
 				mat[j][i] = dist;
 			}
@@ -180,6 +204,16 @@ public class DistanceMatrix {
 		}
 
 		return (double)difs / (double)a.getLength();
+	}
+	
+	private static double dist(DataMatrix data, int i, int j) {
+		int difs =0;
+		for(int col=0; col<data.getTotalColumnCount(); col++) {
+			if (data.sequencesDiffer(col, i, j))
+				difs++;
+		}
+
+		return (double)difs / (double)data.getTotalColumnCount();
 	}
 	
 	public String toString() {

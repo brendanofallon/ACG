@@ -44,7 +44,7 @@ import modifier.SubtreeSwap;
 import modifier.WideSwap;
 import parameter.DoubleParameter;
 import priors.ExponentialPrior;
-import sequence.Alignment;
+import sequence.BasicSequenceAlignment;
 import sequence.DataMatrix;
 import tools.ApplicationHeader;
 import arg.ARG;
@@ -76,7 +76,7 @@ public class RecombAnalysis extends NoRecombAnalysis {
 		}
 		
 
-		Alignment alignment = new Alignment(file);
+		BasicSequenceAlignment alignment = new BasicSequenceAlignment(file);
 
 		Map<String, String> argAttrs = new HashMap<String, String>();
 		ARG arg = new ARG(argAttrs, alignment);

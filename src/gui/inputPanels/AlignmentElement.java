@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import sequence.Alignment;
+import sequence.BasicSequenceAlignment;
 import sequence.Sequence;
 import xml.XMLLoader;
 import gui.ErrorWindow;
@@ -45,7 +45,7 @@ public class AlignmentElement implements ElementProvider {
 	private String nodeLabel = defaultNodeLabel;
 	
 	public void readElement(ACGDocument doc) throws InputConfigException {
-		List<String> alnLabels = doc.getLabelForClass(Alignment.class);
+		List<String> alnLabels = doc.getLabelForClass(BasicSequenceAlignment.class);
 		
 		if (alnLabels.size() == 0) {
 			throw new InputConfigException("Could not find any sequences in document");
@@ -59,8 +59,8 @@ public class AlignmentElement implements ElementProvider {
 		try {
 			nodeLabel = alnLabels.get(0);
 			alnObj = doc.getObjectForLabel(alnLabels.get(0));
-			if (alnObj instanceof Alignment) {
-				Alignment aln = (Alignment)alnObj;
+			if (alnObj instanceof BasicSequenceAlignment) {
+				BasicSequenceAlignment aln = (BasicSequenceAlignment)alnObj;
 				seqs = aln.getSequences();
 			}
 		} catch (Exception ex) {
@@ -72,7 +72,7 @@ public class AlignmentElement implements ElementProvider {
 	 * Clear the current list of sequences and add all those found in the alignment provided
 	 * @param aln
 	 */
-	public void setElement(Alignment aln) {
+	public void setElement(BasicSequenceAlignment aln) {
 		seqs.clear();
 		for(Sequence s : aln.getSequences()) {
 			seqs.add(s);
@@ -117,7 +117,7 @@ public class AlignmentElement implements ElementProvider {
 		}
 		
 		Element root = doc.createElement(getNodeLabel());
-		root.setAttribute(XMLLoader.CLASS_NAME_ATTR,  Alignment.class.getCanonicalName());
+		root.setAttribute(XMLLoader.CLASS_NAME_ATTR,  BasicSequenceAlignment.class.getCanonicalName());
 		
 		Element seqList = doc.createElement("sequences1");
 		seqList.setAttribute(XMLLoader.CLASS_NAME_ATTR,  XMLLoader.LIST_ATTR);

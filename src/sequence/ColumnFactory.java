@@ -1,6 +1,10 @@
-package newgui.alignment;
+package sequence;
 
 import java.util.List;
+
+import newgui.alignment.BasicAlignment;
+import newgui.alignment.Sequence;
+
 
 /**
  * A class for quickly creating the columns of an alignment

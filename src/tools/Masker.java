@@ -21,7 +21,7 @@ package tools;
 
 import java.io.File;
 
-import sequence.Alignment;
+import sequence.BasicSequenceAlignment;
 import sequence.DataMatrix;
 
 /**
@@ -54,7 +54,7 @@ public class Masker {
 	}
 	
 
-	private static void maskSites(int start, int end, int[] segSites, Alignment aln) {
+	private static void maskSites(int start, int end, int[] segSites, BasicSequenceAlignment aln) {
 		for(int i=0; i<segSites.length; i++) {
 			int site = segSites[i];
 			if (site >= start && site < end) {
@@ -72,7 +72,7 @@ public class Masker {
 		}
 		File file = new File(args[0]);
 		
-		Alignment aln = new Alignment(file);
+		BasicSequenceAlignment aln = new BasicSequenceAlignment(file);
 		
 		
 		int totalLength = aln.getSiteCount();

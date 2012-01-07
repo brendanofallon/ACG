@@ -52,7 +52,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.Element;
-import sequence.Alignment;
+import sequence.BasicSequenceAlignment;
 
 /**
  * A JPanel to display some information in a DocumentMember - typically alignment/ sitemodel / coalescent model things
@@ -315,7 +315,7 @@ public class DocMemberConfigPanel extends JPanel {
 		if (selectedFile != null && selectedFile.exists()) {
 			String shortname = selectedFile.getName();
 			shortname = shortname.substring(0, shortname.lastIndexOf("."));
-			Alignment aln = new Alignment(selectedFile);
+			BasicSequenceAlignment aln = new BasicSequenceAlignment(selectedFile);
 			analysisModel.setAlignment(aln);
 			//alignmentEl.setElement(aln);
 			updateTopLabel(shortname);

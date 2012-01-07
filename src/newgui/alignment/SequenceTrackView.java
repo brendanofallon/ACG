@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 
+import sequence.BaseMap;
+
 import newgui.gui.ViewerWindow;
 
 

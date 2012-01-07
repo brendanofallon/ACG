@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import sequence.Alignment;
+import sequence.AlnUtils;
+
 /**
  * A bare-bones alignment implementation, where no attempt is made to compress the alignments
  * @author brendan

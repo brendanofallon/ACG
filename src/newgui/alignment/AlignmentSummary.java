@@ -13,6 +13,9 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import sequence.Alignment;
+import sequence.CompressedAlignment;
+
 import newgui.gui.ViewerWindow;
 
 public class AlignmentSummary extends JPanel {

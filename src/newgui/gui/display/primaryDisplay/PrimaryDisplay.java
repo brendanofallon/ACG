@@ -7,7 +7,8 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import newgui.alignment.Alignment;
+import sequence.Alignment;
+
 import newgui.gui.display.Display;
 
 

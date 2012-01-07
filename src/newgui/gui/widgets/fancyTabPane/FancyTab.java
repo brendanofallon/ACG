@@ -123,6 +123,7 @@ public class FancyTab extends JPanel {
 		
 		g2d.setColor(Color.DARK_GRAY);
 		g.setFont(getFont());
-		g.drawString(text, 5, getHeight()-5);
+		int strWidth = g.getFontMetrics().stringWidth(text);
+		g.drawString(text, getWidth()/2 - strWidth/2 - 2, getHeight()-8);
 	}
 }

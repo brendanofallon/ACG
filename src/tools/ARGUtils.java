@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import sequence.Alignment;
+import sequence.BasicSequenceAlignment;
 import sequence.Sequence;
 
 import math.RandomSource;
@@ -378,7 +378,7 @@ public class ARGUtils {
 			}
 			
 			for(int i=1; i<args.length; i++) {
-				Alignment aln = new Alignment(args[i]);
+				BasicSequenceAlignment aln = new BasicSequenceAlignment(args[i]);
 				
 				System.out.println("<alignment" + (i) + " class=\"sequence.Alignment\">");
 				System.out.println("\t<sequences" + i + " class=\"list\">");

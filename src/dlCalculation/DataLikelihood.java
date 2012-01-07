@@ -62,7 +62,10 @@ import dlCalculation.substitutionModels.MutationModel;
 
 /**
  * Given a mutation model and an ARG, this calculates the probability of observing the data given the ARG.
- * 
+ * Most of the heavy lifting is accomplished by a ComputeCore, which can be of different types. 
+ * The current best type is MultiRateCore, which is currently the only one which can handle
+ * multiple rate classes (as defined in the SiteRateModel). Pretty much all other types are so slow that
+ * they're only good for debugging. 
  * @author brendan
  *
  */
@@ -94,7 +97,6 @@ public class DataLikelihood extends LikelihoodComponent {
 	
 	//Actually handles the computations
 	ComputeCore computeCore;
-
 		
 	//Set to true when a parameter has changed, and false when we call accept/reject
 	//Let us know if there's an active modification
@@ -102,8 +104,6 @@ public class DataLikelihood extends LikelihoodComponent {
 	
 	//Model of how evolutionary rate changes over sites
 	SiteRateModel siteRateModel = null;
-	
-	//private SortedSiteRangeList rootRanges = null; 
 	
 	private SortedSiteRangeList currentRootRanges = null;
 	private SortedSiteRangeList proposedRootRanges = null;
@@ -127,7 +127,7 @@ public class DataLikelihood extends LikelihoodComponent {
 	}
 	
 	/**
-	 * Create a new data likelihood calculator with a siteratemodel with one class with a rate of 1
+	 * Create a new data likelihood calculator with a SiteRateModel with one class with a rate of 1
 	 * @param attributes
 	 * @param mutationModel
 	 * @param tree

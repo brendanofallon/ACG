@@ -150,7 +150,7 @@ public abstract class LoggerModel extends ModelElement {
 	 * @return
 	 * @throws InputConfigException 
 	 */
-	public abstract Element getElement(ACGDocument doc) throws InputConfigException;
+	protected abstract Element getElement(ACGDocument doc) throws InputConfigException;
 	
 	@Override
 	public List<Node> getElements(ACGDocument doc) throws InputConfigException {

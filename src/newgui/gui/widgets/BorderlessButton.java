@@ -1,6 +1,7 @@
 package newgui.gui.widgets;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
@@ -16,6 +17,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -41,6 +43,7 @@ public class BorderlessButton extends JPanel {
 	private int iconGap = 5;
 	private int yStart = 1; //y-position to start drawing text
 	
+	private float horTextAlignment = Component.LEFT_ALIGNMENT;
 
 	List<ActionListener> actionListeners = new ArrayList<ActionListener>();
 	
@@ -65,9 +68,10 @@ public class BorderlessButton extends JPanel {
 			pHeight += icon.getIconHeight()+5;
 			yStart = pHeight+4;
 		}
+		
 		if (label != null) {
-			pWidth = Math.max(text[0].length()*10, pWidth+3);
-			pHeight += 15;
+			pWidth = Math.max(text[0].length()*12, pWidth+3);
+			pHeight += Math.max(pHeight, 28);
 		}
 		
 		
@@ -165,14 +169,25 @@ public class BorderlessButton extends JPanel {
 		if (icon != null) {
 			g2d.drawImage(icon.getImage(), Math.max(0, getWidth()/2-icon.getIconWidth()/2), 4 , null);
 		}
-		if (text != null) {
+		else {
+			yStart = Math.min(getHeight()-2, getHeight()/2 - 8 );
+		}
+		if (text != null) {					
 			g2d.setFont(getFont());
 			for(int i=0; i<text.length; i++) {
 				int strWidth = g2d.getFontMetrics().stringWidth(text[i]);
+				int textXPos = 1;
+				if (horTextAlignment == Component.LEFT_ALIGNMENT)
+					textXPos = 3;
+				if (horTextAlignment == Component.CENTER_ALIGNMENT)
+					textXPos = getWidth()/2-strWidth/2;
+				if (horTextAlignment == Component.RIGHT_ALIGNMENT)
+					textXPos = getWidth() - strWidth - 4;
+				
 				g2d.setColor(new Color(0.99f, 0.99f, 0.99f, 0.4f));
-				g2d.drawString(text[i], Math.max(1, getWidth()/2-strWidth/2+1), yStart + (i+1)*14+1 /*getHeight()-(i+1)*13 */);
+				g2d.drawString(text[i], Math.max(1, textXPos+1), yStart + (i+1)*14+1 /*getHeight()-(i+1)*13 */);
 				g2d.setColor(new Color(0.2f, 0.2f, 0.2f));
-				g2d.drawString(text[i], Math.max(0, getWidth()/2-strWidth/2), yStart + (i+1)*14 /*getHeight()-(i+1)*14 */);	
+				g2d.drawString(text[i], Math.max(0, textXPos), yStart + (i+1)*14 /*getHeight()-(i+1)*14 */);	
 			}
 
 		}

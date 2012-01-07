@@ -14,7 +14,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
-import newgui.alignment.Alignment;
+import sequence.Alignment;
+
 import newgui.alignment.AlignmentSummary;
 import newgui.gui.display.Display;
 import newgui.gui.widgets.TextButton;

@@ -162,7 +162,7 @@ public class PanelPile extends JPanel {
 		final BufferedImage image;
 		final Point start;
 		final Point end;
-		final long msToMove = 500; //Time taken to move object, 
+		final long msToMove = 250; //Time taken to move object, 
 		Timer timer;
 		long startTime;
 		long endTime;

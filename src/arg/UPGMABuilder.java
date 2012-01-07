@@ -23,7 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import arg.DistanceMatrix.DistResult;
-import sequence.Alignment;
+import sequence.BasicSequenceAlignment;
+import sequence.DataMatrix;
 
 /**
  * Tool for building a UPGMA tree from a group of sequences. May be useful for generating starting trees.
@@ -32,10 +33,14 @@ import sequence.Alignment;
  */
 public class UPGMABuilder {
 
-	Alignment aln = null;
+	DataMatrix aln = null;
 	
-	public UPGMABuilder(Alignment aln) {
-		this.aln = aln;
+	public UPGMABuilder(BasicSequenceAlignment aln) {
+		this.aln = aln.getDataMatrix();
+	}
+
+	public UPGMABuilder(DataMatrix matrix) {
+		this.aln = matrix;
 	}
 
 	/**
@@ -91,11 +96,5 @@ public class UPGMABuilder {
 		return (CoalNode)nodes.get(0);
 	}
 	
-//	public ARG getTree() {
-//		ARG arg = new ARG();
-//	
-//		arg.initializeFromNodeList(allNodes, aln.getSiteCount(), false);
-//		return arg;
-//	}
 	
 }

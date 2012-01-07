@@ -1,9 +1,14 @@
-package newgui.alignment;
+package sequence;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import newgui.alignment.Sequence;
+import newgui.alignment.SimpleSequence;
+import newgui.alignment.UnrecognizedBaseException;
+
 
 
 /**
