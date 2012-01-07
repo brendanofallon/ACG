@@ -26,9 +26,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import sequence.BaseMap;
 import sequence.BasicSequenceAlignment;
 import sequence.Sequence;
+import sequence.SimpleSequence;
 import xml.XMLLoader;
 import gui.ErrorWindow;
 import gui.document.ACGDocument;
@@ -146,8 +146,8 @@ public class AlignmentElement implements ElementProvider {
 	
 	private Element getElementForSequence(ACGDocument doc, Sequence seq) {
 		Element seqEl = doc.createElement(seq.getLabel());
-		seqEl.setAttribute(XMLLoader.CLASS_NAME_ATTR, Sequence.class.getCanonicalName());
-		Node textNode = doc.createTextNode(seq.getSequenceString(BaseMap.getDefaultBaseMap()));
+		seqEl.setAttribute(XMLLoader.CLASS_NAME_ATTR, SimpleSequence.class.getCanonicalName());
+		Node textNode = doc.createTextNode(seq.getSequenceString());
 		seqEl.appendChild(textNode);
 		return seqEl;
 	}

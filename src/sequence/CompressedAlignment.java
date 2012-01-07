@@ -170,10 +170,10 @@ public class CompressedAlignment implements Alignment {
 	@Override
 	public Sequence getSequence(int index) {
 		String label = seqLabels[index];
-		BaseMap map = new BaseMap();
+		
 		StringBuffer strb = new StringBuffer();
 		for(int i=0; i<colMap.length; i++) {
-			strb.append( map.baseForVal( getAbsoluteColumn(i)[index]) );
+			strb.append( DNAUtils.baseForInt( getAbsoluteColumn(i)[index]) );
 		}
 		Sequence seq;
 		try {
@@ -215,9 +215,8 @@ public class CompressedAlignment implements Alignment {
 	}
 	
 	public static void printColumn(int[] col) {
-		BaseMap map = new BaseMap();
 		for(int i=0; i<col.length; i++) {
-			System.out.println( map.baseForVal(col[i]) );
+			System.out.println( DNAUtils.baseForInt(col[i]) );
 		}
 	}
 	

@@ -66,9 +66,8 @@ public class DataMatrix {
 		//Note that there's actually a more efficient way to do this, if we use information
 		//about the column mapping in CompressedAlignment to directly add information to
 		//this object... but this isn't likely to be a big performance bottleneck anyway
-		BaseMap map = new BaseMap(); //Required for converting integer values to chars...
 		for(int i=0; i<aln.getSequenceLength(); i++) {
-			CharacterColumn col = new GappedNucColumn( map.basesForVals( aln.getAbsoluteColumn(i) ) );
+			CharacterColumn col = new GappedNucColumn( DNAUtils.basesForVals( aln.getAbsoluteColumn(i) ) );
 			addColumn(col);
 		}
 		

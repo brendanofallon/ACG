@@ -21,7 +21,7 @@ package arg;
 
 import sequence.BasicSequenceAlignment;
 import sequence.DataMatrix;
-import sequence.BasicSequence;
+import sequence.Sequence;
 
 /**
  * Matrix of pairwise distances of a group of sequences. Currently this is just used for building UPGMA trees 
@@ -196,10 +196,10 @@ public class DistanceMatrix {
 	 * @param b
 	 * @return
 	 */
-	private static double dist(BasicSequence a, BasicSequence b) {
+	private static double dist(Sequence a, Sequence b) {
 		int difs =0;
 		for(int i=0; i<a.getLength(); i++) {
-			if (a.getCharAt(i) != b.getCharAt(i))
+			if (a.charAt(i) != b.charAt(i))
 				difs++;
 		}
 

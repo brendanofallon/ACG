@@ -43,7 +43,8 @@ public class BasicSequenceAlignment implements Alignment {
 
 	public static final String SEQUENCE_FILE_ATTR = "filename";
 	
-	//Stores some information about the alignment, like the locations of polymorphic sites and the global aliases
+	//Stores information about the alignment, like the locations of polymorphic sites and the global aliases
+	//Remains null until first call to getDataMatrix
 	DataMatrix dataMatrix = null;
 	
 	List<Sequence> seqs = new ArrayList<Sequence>();
@@ -94,6 +95,16 @@ public class BasicSequenceAlignment implements Alignment {
 	 */
 	public BasicSequenceAlignment(String filename) {
 		this(new File(filename));
+	}
+	
+	/**
+	 * Construct a new alignment from given list of sequences
+	 * @param sequences
+	 */
+	public BasicSequenceAlignment(List<Sequence> sequences) {
+		for(Sequence seq : sequences) {
+			seqs.add(seq);
+		}
 	}
 	
 	private void parseSequencesFromFile(File fileToRead) {
@@ -229,7 +240,7 @@ public class BasicSequenceAlignment implements Alignment {
 		char c = seqs.get(0).charAt(site);
 		for(Sequence seq : seqs) {
 			char comp = seq.charAt(site);
-			if (comp != c && (comp != BaseMap.GAP) && (comp != BaseMap.N) )
+			if (comp != c && (comp != DNAUtils.GAP) && (comp != DNAUtils.N) )
 				return true;
 		}
 		return false;
@@ -303,7 +314,7 @@ public class BasicSequenceAlignment implements Alignment {
 	 */
 	public boolean hasGap(int site) {
 		for(Sequence seq : seqs) {
-			if (seq.charAt(site)==BaseMap.GAP) {
+			if (seq.charAt(site)==DNAUtils.GAP) {
 				return true;
 			}
 		}
@@ -317,7 +328,7 @@ public class BasicSequenceAlignment implements Alignment {
 	 */
 	public boolean hasUnknown(int site) {
 		for(Sequence seq : seqs) {
-			if (seq.charAt(site)==BaseMap.N) {
+			if (seq.charAt(site)==DNAUtils.N) {
 				return true;
 			}
 		}
@@ -534,7 +545,7 @@ public class BasicSequenceAlignment implements Alignment {
 	public String toString() {
 		StringBuilder str = new StringBuilder();
 		for(Sequence seq : seqs) {
-			str.append(">" + seq.getLabel() + "\n" + seq.getSequenceString(BaseMap.getDefaultBaseMap()) +"\n");
+			str.append(">" + seq.getLabel() + "\n" + seq.getSequenceString() +"\n");
 		}
 		return str.toString();
 	}

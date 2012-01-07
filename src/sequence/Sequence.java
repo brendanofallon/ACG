@@ -40,11 +40,11 @@ public interface Sequence {
 	public char charAt(int pos);
 	
 	/**
-	 * Obtain a String representing the bases in this sequence, using the given map for conversion from int to char
+	 * Obtain a String representing the bases in this sequence
 	 * @param map
 	 * @return
 	 */
-	public String getSequenceString(BaseMap map);
+	public String getSequenceString();
 
 	/**
 	 * Set the label of this sequence

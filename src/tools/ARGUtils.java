@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import sequence.BaseMap;
 import sequence.BasicSequenceAlignment;
 import sequence.Sequence;
 
@@ -386,7 +385,7 @@ public class ARGUtils {
 				for(Sequence seq : aln.getSequences()) {
 					String seqName = seq.getLabel();
 					System.out.println("\t\t<" + seqName + " class=\"sequence.Sequence\">");
-					System.out.println("\t\t\t" + seq.getSequenceString(BaseMap.getDefaultBaseMap()) );
+					System.out.println("\t\t\t" + seq.getSequenceString() );
 					System.out.println("\t\t</" + seqName + ">");
 				}
 				System.out.println("\t</sequences" + i +">");

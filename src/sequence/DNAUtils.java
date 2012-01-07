@@ -66,4 +66,11 @@ public class DNAUtils implements Alphabet {
 	public int getSymbolCount() {
 		return 5;
 	}
+
+	public static char[] basesForVals(int[] vals) {
+		char[] chars = new char[vals.length];
+		for(int i=0; i<vals.length; i++)
+			chars[i] = baseForInt(vals[i]);
+		return chars;
+	}
 }
