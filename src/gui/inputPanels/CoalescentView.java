@@ -87,6 +87,7 @@ public class CoalescentView extends JPanel {
 			}
 		});
 		
+		coalModel = new CoalescentModelElement();
 		initComponents();
 	}
 	
@@ -119,6 +120,17 @@ public class CoalescentView extends JPanel {
 		return coalModel;
 	}
 	
+	/**
+	 * Replace the model backing this view with the given model. This also re-constructs all UI
+	 * components from scratch
+	 * @param coalescentModel
+	 */
+	public void setCoalModel(CoalescentModelElement coalescentModel) {
+		this.coalModel = coalescentModel;
+		this.removeAll();
+		initComponents();
+		updateView();
+	}
 	
 	/**
 	 * Called when recombination selection has changed
@@ -166,12 +178,11 @@ public class CoalescentView extends JPanel {
 		updateView();
 	}
 	
+	
 	/**
 	 * Create GUI components
 	 */
 	private void initComponents() {
-		coalModel = new CoalescentModelElement();
-		
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		
 		stylist.applyStyle(this);
@@ -239,4 +250,6 @@ public class CoalescentView extends JPanel {
 		recTop.add(recombModelBox);
 		this.add(recPanel);
 	}
+
+	
 }

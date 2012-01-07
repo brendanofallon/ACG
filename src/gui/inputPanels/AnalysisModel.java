@@ -9,6 +9,7 @@ import gui.inputPanels.loggerConfigs.AvailableLoggers;
 import gui.inputPanels.loggerConfigs.LoggerModel;
 import gui.inputPanels.loggerConfigs.StateLoggerModel;
 
+import java.awt.LayoutManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -212,6 +213,14 @@ public class AnalysisModel {
 	 */
 	public void setAlignment(BasicSequenceAlignment aln) {
 		alignmentEl.setElement(aln);
+	}
+
+	public SiteModelElement getSiteModel() {
+		return siteModel;
+	}
+
+	public CoalescentModelElement getCoalescentModel() {
+		return coalModel;
 	}
 
 }

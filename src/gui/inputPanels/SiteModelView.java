@@ -78,6 +78,16 @@ public class SiteModelView extends JPanel {
 		initComponents();
 	}
 	
+	
+	/**
+	 * Sets the model associated with this view
+	 * @param siteModel
+	 */
+	public void setSiteModel(SiteModelElement siteModel) {
+		this.siteModel = siteModel;
+		updateView();
+	}
+	
 	/**
 	 * Get the site model that holds the model data 
 	 * @return

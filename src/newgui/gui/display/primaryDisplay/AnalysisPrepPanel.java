@@ -1,12 +1,15 @@
 package newgui.gui.display.primaryDisplay;
 
+import gui.document.ACGDocument;
 import gui.inputPanels.AnalysisModel;
+import gui.inputPanels.Configurator.InputConfigException;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +18,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
+import javax.xml.transform.TransformerException;
 
 import sequence.Alignment;
 import sequence.BasicSequenceAlignment;
@@ -37,8 +41,10 @@ public class AnalysisPrepPanel extends JPanel {
 	//Stores all alignments / summaries that have been added
 	private List<AlignmentSummary> alignmentSums = new ArrayList<AlignmentSummary>();
 	
-	public AnalysisPrepPanel() {
-		
+	private PrimaryDisplay displayParent;
+	
+	public AnalysisPrepPanel(PrimaryDisplay displayParent) {
+		this.displayParent = displayParent;
 		initComponents();
 	}
 	
@@ -153,6 +159,24 @@ public class AnalysisPrepPanel extends JPanel {
 			BasicSequenceAlignment basicAln = new BasicSequenceAlignment(seqs);
 			
 			model.setAlignment( basicAln );
+			try {
+				ACGDocument doc = model.getACGDocument();
+				String xmlStr = doc.getXMLString();
+				System.out.println(xmlStr);
+			} catch (InputConfigException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (TransformerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			//Switch showing panel to the 'analysis details' panel
+			displayParent.showAnalysisDetails(model);
+			
 		}
 	}
 
