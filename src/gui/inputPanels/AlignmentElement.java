@@ -28,7 +28,6 @@ import org.w3c.dom.Node;
 
 import sequence.BaseMap;
 import sequence.BasicSequenceAlignment;
-import sequence.BasicSequence;
 import sequence.Sequence;
 import xml.XMLLoader;
 import gui.ErrorWindow;
@@ -64,7 +63,7 @@ public class AlignmentElement implements ElementProvider {
 			alnObj = doc.getObjectForLabel(alnLabels.get(0));
 			if (alnObj instanceof BasicSequenceAlignment) {
 				BasicSequenceAlignment aln = (BasicSequenceAlignment)alnObj;
-				for(BasicSequence seq : aln.getSequences())
+				for(Sequence seq : aln.getSequences())
 					seqs.add(seq);
 			}
 		} catch (Exception ex) {
@@ -78,7 +77,7 @@ public class AlignmentElement implements ElementProvider {
 	 */
 	public void setElement(BasicSequenceAlignment aln) {
 		seqs.clear();
-		for(BasicSequence s : aln.getSequences()) {
+		for(Sequence s : aln.getSequences()) {
 			seqs.add(s);
 		}
 	}
@@ -147,7 +146,7 @@ public class AlignmentElement implements ElementProvider {
 	
 	private Element getElementForSequence(ACGDocument doc, Sequence seq) {
 		Element seqEl = doc.createElement(seq.getLabel());
-		seqEl.setAttribute(XMLLoader.CLASS_NAME_ATTR, BasicSequence.class.getCanonicalName());
+		seqEl.setAttribute(XMLLoader.CLASS_NAME_ATTR, Sequence.class.getCanonicalName());
 		Node textNode = doc.createTextNode(seq.getSequenceString(BaseMap.getDefaultBaseMap()));
 		seqEl.appendChild(textNode);
 		return seqEl;

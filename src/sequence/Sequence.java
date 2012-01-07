@@ -26,6 +26,18 @@ public interface Sequence {
 	 */
 	public int baseAt(int pos);
 	
+	/**
+	 * Converts the character at the given position to BaseMap.N
+	 * @param pos
+	 */
+	public void mask(int pos);
+	
+	/**
+	 * Return the char representation of the base at the given position in this sequence
+	 * @param pos
+	 * @return
+	 */
+	public char charAt(int pos);
 	
 	/**
 	 * Obtain a String representing the bases in this sequence, using the given map for conversion from int to char
@@ -33,4 +45,10 @@ public interface Sequence {
 	 * @return
 	 */
 	public String getSequenceString(BaseMap map);
+
+	/**
+	 * Set the label of this sequence
+	 * @param string
+	 */
+	public void setLabel(String string);
 }
