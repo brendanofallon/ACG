@@ -27,6 +27,7 @@ import newgui.datafile.DataFile;
 import newgui.gui.display.Display;
 import newgui.gui.display.DisplayPane;
 import newgui.gui.filepanel.FileTree;
+import newgui.gui.widgets.BorderlessButton;
 import newgui.gui.widgets.panelPile.PPanel;
 import newgui.gui.widgets.panelPile.PanelPile;
 
@@ -56,7 +57,10 @@ public class ViewerWindow extends JFrame {
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	
-		sansFont = getFont("fonts/ClienB.ttf");
+		sansFont = getFont("fonts/ClienR.ttf");
+		
+		
+		BorderlessButton.setDefaultFont(sansFont.deriveFont(15f));
 		
 		initComponents();
 		

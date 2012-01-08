@@ -8,7 +8,9 @@ import javax.swing.JPanel;
 import sequence.Alignment;
 
 import net.miginfocom.swing.MigLayout;
+import newgui.UIConstants;
 import newgui.alignment.AlignmentSummary;
+import newgui.gui.display.Display;
 
 
 /**
@@ -25,7 +27,7 @@ public class AlignmentContainerPanel extends JPanel {
 	private int columns = 3; //Will wrap to a new row after this many columns have been added
 	
 	public AlignmentContainerPanel() {
-		this.setOpaque(false);
+		this.setBackground(Display.defaultDisplayBackground);
 		this.setLayout(new MigLayout());
 	}
 	
@@ -66,6 +68,7 @@ public class AlignmentContainerPanel extends JPanel {
 	 */
 	public void addAlignment(Alignment aln, String title) {
 		AlignmentSummary summary = new AlignmentSummary(title, aln);
+		summary.setBackground(UIConstants.componentBackground);
 		alignments.add(summary);
 		layoutAlignments();
 	}

@@ -43,7 +43,7 @@ public class PopSizeModelElement extends ModelElement {
 	//Default label for this node
 	String modelLabel = "PopulationSize";
 
-	enum PopSizeModel { Constant, ExpGrowth }
+	public enum PopSizeModel { Constant, ExpGrowth }
 	private PopSizeModel modelType = PopSizeModel.Constant;
 	
 	//Following elements must not be reassigned since views store references to original models

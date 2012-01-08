@@ -1,22 +1,25 @@
 package newgui.gui.display.primaryDisplay;
 
 import gui.inputPanels.AnalysisModel;
-import gui.inputPanels.CoalescentView;
 import gui.inputPanels.MCMCModelView;
-import gui.inputPanels.SiteModelView;
 import gui.inputPanels.loggerConfigs.LoggersPanel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
-import newgui.analysisTemplate.BasicAnalysis;
+import newgui.gui.modelViews.CoalModelView;
+import newgui.gui.modelViews.SiteModelView;
 import newgui.gui.widgets.BorderlessButton;
 
 /**
@@ -47,22 +50,28 @@ public class AnalysisDetailsPanel extends JPanel {
 	
 	private void initComponents() {
 		setOpaque(false);
-		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		setLayout(new FlowLayout(FlowLayout.LEFT));
 		
 		JPanel buttonsPanel = new JPanel();
-		buttonsPanel.setPreferredSize(new Dimension(150, 400));
-		buttonsPanel.setLayout(new MigLayout());
+		buttonsPanel.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+		buttonsPanel.setMinimumSize(new Dimension(200, 400));
+		buttonsPanel.setPreferredSize(new Dimension(200, 400));
+		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
+		buttonsPanel.add(Box.createVerticalStrut(25));
+		buttonsPanel.setAlignmentY(Component.TOP_ALIGNMENT);
 		
 		detailsPanel = new JPanel();
+		detailsPanel.setAlignmentY(Component.TOP_ALIGNMENT);
 		detailsPanel.setLayout(new BorderLayout());
 		detailsPanel.setBorder(BorderFactory.createEmptyBorder(4,10,4,10));
-		
+		detailsPanel.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+		detailsPanel.setMinimumSize(new Dimension(200, 400));
+		detailsPanel.setPreferredSize(new Dimension(400, 400));
 		add(buttonsPanel);
 		add(detailsPanel);
 		
-		BorderlessButton substModelButton = new BorderlessButton("Nucleotide substitution model");
+		BorderlessButton substModelButton = new BorderlessButton("Nucleotide model");
 		substModelButton.setToolTipText("Change options affecting the model of nucleotide evolution");
-		substModelButton.setPreferredSize(new Dimension(150, 50));
 		substModelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				detailsPanel.removeAll();
@@ -71,7 +80,7 @@ public class AnalysisDetailsPanel extends JPanel {
 				repaint();
 			}
 		});
-		buttonsPanel.add(substModelButton, "wrap");
+		buttonsPanel.add(substModelButton);
 
 		BorderlessButton demoButton = new BorderlessButton("Demographic model");
 		demoButton.setToolTipText("Options affecting the model of population size change");
@@ -81,12 +90,10 @@ public class AnalysisDetailsPanel extends JPanel {
 //				detailsPanel.add(siteModelView, BorderLayout.CENTER);				
 			}
 		});
-		demoButton.setPreferredSize(new Dimension(150, 50));
-		buttonsPanel.add(demoButton, "wrap");
+		buttonsPanel.add(demoButton);
 		
 		BorderlessButton coalescentButton = new BorderlessButton("Recombination model");
 		coalescentButton.setToolTipText("Change options affecting recombination model");
-		coalescentButton.setPreferredSize(new Dimension(150, 50));
 		coalescentButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				detailsPanel.removeAll();
@@ -95,28 +102,26 @@ public class AnalysisDetailsPanel extends JPanel {
 				repaint();
 			}
 		});
-		buttonsPanel.add(coalescentButton, "wrap");
+		buttonsPanel.add(coalescentButton);
 		
 		BorderlessButton loggingButton = new BorderlessButton("Logging options");
 		loggingButton.setToolTipText("Change options regarding the type of data collected");
-		loggingButton.setPreferredSize(new Dimension(150, 50));
-		buttonsPanel.add(loggingButton, "wrap");
+		buttonsPanel.add(loggingButton);
 
 		BorderlessButton mcButton = new BorderlessButton("Markov chain options");
 		mcButton.setToolTipText("Change options regarding the length and number of chains run");
-		mcButton.setPreferredSize(new Dimension(150, 50));
-		buttonsPanel.add(mcButton, "wrap");
-
+		buttonsPanel.add(mcButton);
+		buttonsPanel.add(Box.createVerticalGlue());
 		
 		siteModelView = new SiteModelView();
-		coalView = new CoalescentView();
+		coalView = new CoalModelView();
 		loggersView = new LoggersPanel();
 		//mcView = new MCMCModelView();
 	}
 	
 	
 	private SiteModelView siteModelView;
-	private CoalescentView coalView;
+	private CoalModelView coalView;
 	private LoggersPanel loggersView;
 	private MCMCModelView mcView;
 	

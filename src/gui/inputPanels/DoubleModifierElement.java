@@ -40,7 +40,7 @@ import gui.inputPanels.Configurator.InputConfigException;
  */
 public class DoubleModifierElement {
 
-	enum ModType {Simple, Scale};
+	public enum ModType {Simple, Scale};
 	
 	private ModType type = null;
 	private double frequency = 1.0;

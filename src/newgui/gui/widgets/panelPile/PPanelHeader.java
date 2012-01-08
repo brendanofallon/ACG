@@ -11,6 +11,7 @@ import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
+import newgui.UIConstants;
 import newgui.gui.ViewerWindow;
 
 public class PPanelHeader extends JPanel {
@@ -24,6 +25,7 @@ public class PPanelHeader extends JPanel {
 	
 	public PPanelHeader(String text) {
 		this.text = text;
+		setOpaque(true);
 		this.setPreferredSize(new Dimension(150, 21));
 		this.setMinimumSize(new Dimension(15, 21));
 		this.setMaximumSize(new Dimension(15000, 21));
@@ -36,17 +38,17 @@ public class PPanelHeader extends JPanel {
 	
 	public void paintComponent(Graphics g) {
 		Graphics2D g2d = (Graphics2D)g;
+
+		//Plain background
+		g2d.setPaint( UIConstants.componentBackground );
+		g2d.fillRect(0, 0, getWidth()+1, getHeight()+1);
 		
 		if (!moving) {
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-		
+			
 			g2d.setPaint(gradient);
 			g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 8, 8);
-		}
-		else {
-			g2d.setPaint( new Color(0.9f, 0.9f, 0.95f) );
-			g2d.fillRect(0, 0, getWidth(), getHeight());
 		}
 	
 		g2d.setColor(Color.LIGHT_GRAY);

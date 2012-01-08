@@ -2,11 +2,14 @@ package newgui.gui.widgets.panelPile;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+
+import newgui.UIConstants;
 
 /**
  * A single panel in a PanelPile
@@ -23,6 +26,8 @@ public class PPanel extends JPanel {
 		header = new PPanelHeader(headerText);
 		header.setAlignmentX(Component.LEFT_ALIGNMENT);
 		this.setAlignmentX(Component.LEFT_ALIGNMENT);
+		setBackground(UIConstants.componentBackground);
+		header.setBackground(UIConstants.componentBackground);
 		this.pileParent = pileParent;
 		header.addMouseListener(new ClickListener(this));
 		this.setBackground(Color.white);
@@ -32,6 +37,11 @@ public class PPanel extends JPanel {
 		return header;
 	}
 	
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		g.setColor(Color.LIGHT_GRAY);
+		g.drawLine(getWidth()-1, -1, getWidth()-1, getHeight());
+	}
 	
 	/**
 	 * Listens for 

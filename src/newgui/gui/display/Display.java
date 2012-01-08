@@ -4,6 +4,8 @@ import java.awt.Color;
 
 import javax.swing.JPanel;
 
+import newgui.UIConstants;
+
 
 /**
  * A Display is the base class of objects that are shown in the DisplayPane, typically the big panel
@@ -14,7 +16,7 @@ import javax.swing.JPanel;
 public abstract class Display extends JPanel {
 
 	private String title; //Label for this display, appears in tab at top of component
-	public static final Color defaultDisplayBackground = new Color(0.95f, 0.95f, 0.99f);;
+	public static final Color defaultDisplayBackground = UIConstants.componentBackground;
 	
 	public Display() {
 		this.setBackground(defaultDisplayBackground);
