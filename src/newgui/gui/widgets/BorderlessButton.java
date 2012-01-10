@@ -49,6 +49,7 @@ public class BorderlessButton extends JPanel {
 	List<ActionListener> actionListeners = new ArrayList<ActionListener>();
 	
 	private static Font defaultFont = null;
+	private boolean useDefaultFont = true; //Unless font has been explicitly set we use the default
 	
 	public BorderlessButton(String label) {
 		this(label, null);
@@ -99,6 +100,11 @@ public class BorderlessButton extends JPanel {
 	
 	public static Font getDefaultFont() {
 		return defaultFont;
+	}
+	
+	public void setFont(Font font) {
+		super.setFont(font);
+		useDefaultFont = false;
 	}
 	
 	public int getIconGap() {
@@ -166,7 +172,7 @@ public class BorderlessButton extends JPanel {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		if (defaultFont != null)
+		if (defaultFont != null && useDefaultFont)
 			setFont(defaultFont);
 		
 		int strWidth = g2d.getFontMetrics().stringWidth(text[0]); //Width of text 

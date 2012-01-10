@@ -60,7 +60,7 @@ public class ViewerWindow extends JFrame {
 		sansFont = getFont("fonts/ClienR.ttf");
 		
 		
-		BorderlessButton.setDefaultFont(sansFont.deriveFont(15f));
+		BorderlessButton.setDefaultFont(sansFont.deriveFont(15f).deriveFont(Font.BOLD));
 		
 		initComponents();
 		

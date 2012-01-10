@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -18,7 +19,10 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
+import newgui.gui.ViewerWindow;
 import newgui.gui.modelViews.CoalModelView;
+import newgui.gui.modelViews.LoggersView;
+import newgui.gui.modelViews.MCModelView;
 import newgui.gui.modelViews.SiteModelView;
 import newgui.gui.widgets.BorderlessButton;
 
@@ -45,6 +49,7 @@ public class AnalysisDetailsPanel extends JPanel {
 		//FIX ME!
 		siteModelView.setSiteModel(analysis.getSiteModel());
 		coalView.setCoalModel(analysis.getCoalescentModel());
+		mcView.setModel( analysis.getMCModelElement() );
 		repaint();
 	}
 	
@@ -54,8 +59,8 @@ public class AnalysisDetailsPanel extends JPanel {
 		
 		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setBorder(BorderFactory.createLineBorder(Color.GREEN));
-		buttonsPanel.setMinimumSize(new Dimension(200, 400));
-		buttonsPanel.setPreferredSize(new Dimension(200, 400));
+		buttonsPanel.setMinimumSize(new Dimension(220, 400));
+		buttonsPanel.setPreferredSize(new Dimension(220, 400));
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
 		buttonsPanel.add(Box.createVerticalStrut(25));
 		buttonsPanel.setAlignmentY(Component.TOP_ALIGNMENT);
@@ -65,64 +70,104 @@ public class AnalysisDetailsPanel extends JPanel {
 		detailsPanel.setLayout(new BorderLayout());
 		detailsPanel.setBorder(BorderFactory.createEmptyBorder(4,10,4,10));
 		detailsPanel.setBorder(BorderFactory.createLineBorder(Color.GREEN));
-		detailsPanel.setMinimumSize(new Dimension(200, 400));
-		detailsPanel.setPreferredSize(new Dimension(400, 400));
+		detailsPanel.setMinimumSize(new Dimension(400, 400));
+		detailsPanel.setPreferredSize(new Dimension(700, 400));
 		add(buttonsPanel);
 		add(detailsPanel);
 		
-		BorderlessButton substModelButton = new BorderlessButton("Nucleotide model");
+		substModelButton = new BorderlessButton("Nucleotide model");
 		substModelButton.setToolTipText("Change options affecting the model of nucleotide evolution");
+		substModelButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		substModelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				detailsPanel.removeAll();
 				detailsPanel.add(siteModelView, BorderLayout.CENTER);
+				setButtonHighlight(substModelButton);
 				revalidate();
 				repaint();
 			}
 		});
 		buttonsPanel.add(substModelButton);
 
-		BorderlessButton demoButton = new BorderlessButton("Demographic model");
+		demoButton = new BorderlessButton("Demographic model");
 		demoButton.setToolTipText("Options affecting the model of population size change");
+		demoButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		demoButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				detailsPanel.removeAll();
-//				detailsPanel.add(siteModelView, BorderLayout.CENTER);				
+				detailsPanel.removeAll();
+//				detailsPanel.add(siteModelView, BorderLayout.CENTER);
+				setButtonHighlight(demoButton);
+				revalidate();
+				repaint();
 			}
 		});
 		buttonsPanel.add(demoButton);
 		
-		BorderlessButton coalescentButton = new BorderlessButton("Recombination model");
+		coalescentButton = new BorderlessButton("Recombination model");
 		coalescentButton.setToolTipText("Change options affecting recombination model");
+		coalescentButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		coalescentButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				detailsPanel.removeAll();
 				detailsPanel.add(coalView, BorderLayout.CENTER);
+				setButtonHighlight(coalescentButton);
 				revalidate();
 				repaint();
 			}
 		});
 		buttonsPanel.add(coalescentButton);
 		
-		BorderlessButton loggingButton = new BorderlessButton("Logging options");
+		loggingButton = new BorderlessButton("Logging options");
 		loggingButton.setToolTipText("Change options regarding the type of data collected");
+		loggingButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		loggingButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				detailsPanel.removeAll();
+				detailsPanel.add(loggersView, BorderLayout.CENTER);
+				setButtonHighlight(loggingButton);
+				revalidate();
+				repaint();
+			}
+		});
 		buttonsPanel.add(loggingButton);
 
-		BorderlessButton mcButton = new BorderlessButton("Markov chain options");
+		mcButton = new BorderlessButton("Markov chain options");
 		mcButton.setToolTipText("Change options regarding the length and number of chains run");
+		mcButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		mcButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				detailsPanel.removeAll();
+				detailsPanel.add(mcView, BorderLayout.CENTER);
+				setButtonHighlight(mcButton);
+				revalidate();
+				repaint();
+			}
+		});
 		buttonsPanel.add(mcButton);
 		buttonsPanel.add(Box.createVerticalGlue());
 		
 		siteModelView = new SiteModelView();
 		coalView = new CoalModelView();
-		loggersView = new LoggersPanel();
-		//mcView = new MCMCModelView();
+		loggersView = new LoggersView();
+		mcView = new MCModelView();
 	}
 	
-	
+	protected void setButtonHighlight(BorderlessButton button) {
+		if (prevButton != null)
+			prevButton.setFont(BorderlessButton.getDefaultFont());
+		button.setFont(ViewerWindow.getFont("fonts/ClienB.ttf").deriveFont(15f));
+		prevButton = button;
+	}
+
+	private BorderlessButton demoButton;
+	private BorderlessButton coalescentButton;
+	private BorderlessButton loggingButton;
+	private BorderlessButton substModelButton;
+	private BorderlessButton mcButton;
+	private BorderlessButton prevButton = null;
 	private SiteModelView siteModelView;
 	private CoalModelView coalView;
-	private LoggersPanel loggersView;
-	private MCMCModelView mcView;
+	private LoggersView loggersView;
+	private MCModelView mcView;
 	
 }

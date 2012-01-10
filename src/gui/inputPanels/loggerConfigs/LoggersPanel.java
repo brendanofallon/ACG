@@ -42,12 +42,14 @@ import javax.swing.JPanel;
 import logging.PropertyLogger;
 import logging.StateLogger;
 
+import newgui.gui.modelViews.LoggerReceiver;
+
 import org.w3c.dom.Element;
 
 import xml.XMLLoader;
 
 
-public class LoggersPanel extends JPanel {
+public class LoggersPanel extends JPanel implements LoggerReceiver {
 
 	List<LoggerWrapper> loggers = new ArrayList<LoggerWrapper>();
 	
