@@ -19,7 +19,6 @@
 
 package gui.document;
 
-import gui.ExecutingChain;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +41,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import jobqueue.ExecutingChain;
 
 import mcmc.MCMC;
 import mcmc.mc3.MC3;
