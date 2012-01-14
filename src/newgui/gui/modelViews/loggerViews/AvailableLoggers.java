@@ -1,4 +1,12 @@
-package gui.inputPanels.loggerConfigs;
+package newgui.gui.modelViews.loggerViews;
+
+import gui.inputPanels.loggerConfigs.BPDensityModel;
+import gui.inputPanels.loggerConfigs.BPLocationModel;
+import gui.inputPanels.loggerConfigs.ConsensusTreeModel;
+import gui.inputPanels.loggerConfigs.LoggerModel;
+import gui.inputPanels.loggerConfigs.MPEARGModel;
+import gui.inputPanels.loggerConfigs.RootHeightModel;
+import gui.inputPanels.loggerConfigs.StateLoggerModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +14,11 @@ import java.util.List;
 import newgui.gui.modelViews.DefaultLoggerView;
 
 /**
- * Stores a list of all (user-ready) logger models that can be added to an analysis 
+ * Stores a list of all (user-ready) logger models that can be added to an analysis. This
+ * thing also provides a static method for obtaining a DefaultLoggerView suitable
+ * for rendering a given loggermodel (createDefaultViewForModel).
+ * Like many classes in this package, there is an equivalent (though now outdated) 
+ * version of this class in the gui.input panels 
  * @author brendan
  *
  */
@@ -31,6 +43,7 @@ public class AvailableLoggers {
 		return models;
 	}
 	
+	
 	/**
 	 * Create a NEW view suitable for the given logger model.
 	 * Once again, this is just hardcoded in here for now... probably a more
@@ -38,7 +51,7 @@ public class AvailableLoggers {
 	 * @param model
 	 * @return
 	 */
-	public static AbstractLoggerView createViewForModel(LoggerModel model) {
+	public static DefaultLoggerView createDefaultViewForModel(LoggerModel model) {
 		if (model instanceof StateLoggerModel) {
 			return new StateLoggerView( (StateLoggerModel)model);
 		}
@@ -60,6 +73,4 @@ public class AvailableLoggers {
 		
 		throw new IllegalArgumentException("Could not find a suitable view for logger model: " + model.getModelLabel() );
 	}
-	
-
 }

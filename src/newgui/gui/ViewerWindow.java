@@ -7,6 +7,10 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
+import java.awt.Graphics;
+import java.awt.GraphicsConfiguration;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +32,7 @@ import newgui.gui.display.Display;
 import newgui.gui.display.DisplayPane;
 import newgui.gui.filepanel.FileTree;
 import newgui.gui.widgets.BorderlessButton;
+import newgui.gui.widgets.RegionFader;
 import newgui.gui.widgets.panelPile.PPanel;
 import newgui.gui.widgets.panelPile.PanelPile;
 
@@ -57,10 +62,10 @@ public class ViewerWindow extends JFrame {
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	
-		sansFont = getFont("fonts/ClienR.ttf");
+		sansFont = getFont("fonts/steward.ttf");
 		
 		
-		BorderlessButton.setDefaultFont(sansFont.deriveFont(15f).deriveFont(Font.BOLD));
+		BorderlessButton.setDefaultFont(sansFont.deriveFont(17f));
 		
 		initComponents();
 		
@@ -86,6 +91,27 @@ public class ViewerWindow extends JFrame {
 	public void displayDataFile(DataFile dataFile) {
 		Display display = dataFile.getDisplay();
 		displayPane.addDisplay(display);
+	}
+
+	/**
+	 * Fade in a region of this frame from the background color 
+	 * @param r
+	 */
+	public void fadeInRegion(Rectangle r) {
+		RegionFader fader = new RegionFader(this);
+		fader.fadeInRegion(r);
+	}
+	
+	/**
+	 * Create a new window in the displaypane containing a Display associated with
+	 * the given DataFile, and using the title provided
+	 * @param dataFile
+	 */
+	public void displayDataFile(DataFile dataFile, String title) {
+		Display display = dataFile.getDisplay();
+		displayPane.addDisplay(display, title);
+		fadeInRegion( displayPane.getBounds() );
+		repaint();
 	}
 	
 	/**

@@ -12,12 +12,10 @@ import gui.ErrorWindow;
 import gui.document.ACGDocument;
 import gui.inputPanels.ARGModelElement;
 import gui.inputPanels.Configurator.InputConfigException;
-import gui.inputPanels.loggerConfigs.AbstractLoggerView;
-import gui.inputPanels.loggerConfigs.AddLoggerFrame;
-import gui.inputPanels.loggerConfigs.AvailableLoggers;
+
+
 import gui.inputPanels.loggerConfigs.LoggerModel;
 import gui.inputPanels.loggerConfigs.StateLoggerModel;
-import gui.inputPanels.loggerConfigs.StateLoggerView;
 import gui.widgets.BorderlessButton;
 
 import javax.swing.BorderFactory;
@@ -26,25 +24,29 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 
 import logging.PropertyLogger;
 import logging.StateLogger;
+
+import newgui.gui.modelViews.loggerViews.AvailableLoggers;
+import newgui.gui.modelViews.loggerViews.StateLoggerView;
 
 import org.w3c.dom.Element;
 
 import xml.XMLLoader;
 
 
-public class LoggersView extends JPanel implements LoggerReceiver {
+public class LoggersView extends JPanel {
 
-	List<LoggerWrapper> loggers = new ArrayList<LoggerWrapper>();
-	
-	JButton addButton;
+	private List<LoggerWrapper> loggers = new ArrayList<LoggerWrapper>();
+	private AddLoggersFrame addFrame;
+	private JButton addButton;
 	
 	//Reference to ARG object that may be used by loggers
 	//This implementation sucks because what if different loggers want to reference different ARGs?
 	//Maybe there should be one logger panel per ARG? per alignment? 
-	ARGModelElement ARGref = null;
+	protected ARGModelElement ARGref = null;
 	
 	static final ImageIcon removeIcon = ACGFrame.getIcon("inputPanels/loggerConfigs/icons/removeButton.png");
 	
@@ -54,10 +56,11 @@ public class LoggersView extends JPanel implements LoggerReceiver {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setOpaque(false);
 		
-		addFrame = new AddLoggerFrame(this);
+		addFrame = new AddLoggersFrame(this);
 		addFrame.setVisible(false);
 		
 		addButton = new JButton("Add logger");
+		addButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showAddFrame();
@@ -86,22 +89,37 @@ public class LoggersView extends JPanel implements LoggerReceiver {
 	public void setLoggerModels(List<LoggerModel> newModels) {
 		loggers.clear();
 		for(LoggerModel model : newModels) {
-			addLogger(AvailableLoggers.createViewForModel(model));
+			addLogger(AvailableLoggers.createDefaultViewForModel(model));
 		}
 	}
 	
-	public void addLogger(AbstractLoggerView logger) {
+	public void addLogger(DefaultLoggerView logger) {
 		LoggerWrapper wrapped = new LoggerWrapper(logger);
-		
 		loggers.add(wrapped);
-		this.remove(addButton);
-		add(wrapped);
+		layoutLoggers();
+	}
+	
+	/**
+	 * Force a re-layout of the components in this view, mostly
+	 * by removing all components and then adding them back in
+	 * This should be called after any change to the loggers field 
+	 */
+	protected void layoutLoggers() {
+		this.removeAll();		
 		this.add(addButton);
+		
+		for(LoggerWrapper wrapper : loggers) {
+			add(wrapper);
+			if (wrapper != loggers.get(loggers.size()-1))
+				add(new JSeparator(JSeparator.HORIZONTAL));
+		}
+		
+		
 		revalidate();
 		repaint();
 	}
 	
-	public void removeLogger(AbstractLoggerView which) {
+	public void removeLogger(DefaultLoggerView which) {
 		LoggerWrapper toRemove = null;
 		for(LoggerWrapper logger : loggers) {
 			if (logger.config == which) {
@@ -113,8 +131,8 @@ public class LoggersView extends JPanel implements LoggerReceiver {
 			remove(toRemove);
 			loggers.remove(toRemove);				
 		}
-		revalidate();
-		repaint();
+		
+		layoutLoggers();
 	}
 	
 	
@@ -122,7 +140,7 @@ public class LoggersView extends JPanel implements LoggerReceiver {
 		List<Element> nodes = new ArrayList<Element>();
 		
 		for(LoggerWrapper logger : loggers) {
-			AbstractLoggerView view = logger.config;
+			DefaultLoggerView view = logger.config;
 			view.updateFields();
 			view.getModel().setArgRef( ARGref );
 			Element loggerElement;
@@ -137,7 +155,7 @@ public class LoggersView extends JPanel implements LoggerReceiver {
 		List<LoggerModel> models = new ArrayList<LoggerModel>();
 
 		for(LoggerWrapper logger : loggers) {
-			AbstractLoggerView view = logger.config;
+			DefaultLoggerView view = logger.config;
 			view.updateFields();
 			view.getModel().setArgRef( ARGref );
 			models.add(view.getModel());
@@ -163,7 +181,7 @@ public class LoggersView extends JPanel implements LoggerReceiver {
 		for(String loggerLabel : docLoggers) {
 			Element el = doc.getElementForLabel(loggerLabel);
 			String className = el.getAttribute(XMLLoader.CLASS_NAME_ATTR);
-			AbstractLoggerView view = addFrame.getViewForClass( className );
+			DefaultLoggerView view = addFrame.getViewForClass( className );
 			try {
 				if (view!= null) {
 					view.getModel().readElements(doc);
@@ -186,9 +204,9 @@ public class LoggersView extends JPanel implements LoggerReceiver {
 	 */
 	class LoggerWrapper extends JPanel {
 		
-		AbstractLoggerView config;
+		DefaultLoggerView config;
 		
-		public LoggerWrapper(final AbstractLoggerView conf) {
+		public LoggerWrapper(final DefaultLoggerView conf) {
 			this.config = conf;
 			setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 			setOpaque(false);
@@ -219,6 +237,5 @@ public class LoggersView extends JPanel implements LoggerReceiver {
 				
 	}
 	
-	private AddLoggerFrame addFrame;
 	
 }

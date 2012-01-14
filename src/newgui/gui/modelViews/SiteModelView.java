@@ -37,6 +37,8 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.w3c.dom.Element;
 
 /**
@@ -122,6 +124,8 @@ public class SiteModelView extends JPanel {
 		stylist.addStyle(new Style() {
 			public void apply(JComponent comp) {
 				comp.setOpaque(false);
+				comp.setAlignmentX(Component.LEFT_ALIGNMENT);
+				comp.setAlignmentY(Component.TOP_ALIGNMENT);
 			}
 		});
 		
@@ -129,6 +133,8 @@ public class SiteModelView extends JPanel {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		mutPanel = new JPanel();
+		//mutPanel.setLayout(new BoxLayout(mutPanel, BoxLayout.Y_AXIS));
+		mutPanel.setLayout(new MigLayout());
 		mutPanel.setPreferredSize(new Dimension(300, 400));
 		stylist.applyStyle(mutPanel);
 		JPanel mutTop = new JPanel();
@@ -136,6 +142,8 @@ public class SiteModelView extends JPanel {
 		
 		
 		mutTop.add(new JLabel("Mutation model: "));
+		//mutTop.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+		stylist.applyStyle(mutTop);
 		mutBox = new JComboBox(new Object[]{/*"JC69", "K2P", */ "F84", "TN93"}); 
 		mutBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent evt) {
@@ -144,29 +152,37 @@ public class SiteModelView extends JPanel {
 			}
 		});
 		mutTop.add(mutBox);
-		mutPanel.add(mutTop, BorderLayout.NORTH);
 		
+		stylist.applyStyle(mutPanel);
 		mutParamsPanel = new JPanel();
+		//mutParamsPanel.setBorder(BorderFactory.createLineBorder(Color.red));
 		mutParamsPanel.setLayout(new BoxLayout(mutParamsPanel, BoxLayout.Y_AXIS));
 		mutParamsPanel.setPreferredSize(new Dimension(300, 400));
 		stylist.applyStyle(mutParamsPanel);
-		mutPanel.add(mutParamsPanel, BorderLayout.CENTER);
+		
+		mutPanel.add(mutTop, "wrap");
+		mutPanel.add(mutParamsPanel, "wrap");
+		//mutPanel.add(Box.createVerticalGlue());
 		
 		kappaView = new DoubleParamView("Kappa", siteModel.getTtRatioElement());
+		stylist.applyStyle(kappaView);
 		kappaView.setPreferredSize(new Dimension(200, 40));
 		kappaRView = new DoubleParamView("Kappa R", siteModel.getKappaRElement());
 		kappaYView = new DoubleParamView("Kappa Y", siteModel.getKappaYElement());
+		stylist.applyStyle(kappaRView);
+		stylist.applyStyle(kappaYView);
 		mutParamsPanel.add(kappaView);
 		
 		this.add(mutPanel);
 		
-		JSeparator sep = new JSeparator(JSeparator.VERTICAL);
+		JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
 		this.add(sep);
 		
 		ratePanel = new JPanel();
-		ratePanel.setLayout(new BorderLayout());
+		ratePanel.setLayout(new MigLayout());
 		this.add(ratePanel);
 		stylist.applyStyle(ratePanel);
+		ratePanel.setPreferredSize(new Dimension(300, 200));
 		JPanel rateTop = new JPanel();
 		stylist.applyStyle(rateTop);
 		rateTop.add(new JLabel("Rate model: "));
@@ -186,14 +202,17 @@ public class SiteModelView extends JPanel {
 			}
 		});
 		rateTop.add(rateBox);
-		ratePanel.add(rateTop, BorderLayout.NORTH);
+		ratePanel.add(rateTop, "wrap");
 		
 
 		rateConfigPanel.setLayout(new CardLayout());
+		rateConfigPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
 		stylist.applyStyle(rateConfigPanel);
-		ratePanel.add(rateConfigPanel, BorderLayout.CENTER);
+		ratePanel.add(rateConfigPanel, "wrap");
 		
-		oneRatePanel.add(new JLabel("Rate (subs. / site):"));
+		oneRatePanel.setLayout(new MigLayout());
+		JLabel rateLabel = new JLabel("Rate (subs. / site):"); 
+		oneRatePanel.add(rateLabel);
 		oneRatePanel.setToolTipText("Pick the rate at which sites evolve in expected substitutions / time");
 		rateTextField = new JTextField("1.0");
 		rateTextField.addActionListener(new ActionListener() {
@@ -208,7 +227,7 @@ public class SiteModelView extends JPanel {
 		oneRatePanel.setOpaque(false);
 		rateConfigPanel.add(oneRatePanel, rateTypes[0]);
 
-
+		gammaPanel.setLayout(new MigLayout());
 		categsSpinner = new JSpinner(new SpinnerNumberModel(4, 1, 100, 1));
 		categsSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent evt) {
@@ -216,12 +235,15 @@ public class SiteModelView extends JPanel {
 			}
 		});
 		categsSpinner.setToolTipText("Number of categories in discrete gamma rates model");
-		gammaPanel.add(new JLabel("Rate categories:"));
-		gammaPanel.add(categsSpinner);
+		stylist.applyStyle(categsSpinner);
+		JLabel categLabel = new JLabel("Rate categories:");
+		categLabel.setMaximumSize(new Dimension(120, 100));
+		gammaPanel.add(categLabel);
+		gammaPanel.add(categsSpinner, "wrap");
 		
 		
 		alphaView = new DoubleParamView("Gamma shape (alpha):", siteModel.getAlphaParamElement());
-		gammaPanel.add(alphaView);
+		gammaPanel.add(alphaView, "span 2");
 		
 		gammaPanel.setOpaque(false);
 		rateConfigPanel.add(gammaPanel, rateTypes[1]);

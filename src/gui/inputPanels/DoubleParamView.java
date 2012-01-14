@@ -62,7 +62,7 @@ public class DoubleParamView extends JPanel {
 			public void apply(JComponent comp) {
 				comp.setOpaque(false);
 				comp.setAlignmentX(Component.LEFT_ALIGNMENT);
-				comp.setFont(new Font("Sans", Font.PLAIN, 12));
+				//comp.setFont(new Font("Sans", Font.PLAIN, 12));
 			}
 		});
 		

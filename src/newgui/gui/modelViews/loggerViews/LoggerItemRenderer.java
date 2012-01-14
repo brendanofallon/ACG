@@ -17,14 +17,12 @@
 ***********************************************************************/
 
 
-package gui.inputPanels.loggerConfigs;
+package newgui.gui.modelViews.loggerViews;
 
 import gui.ErrorWindow;
 import gui.widgets.RoundedPanel;
 
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -32,9 +30,9 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
+import newgui.gui.modelViews.AddLoggersFrame;
+import newgui.gui.modelViews.DefaultLoggerView;
 
 /**
  * This draws a representation of the given logger view in an AddLoggerFrame 
@@ -43,12 +41,12 @@ import javax.swing.ListCellRenderer;
  */
 public class LoggerItemRenderer extends RoundedPanel {
 
-	final AddLoggerFrame frame;
-	final AbstractLoggerView config;
+	final AddLoggersFrame frame;
+	final DefaultLoggerView config;
 	JLabel nameLabel;
 	JButton addButton;
 	
-	public LoggerItemRenderer(AbstractLoggerView config, AddLoggerFrame frame) {
+	public LoggerItemRenderer(DefaultLoggerView config, AddLoggersFrame frame) {
 		setLayout(new BoxLayout(this.getMainPanel(), BoxLayout.X_AXIS));
 		this.getMainPanel().setOpaque(false);
 		this.frame = frame;
@@ -81,10 +79,10 @@ public class LoggerItemRenderer extends RoundedPanel {
 	 * Adds a CLONE of this type of logger to the logger panel
 	 */
 	public void addLogger() {
-		Class<AbstractLoggerView> loggerClass = null;
-		AbstractLoggerView newView = null;
+		Class<DefaultLoggerView> loggerClass = null;
+		DefaultLoggerView newView = null;
 		try {
-			loggerClass = (Class<AbstractLoggerView>) config.getClass();
+			loggerClass = (Class<DefaultLoggerView>) config.getClass();
 			newView = loggerClass.newInstance();
 		}
 		catch (Exception ex) {

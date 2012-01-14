@@ -92,8 +92,13 @@ public class FileTree extends JPanel {
 				File file = ((FileNode)obj).getFile();
 				XMLDataFile dataFile;
 				try {
+					
 					dataFile = DataFileFactory.createDataFile(file);
-					ViewerWindow.getViewer().displayDataFile(dataFile);
+					String title = dataFile.getSourceFile().getName();
+					if (title.endsWith(".xml"))
+						title = title.replace(".xml", "");
+					
+					ViewerWindow.getViewer().displayDataFile(dataFile, title);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
