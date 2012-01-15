@@ -74,7 +74,7 @@ public class BorderlessButton extends JPanel {
 		}
 		
 		if (label != null) {
-			pWidth = Math.max(text[0].length()*10, pWidth+3);
+			pWidth = Math.max(text[0].length()*10+10, pWidth+10);
 			pHeight += Math.max(pHeight, 28);
 		}
 		
@@ -100,6 +100,15 @@ public class BorderlessButton extends JPanel {
 	
 	public static Font getDefaultFont() {
 		return defaultFont;
+	}
+	
+	/**
+	 * Set horizontal alignment of text, permissible values are Component.LEFT_ALIGNMENT, 
+	 * Component.CENTER_ALIGNMENT, and COmponent.RIGHT_ALIGNMENT
+	 * @param alignment
+	 */
+	public void setHorizontalTextAlignment(float alignment) {
+		this.horTextAlignment = alignment;
 	}
 	
 	public void setFont(Font font) {
@@ -177,6 +186,12 @@ public class BorderlessButton extends JPanel {
 		
 		int strWidth = g2d.getFontMetrics().stringWidth(text[0]); //Width of text 
 		int boxWidth = strWidth + 10; //Width of box around text
+		if (icon != null)
+			boxWidth = Math.max(boxWidth, icon.getIconWidth()+6);
+		//X value at which to start drawing bounding box
+		int boxX = 1;
+		if (horTextAlignment == Component.RIGHT_ALIGNMENT)
+			boxX = getWidth()-strWidth-12;
 		
 		if (this.isEnabled() && drawBorder) {
 
@@ -186,7 +201,8 @@ public class BorderlessButton extends JPanel {
 			else
 				gp = new GradientPaint(1, 0, new Color(1f, 1f, 1f), 3, getHeight(), new Color(0.88f, 0.88f, 0.88f));
 			g2d.setPaint(gp);
-			g2d.fillRoundRect(1, 1, boxWidth, getHeight()-3, 5, 2);
+			
+			g2d.fillRoundRect(boxX, 1, boxWidth, getHeight()-3, 5, 2);
 		}
 		else {
 			super.paintComponent(g);
@@ -194,7 +210,7 @@ public class BorderlessButton extends JPanel {
 		
 		int dx = 1;
 		if (icon != null) {
-			g2d.drawImage(icon.getImage(), Math.max(0, getWidth()/2-icon.getIconWidth()/2), 4 , null);
+			g2d.drawImage(icon.getImage(), Math.max(0, getWidth()/2-icon.getIconWidth()/2)+xDif, Math.max(0, getHeight()/2 - icon.getIconHeight()/2)+yDif , null);
 		}
 		else {
 			yStart = Math.min(getHeight()-2, getHeight()/2 - 8 );
@@ -208,7 +224,7 @@ public class BorderlessButton extends JPanel {
 				if (horTextAlignment == Component.CENTER_ALIGNMENT)
 					textXPos = getWidth()/2-strWidth/2;
 				if (horTextAlignment == Component.RIGHT_ALIGNMENT)
-					textXPos = getWidth() - strWidth - 4;
+					textXPos = getWidth() - strWidth - 7;
 				
 				
 				g2d.setColor(new Color(0.99f, 0.99f, 0.99f, 0.4f));
@@ -224,10 +240,10 @@ public class BorderlessButton extends JPanel {
 		
 		if (this.isEnabled() && drawBorder) {
 			g2d.setColor(new Color(0.99f, 0.99f, 0.99f, 0.35f));
-			g2d.drawRoundRect(1, 1, boxWidth, getHeight()-3, 7, 7);
+			g2d.drawRoundRect(boxX, 1, boxWidth, getHeight()-3, 7, 7);
 			
 			g2d.setColor(new Color(0.69f, 0.69f, 0.69f, 0.90f));
-			g2d.drawRoundRect(0, 0, boxWidth, getHeight()-3, 7, 7);
+			g2d.drawRoundRect(boxX-1, 0, boxWidth, getHeight()-3, 7, 7);
 		}
 	}
 

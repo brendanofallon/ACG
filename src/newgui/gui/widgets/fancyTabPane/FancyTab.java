@@ -30,7 +30,7 @@ public class FancyTab extends JPanel {
 
 	private String text;
 	private boolean selected = false;
-	private static final Font normalFont = ViewerWindow.sansFont.deriveFont(13f);
+	private static final Font normalFont = ViewerWindow.sansFont.deriveFont(14f);
 	//private static final Font selectedFont = ViewerWindow.sansFont.deriveFont(Font.BOLD);
 	private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
 

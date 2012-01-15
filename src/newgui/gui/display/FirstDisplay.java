@@ -41,7 +41,7 @@ public class FirstDisplay extends Display {
 		setTitle(title);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		aln.setReference(aln.getConsensus());
+		//aln.setReference(aln.getConsensus());
 		AlignmentSummary alnSummary = new AlignmentSummary(title, aln);
 
 		alnContainer = new JPanel();
