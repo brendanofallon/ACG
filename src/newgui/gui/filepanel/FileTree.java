@@ -83,7 +83,7 @@ public class FileTree extends JPanel {
 	
 	
 	protected void handleMouseClick(MouseEvent me) {
-		if (me.getClickCount()>1) {
+		if (me.getClickCount()>0) {
 			TreePath selPath = tree.getSelectionPath();
 			if (selPath == null) //Some double-clicks aren't on anything and selPath will be null
 				return;
