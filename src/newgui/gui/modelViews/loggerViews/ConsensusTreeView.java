@@ -26,7 +26,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import newgui.gui.modelViews.DefaultLoggerView;
 
 import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.loggerConfigs.ConsensusTreeModel;
@@ -56,10 +55,14 @@ public class ConsensusTreeView extends DefaultLoggerView {
 				}
 			}
 		});
-		add(new JLabel("Site :"));
-		add(siteField);
+		centerPanel.add(new JLabel("Site :"));
+		centerPanel.add(siteField);
 	}
 	
+	
+	public Dimension getPreferredDimensions() {
+		return new Dimension(400, 180);
+	}
 	
 	protected void updateSiteField() throws InputConfigException {
 		try {

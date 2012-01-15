@@ -38,7 +38,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import logging.StateLogger;
 
-import newgui.gui.modelViews.DefaultLoggerView;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

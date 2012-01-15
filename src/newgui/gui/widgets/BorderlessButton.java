@@ -186,6 +186,8 @@ public class BorderlessButton extends JPanel {
 		
 		int strWidth = g2d.getFontMetrics().stringWidth(text[0]); //Width of text 
 		int boxWidth = strWidth + 10; //Width of box around text
+		if (icon != null)
+			boxWidth = Math.max(boxWidth, icon.getIconWidth()+6);
 		//X value at which to start drawing bounding box
 		int boxX = 1;
 		if (horTextAlignment == Component.RIGHT_ALIGNMENT)
@@ -208,7 +210,7 @@ public class BorderlessButton extends JPanel {
 		
 		int dx = 1;
 		if (icon != null) {
-			g2d.drawImage(icon.getImage(), Math.max(0, getWidth()/2-icon.getIconWidth()/2), 4 , null);
+			g2d.drawImage(icon.getImage(), Math.max(0, getWidth()/2-icon.getIconWidth()/2)+xDif, Math.max(0, getHeight()/2 - icon.getIconHeight()/2)+yDif , null);
 		}
 		else {
 			yStart = Math.min(getHeight()-2, getHeight()/2 - 8 );

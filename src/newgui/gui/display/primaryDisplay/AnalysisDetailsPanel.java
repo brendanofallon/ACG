@@ -64,7 +64,7 @@ public class AnalysisDetailsPanel extends JPanel {
 		JPanel mainPanel = new JPanel();
 		this.add(mainPanel, BorderLayout.CENTER);
 		
-		mainPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
 		
 		int buttonPanelWidth = 200;
 		

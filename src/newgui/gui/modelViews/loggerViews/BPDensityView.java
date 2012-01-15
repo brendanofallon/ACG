@@ -39,7 +39,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import logging.BreakpointDensity;
 import logging.StateLogger;
 
-import newgui.gui.modelViews.DefaultLoggerView;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -56,19 +55,26 @@ public class BPDensityView extends DefaultLoggerView {
 		this(new BPDensityModel());
 	}
 	
-	public BPDensityView(final BPDensityModel model) {
+	public BPDensityView(BPDensityModel model) {
 		super(model);
 		this.bpModel = model;
 		SpinnerNumberModel binsModel = new SpinnerNumberModel(500, 1, 50000, 10);
 		binsSpinner = new JSpinner(binsModel);
 		binsSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				model.setBins( (Integer)binsSpinner.getValue());
+				try {
+					updateModelFromView();
+				} catch (InputConfigException e1) {
+					//Would be really weird if this happened somehow
+					e1.printStackTrace();
+				}
 			}
 		});
-		add(new JLabel("Bins:"));
-		add(binsSpinner);
+		centerPanel.add(new JLabel("Bins:"));
+		centerPanel.add(binsSpinner, "wrap");
 	}
+	
+	
 	
 	@Override
 	public String getName() {
@@ -85,7 +91,10 @@ public class BPDensityView extends DefaultLoggerView {
 		bpModel.setBins( (Integer)binsSpinner.getValue() );
 	}
 
-
+	public Dimension getPreferredDimensions() {
+		return new Dimension(400, 180);
+	}
+	
 	/**
 	 * Updates widgets with info from model
 	 */

@@ -11,7 +11,6 @@ import gui.inputPanels.loggerConfigs.StateLoggerModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import newgui.gui.modelViews.DefaultLoggerView;
 
 /**
  * Stores a list of all (user-ready) logger models that can be added to an analysis. This

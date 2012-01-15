@@ -18,6 +18,7 @@ import javax.swing.JScrollPane;
 
 import newgui.gui.modelViews.LoggerReceiver;
 import newgui.gui.modelViews.loggerViews.AvailableLoggers;
+import newgui.gui.modelViews.loggerViews.DefaultLoggerView;
 import newgui.gui.modelViews.loggerViews.LoggerItemRenderer;
 
 import logging.StateLogger;

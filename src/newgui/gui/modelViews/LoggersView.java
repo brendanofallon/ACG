@@ -1,7 +1,10 @@
 package newgui.gui.modelViews;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -16,7 +19,6 @@ import gui.inputPanels.Configurator.InputConfigException;
 
 import gui.inputPanels.loggerConfigs.LoggerModel;
 import gui.inputPanels.loggerConfigs.StateLoggerModel;
-import gui.widgets.BorderlessButton;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -24,13 +26,17 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
 import logging.PropertyLogger;
 import logging.StateLogger;
 
+import net.miginfocom.swing.MigLayout;
 import newgui.gui.modelViews.loggerViews.AvailableLoggers;
+import newgui.gui.modelViews.loggerViews.DefaultLoggerView;
 import newgui.gui.modelViews.loggerViews.StateLoggerView;
+import newgui.gui.widgets.BorderlessButton;
 
 import org.w3c.dom.Element;
 
@@ -39,9 +45,12 @@ import xml.XMLLoader;
 
 public class LoggersView extends JPanel {
 
-	private List<LoggerWrapper> loggers = new ArrayList<LoggerWrapper>();
+	private List<DefaultLoggerView> loggers = new ArrayList<DefaultLoggerView>();
 	private AddLoggersFrame addFrame;
-	private JButton addButton;
+	private BorderlessButton addButton;
+	
+	private JScrollPane scrollPane;
+	private JPanel mainPanel;
 	
 	//Reference to ARG object that may be used by loggers
 	//This implementation sucks because what if different loggers want to reference different ARGs?
@@ -52,21 +61,35 @@ public class LoggersView extends JPanel {
 	
 	public LoggersView() {
 		this.setOpaque(false);
+		this.setLayout(new BorderLayout());
 		
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		setOpaque(false);
+		mainPanel = new JPanel();
+		mainPanel.setOpaque(false);
+		scrollPane = new JScrollPane(mainPanel);
+		scrollPane.setOpaque(false);
+		scrollPane.getViewport().setOpaque(false);
+		scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
+		add(scrollPane, BorderLayout.CENTER);
+		
+		//mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		mainPanel.setLayout(new MigLayout());
+		mainPanel.setOpaque(false);
 		
 		addFrame = new AddLoggersFrame(this);
 		addFrame.setVisible(false);
 		
-		addButton = new JButton("Add logger");
-		addButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		JPanel topPanel = new JPanel();
+		topPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		topPanel.setOpaque(false);
+		addButton = new BorderlessButton("Add logger");
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showAddFrame();
 			}
 		});
-		add(addButton);
+		topPanel.add(addButton);
+		add(topPanel, BorderLayout.NORTH);
 		
 		//Must come after above initialization
 		addLogger( new StateLoggerView(new StateLoggerModel()) );
@@ -94,8 +117,10 @@ public class LoggersView extends JPanel {
 	}
 	
 	public void addLogger(DefaultLoggerView logger) {
-		LoggerWrapper wrapped = new LoggerWrapper(logger);
-		loggers.add(wrapped);
+		//LoggerWrapper wrapped = new LoggerWrapper(logger);
+		//wrapped.setAlignmentX(Component.LEFT_ALIGNMENT);
+		logger.setLoggerParent(this);
+		loggers.add(logger);
 		layoutLoggers();
 	}
 	
@@ -104,34 +129,26 @@ public class LoggersView extends JPanel {
 	 * by removing all components and then adding them back in
 	 * This should be called after any change to the loggers field 
 	 */
-	protected void layoutLoggers() {
-		this.removeAll();		
-		this.add(addButton);
+	public  void layoutLoggers() {
+		mainPanel.removeAll();	
 		
-		for(LoggerWrapper wrapper : loggers) {
-			add(wrapper);
-			if (wrapper != loggers.get(loggers.size()-1))
-				add(new JSeparator(JSeparator.HORIZONTAL));
+		for(DefaultLoggerView view : loggers) {
+			mainPanel.add(view, "wrap");
+			if (view != loggers.get(loggers.size()-1)) {
+				JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
+				sep.setMinimumSize(new Dimension(view.getPreferredDimensionsLarge().width, 10));
+				//sep.setBorder(BorderFactory.createLineBorder(Color.RED));
+				mainPanel.add(sep, "wrap");
+			}
 		}
 		
-		
-		revalidate();
+	
+		mainPanel.revalidate();
 		repaint();
 	}
 	
 	public void removeLogger(DefaultLoggerView which) {
-		LoggerWrapper toRemove = null;
-		for(LoggerWrapper logger : loggers) {
-			if (logger.config == which) {
-				toRemove = logger;
-			}
-		}
-		
-		if (toRemove != null) {
-			remove(toRemove);
-			loggers.remove(toRemove);				
-		}
-		
+		loggers.remove(which);				
 		layoutLoggers();
 	}
 	
@@ -139,8 +156,7 @@ public class LoggersView extends JPanel {
 	public List<Element> getLoggerNodes(ACGDocument doc) throws InputConfigException {
 		List<Element> nodes = new ArrayList<Element>();
 		
-		for(LoggerWrapper logger : loggers) {
-			DefaultLoggerView view = logger.config;
+		for(DefaultLoggerView view : loggers) {
 			view.updateFields();
 			view.getModel().setArgRef( ARGref );
 			Element loggerElement;
@@ -154,8 +170,7 @@ public class LoggersView extends JPanel {
 	public List<LoggerModel> getLoggerModels() throws InputConfigException {
 		List<LoggerModel> models = new ArrayList<LoggerModel>();
 
-		for(LoggerWrapper logger : loggers) {
-			DefaultLoggerView view = logger.config;
+		for(DefaultLoggerView view : loggers) {
 			view.updateFields();
 			view.getModel().setArgRef( ARGref );
 			models.add(view.getModel());
@@ -165,12 +180,8 @@ public class LoggersView extends JPanel {
 	}
 	
 	public void removeAllLoggers() {
-		for(LoggerWrapper wrapper : loggers) {
-			remove(wrapper);
-		}
 		loggers.clear();
-		revalidate();
-		repaint();
+		layoutLoggers();
 	}
 	
 	public void readNodesFromDocument(ACGDocument doc) {
@@ -202,40 +213,40 @@ public class LoggersView extends JPanel {
 	 * @author brendano
 	 *
 	 */
-	class LoggerWrapper extends JPanel {
-		
-		DefaultLoggerView config;
-		
-		public LoggerWrapper(final DefaultLoggerView conf) {
-			this.config = conf;
-			setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-			setOpaque(false);
-			setPreferredSize(conf.getPreferredDimensions());
-			setMaximumSize(conf.getPreferredDimensions());
-			setAlignmentX(Component.LEFT_ALIGNMENT);
-			setBorder(BorderFactory.createEmptyBorder(0, 0, 4, 0));
-			conf.setAlignmentY(TOP_ALIGNMENT);
-			add(conf);
-			add(Box.createHorizontalGlue());
-			
-			BorderlessButton remove = new BorderlessButton(removeIcon);
-			remove.setAlignmentY(TOP_ALIGNMENT);
-			remove.setToolTipText("Remove " + conf.getModel().getModelLabel() );
-			remove.setXDif(-2);
-			remove.setYDif(-2);
-			remove.setMinimumSize(new Dimension(24, 30));
-			remove.setPreferredSize(new Dimension(24, 30));
-			
-			remove.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					removeLogger(conf);
-				}
-			});
-			add(remove);
-		}
-		
-				
-	}
+//	class LoggerWrapper extends JPanel {
+//		
+//		DefaultLoggerView config;
+//		
+//		public LoggerWrapper(final DefaultLoggerView conf) {
+//			this.config = conf;
+//			setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+//			setOpaque(false);
+//			setAlignmentX(Component.LEFT_ALIGNMENT);
+//			setBorder(BorderFactory.createEmptyBorder(0, 0, 4, 0));
+//			setBorder(BorderFactory.createLineBorder(Color.BLUE));
+//			conf.setAlignmentY(TOP_ALIGNMENT);
+//			add(conf);
+//			
+//			BorderlessButton remove = new BorderlessButton(removeIcon);
+//			remove.setAlignmentY(TOP_ALIGNMENT);
+//			remove.setToolTipText("Remove " + conf.getModel().getModelLabel() );
+//			remove.setXDif(-1);
+//			remove.setYDif(-2);
+//			remove.setMinimumSize(new Dimension(24, 28));
+//			remove.setPreferredSize(new Dimension(24, 28));
+//			remove.setMaximumSize(new Dimension(24, 28));
+//			
+//			remove.addActionListener(new ActionListener() {
+//				public void actionPerformed(ActionEvent e) {
+//					removeLogger(conf);
+//				}
+//			});
+//			add(remove);
+//			add(Box.createHorizontalGlue());
+//		}
+//		
+//				
+//	}
 	
 	
 }

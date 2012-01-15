@@ -32,7 +32,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import newgui.gui.modelViews.AddLoggersFrame;
-import newgui.gui.modelViews.DefaultLoggerView;
 
 /**
  * This draws a representation of the given logger view in an AddLoggerFrame 

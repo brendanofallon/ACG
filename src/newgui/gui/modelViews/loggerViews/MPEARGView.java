@@ -19,7 +19,6 @@
 
 package newgui.gui.modelViews.loggerViews;
 
-import newgui.gui.modelViews.DefaultLoggerView;
 import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.loggerConfigs.LoggerModel;
 import gui.inputPanels.loggerConfigs.MPEARGModel;

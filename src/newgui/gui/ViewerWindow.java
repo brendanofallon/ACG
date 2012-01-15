@@ -62,10 +62,10 @@ public class ViewerWindow extends JFrame {
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	
-		sansFont = getFont("fonts/steward.ttf");
+		sansFont = getFont("fonts/Trebuchet_MS.ttf");
 		
 		
-		BorderlessButton.setDefaultFont(sansFont.deriveFont(17f));
+		BorderlessButton.setDefaultFont(sansFont.deriveFont(16f));
 		
 		initComponents();
 		
@@ -97,10 +97,10 @@ public class ViewerWindow extends JFrame {
 	 * Fade in a region of this frame from the background color 
 	 * @param r
 	 */
-	public void fadeInRegion(Rectangle r) {
-		RegionFader fader = new RegionFader(this);
-		fader.fadeInRegion(r);
-	}
+//	public void fadeInRegion(Rectangle r) {
+//		RegionFader fader = new RegionFader(this);
+//		fader.fadeInRegion(r);
+//	}
 	
 	/**
 	 * Create a new window in the displaypane containing a Display associated with
@@ -110,7 +110,7 @@ public class ViewerWindow extends JFrame {
 	public void displayDataFile(DataFile dataFile, String title) {
 		Display display = dataFile.getDisplay();
 		displayPane.addDisplay(display, title);
-		fadeInRegion( displayPane.getBounds() );
+		//fadeInRegion( displayPane.getBounds() );
 		repaint();
 	}
 	

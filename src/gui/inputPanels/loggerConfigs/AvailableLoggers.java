@@ -3,7 +3,7 @@ package gui.inputPanels.loggerConfigs;
 import java.util.ArrayList;
 import java.util.List;
 
-import newgui.gui.modelViews.DefaultLoggerView;
+import newgui.gui.modelViews.loggerViews.DefaultLoggerView;
 
 /**
  * Stores a list of all (user-ready) logger models that can be added to an analysis 

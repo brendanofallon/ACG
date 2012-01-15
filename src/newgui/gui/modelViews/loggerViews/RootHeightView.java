@@ -20,6 +20,8 @@
 package newgui.gui.modelViews.loggerViews;
 
 
+import java.awt.Dimension;
+
 import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.loggerConfigs.RootHeightModel;
 
@@ -29,7 +31,6 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import newgui.gui.modelViews.DefaultLoggerView;
 
 public class RootHeightView extends DefaultLoggerView {
 
@@ -50,10 +51,13 @@ public class RootHeightView extends DefaultLoggerView {
 				model.setBins( (Integer)binsSpinner.getValue());
 			}
 		});
-		add(new JLabel("Bins:"));
-		add(binsSpinner);
+		centerPanel.add(new JLabel("Bins:"));
+		centerPanel.add(binsSpinner);
 	}
 
+	public Dimension getPreferredDimensionsLarge() {
+		return new Dimension(400, 180);
+	}
 	
 	@Override
 	public String getName() {
