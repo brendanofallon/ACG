@@ -87,6 +87,7 @@ public class XMLLoader {
 	public static final String CLASS_NAME_ATTR = "class";
 	public static final String NODE_ID = "element.id";
 	public static final String LIST_ATTR = "list";
+	public static final String TEXT_CONTENT = "content";
 
 	PluginLoader loader = new PluginLoader();
 	Document doc = null;
@@ -391,7 +392,7 @@ public class XMLLoader {
 
 						//Add text content to the attribute map
 						if (text.trim().length()>0) {
-							consInfo.attrMap.put("content", text);
+							consInfo.attrMap.put(TEXT_CONTENT, text);
 							
 						}
 					}

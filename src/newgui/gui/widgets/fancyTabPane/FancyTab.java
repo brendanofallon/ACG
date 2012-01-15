@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import newgui.UIConstants;
 import newgui.gui.ViewerWindow;
 
 
@@ -111,9 +112,9 @@ public class FancyTab extends JPanel {
 	
 	     GradientPaint gp;
 	     if (selected)
-	    	 gp = new GradientPaint(0, 0, lightColor, 0, getHeight(), lighterColor);
+	    	 gp = new GradientPaint(0, 0, lightColor, 0, getHeight(), UIConstants.componentBackground);
 	     else
-	    	 gp = new GradientPaint(0, 0, lightColor, 0, getHeight(), darkColor);
+	    	 gp = new GradientPaint(0, 0, lighterColor, 0, getHeight(), darkColor);
 
 	     g2d.setPaint(gp);
 	     g.fillRoundRect(0, 2, getWidth()-1, getHeight()+10, 8, 8);
@@ -123,6 +124,7 @@ public class FancyTab extends JPanel {
 		
 		g2d.setColor(Color.DARK_GRAY);
 		g.setFont(getFont());
-		g.drawString(text, 5, getHeight()-5);
+		int strWidth = g.getFontMetrics().stringWidth(text);
+		g.drawString(text, getWidth()/2 - strWidth/2 - 2, getHeight()-8);
 	}
 }

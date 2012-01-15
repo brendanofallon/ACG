@@ -27,10 +27,13 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
+import newgui.gui.modelViews.LoggerReceiver;
 
 import logging.StateLogger;
 
@@ -43,12 +46,21 @@ import logging.StateLogger;
  */
 public class AddLoggerFrame extends JFrame {
 
-	LoggersPanel parentPanel;
+	LoggerReceiver parentPanel;
 	List<AbstractLoggerView> loggerList = new ArrayList<AbstractLoggerView>();
 	
-	public AddLoggerFrame(LoggersPanel parentPanel) {
+//	public AddLoggerFrame(LoggersView parentPanel) {
+//		
+//	}
+	
+	public AddLoggerFrame(LoggerReceiver parentPanel) {
 		super("Choose loggers");
 		this.parentPanel = parentPanel;
+		initialize();
+	}
+
+	private void initialize() {
+		
 		this.setLayout(new BorderLayout());
 				
 		//Build list of loggers
@@ -67,10 +79,13 @@ public class AddLoggerFrame extends JFrame {
 		add(scrollPane, BorderLayout.CENTER);
 		this.getRootPane().setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
 		pack();
-		setLocationRelativeTo(parentPanel);
-		setVisible(false);
+		if (parentPanel instanceof JComponent)
+			setLocationRelativeTo( (JComponent)parentPanel );
+		else
+			setLocationRelativeTo(null);
+		setVisible(false);	
 	}
-
+	
 	/**
 	 * Build the list of available loggers to be represented in this frame
 	 */

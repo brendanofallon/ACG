@@ -1,7 +1,15 @@
-package newgui.alignment;
+package sequence;
+
+import java.util.Map;
+
+import xml.XMLLoader;
+import xml.XMLUtils;
+
+import newgui.alignment.UnrecognizedBaseException;
 
 /**
  * A generic implementation of Sequence, where the entire sequence is stored as an array of ints
+ * 
  * @author brendan
  *
  */
@@ -9,10 +17,21 @@ public class SimpleSequence implements Sequence {
 	
 	protected String label = null;
 	protected final int[] bases;
-	//Mapping from character (nucleotide) to integer
-	private BaseMap baseMap = new BaseMap();
 	
 	private Sequence reference = null;
+	
+	/**
+	 * XML-approved constructor. Label comes from NODE_ID attribute, bases come
+	 * from text content of node (or whatever's in attrs.get(XMLLoader.TEXT_CONTENT) )
+	 */
+	public SimpleSequence(Map<String, String> attrs) {
+		label = XMLUtils.getStringOrFail(XMLLoader.NODE_ID, attrs);
+		String seqStr = attrs.get(XMLLoader.TEXT_CONTENT).trim();
+		bases = new int[seqStr.length()];
+		for(int i=0; i<seqStr.length(); i++) {
+			bases[i] = DNAUtils.intForBase(seqStr.charAt(i));
+		}
+	}
 	
 	public SimpleSequence(String label, int[] bases) {
 		this.label = label;
@@ -24,7 +43,7 @@ public class SimpleSequence implements Sequence {
 		this.label = label;
 		bases = new int[seq.length()];
 		for(int i=0; i<seq.length(); i++) {
-			bases[i] = baseMap.valForBase(seq.charAt(i));
+			bases[i] = DNAUtils.intForBase(seq.charAt(i));
 		}
 		
 	}
@@ -57,10 +76,33 @@ public class SimpleSequence implements Sequence {
 	}
 
 	public String toString() {
-		BaseMap map = new BaseMap();
 		StringBuffer buf = new StringBuffer();
 		for(int i=0; i<bases.length; i++)
-			buf.append( map.baseForVal(bases[i]) );
+			buf.append( DNAUtils.baseForInt(bases[i]) );
 		return label + "\t" + buf;
 	}
+
+	public String getSequenceString() {
+		StringBuffer buf = new StringBuffer();
+		for(int i=0; i<bases.length; i++)
+			buf.append( DNAUtils.baseForInt(bases[i]) );
+		return buf.toString();
+	}
+	
+
+	@Override
+	public char charAt(int pos) {
+		return DNAUtils.baseForInt( baseAt(pos));
+	}
+
+	@Override
+	public void setLabel(String newLabel) {
+		this.label = newLabel;
+	}
+
+	@Override
+	public void mask(int pos) {
+		bases[pos] = DNAUtils.N;
+	}
+	
 }

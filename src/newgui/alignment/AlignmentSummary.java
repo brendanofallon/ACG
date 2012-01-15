@@ -13,6 +13,9 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import sequence.Alignment;
+import sequence.CompressedAlignment;
+
 import newgui.gui.ViewerWindow;
 
 public class AlignmentSummary extends JPanel {
@@ -50,6 +53,8 @@ public class AlignmentSummary extends JPanel {
 	}
 	
 	public void paintComponent(Graphics g) {
+		g.setColor(getBackground());
+		g.fillRect(0, 0, getWidth()+1, getHeight()+1);
 		Graphics2D g2d = (Graphics2D)g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);

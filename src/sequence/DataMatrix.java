@@ -31,13 +31,13 @@ import java.util.Map;
  */
 public class DataMatrix {
 
-	protected List<CharacterColumn> patterns = new ArrayList<CharacterColumn>(100);
+	protected List<CharacterColumn> patterns = new ArrayList<CharacterColumn>(128);
 	
 	//A count of the occurrences of each pattern (that is, patterns.get(i) has patternCardinality.get(i) occurrences)
-	protected List<Integer> patternCardinality = new ArrayList<Integer>(100);
+	protected List<Integer> patternCardinality = new ArrayList<Integer>(128);
 	
 	//A non-redundant but minimal list of sites at which unique patterns occur
-	List<Integer> uniqueSiteList = new ArrayList<Integer>(100); 
+	List<Integer> uniqueSiteList = new ArrayList<Integer>(128); 
 	
 	//A list of which sites map to which pattern. colToPattern.get(site) returns the index of the pattern
 	//in the 'patterns' list. Using integers here means we're limited to 2^32-1 total columns... this is probably OK for now. 
@@ -52,16 +52,45 @@ public class DataMatrix {
 	/**
 	 * Create a new empty data matrix
 	 */
-	public DataMatrix(Map<String, String> attrMap, Alignment data) {
+	public DataMatrix(Map<String, String> attrMap, BasicSequenceAlignment data) {
 		//TODO do something with attributes?
 		this(data);
+	}
+	
+	/**
+	 * Create a DataMatrix storing information from the given CompressedAlignment
+	 * @param aln
+	 */
+	public DataMatrix(CompressedAlignment aln) {
+		
+		//Note that there's actually a more efficient way to do this, if we use information
+		//about the column mapping in CompressedAlignment to directly add information to
+		//this object... but this isn't likely to be a big performance bottleneck anyway
+		for(int i=0; i<aln.getSequenceLength(); i++) {
+			CharacterColumn col = new GappedNucColumn( DNAUtils.basesForVals( aln.getAbsoluteColumn(i) ) );
+			addColumn(col);
+		}
+		
+		for(int i=0; i<aln.getSequenceCount(); i++) {
+			rowLabels.add( aln.getSequence(i).getLabel() );
+		}
+		
+		//Small amount of error checking here
+		int sum = 0;
+		for(int i=0; i<patterns.size(); i++) {
+			sum += patternCardinality.get(i);
+		}
+		
+		if (sum != totalColsAdded) {
+			throw new IllegalStateException("Uh oh, the sum of pattern cardinalities did not match the total number of sites!");
+		}
 	}
 	
 	/**
 	 * Create a new data matrix from the specified alignment assuming we have nucleotide data
 	 * @param aln
 	 */
-	public DataMatrix(Alignment aln) {
+	public DataMatrix(BasicSequenceAlignment aln) {
 		for(int i=0; i<aln.getSiteCount(); i++) {
 			CharacterColumn col = new GappedNucColumn( aln.getColumn(i) );
 			addColumn(col);
@@ -71,22 +100,11 @@ public class DataMatrix {
 			rowLabels.add( aln.getSequenceLabel(i) );
 		}
 		
-		//System.out.println("Constructed a new data matrix with " + totalColsAdded + " total sites and " + patterns.size() + " unique patterns.");
-//		for(int i=0; i<colToPattern.size(); i++) {
-//			System.out.print( colToPattern.get(i) + " ");
-//		}
-//		System.out.println();
 		int sum = 0;
 		for(int i=0; i<patterns.size(); i++) {
-			//System.out.println("Count of pattern #" + i + " : " + patternCardinality.get(i));
 			sum += patternCardinality.get(i);
 		}
 
-//		System.out.println("Sites with unique patterns : ");
-//		for(int i=0; i<patterns.size(); i++) {
-//			System.out.println("Site #" + i + " : " + uniqueSiteList.get(i));
-//		}
-		
 		if (sum != totalColsAdded) {
 			throw new IllegalStateException("Uh oh, the sum of pattern cardinalities did not match the total number of sites!");
 		}
@@ -322,22 +340,40 @@ public class DataMatrix {
 	}
 	
 	/**
+	 * Returns true if the sequences at row i and and row j differ at absolute column # absoluteCol 
+	 * @param absoluteCol
+	 * @param seqI
+	 * @param seqJ
+	 * @return
+	 */
+	public boolean sequencesDiffer(int absoluteCol, int seqI, int seqJ) {
+		CharacterColumn col = getPatternForSite(absoluteCol);
+		return col.getSymbol(seqI) == col.getSymbol(seqJ);
+	}
+	
+	/**
 	 * Return a list of pattern indices 
 	 * @param row1
 	 * @param row2
 	 */
-	public List<Integer> collectAliasesForPair(int row1, int row2) {
-		List<Integer> pairAliases = new ArrayList<Integer>();
-		
-		for(int i=0; i<patterns.size(); i++) {
-			CharacterColumn colI = patterns.get(i);
-			for(int j=i+1; j<patterns.size(); j++)
-				if (colI.isEqualAt(patterns.get(j), row1) && colI.isEqualAt(patterns.get(j), row2)) {
-					pairAliases.add(j);
-				}
-		}
-		
-		return pairAliases;
-	}
+//	public List<Integer> collectAliasesForPair(int row1, int row2) {
+//		List<Integer> pairAliases = new ArrayList<Integer>();
+//		
+//		for(int i=0; i<patterns.size(); i++) {
+//			CharacterColumn colI = patterns.get(i);
+//			for(int j=i+1; j<patterns.size(); j++)
+//				if (colI.isEqualAt(patterns.get(j), row1) && colI.isEqualAt(patterns.get(j), row2)) {
+//					pairAliases.add(j);
+//				}
+//		}
+//		
+//		return pairAliases;
+//	}
 	
+	/**
+	 * Return the label of the ith sequence tracked by this DataMatrix
+	 */
+	public String getSequenceLabel(int i) {
+		return rowLabels.get(i);
+	}
 }

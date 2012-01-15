@@ -61,6 +61,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import jobqueue.ExecutingChain;
+
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

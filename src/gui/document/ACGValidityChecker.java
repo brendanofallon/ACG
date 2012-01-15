@@ -36,7 +36,7 @@ public class ACGValidityChecker implements ValidityChecker {
 		List<String> likelihoods = doc.getLikelihoodLabels();
 		List<String> mcmcs = doc.getMCMCLabels();
 		
-		//Make sure all (non-compound) pararameters are referred to by an MCMC or MC3 object, 
+		//Make sure all (non-compound) parameters are referred to by an MCMC or MC3 object, 
 		for(String param : params) {
 			Class cls = doc.loader.getClassForLabel(param);
 			//If parameter is not a compound parameter, make sure an MCMC refers to it...

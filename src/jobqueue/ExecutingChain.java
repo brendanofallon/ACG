@@ -17,7 +17,9 @@
 ***********************************************************************/
 
 
-package gui;
+package jobqueue;
+
+import gui.ErrorWindow;
 
 import javax.swing.SwingWorker;
 
@@ -31,7 +33,7 @@ import mcmc.mc3.MC3;
  * @author brendan
  *
  */
-public class ExecutingChain extends SwingWorker implements MCMCListener {
+public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob {
 
 	MCMC chain = null; //Will be null if user supplies an MC3 object to constructor
 	MC3 mc3 = null;		//Will be null if user supplies MCMC object to constructor
@@ -57,10 +59,7 @@ public class ExecutingChain extends SwingWorker implements MCMCListener {
 	protected Object doInBackground() throws Exception {
 		
 		try {
-			if (mc3 != null)
-				mc3.run();
-			else
-				chain.run();
+			beginJob();
 		}
 		catch (Exception ex) {
 			ErrorWindow.showErrorWindow(ex);
@@ -119,5 +118,35 @@ public class ExecutingChain extends SwingWorker implements MCMCListener {
 	public void setMCMC(MCMC chain) { 
 		if (mc3 != null)
 			this.coldChain = chain;
+	}
+
+
+	@Override
+	public void beginJob() {
+		if (mc3 != null)
+			mc3.run();
+		else
+			chain.run();
+	}
+
+
+	@Override
+	public void addListener(JobListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void removeListener(JobListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public JobState getJobState() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

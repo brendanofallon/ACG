@@ -34,7 +34,7 @@ import org.w3c.dom.Node;
 import dlCalculation.substitutionModels.F84Matrix;
 
 import parameter.AbstractParameter;
-import sequence.Alignment;
+import sequence.BasicSequenceAlignment;
 
 import arg.ARG;
 import arg.Newick;
@@ -166,7 +166,7 @@ public class ARGModelElement extends ModelElement {
 				continue;
 			}
 			
-			String alnClassName = Alignment.class.getCanonicalName();
+			String alnClassName = BasicSequenceAlignment.class.getCanonicalName();
 			if (childClass.equals( alnClassName )) {
 				alignmentRef = new AlignmentElement();
 				alignmentRef.setNodeLabel( child.getNodeName() );

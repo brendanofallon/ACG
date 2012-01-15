@@ -1,4 +1,4 @@
-package newgui.alignment;
+package sequence;
 
 import java.util.HashMap;
 import java.util.Map;

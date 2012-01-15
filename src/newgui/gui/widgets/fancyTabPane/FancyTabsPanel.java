@@ -12,6 +12,8 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import newgui.UIConstants;
+
 /**
  * The panel containing the tabs to draw at the top of a FancyTabPane. Pretty much everything in here
  * is only meant to be used by a FancyTabPane, so everything is protected 
@@ -27,7 +29,7 @@ public class FancyTabsPanel extends JPanel {
 	
 	protected FancyTabsPanel(FTabPane pane) {
 		this.pane = pane;
-		this.setBackground(Color.white);
+		this.setBackground(UIConstants.lightBackground);
 		glueBox = Box.createGlue();
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.add(Box.createHorizontalStrut(leftPadding));

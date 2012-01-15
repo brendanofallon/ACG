@@ -48,7 +48,7 @@ import modifier.WideSwap;
 import parameter.DoubleParameter;
 import parameter.Parameter;
 import priors.ExponentialPrior;
-import sequence.Alignment;
+import sequence.BasicSequenceAlignment;
 import sequence.DataMatrix;
 import arg.ARG;
 import dlCalculation.DataLikelihood;
@@ -96,7 +96,7 @@ public class NoRecombAnalysis extends AbstractModule {
 	protected void initializeComponents() {
 		File file = new File(filename);
 
-		Alignment alignment = new Alignment(file);
+		BasicSequenceAlignment alignment = new BasicSequenceAlignment(file);
 
 		Map<String, String> argAttrs = new HashMap<String, String>();
 		ARG arg = new ARG(argAttrs, alignment);

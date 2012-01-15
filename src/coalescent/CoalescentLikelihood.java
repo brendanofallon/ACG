@@ -31,6 +31,15 @@ import parameter.AbstractParameter;
 
 import component.LikelihoodComponent;
 
+/**
+ * A Likelihood component that computes the likelihood of a DemographicParameter and
+ * RecombinationParameter conditional on an ARG. This is flexible enough to handle
+ * essentially any demographic and recombination model, assuming that they
+ * return the correct values for getIntegral(..), etc. 
+ *  
+ * @author brendan
+ *
+ */
 public class CoalescentLikelihood extends LikelihoodComponent {
 	
 	DemographicParameter demoParam = null;
@@ -71,6 +80,7 @@ public class CoalescentLikelihood extends LikelihoodComponent {
 		this.stateAccepted();
 	}
 			
+	@Override 
 	public Double computeProposedLikelihood() {
 		Double logProb = 0.0;
 		
@@ -91,13 +101,17 @@ public class CoalescentLikelihood extends LikelihoodComponent {
 		double start = 0;
 		double end;
 		
+		//Proceed through arg from tips to root, assessing each interval independently and
+		//adding the log probabilities of each interval to a running sum
 		for(int i=0; i<intervals.getIntervalCount(); i++) {
 			end = intervals.getIntervalEndTime(i);
 			int lineages = intervals.getLineageCount(i);
+			
+			//Probability that there was not a coalescence event between start and end of interval
 			double noCoalProb = demoParam.getIntegral(start, end)*lineages*(lineages-1.0) * 0.5; //This 0.5 means that we get answers in terms of pop. size (=N*mu), not theta (=2*N*mu)
-			double noRecProb = 0;
-	
-			noRecProb = lineages*recParam.getIntegral(start, end);
+			
+			//Probability of no recombinations in interval in question
+			double noRecProb = lineages*recParam.getIntegral(start, end);
 
 			double endProb;
 			if (intervals.getIntervalType(i)==IntervalType.COALESCENT) {

@@ -1,7 +1,9 @@
 package newgui.gui.widgets;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -16,6 +18,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -41,8 +44,12 @@ public class BorderlessButton extends JPanel {
 	private int iconGap = 5;
 	private int yStart = 1; //y-position to start drawing text
 	
+	private float horTextAlignment = Component.LEFT_ALIGNMENT;
 
 	List<ActionListener> actionListeners = new ArrayList<ActionListener>();
+	
+	private static Font defaultFont = null;
+	private boolean useDefaultFont = true; //Unless font has been explicitly set we use the default
 	
 	public BorderlessButton(String label) {
 		this(label, null);
@@ -65,9 +72,10 @@ public class BorderlessButton extends JPanel {
 			pHeight += icon.getIconHeight()+5;
 			yStart = pHeight+4;
 		}
+		
 		if (label != null) {
 			pWidth = Math.max(text[0].length()*10, pWidth+3);
-			pHeight += 15;
+			pHeight += Math.max(pHeight, 28);
 		}
 		
 		
@@ -80,6 +88,23 @@ public class BorderlessButton extends JPanel {
 	
 	public BorderlessButton(ImageIcon icon) {
 		this(null, icon);
+	}
+	
+	/**
+	 * Set the font used by all BorderlessButtons. Can be null to turn this option off
+	 * @param font
+	 */
+	public static void setDefaultFont(Font font) {
+		defaultFont = font;
+	}
+	
+	public static Font getDefaultFont() {
+		return defaultFont;
+	}
+	
+	public void setFont(Font font) {
+		super.setFont(font);
+		useDefaultFont = false;
 	}
 	
 	public int getIconGap() {
@@ -147,6 +172,12 @@ public class BorderlessButton extends JPanel {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 		
+		if (defaultFont != null && useDefaultFont)
+			setFont(defaultFont);
+		
+		int strWidth = g2d.getFontMetrics().stringWidth(text[0]); //Width of text 
+		int boxWidth = strWidth + 10; //Width of box around text
+		
 		if (this.isEnabled() && drawBorder) {
 
 			GradientPaint gp;
@@ -155,7 +186,7 @@ public class BorderlessButton extends JPanel {
 			else
 				gp = new GradientPaint(1, 0, new Color(1f, 1f, 1f), 3, getHeight(), new Color(0.88f, 0.88f, 0.88f));
 			g2d.setPaint(gp);
-			g2d.fillRoundRect(1, 1, getWidth()-2, getHeight()-3, 5, 2);
+			g2d.fillRoundRect(1, 1, boxWidth, getHeight()-3, 5, 2);
 		}
 		else {
 			super.paintComponent(g);
@@ -165,24 +196,38 @@ public class BorderlessButton extends JPanel {
 		if (icon != null) {
 			g2d.drawImage(icon.getImage(), Math.max(0, getWidth()/2-icon.getIconWidth()/2), 4 , null);
 		}
-		if (text != null) {
+		else {
+			yStart = Math.min(getHeight()-2, getHeight()/2 - 8 );
+		}
+		if (text != null) {					
 			g2d.setFont(getFont());
 			for(int i=0; i<text.length; i++) {
-				int strWidth = g2d.getFontMetrics().stringWidth(text[i]);
+				int textXPos = 1;
+				if (horTextAlignment == Component.LEFT_ALIGNMENT)
+					textXPos = 5;
+				if (horTextAlignment == Component.CENTER_ALIGNMENT)
+					textXPos = getWidth()/2-strWidth/2;
+				if (horTextAlignment == Component.RIGHT_ALIGNMENT)
+					textXPos = getWidth() - strWidth - 4;
+				
+				
 				g2d.setColor(new Color(0.99f, 0.99f, 0.99f, 0.4f));
-				g2d.drawString(text[i], Math.max(1, getWidth()/2-strWidth/2+1), yStart + (i+1)*14+1 /*getHeight()-(i+1)*13 */);
-				g2d.setColor(new Color(0.2f, 0.2f, 0.2f));
-				g2d.drawString(text[i], Math.max(0, getWidth()/2-strWidth/2), yStart + (i+1)*14 /*getHeight()-(i+1)*14 */);	
+				g2d.drawString(text[i], Math.max(1, textXPos+1), yStart + (i+1)*14+1 /*getHeight()-(i+1)*13 */);
+				if (this.isEnabled())
+					g2d.setColor(new Color(0.2f, 0.2f, 0.2f));
+				else
+					g2d.setColor(new Color(0.5f, 0.5f, 0.5f));
+				g2d.drawString(text[i], Math.max(0, textXPos), yStart + (i+1)*14 /*getHeight()-(i+1)*14 */);	
 			}
 
 		}
 		
 		if (this.isEnabled() && drawBorder) {
 			g2d.setColor(new Color(0.99f, 0.99f, 0.99f, 0.35f));
-			g2d.drawRoundRect(1, 1, getWidth()-2, getHeight()-3, 7, 7);
+			g2d.drawRoundRect(1, 1, boxWidth, getHeight()-3, 7, 7);
 			
 			g2d.setColor(new Color(0.69f, 0.69f, 0.69f, 0.90f));
-			g2d.drawRoundRect(0, 0, getWidth()-2, getHeight()-3, 7, 7);
+			g2d.drawRoundRect(0, 0, boxWidth, getHeight()-3, 7, 7);
 		}
 	}
 

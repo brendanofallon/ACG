@@ -39,6 +39,9 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import net.miginfocom.swing.MigLayout;
+import newgui.gui.ViewerWindow;
+
 /**
  * Base class for individual logger views that appear in the loggers panel. These graphically
  * represent the information in a LoggerModel
@@ -53,24 +56,27 @@ public abstract class AbstractLoggerView extends JPanel {
 	JSpinner freqSpinner;
 	
 	static final Color lightColor = new Color(0.99f, 0.99f, 0.99f, 0.8f);
-	static final Color darkColor = new Color(0.45f, 0.45f, 0.45f, 0.7f);
+	static final Color darkColor = new Color(0.55f, 0.55f, 0.55f, 0.7f);
 	
 	public AbstractLoggerView(final LoggerModel model) {
 		this.model = model;
 		initializeComponents();
 		this.setBorder(BorderFactory.createEmptyBorder(2, 3, 2, 3));
+		this.setBorder(BorderFactory.createLineBorder(Color.BLUE));
 	}
 	
 	/**
 	 * Default component layout
 	 */
 	protected void initializeComponents() {
-		setLayout(new FlowLayout(FlowLayout.LEFT));
+		setLayout(new MigLayout());
 		setOpaque(false);
 		
-		add(new JLabel(model.getDefaultLabel()));
+		JLabel modelLabel = new JLabel(model.getDefaultLabel());
+		add(modelLabel);
 		
 		filenameField = new JTextField( model.getDefaultLabel() + ".log");
+		filenameField.setFont(getFont());
 		Dimension fieldSize = new Dimension(160, 30);
 		filenameField.setMinimumSize( fieldSize );
 		filenameField.setPreferredSize( fieldSize );
@@ -85,7 +91,9 @@ public abstract class AbstractLoggerView extends JPanel {
 				}
 			}
 		});
-		add(new JLabel("File name:"));
+		
+		JLabel filenameLabel = new JLabel("File name:");
+		add(filenameLabel);
 		add(filenameField);
 		
 		SpinnerNumberModel burninModel = new SpinnerNumberModel(1000000, 0, Integer.MAX_VALUE, 1000);
@@ -116,7 +124,7 @@ public abstract class AbstractLoggerView extends JPanel {
 	 * @return
 	 */
 	public Dimension getPreferredDimensions() {
-		return new Dimension(1000, 44);
+		return new Dimension(700, 100);
 	}
 	
 	public LoggerModel getModel() {

@@ -7,8 +7,6 @@ import java.util.List;
 
 import javax.xml.transform.TransformerException;
 
-import newgui.alignment.Alignment;
-import newgui.alignment.CompressedAlignment;
 import newgui.gui.display.Display;
 import newgui.gui.display.primaryDisplay.PrimaryDisplay;
 
@@ -16,6 +14,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import sequence.Alignment;
+import sequence.CompressedAlignment;
 
 import xml.XMLUtils;
 

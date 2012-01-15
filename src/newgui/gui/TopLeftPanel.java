@@ -10,6 +10,8 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import newgui.UIConstants;
+
 /**
  * Panel that holds a couple of buttons and the search text field
  * @author brendan
@@ -20,7 +22,7 @@ public class TopLeftPanel extends JPanel {
 	BorderlessButton importButton;
 	
 	public TopLeftPanel() {
-		this.setBackground(Color.white);
+		this.setBackground(UIConstants.lightBackground);
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
 		this.setPreferredSize(new Dimension(200, 50));
 		ImageIcon openIcon = ViewerWindow.getIcon("icons/scaledRightArrow.png");

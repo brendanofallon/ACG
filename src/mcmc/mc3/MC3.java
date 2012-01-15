@@ -56,7 +56,7 @@ import arg.ARG;
 import parameter.AbstractParameter;
 import parameter.DoubleParameter;
 import priors.ExponentialPrior;
-import sequence.Alignment;
+import sequence.BasicSequenceAlignment;
 import sequence.DataMatrix;
 import xml.XMLLoader;
 import xml.XMLUtils;

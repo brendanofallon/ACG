@@ -6,7 +6,13 @@ import java.util.List;
 
 
 /**
- * Interface for all things 
+ * Interface for all things that can compute the likelihood of a set of tip states (an alignment,
+ * basically) conditional on the structure of a listing of ComputeNodes. The ComputeNodes 
+ * refer to each other and define an ARG-like structure, except that each node is responsible
+ * for exactly one contiguous range of coalescing sites. Thus, much information in an ARG is
+ * also reflected in the structure of the nodes, so we must always make sure the two are in perfect
+ * sync (this happens primarily in arg.computeProposedRanges(...) via calls to proposeNode(..) and
+ * proposeRange(...).  
  * @author brendano
  *
  */
@@ -84,6 +90,7 @@ public interface ComputeCore {
 	 * @return
 	 */
 	public int countPatterns();
+	
 	/**
 	 * Initialize the state information for the given tip number. 
 	 * State information is a list of integers, such that the state of site i is states[i] 

@@ -1,6 +1,10 @@
 package newgui.gui.widgets.fancyTabPane;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -12,6 +16,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import newgui.UIConstants;
 
 /**
  * A fancy tab pane is a better-looking type of jtabbed pane. All components displayed are associated
@@ -26,15 +32,25 @@ public class FTabPane extends JPanel implements ChangeListener {
 	private Map<FancyTab, JComponent> tabMap = new HashMap<FancyTab, JComponent>();
 	private FancyTabsPanel tabsPanel = new FancyTabsPanel(this);
 	
+	//If true, show a tab even if there's only one panel attached. If false, don't
+	private boolean showTabIfOne = true;
+	
 	public FTabPane() {
 		setLayout(new BorderLayout());
+		setBorder(BorderFactory.createEmptyBorder(0, 5, 4, 5));
+		setBackground(UIConstants.lightBackground);
 		add(tabsPanel, BorderLayout.NORTH);
 		centerPanel = new JPanel();
+		centerPanel.setBackground(getBackground());
 		centerPanel.setLayout(new BorderLayout());
 		add(centerPanel, BorderLayout.CENTER);
 	}
 
-	
+	/**
+	 * Add a new component with the given label to this panel
+	 * @param label
+	 * @param comp
+	 */
 	public void addComponent(String label, JComponent comp) {
 		FancyTab tab = new FancyTab(label);
 		tab.addListener(this);
@@ -100,6 +116,12 @@ public class FTabPane extends JPanel implements ChangeListener {
 			centerPanel.add(comp, BorderLayout.CENTER);
 		}
 		
+		if (tabMap.size()<2 && (!showTabIfOne)) {
+			this.remove(tabsPanel);
+		}
+		if (showTabIfOne || tabMap.size()>1) {
+			add(tabsPanel, BorderLayout.NORTH);
+		}
 		revalidate();
 		repaint();
 	}
@@ -113,6 +135,20 @@ public class FTabPane extends JPanel implements ChangeListener {
 		}
 	}
 
+	public void paintComponent(Graphics g) {
+		g.setColor(getBackground());
+		g.fillRect(1, 1, getWidth(), getHeight());
+		super.paintComponent(g);
+		Graphics2D g2d = (Graphics2D)g;
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		if (tabMap.size()>1 || (tabMap.size()==1 && showTabIfOne)) {
+			g2d.setColor(Color.LIGHT_GRAY);
+			g2d.drawRoundRect(3, tabsPanel.getHeight()-2, getWidth()-6, getHeight()-tabsPanel.getHeight(), 12, 12);
+		}
+	}
+	
 	private JPanel centerPanel;
 }
 

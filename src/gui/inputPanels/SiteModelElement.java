@@ -44,9 +44,9 @@ import gui.inputPanels.DoubleModifierElement.ModType;
  */
 public class SiteModelElement extends ModelElement {
 
-	enum MutModelType { JC69, K2P, F84, TN93 };
+	public enum MutModelType { JC69, K2P, F84, TN93 };
 	
-	enum RateModelType { Constant, Gamma, Custom };
+	public enum RateModelType { Constant, Gamma, Custom };
 	
 	AlignmentElement alignmentRef = null;
 	ARGModelElement argRef = null;

@@ -1,9 +1,12 @@
-package newgui.alignment;
+package sequence;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import newgui.alignment.UnrecognizedBaseException;
+
 
 
 /**
@@ -167,15 +170,15 @@ public class CompressedAlignment implements Alignment {
 	@Override
 	public Sequence getSequence(int index) {
 		String label = seqLabels[index];
-		BaseMap map = new BaseMap();
+		
 		StringBuffer strb = new StringBuffer();
 		for(int i=0; i<colMap.length; i++) {
-			strb.append( map.baseForVal( getAbsoluteColumn(i)[index]) );
+			strb.append( DNAUtils.baseForInt( getAbsoluteColumn(i)[index]) );
 		}
 		Sequence seq;
 		try {
 			seq = new SimpleSequence(label, strb.toString());
-			seq.setReference(reference);
+			//seq.setReference(reference);
 			return seq;
 		} catch (UnrecognizedBaseException e) {
 			// TODO Auto-generated catch block
@@ -195,17 +198,14 @@ public class CompressedAlignment implements Alignment {
 		return false;
 	}
 
-	@Override
 	public Sequence getReference() {
 		return reference;
 	}
 
-	@Override
 	public void setReference(Sequence ref) {
 		this.reference = ref;
 	}
 
-	@Override
 	public Sequence getConsensus() {
 		int[] refBases = new int[getSequenceLength()];
 		for(int i=0; i<getSequenceLength(); i++) {
@@ -215,9 +215,8 @@ public class CompressedAlignment implements Alignment {
 	}
 	
 	public static void printColumn(int[] col) {
-		BaseMap map = new BaseMap();
 		for(int i=0; i<col.length; i++) {
-			System.out.println( map.baseForVal(col[i]) );
+			System.out.println( DNAUtils.baseForInt(col[i]) );
 		}
 	}
 	

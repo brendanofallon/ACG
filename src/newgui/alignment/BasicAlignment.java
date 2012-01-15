@@ -5,8 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import sequence.Alignment;
+import sequence.AlnUtils;
+import sequence.Sequence;
+import sequence.SimpleSequence;
+
 /**
- * A bare-bones alignment implementation, where no attempt is made to compress the alignments
+ * A bare-bones alignment implementation, where no attempt is made to compress the alignments.
+ * This class is used only for some testing/ utility purposes in the newgui package. For production
+ * code use CompressedAlignment, for non-gui internals use DataMatrix so we're never keeping the 
+ * whole alignment in memory
  * @author brendan
  *
  */
@@ -61,7 +69,7 @@ public class BasicAlignment implements Alignment {
 	@Override
 	public void addSequence(Sequence seq) {
 		seqs.add(seq);
-		seq.setReference(reference);
+		//seq.setReference(reference);
 	}
 
 	@Override
@@ -76,9 +84,9 @@ public class BasicAlignment implements Alignment {
 	
 	public void setReference(Sequence ref) {
 		this.reference = ref;
-		for(Sequence seq : seqs) {
-			seq.setReference(ref);
-		}
+//		for(Sequence seq : seqs) {
+//			seq.setReference(ref);
+//		}
 	}
 	
 	public Sequence getConsensus() {
