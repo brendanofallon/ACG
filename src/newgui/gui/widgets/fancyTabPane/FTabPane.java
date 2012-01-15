@@ -93,6 +93,7 @@ public class FTabPane extends JPanel implements ChangeListener {
 		if (! (comp instanceof JScrollPane)) {
 			JScrollPane scrollPane = new JScrollPane(comp);
 			scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
+			scrollPane.setBorder(BorderFactory.createEmptyBorder());
 			centerPanel.add(scrollPane, BorderLayout.CENTER);
 		}
 		else {
