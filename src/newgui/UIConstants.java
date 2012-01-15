@@ -21,7 +21,7 @@ public class UIConstants {
 	
 	
 	//Component background colors
-	public static final Color componentBackground = new Color(0.94f, 0.94f, 0.98f);
+	public static final Color componentBackground = new Color(0.92f, 0.92f, 0.93f);
 	
 	public static final Color lightBackground = new Color(0.97f, 0.97f, 0.99f);
 	
@@ -37,6 +37,23 @@ public class UIConstants {
 	//Fonts
 	public static final Font sansFont = getFont("gui/fonts/Trebuchet_MS.ttf");
 	
+	//Some other helpful properties:
+	
+	/**
+	 * Returns true if we're on a mac, false if windows or linux
+	 * @return
+	 */
+	public static boolean isMac() {
+		return System.getProperty("os.name").contains("Mac");
+	}
+
+	/**
+	 * Returns true if we're on a Windows machine (any version), false if mac or linux
+	 * @return
+	 */
+	public static boolean isWindows() {
+		return System.getProperty("os.name").contains("Windows");
+	}
 	
 	/**
 	 * Return an icon associated with the given url. For instance, if the url is icons/folder.png, we look in the

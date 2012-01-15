@@ -13,13 +13,11 @@ import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import newgui.alignment.FileParseException;
-import newgui.datafile.DataFileFactory;
-import newgui.datafile.DataFileUtils;
-import newgui.datafile.XMLDataFile;
 import newgui.datafile.*;
 import newgui.gui.ViewerWindow;
 
@@ -83,7 +81,7 @@ public class FileTree extends JPanel {
 	
 	
 	protected void handleMouseClick(MouseEvent me) {
-		if (me.getClickCount()>0) {
+		if (me.getClickCount()>1) {
 			TreePath selPath = tree.getSelectionPath();
 			if (selPath == null) //Some double-clicks aren't on anything and selPath will be null
 				return;

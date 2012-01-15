@@ -2,7 +2,9 @@ package newgui.gui.widgets.fancyTabPane;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
@@ -10,12 +12,17 @@ import java.awt.Graphics2D;
 import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.MultipleGradientPaint.CycleMethod;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,6 +31,7 @@ import javax.swing.event.ChangeListener;
 
 import newgui.UIConstants;
 import newgui.gui.ViewerWindow;
+import newgui.gui.widgets.BorderlessButton;
 
 
 public class FancyTab extends JPanel {
@@ -39,16 +47,35 @@ public class FancyTab extends JPanel {
 	private static final Color lighterColor = new Color(0.95f, 0.95f, 0.99f);
 	private static final Color lightColor = new Color(1f, 1f, 1f);
 	
-	public FancyTab(String label) {
-		if (label == null) {
-			throw new IllegalArgumentException("Tab must have a non-null label");
-		}
+	private static final ImageIcon closeIcon = UIConstants.getIcon("gui/icons/GrayClose.png");
+	
+	private FTabPane parentPane;
+	
+	public FancyTab(FTabPane parentPane, String label) {
 		this.text = label;
-		this.setLayout(new BorderLayout());
+		this.parentPane = parentPane;
+		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setPreferredSize(new Dimension(120, 30));
 		this.setMinimumSize(new Dimension(20, 30));
 		this.setMaximumSize(new Dimension(label.length()*6, 40));
 		setFont(normalFont);
+		
+		this.add(Box.createHorizontalStrut(20));
+		this.add(Box.createHorizontalGlue());
+		BorderlessButton closeButton = new BorderlessButton(closeIcon);
+		closeButton.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		closeButton.setYDif(-2);
+		closeButton.setXDif(-2);
+		closeButton.setPreferredSize(new Dimension(20, 18));
+		closeButton.setMaximumSize(new Dimension(20, 18));
+		closeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				closeThisTab();
+			}
+		});
+		this.add(closeButton);
+		this.add(Box.createHorizontalStrut(4));
+		
 		this.addMouseListener(new MouseListener() {
 
 			@Override
@@ -70,6 +97,10 @@ public class FancyTab extends JPanel {
 		});
 	}
 	
+	protected void closeThisTab() {
+		parentPane.removeComponentForTab(this);
+	}
+
 	public boolean isSelected() {
 		return selected;
 	}
@@ -106,6 +137,7 @@ public class FancyTab extends JPanel {
 	}
 	
 	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D)g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
@@ -121,10 +153,13 @@ public class FancyTab extends JPanel {
 	     
 	     g2d.setColor(Color.LIGHT_GRAY);
 		g.drawRoundRect(0, 2, getWidth()-1, getHeight()+10, 8, 8);
-		
+	
 		g2d.setColor(Color.DARK_GRAY);
 		g.setFont(getFont());
 		int strWidth = g.getFontMetrics().stringWidth(text);
-		g.drawString(text, getWidth()/2 - strWidth/2 - 2, getHeight()-8);
+		g.drawString(text, getWidth()/2 - strWidth/2 - 2, getHeight()-6);
+		
+		//g.drawImage(closeIcon.getImage(), getWidth()-closeIcon.getIconWidth()-10, getHeight()/2-closeIcon.getIconHeight()/2, null);
+		
 	}
 }

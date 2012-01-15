@@ -150,8 +150,8 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 		BorderlessButton remove = new BorderlessButton(removeIcon);
 		//remove.setAlignmentY(TOP_ALIGNMENT);
 		remove.setToolTipText("Remove " + getModel().getModelLabel() );
-		remove.setXDif(-1);
-		remove.setYDif(-2);
+		remove.setXDif(-4);
+		remove.setYDif(-4);
 		remove.setMinimumSize(new Dimension(24, 28));
 		remove.setPreferredSize(new Dimension(24, 28));
 		remove.setMaximumSize(new Dimension(24, 28));
