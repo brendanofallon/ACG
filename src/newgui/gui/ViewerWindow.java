@@ -27,6 +27,7 @@ import javax.swing.JTree;
 import javax.swing.UIManager;
 
 
+import newgui.UIConstants;
 import newgui.datafile.DataFile;
 import newgui.gui.display.Display;
 import newgui.gui.display.DisplayPane;
@@ -39,7 +40,7 @@ import newgui.gui.widgets.panelPile.PanelPile;
 
 public class ViewerWindow extends JFrame {
 
-	public static Font sansFont;
+	public static Font sansFont = UIConstants.sansFont;
 	private static ViewerWindow viewer; //Handy static reference to main window
 	
 	public ViewerWindow() {
@@ -61,9 +62,6 @@ public class ViewerWindow extends JFrame {
         }	
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	
-		sansFont = getFont("fonts/Trebuchet_MS.ttf");
-		
 		
 		BorderlessButton.setDefaultFont(sansFont.deriveFont(16f));
 		
@@ -93,14 +91,6 @@ public class ViewerWindow extends JFrame {
 		displayPane.addDisplay(display);
 	}
 
-	/**
-	 * Fade in a region of this frame from the background color 
-	 * @param r
-	 */
-//	public void fadeInRegion(Rectangle r) {
-//		RegionFader fader = new RegionFader(this);
-//		fader.fadeInRegion(r);
-//	}
 	
 	/**
 	 * Create a new window in the displaypane containing a Display associated with
@@ -110,44 +100,9 @@ public class ViewerWindow extends JFrame {
 	public void displayDataFile(DataFile dataFile, String title) {
 		Display display = dataFile.getDisplay();
 		displayPane.addDisplay(display, title);
-		//fadeInRegion( displayPane.getBounds() );
 		repaint();
 	}
 	
-	/**
-	 * Return an icon associated with the given url. For instance, if the url is icons/folder.png, we look in the
-	 * package icons for the image folder.png, and create and return an icon from it. 
-	 * @param url
-	 * @return
-	 */
-	public static ImageIcon getIcon(String url) {
-		ImageIcon icon = null;
-		try {
-			java.net.URL imageURL = ViewerWindow.class.getResource(url);
-			icon = new ImageIcon(imageURL);
-		}
-		catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return icon;
-	}
-	
-	public static Font getFont(String url) {
-		Font font = null;
-		try {
-			InputStream fontStream = ViewerWindow.class.getResourceAsStream(url);
-			font = Font.createFont(Font.TRUETYPE_FONT, fontStream);
-			font = font.deriveFont(12f);
-		} catch (FontFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return font;
-	}
 
 	private void initComponents() {
 		Container contentPane = this.getContentPane();

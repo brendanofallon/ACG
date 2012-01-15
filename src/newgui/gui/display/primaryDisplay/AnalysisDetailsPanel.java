@@ -19,6 +19,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
+import newgui.UIConstants;
 import newgui.gui.ViewerWindow;
 import newgui.gui.modelViews.CoalModelView;
 import newgui.gui.modelViews.LoggersView;
@@ -199,7 +200,7 @@ public class AnalysisDetailsPanel extends JPanel {
 	protected void setButtonHighlight(BorderlessButton button) {
 		if (prevButton != null)
 			prevButton.setFont(BorderlessButton.getDefaultFont());
-		button.setFont(ViewerWindow.getFont("fonts/ClienB.ttf").deriveFont(15f));
+		button.setFont(UIConstants.getFont("gui/fonts/ClienB.ttf").deriveFont(15f));
 		prevButton = button;
 	}
 

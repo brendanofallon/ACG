@@ -25,7 +25,7 @@ public class TopLeftPanel extends JPanel {
 		this.setBackground(UIConstants.lightBackground);
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
 		this.setPreferredSize(new Dimension(200, 50));
-		ImageIcon openIcon = ViewerWindow.getIcon("icons/scaledBlueArrow.png");
+		ImageIcon openIcon =  UIConstants.blueRightArrow;
 		if (openIcon != null) {
 			importButton = new BorderlessButton(null, openIcon);
 			importButton.setYDif(-1);

@@ -30,6 +30,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
+import newgui.UIConstants;
 import newgui.gui.modelViews.LoggersView;
 import newgui.gui.widgets.BorderlessButton;
 
@@ -52,7 +53,7 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 	protected JPanel centerPanel;
 	protected LoggersView loggerPanelParent = null;
 	
-	static final ImageIcon removeIcon = ACGFrame.getIcon("inputPanels/loggerConfigs/icons/removeButton.png");
+	static final ImageIcon removeIcon = UIConstants.closeButton;
 	
 	static final Color lightColor = new Color(0.99f, 0.99f, 0.99f, 0.8f);
 	static final Color darkColor = new Color(0.55f, 0.55f, 0.55f, 0.7f);
