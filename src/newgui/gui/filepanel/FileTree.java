@@ -13,13 +13,11 @@ import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import newgui.alignment.FileParseException;
-import newgui.datafile.DataFileFactory;
-import newgui.datafile.DataFileUtils;
-import newgui.datafile.XMLDataFile;
 import newgui.datafile.*;
 import newgui.gui.ViewerWindow;
 
@@ -92,8 +90,13 @@ public class FileTree extends JPanel {
 				File file = ((FileNode)obj).getFile();
 				XMLDataFile dataFile;
 				try {
+					
 					dataFile = DataFileFactory.createDataFile(file);
-					ViewerWindow.getViewer().displayDataFile(dataFile);
+					String title = dataFile.getSourceFile().getName();
+					if (title.endsWith(".xml"))
+						title = title.replace(".xml", "");
+					
+					ViewerWindow.getViewer().displayDataFile(dataFile, title);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

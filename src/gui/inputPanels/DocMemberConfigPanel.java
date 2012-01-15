@@ -30,6 +30,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +42,8 @@ import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.loggerConfigs.LoggersPanel;
 import gui.widgets.BorderlessButton;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -75,11 +78,6 @@ public class DocMemberConfigPanel extends JPanel {
 	MCMCModelView mcView;
 	
 	AnalysisModel analysisModel = new AnalysisModel();
-	//Various models.... a bit weird since we have references to some here,
-	//but in other places the model elements are contained within the views...
-	//AlignmentElement alignmentEl;
-	//MCMCModelElement mcElement;
-	//ARGModelElement argModel;
 	
 	ACGFrame acgParent;
 	
@@ -90,9 +88,6 @@ public class DocMemberConfigPanel extends JPanel {
 		initComponents();
 	}
 
-	protected void runButtonPressed() {
-			acgParent.startNewRun();		
-	}
 
 	/**
 	 * Attempt to read all model settings, including alignment, site model, loggers, and MCMC settings, from the
@@ -199,6 +194,8 @@ public class DocMemberConfigPanel extends JPanel {
 			
 		}
 	}
+	
+	
 	/**
 	 * Build an ACGDocument given the current settings 
 	 * @return
@@ -206,79 +203,12 @@ public class DocMemberConfigPanel extends JPanel {
 	 * @throws ParserConfigurationException 
 	 */
 	public ACGDocument getACGDocument() throws InputConfigException {
+
 		return analysisModel.getACGDocument();
-//		ACGDocumentBuilder docBuilder = null;
-//		try {
-//			if (mcView == null) {
-//				throw new InputConfigException("MCMC settings have not been specified yet");
-//			}
-//			mcView.updateToModel();
-//			
-//			docBuilder = new ACGDocumentBuilder();
-//
-//			docBuilder.addRandomSource();
-//			
-//			docBuilder.appendNodes( alignmentEl );
-//
-//			argModel.setAlignmentRef(alignmentEl);
-//			docBuilder.appendNodes( argModel );			
-//
-//			siteModelPanel.getSiteModel().setARGRef( argModel );
-//			docBuilder.appendNodes( siteModelPanel.getSiteModel() );
-//			
-//			coalescentModelPanel.getModel().setARGRef(argModel);
-//			docBuilder.appendNodes( coalescentModelPanel.getModel() );
-//			
-//			//Prior stuff comes last
-//			List<DoubleParamElement> paramModels = new ArrayList<DoubleParamElement>();
-//			paramModels.addAll(siteModelPanel.getSiteModel().getDoubleParameters());
-//			paramModels.addAll(coalescentModelPanel.getModel().getDoubleParameters());
-//			
-//			for(DoubleParamElement paramElement : paramModels) {
-//				if (paramElement.getPriorModel() != null) {
-//					Element priorNode = paramElement.getPriorModel().getElement(docBuilder.getACGDocument());
-//					docBuilder.appendNode(priorNode);
-//				}
-//			}
-//			
-//			
-//			mcElement.clearReferences();
-//			
-//			
-//			loggersPanel.setARGReference(argModel);
-//			List<Element> loggers = loggersPanel.getLoggerNodes(docBuilder.getACGDocument());
-//			for(Element node : loggers) {
-//				docBuilder.appendNode(node);
-//				mcElement.addListenerRef(node);
-//			}
-//			
-//			List<Element> params = docBuilder.getParameters();
-//			for(Element param : params) {
-//				mcElement.addParamRef(param);
-//			}
-//			
-//			List<Element> likelihoods = docBuilder.getLikelihoods();
-//			for(Element like : likelihoods) {
-//				mcElement.addLikelihoodRef(like);
-//			}
-//			
-//			
-//			docBuilder.appendNodes( mcElement );
-//				
-//			docBuilder.appendHeader();
-//			docBuilder.appendTimeAndDateComment();
-//			
-//		} catch (ParserConfigurationException e) {
-//			ErrorWindow.showErrorWindow(e);
-//		} 
-//		
-//		if (docBuilder != null)
-//			return docBuilder.getACGDocument();
-//		else
-//			return null;
+
 	}
 	
-	protected void browseForFile() {
+	private void browseForAlignmentFile() {
 		boolean macMode = false;
 		String os = System.getProperty("os.name");
         if (os.contains("Mac") || os.contains("mac")) {
@@ -328,6 +258,7 @@ public class DocMemberConfigPanel extends JPanel {
 	 * Reset info in top label to reflect changes in alignment
 	 */
 	private void updateTopLabel(String alnName) {
+		DecimalFormat formatter = new DecimalFormat("###,###");
 		topLabel.setText("Alignment \"" + alnName + "\" : " + analysisModel.getAlignmentModel().getSequenceCount() + " sequences of length  " + analysisModel.getAlignmentModel().getSequenceLength() + " sites");
 		topLabel.revalidate();
 	}
@@ -336,17 +267,27 @@ public class DocMemberConfigPanel extends JPanel {
 		setBackground(ACGFrame.backgroundColor);		
 		topPanel = new JPanel();
 		topPanel.setOpaque(false);
-		topPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+		topPanel.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 0));
+		
+		JPanel alnPanel = new JPanel();
+		alnPanel.setOpaque(false);
+		alnPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		topLabel = new JLabel("Choose an alignment");
 		chooseButton = new JButton("Choose");
 		chooseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				browseForFile();
+				browseForAlignmentFile();
 			}
 		});
+
 		
-		topPanel.add(topLabel);
-		topPanel.add(chooseButton);
+		alnPanel.add(topLabel);
+		alnPanel.add(chooseButton);
+		topPanel.add(alnPanel);
+		
+		argView = new ARGModelView(analysisModel.getARGModel());
+		topPanel.add(argView);
 		this.add(topPanel, BorderLayout.NORTH);
 		
 		tabPane = new JTabbedPane();
@@ -365,7 +306,8 @@ public class DocMemberConfigPanel extends JPanel {
 		this.add(tabPane, BorderLayout.CENTER);
 		
 	}
-
+	
+	private ARGModelView argView;
 
 	private File selectedFile = null;
 	private JFileChooser fileChooser; //Used on non-mac platforms

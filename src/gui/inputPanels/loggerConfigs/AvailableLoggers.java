@@ -3,6 +3,8 @@ package gui.inputPanels.loggerConfigs;
 import java.util.ArrayList;
 import java.util.List;
 
+import newgui.gui.modelViews.loggerViews.DefaultLoggerView;
+
 /**
  * Stores a list of all (user-ready) logger models that can be added to an analysis 
  * @author brendan
@@ -58,4 +60,6 @@ public class AvailableLoggers {
 		
 		throw new IllegalArgumentException("Could not find a suitable view for logger model: " + model.getModelLabel() );
 	}
+	
+
 }

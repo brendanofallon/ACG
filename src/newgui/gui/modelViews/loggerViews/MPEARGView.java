@@ -17,3 +17,39 @@
 ***********************************************************************/
 
 
+package newgui.gui.modelViews.loggerViews;
+
+import gui.inputPanels.Configurator.InputConfigException;
+import gui.inputPanels.loggerConfigs.LoggerModel;
+import gui.inputPanels.loggerConfigs.MPEARGModel;
+
+public class MPEARGView extends DefaultLoggerView {
+
+	
+	public MPEARGView() {
+		this(new MPEARGModel());
+	}
+	
+	public MPEARGView(LoggerModel model) {
+		super(model);
+		filenameField.setText("MPEARG.xml");
+	}
+
+	@Override
+	protected void updateModelFromView() throws InputConfigException {
+		
+	}
+
+	@Override
+	public String getName() {
+		return "Most likely ARG";
+	}
+
+	@Override
+	public String getDescription() {
+		return "ARG found with greatest probability given data";
+	}
+
+	
+	
+}

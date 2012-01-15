@@ -214,16 +214,17 @@ public class CoalescentLikelihoodTest {
 		List<MCMCListener> listeners = new ArrayList<MCMCListener>();
 		
 		
-//		ConstantPopSize popSize = new ConstantPopSize(1.0);
-//		popSize.addModifier(new ScaleModifier());
+		ConstantPopSize popSize = new ConstantPopSize(1.0);
+		popSize.addModifier(new ScaleModifier());
+
 		
-		PiecewiseLinearPopSize popSize = new PiecewiseLinearPopSize();
-		popSize.addModifier(new LinearFunctionMover(arg));
-		popSize.addModifier(new LinearFunctionAddRemove(arg));
-		PopSizeLogger sizeLogger = new PopSizeLogger(10000, 1000, arg, popSize);
-		listeners.add( sizeLogger );
-		PopSizePrior popSizePrior = new PopSizePrior(popSize);
-		likelihoods.add(popSizePrior);
+//		PiecewiseLinearPopSize popSize = new PiecewiseLinearPopSize();
+//		popSize.addModifier(new LinearFunctionMover(arg));
+//		popSize.addModifier(new LinearFunctionAddRemove(arg));
+//		PopSizeLogger sizeLogger = new PopSizeLogger(10000, 1000, arg, popSize);
+//		listeners.add( sizeLogger );
+//		PopSizePrior popSizePrior = new PopSizePrior(popSize);
+//		likelihoods.add(popSizePrior);
 		
 		ConstantRecombination rec = new ConstantRecombination(1.0);
 		rec.addModifier(new ScaleModifier());

@@ -89,6 +89,8 @@ public class AlignmentPrepPanel extends JPanel {
 		JPanel bottomRightPanel = new JPanel();
 		
 		bottomRightPanel = new JPanel();
+		bottomRightPanel.setOpaque(false);
+		bottomLeftPanel.setOpaque(false);
 		bottomRightPanel.setLayout(new BorderLayout());
 		bottomRightPanel.setPreferredSize(new Dimension(400, 300));
 		analDescBox = new JTextArea();
@@ -101,6 +103,7 @@ public class AlignmentPrepPanel extends JPanel {
 		//analDescBox.setFont(ViewerWindow.sansFont.deriveFont(16f));
 		bottomRightPanel.add(analDescBox, BorderLayout.CENTER);
 		JPanel bottomButtonPanel = new JPanel();
+		bottomButtonPanel.setOpaque(false);
 		bottomButtonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		chooseButton = new BorderlessButton("Choose");
 		chooseButton.setEnabled(false);

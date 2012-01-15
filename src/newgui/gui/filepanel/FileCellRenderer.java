@@ -13,6 +13,7 @@ import java.awt.RenderingHints;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
+import newgui.UIConstants;
 import newgui.gui.ViewerWindow;
 
 public class FileCellRenderer extends DefaultTreeCellRenderer {
@@ -28,31 +29,42 @@ public class FileCellRenderer extends DefaultTreeCellRenderer {
 		setMinimumSize(new Dimension(10, 40));
 	}
 	
-	public Component getTreeCellRendererComponent(JTree tree,
-            Object value,
-            boolean selected,
-            boolean expanded,
-            boolean leaf,
-            int row,
-            boolean hasFocus) {
+//	public Component getTreeCellRendererComponent(JTree tree,
+//            Object value,
+//            boolean selected,
+//            boolean expanded,
+//            boolean leaf,
+//            int row,
+//            boolean hasFocus) {
+//	
+//		this.selected = selected;
+//		this.setText(value.toString());
+//		return this;
+//	}
 	
-		this.selected = selected;
-		this.setText(value.toString());
-		return this;
-	}
-	
-	public void paint(Graphics g) {
-		Graphics2D g2d = (Graphics2D)g;
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
-		
-		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		
-		g.setColor(new Color(1.0f, 1.0f, 1.0f, 0.5f));
-		g.drawString(getText(), 2, getHeight()-2);
-		g.setColor(Color.DARK_GRAY);
-		g.drawString(getText(), 1, getHeight()-3);
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+//		Graphics2D g2d = (Graphics2D)g;
+//		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+//				RenderingHints.VALUE_ANTIALIAS_ON);
+//		
+//		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+//				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+//		
+//		if (UIConstants.isMac() && selected) {
+//			GradientPaint gp;
+//				gp = new GradientPaint(1, 0, new Color(0f, 0f, 1f, 0.1f), 3, getHeight(), new Color(0f, 0f, 1f, 0.5f));
+//			g2d.setPaint(gp);
+//			g.fillRoundRect(1, 1, getWidth()-2, getHeight()-2, 5, 5);
+//			
+//			g.setColor(new Color(0f, 0f, 1f, 0.5f));
+//			g.drawRoundRect(1, 1, getWidth()-2, getHeight()-2, 5, 5);
+//		}
+//		
+//		g.setColor(new Color(1.0f, 1.0f, 1.0f, 0.5f));
+//		g.drawString(getText(), 2, getHeight()-2);
+//		g.setColor(Color.DARK_GRAY);
+//		g.drawString(getText(), 1, getHeight()-3);
 		
 	}
 }

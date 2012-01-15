@@ -36,6 +36,11 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
+/**
+ * This draws a representation of the given logger view in an AddLoggerFrame 
+ * @author brendan
+ *
+ */
 public class LoggerItemRenderer extends RoundedPanel {
 
 	final AddLoggerFrame frame;
