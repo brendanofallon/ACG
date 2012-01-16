@@ -1,12 +1,15 @@
 package newgui.gui.display.jobDisplay;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import jobqueue.ACGJob;
 import jobqueue.JobQueue;
+import jobqueue.QueueListener;
 import jobqueue.QueueManager;
 import newgui.gui.display.*;
 /**
@@ -14,13 +17,17 @@ import newgui.gui.display.*;
  * @author brendano
  *
  */
-public class JobQueueDisplay extends Display {
+public class JobQueueDisplay extends Display implements QueueListener {
 
 	private JobQueue queue;
+	
+	//Stores all jobviews currently displayed in the Displayed 
+	private List<JobView> jobViews = new ArrayList<JobView>();
 	
 	public JobQueueDisplay() {
 		queue = QueueManager.getCurrentQueue();
 		setTitle("Job Manager");
+		queue.addListener(this);
 		initComponents();
 	}
 
@@ -30,16 +37,51 @@ public class JobQueueDisplay extends Display {
 		JPanel topPanel = new JPanel();
 		topPanel.setOpaque(false);
 		
-		JPanel centerPanel = new JPanel();
+		centerPanel = new JPanel();
 		centerPanel.setOpaque(false);
 		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+		
+		layoutJobViews();
+		
+		this.add(topPanel, BorderLayout.NORTH);
+		this.add(centerPanel, BorderLayout.CENTER);
+	}
+
+	/**
+	 * Removes all jobViews and re-adds them based on the given state of the queue
+	 */
+	private void layoutJobViews() {
+		centerPanel.removeAll();
+		System.out.println("Laying out job views");
 		
 		for(ACGJob job : queue.getJobs()) {
 			JobView jView = new JobView(job);
 			centerPanel.add(jView);
 		}
 		
-		this.add(topPanel, BorderLayout.NORTH);
-		this.add(centerPanel, BorderLayout.CENTER);
+		centerPanel.revalidate();
+		centerPanel.repaint();
 	}
+	
+	/**
+	 * Returns the JObView associated with the given job, or null if there
+	 * is no such view
+	 * @param job
+	 * @return
+	 */
+	private JobView viewForJob(ACGJob job) {
+		for(JobView view : jobViews) {
+			ACGJob viewJob = view.getJob();
+			if (viewJob == job)
+				return view;
+		}
+		return null;
+	}
+	
+	@Override
+	public void queueChanged(JobQueue queue) {
+		layoutJobViews();
+	}
+	
+	JPanel centerPanel;
 }

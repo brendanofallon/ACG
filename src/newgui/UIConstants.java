@@ -32,6 +32,9 @@ public class UIConstants {
 	
 	public static final ImageIcon closeButton = getIcon("gui/icons/closeButton.png");
 
+	public static final ImageIcon startButton = getIcon("gui/icons/startArrow.png");
+	
+	public static final ImageIcon pauseButton = getIcon("gui/icons/pauseButton.png");
 	
 	//Fonts
 	public static final Font sansFont = getFont("gui/fonts/Trebuchet_MS.ttf");

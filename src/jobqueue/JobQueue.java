@@ -80,6 +80,7 @@ public class JobQueue implements JobListener {
 		job.addListener(this);
 		queue.add(job);
 		handleQueueUpdate();
+		fireQueueChangeEvent();
 	}
 
 	/**
@@ -89,6 +90,7 @@ public class JobQueue implements JobListener {
 	public void removeJob(ACGJob job) {
 		job.removeListener(this);
 		queue.remove(job);
+		fireQueueChangeEvent();
 	}
 	
 	/**
@@ -183,13 +185,40 @@ public class JobQueue implements JobListener {
 	 * @param nextJob
 	 */
 	private void submitJob(final ACGJob nextJob) {
-		System.out.println("Running some job in the background");
 		JobRunner runner = new JobRunner(nextJob);
 		runner.execute();
-		System.out.println("...and returning from method");
 	}
 
 
+	/**
+	 * Add a new listener for changes to this queue. This method ensures that each
+	 * object is only added once! If list
+	 * @param l
+	 */
+	public void addListener(QueueListener l) {
+		if (!listeners.contains(l))
+			listeners.add(l);	
+	}
+	
+	/**
+	 * Remove this listener from the queue
+	 * @param l
+	 */
+	public void removeListener(QueueListener l) {
+		listeners.remove(l);
+	}
+	
+	
+	/**
+	 * Fire a change event to all listeners
+	 */
+	protected void fireQueueChangeEvent() {
+		for(QueueListener l : listeners) {
+			l.queueChanged(this);
+		}
+	}
+	
+	
 	/**
 	 * Find the job with the lowest index in the list whose 
 	 * status is NOT_STARTED. Returns null if there is no such job
@@ -224,6 +253,8 @@ public class JobQueue implements JobListener {
 		
 	}
 
+
 	
 	
+	private List<QueueListener> listeners = new ArrayList<QueueListener>();
 }

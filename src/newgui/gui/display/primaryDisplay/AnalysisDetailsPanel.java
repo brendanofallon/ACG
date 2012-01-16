@@ -214,15 +214,14 @@ public class AnalysisDetailsPanel extends JPanel {
 			acgDocument.loadAndVerifyClasses();
 			acgDocument.turnOffMCMC(); //Make sure we don't start running the chain immediately, which is the default behavior
 			acgDocument.instantiateAll();
-			ExecutingChain job = acgDocument.runMCMC();			
+			ExecutingChain job = acgDocument.runMCMC();
+			String jobTitle = displayParent.getTitle();
+			job.setJobTitle( jobTitle + "-analysis" );
 			JobQueue currentQueue = QueueManager.getCurrentQueue();
 			
-			Mode oldMode = currentQueue.getMode();
-			currentQueue.setMode(Mode.STOP_AFTER);
 			//Order important here, we must add job to JobDisplay before it starts running (we can't register listeners after its been started)
 			ViewerWindow.getViewer().showJobQueueDisplay();
 			currentQueue.addJob(job);
-			currentQueue.setMode(oldMode);
 			
 		} catch (InputConfigException e) {
 			System.out.println("Input config exception, could not create ACG document: " + e.getMessage());
