@@ -153,7 +153,7 @@ public class MCModelView extends JPanel {
 	 * Update all values in model to reflect selections in view widgets. This should be called before
 	 * the beginning of any MCMC run  (or file save) to make sure changes are reflected in model. 
 	 */
-	public void updateToModel() throws InputConfigException {
+	public void updateModel() throws InputConfigException {
 		System.out.println("Updating model from view! Run length is : " + lengthSpinner.getValue() );
 		adaptiveHeatingBoxChanged();
 		heatingBoxChanged();

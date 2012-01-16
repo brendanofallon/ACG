@@ -19,9 +19,14 @@
 
 package jobqueue;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import gui.ErrorWindow;
 
 import javax.swing.SwingWorker;
+
+import jobqueue.JobState.State;
 
 import mcmc.MCMC;
 import mcmc.MCMCListener;
@@ -35,9 +40,9 @@ import mcmc.mc3.MC3;
  */
 public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob {
 
-	MCMC chain = null; //Will be null if user supplies an MC3 object to constructor
-	MC3 mc3 = null;		//Will be null if user supplies MCMC object to constructor
-	MCMC coldChain = null; //Reference to cold chain, only non-null if we're in MC3 mode 
+	protected MCMC chain = null; //Will be null if user supplies an MC3 object to constructor
+	protected MC3 mc3 = null;		//Will be null if user supplies MCMC object to constructor
+	protected MCMC coldChain = null; //Reference to cold chain, only non-null if we're in MC3 mode 
 	private boolean paused = false;
 	private boolean done = false;
 	
@@ -63,6 +68,7 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 		}
 		catch (Exception ex) {
 			ErrorWindow.showErrorWindow(ex);
+			state.setState(State.ERROR);
 		}
 		return null;
 	}
@@ -85,6 +91,9 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 		this.paused = paused;
 		if (mc3 != null) {
 			mc3.setPaused(paused);
+			
+			state.setState(State.PAUSED);
+			fireStatusUpdate();
 		}
 	}
 	
@@ -104,13 +113,16 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 			
 			if (chain != null)
 				chain.abort();
+			
+			state.setState(State.COMPLETED);
+			fireStatusUpdate();
 		}
 	}
 
 	@Override
 	public void chainIsFinished() {
-		// TODO Auto-generated method stub
-		
+		state.setState(State.COMPLETED);
+		fireStatusUpdate();
 	}
 	
 
@@ -123,30 +135,82 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 
 	@Override
 	public void beginJob() {
-		if (mc3 != null)
+		System.out.println("Beginning job");
+		state.setState(State.RUNNING);
+		fireStatusUpdate();
+		if (mc3 != null) {
 			mc3.run();
-		else
+		}
+		else {
 			chain.run();
+		}
+	}
+	
+	/**
+	 * Set a title for this job that will appear in some UI components displaying the job
+	 * @param title
+	 */
+	public void setJobTitle(String title) {
+		this.jobTitle = title;
 	}
 
+	////////////////////////////////    ACGJob implementation     ///////////////////////////////////
 
 	@Override
 	public void addListener(JobListener listener) {
-		// TODO Auto-generated method stub
-		
+		listeners.add(listener);
 	}
 
 
 	@Override
 	public void removeListener(JobListener listener) {
-		// TODO Auto-generated method stub
-		
+		listeners.remove(listener);
+	}
+	
+	public void fireStatusUpdate() {
+		System.out.println("Firing state update, new state is: " + state.getState() + " listeners size is : " + listeners.size());
+		for(JobListener l : listeners) {
+			l.statusUpdated(this);
+		}
 	}
 
 
 	@Override
 	public JobState getJobState() {
-		// TODO Auto-generated method stub
-		return null;
+		return state;
 	}
+
+
+	@Override
+	public String getJobTitle() {
+		return jobTitle;
+	}
+	
+	@Override
+	public int getTotalRunLength() {
+		if (mc3 != null) {
+			return mc3.getRunLength();
+		}
+		else {
+			return chain.getUserRunLength();
+		}
+	}
+
+
+	@Override
+	public int getCurrentStep() {
+		if (mc3 != null) {
+			return mc3.getColdChain().getCurrentState();
+		}
+		else {
+			return chain.getCurrentState();
+		}
+	}
+	
+	private String jobTitle = "Unknown job";
+	private JobState state = new JobState(this);
+	private List<JobListener> listeners = new ArrayList<JobListener>();
+
+	
+	
 }

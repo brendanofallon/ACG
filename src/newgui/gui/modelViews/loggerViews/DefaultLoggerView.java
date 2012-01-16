@@ -218,9 +218,7 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 		if (loggerPanelParent != null)
 			loggerPanelParent.removeLogger(this);
 	}
-	
-	
-	
+
 	
 	public LoggerModel getModel() {
 		return model;
@@ -250,7 +248,7 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 	
 	
 	public void updateFields() throws InputConfigException {
-		String filename = filenameField.getText();
+		String filename = filenameField.getText().trim();
 		filename.replaceAll(" ", "_");
 		model.setOutputFilename(filename);
 		model.setBurnin( (Integer)burninSpinner.getValue());

@@ -31,6 +31,7 @@ import newgui.UIConstants;
 import newgui.datafile.DataFile;
 import newgui.gui.display.Display;
 import newgui.gui.display.DisplayPane;
+import newgui.gui.display.jobDisplay.JobQueueDisplay;
 import newgui.gui.filepanel.FileTree;
 import newgui.gui.widgets.BorderlessButton;
 import newgui.gui.widgets.RegionFader;
@@ -103,6 +104,21 @@ public class ViewerWindow extends JFrame {
 		repaint();
 	}
 	
+	public void showJobQueueDisplay() {
+		System.out.println("Attempting to show job display window");
+		JobQueueDisplay currentDisp = (JobQueueDisplay) displayPane.getDisplayForClass(JobQueueDisplay.class);
+		if ( currentDisp != null ) {
+			displayPane.selectComponent(currentDisp);
+		}
+		else {
+			if (jobDisplay == null) {
+				jobDisplay = new JobQueueDisplay();
+			}
+			System.out.println("Attempting to show newly created job display window");
+			displayPane.addDisplay(jobDisplay, "Job Manager");
+		}
+	}
+	
 
 	private void initComponents() {
 		Container contentPane = this.getContentPane();
@@ -124,24 +140,7 @@ public class ViewerWindow extends JFrame {
 		leftPanel.setPreferredSize(new Dimension(200, 10000));
 		leftPanel.setMaximumSize(new Dimension(200, 10000));
 		mainPanel.add(leftPanel);
-		
-		//List<Range> ranges = new ArrayList<Range>(2048);
-		//System.out.println("Creating ranges...");
-//		int intMax = 10000;
-//		int prev = 0;
-//		while (prev < intMax) {
-//			int begin = (int)Math.round( 100.0*Math.random() )+prev;
-//			int length = (int)Math.round( 500.0 * Math.random() );
-//			prev = begin + length;
-//			ranges.add(new AbstractRange(begin, begin+length));
-//			//System.out.println("Adding rect at begin: "+ begin + " - " + (begin+length));
-//		}
-		//System.out.println("Creating range block...");
-		//RangeBlock block = new RangeBlock(ranges, 0, intMax);
-
 		displayPane = new DisplayPane();
-//		Display first = new FirstDisplay();
-//		displayPane.addDisplay(first);
 		
 		mainPanel.add(displayPane);		
 		
@@ -177,6 +176,7 @@ public class ViewerWindow extends JFrame {
 		return pile;
 	}
 	
+	private JobQueueDisplay jobDisplay = null;
 	private DisplayPane displayPane;
 	private JPanel mainPanel;
 }

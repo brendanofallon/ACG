@@ -173,20 +173,6 @@ public class AlignmentPrepPanel extends JPanel {
 			BasicSequenceAlignment basicAln = new BasicSequenceAlignment(seqs);
 			
 			model.setAlignment( basicAln );
-			try {
-				ACGDocument doc = model.getACGDocument();
-				String xmlStr = doc.getXMLString();
-				System.out.println(xmlStr);
-			} catch (InputConfigException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (TransformerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			
 			//Switch showing panel to the 'analysis details' panel
 			displayParent.showAnalysisDetails(model);

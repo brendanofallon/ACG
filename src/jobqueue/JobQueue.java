@@ -5,6 +5,9 @@ import gui.ACGFrame;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.SwingWorker;
+
+import jobqueue.JobQueue.Mode;
 import jobqueue.JobState.State;
 
 /**
@@ -27,13 +30,38 @@ public class JobQueue implements JobListener {
 	 * @author brendan
 	 *
 	 */
-	enum Mode {RUN_AT_WILL, STOP_AFTER};
+	public enum Mode {RUN_AT_WILL, STOP_AFTER};
 	
 	protected Mode currentMode = Mode.RUN_AT_WILL;
 	protected ACGJob currentJob = null;
 	
 	public JobQueue() {
 		
+	}
+	
+	/**
+	 * Get the total size of the queue, including jobs that have already completed
+	 * @return
+	 */
+	public int getQueueSize() {
+		return queue.size();
+	}
+	
+	/**
+	 * Obtain the which'th job in the queue
+	 * @param which
+	 * @return
+	 */
+	public ACGJob getJob(int which) {
+		return queue.get(which);
+	}
+	
+	/**
+	 * Return a list of all jobs in the queue
+	 * @return
+	 */
+	public List<ACGJob> getJobs() {
+		return queue;
 	}
 	
 	/**
@@ -100,6 +128,12 @@ public class JobQueue implements JobListener {
 	public boolean isRunningJob() {
 		return currentJob != null;
 	}
+	
+	/**
+	 * Set the current 'Mode' of this queue, which determines whether jobs are run as soon
+	 * as previous jobs finish, or if we wait for user confirmation
+	 * @param newMode
+	 */
 	public void setMode(Mode newMode) {
 		if (currentMode == Mode.STOP_AFTER && newMode == Mode.RUN_AT_WILL) {
 			currentMode = newMode;
@@ -128,6 +162,10 @@ public class JobQueue implements JobListener {
 		handleQueueUpdate();
 	}
 	
+	public Mode getMode() {
+		return currentMode;
+	}
+	
 	/**
 	 * Submit a new job to the queue if the mode is comptible 
 	 */
@@ -145,11 +183,10 @@ public class JobQueue implements JobListener {
 	 * @param nextJob
 	 */
 	private void submitJob(final ACGJob nextJob) {
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				nextJob.beginJob();
-			}
-		});
+		System.out.println("Running some job in the background");
+		JobRunner runner = new JobRunner(nextJob);
+		runner.execute();
+		System.out.println("...and returning from method");
 	}
 
 
@@ -166,6 +203,27 @@ public class JobQueue implements JobListener {
 		}
 		return null;
 	}
+	
+	/**
+	 * Mini class  to handle running ACGJobs in background
+	 * @author brendano
+	 *
+	 */
+	class JobRunner extends SwingWorker {
+
+		final ACGJob job;
+		public JobRunner(ACGJob job) {
+			this.job = job;
+		}
+		
+		@Override
+		protected Object doInBackground() throws Exception {
+			job.beginJob();
+			return job;
+		}
+		
+	}
+
 	
 	
 }

@@ -3,6 +3,12 @@ package jobqueue;
 public interface ACGJob {
 
 	/**
+	 * Return a title / label for this job
+	 * @return
+	 */
+	public String getJobTitle();
+	
+	/**
 	 * Begin running the current job
 	 */
 	public void beginJob();
@@ -12,6 +18,17 @@ public interface ACGJob {
 	 * @return
 	 */
 	public JobState getJobState();
+	
+	/**
+	 * Return the maximum number of steps this job will run
+	 * @return
+	 */
+	public int getTotalRunLength();
+	
+	/**
+	 * Return the current mcmc step this job in on (will be approximate)
+	 */
+	public int getCurrentStep();
 	
 	/**
 	 * Add new listener to this job

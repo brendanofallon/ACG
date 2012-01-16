@@ -49,6 +49,15 @@ public class FancyTabsPanel extends JPanel {
 		repaint();
 	}
 	
+	/**
+	 * Return tab at index i
+	 * @param i
+	 * @return
+	 */
+	public FancyTab getTabAt(int i) {
+		return tabs.get(i);
+	}
+	
 	protected void removeTab(FancyTab tab) {
 		tabs.remove(tab);
 		this.remove(tab);

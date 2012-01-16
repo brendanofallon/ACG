@@ -153,18 +153,29 @@ public class LoggersView extends JPanel {
 	}
 	
 	
-	public List<Element> getLoggerNodes(ACGDocument doc) throws InputConfigException {
-		List<Element> nodes = new ArrayList<Element>();
-		
+//	public List<Element> getLoggerNodes(ACGDocument doc) throws InputConfigException {
+//		List<Element> nodes = new ArrayList<Element>();
+//		
+//		for(DefaultLoggerView view : loggers) {
+//			view.updateFields();
+//			view.getModel().setArgRef( ARGref );
+//			Element loggerElement;
+//			loggerElement = (Element) view.getModel().getElements(doc).get(0);
+//			nodes.add( loggerElement );
+//		}
+//		
+//		return nodes;
+//	}
+	
+	/**
+	 * Push changes from UI to all logger models 
+	 * @throws InputConfigException 
+	 */
+	public void updateModels() throws InputConfigException {
 		for(DefaultLoggerView view : loggers) {
 			view.updateFields();
 			view.getModel().setArgRef( ARGref );
-			Element loggerElement;
-			loggerElement = (Element) view.getModel().getElements(doc).get(0);
-			nodes.add( loggerElement );
 		}
-		
-		return nodes;
 	}
 	
 	public List<LoggerModel> getLoggerModels() throws InputConfigException {

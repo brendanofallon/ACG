@@ -86,6 +86,9 @@ public abstract class PropertyLogger implements MCMCListener {
 			System.out.println("Could not open output file for logging : " + filename);
 			//Shouldn't happen, right?
 			e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println("Could not open output file for logging : " + filename);
+			e.printStackTrace();
 		}
 		
 		Boolean writeTempData = XMLUtils.getOptionalBoolean(WRITE_TEMP_DATA, attrs);
@@ -147,7 +150,11 @@ public abstract class PropertyLogger implements MCMCListener {
 		}	
 	}
 	
-	public void setOutputFile(File outputfile) throws FileNotFoundException {
+	public void setOutputFile(File outputfile) throws IOException {
+		System.out.println("Attempting to create file : " + outputfile.getAbsolutePath());
+		if (! outputfile.exists()) {
+			outputfile.createNewFile();
+		}
 		outputStream = new PrintStream(new FileOutputStream(outputfile));
 	}
 	

@@ -1,6 +1,8 @@
 package newgui.gui.display.primaryDisplay;
 
+import gui.document.ACGDocument;
 import gui.inputPanels.AnalysisModel;
+import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.MCMCModelView;
 import gui.inputPanels.loggerConfigs.LoggersPanel;
 
@@ -17,6 +19,11 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+
+import jobqueue.ExecutingChain;
+import jobqueue.JobQueue;
+import jobqueue.QueueManager;
+import jobqueue.JobQueue.Mode;
 
 import net.miginfocom.swing.MigLayout;
 import newgui.UIConstants;
@@ -182,9 +189,9 @@ public class AnalysisDetailsPanel extends JPanel {
 		bottomPanel.add(backButton);
 		
 		BorderlessButton runButton = new BorderlessButton("Begin run");
-		backButton.addActionListener(new ActionListener() {
+		runButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// displayParent.();
+				beginNewRun();
 			}			
 		});
 		bottomPanel.add(Box.createHorizontalGlue());
@@ -197,6 +204,49 @@ public class AnalysisDetailsPanel extends JPanel {
 		mcView = new MCModelView();
 	}
 	
+	
+	
+	protected void beginNewRun() {
+		ACGDocument acgDocument;
+		try {
+			updateAllModels();
+			acgDocument = analysis.getACGDocument();
+			acgDocument.loadAndVerifyClasses();
+			acgDocument.turnOffMCMC(); //Make sure we don't start running the chain immediately, which is the default behavior
+			acgDocument.instantiateAll();
+			ExecutingChain job = acgDocument.runMCMC();			
+			JobQueue currentQueue = QueueManager.getCurrentQueue();
+			
+			Mode oldMode = currentQueue.getMode();
+			currentQueue.setMode(Mode.STOP_AFTER);
+			//Order important here, we must add job to JobDisplay before it starts running (we can't register listeners after its been started)
+			ViewerWindow.getViewer().showJobQueueDisplay();
+			currentQueue.addJob(job);
+			currentQueue.setMode(oldMode);
+			
+		} catch (InputConfigException e) {
+			System.out.println("Input config exception, could not create ACG document: " + e.getMessage());
+			e.printStackTrace();
+		} catch (Exception e) {
+			System.out.println("Input config exception, could not create ACG document: " + e.getMessage());
+			e.printStackTrace();
+		}
+		
+	}
+
+	private void updateAllModels() {
+		try {
+			siteModelView.updateModel();
+			coalView.updateModel();
+			loggersView.updateModels();
+			mcView.updateModel();
+		} catch (InputConfigException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
 	protected void setButtonHighlight(BorderlessButton button) {
 		if (prevButton != null)
 			prevButton.setFont(BorderlessButton.getDefaultFont());
