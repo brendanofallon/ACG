@@ -205,17 +205,20 @@ public class AnalysisDetailsPanel extends JPanel {
 	}
 	
 	
-	
+	/**
+	 * Start a new run of the analysis described in this pane. This involves  creating a new ACGDocument
+	 * based on the current settings, and then creating a new ExecutingChain object which can actually
+	 * run the analysis. We then submit the ExecutingChain to the default job queue, and tell the 
+	 * ViewerWindow to open the JobQueueDisplay so
+	 * we can watch it run. 
+	 */
 	protected void beginNewRun() {
 		ACGDocument acgDocument;
 		try {
 			updateAllModels();
 			acgDocument = analysis.getACGDocument();
-			acgDocument.loadAndVerifyClasses();
-			acgDocument.turnOffMCMC(); //Make sure we don't start running the chain immediately, which is the default behavior
-			acgDocument.instantiateAll();
-			ExecutingChain job = acgDocument.runMCMC();
-			String jobTitle = displayParent.getTitle();
+			ExecutingChain job = new ExecutingChain(acgDocument);
+			String jobTitle = displayParent.getTitle().replace(".xml", ""); 
 			job.setJobTitle( jobTitle + "-analysis" );
 			JobQueue currentQueue = QueueManager.getCurrentQueue();
 			

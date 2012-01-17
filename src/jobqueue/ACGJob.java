@@ -14,6 +14,21 @@ public interface ACGJob {
 	public void beginJob();
 	
 	/**
+	 * Pause this job
+	 */
+	public void pause();
+	
+	/**
+	 * Resume this job from pausing
+	 */
+	public void resume();
+	
+	/**
+	 * Kill this job. 
+	 */
+	public void abort();
+	
+	/**
 	 * Obtain the JobState object that describes this job's state 
 	 * @return
 	 */

@@ -60,7 +60,11 @@ public class RandomSource {
 	
 	public RandomSource(Map<String, String> attrMap) {
 		String seedStr = attrMap.get("seed");
+		
 		if (seedStr != null) {
+			if (globalSource != null) {
+				throw new IllegalArgumentException("Global RandomSource has already been created, cannot create a new one with a different seed");
+			}
 			try {
 				int seedAttr = Integer.valueOf(seedStr);
 				initiateFromSeed(seedAttr, true);
@@ -70,7 +74,8 @@ public class RandomSource {
 			}
 		}
 		else {
-			initiateFromSeed( (int)System.currentTimeMillis(), true);
+			if (globalSource == null)
+				initiateFromSeed( (int)System.currentTimeMillis(), true);
 		}
 	}
 	

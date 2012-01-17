@@ -19,12 +19,16 @@
 
 package jobqueue;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 import gui.ErrorWindow;
+import gui.document.ACGDocument;
 
 import javax.swing.SwingWorker;
+
+import xml.InvalidInputFileException;
 
 import jobqueue.JobState.State;
 
@@ -33,7 +37,7 @@ import mcmc.MCMCListener;
 import mcmc.mc3.MC3;
 
 /**
- * Wraps a running MCMC chain or MC3 object so that it may be run in the background
+ * Wraps a runnable MCMC chain or MC3 object so that it may be run in the background.
  * as well as paused and restarted. 
  * @author brendan
  *
@@ -45,6 +49,54 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 	protected MCMC coldChain = null; //Reference to cold chain, only non-null if we're in MC3 mode 
 	private boolean paused = false;
 	private boolean done = false;
+	
+	/**
+	 * Create a new ExecutingChain that can run the analysis described in the ACGDocument provided.
+	 * This constructor immediately calls doc.loadAndVerifyClasses(), doc.turnOffMCMC() and doc.instantiateAll()
+	 * to ensure that we can load classes and create objects, and that the chain is not started immediately 
+	 * @param doc
+	 * @throws Exception
+	 */
+	public ExecutingChain(ACGDocument doc) throws Exception {
+		doc.loadAndVerifyClasses();
+		doc.turnOffMCMC(); //Make sure we don't start running the chain immediately, which is the default behavior
+		doc.instantiateAll();
+		
+		List<String> mcLabels = doc.getMCMCLabels();
+		if (mcLabels.size()==0) {
+			throw new InvalidInputFileException("Could not find any MCMC objects");
+		}
+		
+		List<String> mcmcmcLabels = doc.getLabelForClass(MC3.class);
+		if (mcmcmcLabels.size() > 0) {
+			try {
+				mc3 = (MC3)doc.getObjectForLabel(mcmcmcLabels.get(0));
+				this.coldChain = mc3.getColdChain();
+				coldChain.addListener(this);
+			} catch (InstantiationException e) {
+				throw new InvalidInputFileException("Could not create mc3 object : " + e.getMessage());
+			} catch (IllegalAccessException e) {
+				throw new InvalidInputFileException("Could not create mc3 object : " + e.getMessage());
+			} catch (InvocationTargetException e) {
+				throw new InvalidInputFileException("Could not create mc3 object : " + e.getMessage());
+			}
+			
+		}
+		
+		if (mcLabels.size()==1) {
+			try {
+				chain = (MCMC)doc.getObjectForLabel(mcLabels.get(0));
+				chain.addListener(this);
+			} catch (InstantiationException e) {
+				throw new InvalidInputFileException("Could not create mcmc object : " + e.getMessage());
+			} catch (IllegalAccessException e) {
+				throw new InvalidInputFileException("Could not create mcmc object : " + e.getMessage());
+			} catch (InvocationTargetException e) {
+				throw new InvalidInputFileException("Could not create mcmc object : " + e.getMessage());
+			}
+			
+		}
+	}
 	
 	public ExecutingChain(MCMC chain) {
 		this.chain = chain;
@@ -89,17 +141,22 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 	 */
 	public void setPaused(boolean paused) {
 		this.paused = paused;
+		if (state.getState() != State.ERROR && state.getState() != State.COMPLETED) {
+			if (paused)
+				state.setState(State.PAUSED);
+			else 
+				state.setState(State.RUNNING);
+		}
 		if (mc3 != null) {
 			mc3.setPaused(paused);
-			
-			state.setState(State.PAUSED);
-			fireStatusUpdate();
 		}
+		fireStatusUpdate();
+
 	}
 	
 	@Override
 	public void newState(int stateNumber) {
-		while(paused && mc3==null) {			
+		while(paused && mc3==null) {	
 			try {
 				Thread.sleep(500); //Wake up every 0.5 seconds to see if we're unpaused
 			} catch (InterruptedException e) {
@@ -135,14 +192,20 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 
 	@Override
 	public void beginJob() {
-		System.out.println("Beginning job");
 		state.setState(State.RUNNING);
-		fireStatusUpdate();
-		if (mc3 != null) {
-			mc3.run();
+		//System.out.println("Firing status update...");
+		//fireStatusUpdate();
+		//System.out.println("Returning from status update firing...");
+		try {
+			if (mc3 != null) {
+				mc3.run();
+			}
+			else {
+				chain.run();
+			}
 		}
-		else {
-			chain.run();
+		catch (Exception ex) {
+			ex.printStackTrace();
 		}
 	}
 	
@@ -168,9 +231,11 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 	}
 	
 	public void fireStatusUpdate() {
-		System.out.println("Firing state update, new state is: " + state.getState() + " listeners size is : " + listeners.size());
+		System.out.println("Executing chain : Firing state update, new state is: " + state.getState() + " listeners size is : " + listeners.size());
 		for(JobListener l : listeners) {
+			System.out.println("Executing chain: firing state update, to " + l.getClass());
 			l.statusUpdated(this);
+			System.out.println("Executing chain: returning from call to " + l.getClass());
 		}
 	}
 
@@ -210,6 +275,27 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 	private String jobTitle = "Unknown job";
 	private JobState state = new JobState(this);
 	private List<JobListener> listeners = new ArrayList<JobListener>();
+
+	@Override
+	public void pause() {
+		setPaused(true);
+	}
+
+	@Override
+	public void resume() {
+		setPaused(false);
+	}
+
+	@Override
+	public void abort() {
+		state.setState(State.COMPLETED);
+		if (mc3 != null) {
+			mc3.abort();
+		}
+		else {
+			chain.abort();
+		}
+	}
 
 	
 	

@@ -17,6 +17,14 @@ import sequence.SimpleSequence;
  */
 public class FastaImporter {
 
+	/**
+	 * Attempt to import the given file by reading its data into a (Basic) Alignment object
+	 * @param inputFasta
+	 * @return
+	 * @throws FileParseException
+	 * @throws IOException
+	 * @throws UnrecognizedBaseException
+	 */
 	public static Alignment getAlignment(File inputFasta) throws FileParseException, IOException, UnrecognizedBaseException {
 		Alignment aln = new BasicAlignment();
 		BufferedReader file = new BufferedReader(new FileReader(inputFasta));

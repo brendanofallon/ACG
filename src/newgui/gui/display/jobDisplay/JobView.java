@@ -9,6 +9,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.Timer;
@@ -38,6 +39,11 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 		job.addListener(this);
 		initComponents();
 		timer = new Timer(500, this);
+		
+		//Since mcmc's will execute in another thread, they can't reliably fire events to their listeners
+		// (at least, it seems like they should be able to, but threads appear to stall...), so instead
+		//we start a timer that constantly monitors their state..
+		timer.start();
 		statusUpdated(job); //Forces initial configuration of timer and some components
 	}
 
@@ -61,17 +67,45 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 		statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
 		statusLabel = new JLabel("<html> Job status : <em> In queue </em> </html>");
 		BorderlessButton startButton = new BorderlessButton(UIConstants.startButton);
-		startButton.setPreferredSize(new Dimension(24, 22));
-		startButton.setXDif(-2);
-		startButton.setYDif(-1);
+		startButton.setToolTipText("Resume running this job");
+		startButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				resumeJob();
+			}
+		});
+		startButton.setPreferredSize(new Dimension(26, 24));
+		startButton.setMaximumSize(new Dimension(26, 24));
+		startButton.setXDif(-3);
+		startButton.setYDif(-2);
 		BorderlessButton pauseButton = new BorderlessButton(UIConstants.pauseButton);
-		pauseButton.setPreferredSize(new Dimension(24, 22));
-		pauseButton.setXDif(-1);
+		pauseButton.setToolTipText("Pause this job");
+		pauseButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pauseJob();
+			}
+		});
+		pauseButton.setPreferredSize(new Dimension(28, 24));
+		pauseButton.setMaximumSize(new Dimension(28, 24));
+		pauseButton.setXDif(-3);
 		pauseButton.setYDif(-1);
+		
+		BorderlessButton stopButton = new BorderlessButton(UIConstants.stopButton);
+		stopButton.setToolTipText("Abort this job");
+		stopButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				killJob();
+			}
+		});
+		stopButton.setPreferredSize(new Dimension(24, 24));
+		stopButton.setMaximumSize(new Dimension(24, 24));
+		stopButton.setXDif(0);
+		stopButton.setYDif(-1);
+		
 		statusPanel.add(statusLabel);
 		statusPanel.add(Box.createHorizontalGlue());
 		statusPanel.add(startButton);
 		statusPanel.add(pauseButton);
+		statusPanel.add(stopButton);
 		
 		statusPanel.add(Box.createHorizontalStrut(25));
 		statusPanel.setMaximumSize(new Dimension(1000, 26));
@@ -81,14 +115,41 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 		updateStatusLabel();
 		
 		progressBar = new JProgressBar(0, job.getTotalRunLength());
+		progressBar.setStringPainted(true);
 		centerPanel.add(progressBar);
 		this.add(centerPanel, BorderLayout.CENTER);
 	}
 	
+	protected void pauseJob() {
+		if (job.getJobState().getState() == State.RUNNING) {
+			System.out.println("Pausing job");
+			job.pause();
+		}
+	}
+
+	protected void resumeJob() {
+		if (job.getJobState().getState() == State.PAUSED) {
+			System.out.println("Resuming job");
+			job.resume();
+		}
+	}
+
+	protected void killJob() {
+		int n = JOptionPane.showConfirmDialog(this, "Abort this job?");
+		if (n == JOptionPane.OK_OPTION) {
+			job.abort();	
+		}
+	}
+
 	@Override
+	/**
+	 * This gets called every time the timer fires. We update the status label and progress bar
+	 * here
+	 */
 	public void actionPerformed(ActionEvent arg0) {
 		int currentStep = job.getCurrentStep();
 		progressBar.setValue(currentStep);
+		progressBar.setString("" + currentStep);
 		progressBar.repaint();
 		updateStatusLabel();
 	}
@@ -137,7 +198,6 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 		}
 		
 		if ( (!timer.isRunning()) && currentState == State.RUNNING) {
-			System.out.println("Starting timer...");
 			timer.start();
 		}
 		
@@ -145,6 +205,7 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 			timer.stop();
 		}
 		
+		System.out.println("JobView : done handling status update, returning. ");
 	}
 	
 	/**

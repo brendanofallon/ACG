@@ -223,7 +223,7 @@ public class ACGDocument {
 	 * execution of the chain, and returns the ExecutingChain object
 	 * @return
 	 */
-	public ExecutingChain runMCMC() {
+	public ExecutingChain runMCMC(boolean runImmediately) {
 		List<String> mcLabels = getMCMCLabels();
 		if (mcLabels.size()==0) {
 			throw new InvalidInputFileException("Could not find any MCMC objects");
@@ -234,7 +234,8 @@ public class ACGDocument {
 			try {
 				MC3 mc3 = (MC3)loader.getObjectForLabel(mcmcmcLabels.get(0));
 				ExecutingChain runner = new ExecutingChain(mc3);
-				runner.execute();
+				if (runImmediately)
+					runner.execute();
 				return runner;
 				
 			} catch (InstantiationException e) {
@@ -251,7 +252,8 @@ public class ACGDocument {
 			try {
 				MCMC mcmc = (MCMC)loader.getObjectForLabel(mcLabels.get(0));
 				ExecutingChain runner = new ExecutingChain(mcmc);
-				runner.execute();
+				if (runImmediately)
+					runner.execute();
 				return runner;
 			} catch (InstantiationException e) {
 				throw new InvalidInputFileException("Could not create mcmc object : " + e.getMessage());
@@ -418,6 +420,14 @@ public class ACGDocument {
 	 */
 	public Class<?> getClassForLabel(String label) {
 		return loader.getClassForLabel(label);
+	}
+	
+	/**
+	 * Return the XMLLoader this document is using to create and manage elements
+	 * @return
+	 */
+	public XMLLoader getLoader() {
+		return loader;
 	}
 	
 	/**

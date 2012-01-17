@@ -33,6 +33,7 @@ import newgui.gui.display.Display;
 import newgui.gui.display.DisplayPane;
 import newgui.gui.display.jobDisplay.JobQueueDisplay;
 import newgui.gui.filepanel.FileTree;
+import newgui.gui.filepanel.InputFilesManager;
 import newgui.gui.widgets.BorderlessButton;
 import newgui.gui.widgets.RegionFader;
 import newgui.gui.widgets.panelPile.PPanel;
@@ -160,8 +161,9 @@ public class ViewerWindow extends JFrame {
 	private JComponent createFilesPanel() {
 		PanelPile pile = new PanelPile();
 		PPanel inputsPanel = new PPanel(pile, "Input files");
-		String inputFilesPath = "inputfiles";
-		FileTree inputsTree = new FileTree(new File(inputFilesPath));
+		FileTree inputsTree = new FileTree(InputFilesManager.getManager().getRootDirectory());
+		InputFilesManager.getManager().addListener(inputsTree);
+		
 		inputsPanel.add(inputsTree);
 		PPanel analPanel = new PPanel(pile, "Analyses");
 		JTree tree2 = new JTree();

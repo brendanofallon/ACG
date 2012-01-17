@@ -188,6 +188,10 @@ public class BorderlessButton extends JPanel {
 		int boxWidth = strWidth + 10; //Width of box around text
 		if (icon != null)
 			boxWidth = Math.max(boxWidth, icon.getIconWidth()+6);
+		
+		//Width of box should never be greater than width of component
+		boxWidth = Math.min(boxWidth, getWidth()-1);
+		
 		//X value at which to start drawing bounding box
 		int boxX = 1;
 		if (horTextAlignment == Component.RIGHT_ALIGNMENT)

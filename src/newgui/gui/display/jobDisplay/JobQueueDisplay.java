@@ -21,7 +21,7 @@ public class JobQueueDisplay extends Display implements QueueListener {
 
 	private JobQueue queue;
 	
-	//Stores all jobviews currently displayed in the Displayed 
+	//Stores all jobviews currently displayed in the center panel 
 	private List<JobView> jobViews = new ArrayList<JobView>();
 	
 	public JobQueueDisplay() {
@@ -55,7 +55,11 @@ public class JobQueueDisplay extends Display implements QueueListener {
 		System.out.println("Laying out job views");
 		
 		for(ACGJob job : queue.getJobs()) {
-			JobView jView = new JobView(job);
+			JobView jView = viewForJob(job);
+			if (jView == null) {
+				jView = new JobView(job);
+				jobViews.add(jView);
+			}
 			centerPanel.add(jView);
 		}
 		

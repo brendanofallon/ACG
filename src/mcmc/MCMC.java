@@ -120,7 +120,7 @@ public class MCMC {
 	private int currentState = 0;
 	
 	//Whether to use Timers for some simple profiling stuff. 
-	private boolean useTimers = true;
+	private boolean useTimers = false;
 	
 	//User-supplied value for run length
 	private int userRunLength;
@@ -445,6 +445,7 @@ public class MCMC {
 	 * @param states
 	 */
 	public void run(int states) {
+		System.out.println("MCMC run is getting called...");
 		if (RandomSource.getEngine() == null)
 			throw new IllegalStateException("Random number source not initialized");
 		

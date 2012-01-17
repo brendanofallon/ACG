@@ -27,7 +27,7 @@ import newgui.gui.ViewerWindow;
  * @author brendan
  *
  */
-public class FileTree extends JPanel {
+public class FileTree extends JPanel implements DirectoryListener {
 
 	private JTree tree;
 	final File rootDir;
@@ -54,6 +54,15 @@ public class FileTree extends JPanel {
 		tree.setRootVisible(false);
 		buildTreeNodes(rootNode);
 		tree.setModel(treeModel);
+	}
+	
+	@Override
+	public void filesChanged(File root) {
+		//Right now we just re-scan all files
+		System.out.println("File tree is re-creating root nodes");
+		createTreeNodes();
+		revalidate();
+		repaint();
 	}
 	
 	/**
@@ -131,4 +140,6 @@ public class FileTree extends JPanel {
 	}
 
 	private DataFileUtils dataUtils; //Used for data file format checking
+
+
 }
