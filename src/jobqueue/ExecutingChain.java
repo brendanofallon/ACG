@@ -278,7 +278,7 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 
 	@Override
 	public void pause() {
-		setPaused(true);
+		setPaused(true); 
 	}
 
 	@Override

@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import logging.LogItemProvider;
 import logging.StringUtils;
 import mcmc.AcceptRejectListener;
 import mcmc.MCMCListener;
@@ -46,7 +47,7 @@ import testing.Timer;
  * @author brendan
  *
  */
-public abstract class LikelihoodComponent implements ParameterListener, AcceptRejectListener {
+public abstract class LikelihoodComponent implements ParameterListener, AcceptRejectListener, LogItemProvider {
 
 	//Whether to use Timers to do some simple profiling. Nice for debugging, but should be turned off for releases. 
 	private final boolean useTimers = false;
@@ -220,4 +221,28 @@ public abstract class LikelihoodComponent implements ParameterListener, AcceptRe
 	public void chainIsFinished() {
 		      //Most components don't care about this
 	}
+	
+	
+	//////////////////// LogItemProvider implementation ///////////////////////
+	/** Default behavior is just to return a single log item, our likelihood **/
+	
+	public int getKeyCount() {
+		return 1;
+	}
+	
+	public String[] getLogKeys() {
+		return logKeys;
+	}
+
+	public Object getLogItem(String key) {
+		if (key.equals(logKeys[0])) {
+			return getProposedLogLikelihood();
+		}
+		else {
+			return null;
+		}
+	}
+	
+	
+	private String[] logKeys = new String[]{"likelihood"};
 }

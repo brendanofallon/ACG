@@ -217,14 +217,8 @@ public class AnalysisDetailsPanel extends JPanel {
 		try {
 			updateAllModels();
 			acgDocument = analysis.getACGDocument();
-			ExecutingChain job = new ExecutingChain(acgDocument);
-			String jobTitle = displayParent.getTitle().replace(".xml", ""); 
-			job.setJobTitle( jobTitle + "-analysis" );
-			JobQueue currentQueue = QueueManager.getCurrentQueue();
 			
-			//Order important here, we must add job to JobDisplay before it starts running (we can't register listeners after its been started)
-			ViewerWindow.getViewer().showJobQueueDisplay();
-			currentQueue.addJob(job);
+			displayParent.showJobPanel(acgDocument);
 			
 		} catch (InputConfigException e) {
 			System.out.println("Input config exception, could not create ACG document: " + e.getMessage());

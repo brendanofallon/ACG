@@ -59,7 +59,6 @@ public class FileTree extends JPanel implements DirectoryListener {
 	@Override
 	public void filesChanged(File root) {
 		//Right now we just re-scan all files
-		System.out.println("File tree is re-creating root nodes");
 		createTreeNodes();
 		revalidate();
 		repaint();

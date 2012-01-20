@@ -31,6 +31,7 @@ import newgui.UIConstants;
 import newgui.datafile.DataFile;
 import newgui.gui.display.Display;
 import newgui.gui.display.DisplayPane;
+import newgui.gui.display.TestDisplay;
 import newgui.gui.display.jobDisplay.JobQueueDisplay;
 import newgui.gui.filepanel.FileTree;
 import newgui.gui.filepanel.InputFilesManager;

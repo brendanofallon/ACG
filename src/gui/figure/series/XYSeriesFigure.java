@@ -47,11 +47,11 @@ import gui.figure.VerticalTextElement;
  */
 public class XYSeriesFigure extends SeriesFigure {
 
-	TextElement xLabelElement;
-	VerticalTextElement yLabelElement;
-	AxesElement axes;
-	LegendElement legend;
-	DataPosElement dataPosElement;
+	TextElement xLabelElement; //Element describing x-label
+	VerticalTextElement yLabelElement; //Element describing y-label
+	AxesElement axes; //Element drawing the axes
+	LegendElement legend; //Element drawing the leged
+	DataPosElement dataPosElement; //Element showing the mouse position in data coordinates 
 	
 	Color[] colorList = new Color[6];
 	
@@ -124,7 +124,9 @@ public class XYSeriesFigure extends SeriesFigure {
 		}
 	}
 
-	
+	/**
+	 * Attempt to infer what sensible y-boundaries are given the data in the series
+	 */
 	public void inferYBoundsFromSeries() {
 		if (seriesElements.size()==0) {
 			axes.setDataBounds(0, 1, 0, 1);
@@ -170,7 +172,9 @@ public class XYSeriesFigure extends SeriesFigure {
 		}
 	}
 	
-	
+	/**
+	 * Attempt to infer what sensible x-boundaries (in data coordinates) are for this figure, given the data in the series
+	 */
 	public void inferXBoundsFromSeries() {
 		if (seriesElements.size()==0) {
 			axes.setDataBounds(0, 1, 0, 1);

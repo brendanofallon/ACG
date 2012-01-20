@@ -49,7 +49,7 @@ import gui.figure.series.SeriesElement;
  */
 public class XYSeriesElement extends SeriesElement {
 	
-	protected XYSeries xySeries;
+	protected AbstractSeries xySeries;
 	GeneralPath pathShape;
 	GeneralPath markerShape;
 	
@@ -92,7 +92,7 @@ public class XYSeriesElement extends SeriesElement {
 	int[] xvals;
 	int[] yvals;
 	
-	public XYSeriesElement(XYSeries series, AxesElement axes, XYSeriesFigure parent) {
+	public XYSeriesElement(AbstractSeries series, AxesElement axes, XYSeriesFigure parent) {
 		super(parent, series);
 		this.xySeries = series;
 		this.axes = axes;
@@ -125,7 +125,7 @@ public class XYSeriesElement extends SeriesElement {
 		highlightStroke = new BasicStroke(newStroke.getLineWidth()+highlightWidthIncrease, newStroke.getEndCap(), newStroke.getLineJoin(), newStroke.getMiterLimit(), newStroke.getDashArray(), newStroke.getDashPhase());
 	}
 	
-	public XYSeries getSeries() {
+	public AbstractSeries getSeries() {
 		return xySeries;
 	}
 	
@@ -284,11 +284,9 @@ public class XYSeriesElement extends SeriesElement {
 				
 				boolean connect = true;
 				
-				Point2D p;
 				for(int i=1; i<xySeries.size(); i++) {
-					p = xySeries.get(i);
-					x1 = axes.dataXtoBoundsX( p.getX() );
-					y1 = axes.dataYtoBoundsY( p.getY() );
+					x1 = axes.dataXtoBoundsX( xySeries.getX(i) );
+					y1 = axes.dataYtoBoundsY( xySeries.getY(i) );
 					
 					//We've moved from a undrawn region into an OK one, so just move the 'pointer'
 					//to the new site
@@ -469,7 +467,7 @@ public class XYSeriesElement extends SeriesElement {
 		double halfBox = Math.ceil(boxWidth/2.0);
 		double dataY = axes.dataYtoFigureY(xySeries.getY(i));
 		double xOffset = boxOffset*boxWidth;
-		if (xySeries.get(i).getY()>0) 
+		if (xySeries.getY(i)>0) 
 			boxRect.setRect(axes.dataXtoFigureX(xySeries.getX(i))-halfBox-xOffset, dataY, boxWidth, yZero-dataY);
 		else 
 			boxRect.setRect(axes.dataXtoFigureX(xySeries.getX(i))-halfBox-xOffset, yZero, boxWidth, dataY-yZero);

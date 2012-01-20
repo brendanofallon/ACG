@@ -20,6 +20,7 @@
 package gui;
 
 import gui.document.ACGDocument;
+import gui.figure.series.XYSeries;
 import gui.monitors.SpeedMonitor;
 
 import java.awt.BorderLayout;
@@ -42,9 +43,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTree;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingWorker;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import jobqueue.ACGJob;
 import jobqueue.ExecutingChain;
 
 import logging.PropertyLogger;
@@ -523,8 +526,10 @@ public class PickMonitorsPanel extends JPanel {
 			acgParent.validate();
 			
 			
-			ExecutingChain runner = file.runMCMC();
-			acgParent.setRunner(runner);
+			ExecutingChain runningChain = new ExecutingChain(file);
+			JobRunner runner = new JobRunner(runningChain);
+			runner.execute();
+			acgParent.setRunner(runningChain);
 		} catch (InstantiationException e) {
 			ErrorWindow.showErrorWindow(e);
 		} catch (IllegalAccessException e) {
@@ -535,6 +540,27 @@ public class PickMonitorsPanel extends JPanel {
 		} catch (Exception e) {
 			ErrorWindow.showErrorWindow(e);
 		}
+	}
+	
+	
+	/**
+	 * Mini class  to handle running ACGJobs in background
+	 * @author brendano
+	 *
+	 */
+	class JobRunner extends SwingWorker {
+
+		final ACGJob job;
+		public JobRunner(ACGJob job) {
+			this.job = job;
+		}
+		
+		@Override
+		protected Object doInBackground() throws Exception {
+			job.beginJob();
+			return job;
+		}
+		
 	}
 	
 	//Small class to store some info about a particular plottable (monitorable) item
