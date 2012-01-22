@@ -6,10 +6,11 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 
-import sequence.BaseMap;
+import sequence.DNAUtils;
 import sequence.Sequence;
 
 import newgui.gui.ViewerWindow;
+import newgui.trackView.TrackView;
 
 
 /**
@@ -20,7 +21,7 @@ import newgui.gui.ViewerWindow;
  */
 public class SequenceTrackView implements TrackView {
 
-	private BaseMap baseMap = new BaseMap(); //Translate nucs from int to char
+	//private BaseMap baseMap = new BaseMap(); //Translate nucs from int to char
 	private Font font = ViewerWindow.sansFont.deriveFont(10.0f);
 	private final Sequence seq;
 	
@@ -119,20 +120,20 @@ public class SequenceTrackView implements TrackView {
 		
 		int index = 0;
 		for(int i=first; i<lastPos; i++) {
-			visibleBases[index] = baseMap.baseForVal(seq.baseAt(i)); 
+			visibleBases[index] = DNAUtils.baseForInt(seq.baseAt(i)); 
 			index++;
 		}
 		
 		index = 0;
-		if (seq.getReference() != null) {
-			for(int i=first; i<lastPos; i++) {
-				colorBases[index] = seq.differsFromReference(i);  
-				index++;
-			}
-		}
-		else {
-			System.out.println("No reference for sequence");
-		}
+//		if (seq.getReference() != null) {
+//			for(int i=first; i<lastPos; i++) {
+//				colorBases[index] = seq.differsFromReference(i);  
+//				index++;
+//			}
+//		}
+//		else {
+//			System.out.println("No reference for sequence");
+//		}
 		prevLength = length;
 	}
 

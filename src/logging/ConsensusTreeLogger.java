@@ -109,4 +109,8 @@ public class ConsensusTreeLogger extends PropertyLogger {
 		return null;
 	}
 	
+	public String getName() {
+		return "Consensus tree at site " + site;
+	}
+	
 }

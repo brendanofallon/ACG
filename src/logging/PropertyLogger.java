@@ -41,7 +41,7 @@ import mcmc.MCMCListener;
  * @author brendano
  *
  */
-public abstract class PropertyLogger implements MCMCListener {
+public abstract class PropertyLogger implements MCMCListener, Named {
 	
 	public static final String FREQUENCY = "frequency";
 	public static final String BURNIN = "burnin";

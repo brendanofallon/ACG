@@ -24,6 +24,7 @@ import jobqueue.ExecutingChain;
 import jobqueue.JobQueue;
 import jobqueue.QueueManager;
 import jobqueue.JobQueue.Mode;
+import logging.MemoryStateLogger;
 
 import net.miginfocom.swing.MigLayout;
 import newgui.UIConstants;
@@ -216,6 +217,7 @@ public class AnalysisDetailsPanel extends JPanel {
 		ACGDocument acgDocument;
 		try {
 			updateAllModels();
+		
 			acgDocument = analysis.getACGDocument();
 			
 			displayParent.showJobPanel(acgDocument);

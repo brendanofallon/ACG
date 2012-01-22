@@ -205,7 +205,6 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 			timer.stop();
 		}
 		
-		System.out.println("JobView : done handling status update, returning. ");
 	}
 	
 	/**

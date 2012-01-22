@@ -22,6 +22,7 @@ package component;
 import java.util.Map;
 
 import parameter.Parameter;
+import xml.XMLLoader;
 
 public class FakeComponent extends LikelihoodComponent {
 
@@ -39,5 +40,9 @@ public class FakeComponent extends LikelihoodComponent {
 	
 	public String getLogHeader() {
 		return "Const likelihood";
+	}
+	
+	public String getName() {
+		return "Fake comp";
 	}
 }

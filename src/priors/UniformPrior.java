@@ -116,5 +116,9 @@ public class UniformPrior extends AbstractPrior {
 	public String getLogHeader() {
 		return "UniformPrior[" + param.getName() + "]";
 	}
+	
+	public String getName() {
+		return "Uniform prior on param " + param.getName();
+	}
 
 }

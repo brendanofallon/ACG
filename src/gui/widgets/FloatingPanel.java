@@ -42,13 +42,13 @@ import javax.swing.JPanel;
  */
 public class FloatingPanel extends JPanel {
 	
-	private int shadowXDepth = 3;
-	private int shadowYDepth = 3;
+	private int shadowXDepth = 4;
+	private int shadowYDepth = 4;
 	private JPanel mainPanel;
 	private JPanel rightPanel;
 	private JPanel bottomPanel;
 	
-	private Color darkShadowColor = new Color(0.4f, 0.4f, 0.4f, 0.7f);
+	private Color darkShadowColor = new Color(0.4f, 0.4f, 0.4f, 0.6f);
 	private Color lightShadowColor = new Color(0.7f, 0.7f, 0.7f, 0.2f);
 	private Color transparentColor = new Color(0.5f, 0.5f, 0.5f, 0.0f);
 	private GradientPaint gradientX = null;
@@ -93,10 +93,6 @@ public class FloatingPanel extends JPanel {
 		return mainPanel.add(comp, i);
 	}
 	
-	public void add(Component comp, String str) {
-		mainPanel.add(comp, str);
-	}
-	
 	public void add(Component comp, Object constraints) {
 		mainPanel.add(comp, constraints);
 	}
@@ -111,8 +107,7 @@ public class FloatingPanel extends JPanel {
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
 		g2d.setColor(darkShadowColor);
-		//g2d.drawLine(getWidth()-shadowXDepth-2, 4, getWidth()-shadowXDepth-2, getHeight()-8);
-		g2d.drawLine(3, getHeight()-shadowYDepth-2, getWidth()-7, getHeight()-shadowYDepth-1);
+		g2d.drawLine(3, getHeight()-shadowYDepth-1, getWidth()-7, getHeight()-shadowYDepth-1);
 	
 		gradientX = new GradientPaint(new Point2D.Double(getWidth()-shadowXDepth-3, 5), darkShadowColor, new Point2D.Double(getWidth()-1, 5), lightShadowColor);
 		g2d.setPaint(gradientX);
@@ -120,7 +115,7 @@ public class FloatingPanel extends JPanel {
 		
 		gradientY = new GradientPaint(new Point2D.Double(5, getHeight()-shadowYDepth-2), darkShadowColor, new Point2D.Double(5, getHeight()), lightShadowColor);
 		g2d.setPaint(gradientY);
-		g2d.fillRoundRect(3, getHeight()-shadowYDepth-1, getWidth()-6, shadowYDepth, 4, 4);
+		g2d.fillRoundRect(3, getHeight()-shadowYDepth-1, getWidth()-9, shadowYDepth, 4, 4);
 		
 		super.paintComponent(g);
 	}

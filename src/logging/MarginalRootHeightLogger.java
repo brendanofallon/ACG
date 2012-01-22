@@ -62,4 +62,9 @@ public class MarginalRootHeightLogger extends PropertyLogger {
 		histo.addValue( TreeUtils.createMarginalTree(arg, site).getHeight());
 	}
 
+	@Override
+	public String getName() {
+		return "Root height at site " + site;
+	}
+
 }

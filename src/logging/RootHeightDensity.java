@@ -30,6 +30,7 @@ import java.util.Map;
 
 import parameter.AbstractParameter;
 import sequence.SiteMap;
+import xml.XMLLoader;
 import xml.XMLUtils;
 
 import math.Histogram;
@@ -100,6 +101,8 @@ public class RootHeightDensity extends PropertyLogger {
 			try {
 				setOutputFile(outputFile);
 			} catch (FileNotFoundException e) {
+				System.err.println("Could not open file " + outputFile + " for summary file writing, reverting System.out");
+			} catch (IOException e) {
 				System.err.println("Could not open file " + outputFile + " for summary file writing, reverting System.out");
 			}
 		}
@@ -189,6 +192,11 @@ public class RootHeightDensity extends PropertyLogger {
 //		}
 		
 		return strB.toString();
+	}
+
+	@Override
+	public String getName() {
+		return "Root height logger";
 	}
 
 

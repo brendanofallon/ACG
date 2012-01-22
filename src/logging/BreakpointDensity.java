@@ -21,6 +21,7 @@ package logging;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -83,6 +84,9 @@ public class BreakpointDensity extends HistogramCollector  {
 				setOutputFile(outputFile);
 			} catch (FileNotFoundException e) {
 				System.err.println("Could not open file " + outputFile + " for summary file writing, reverting System.out");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
@@ -141,5 +145,9 @@ public class BreakpointDensity extends HistogramCollector  {
 		}
 		
 		return strB.toString();
+	}
+	
+	public String getName() {
+		return "Recombination along sequence";
 	}
 }

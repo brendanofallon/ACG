@@ -133,6 +133,17 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 		this.done = true;
 	}
 	
+	/**
+	 * We actually retain the ability to add listeners to the chain at any time
+	 * @param l
+	 */
+	public void addListener(MCMCListener l) {
+		if (mc3 == null)
+			chain.addListener(l);
+		else {
+			mc3.addListener(l);
+		}
+	}
 	
 	/**
 	 * Set the paused state to the given value. When paused the thread (or MC3) sleeps, but
@@ -193,9 +204,7 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 	@Override
 	public void beginJob() {
 		state.setState(State.RUNNING);
-		//System.out.println("Firing status update...");
 		//fireStatusUpdate();
-		//System.out.println("Returning from status update firing...");
 		try {
 			if (mc3 != null) {
 				mc3.run();
@@ -231,11 +240,8 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 	}
 	
 	public void fireStatusUpdate() {
-		System.out.println("Executing chain : Firing state update, new state is: " + state.getState() + " listeners size is : " + listeners.size());
 		for(JobListener l : listeners) {
-			System.out.println("Executing chain: firing state update, to " + l.getClass());
 			l.statusUpdated(this);
-			System.out.println("Executing chain: returning from call to " + l.getClass());
 		}
 	}
 

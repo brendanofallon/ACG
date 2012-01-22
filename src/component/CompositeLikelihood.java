@@ -23,8 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import xml.XMLLoader;
+
 /**
  * A type of likelihood component that depends on multiple other likelihood components
+ * Does this ever get used? It seems dangerous...
  * @author brendan
  *
  */
@@ -95,6 +98,14 @@ public class CompositeLikelihood extends LikelihoodComponent {
 			strB.append(comp.getLogHeader());
 		}
 		return strB.toString();
+	}
+	
+	public String getName() {
+		String name = this.getAttribute(XMLLoader.NODE_ID);
+		if (name == null)
+			return "Composite likelihood";
+		else
+			return name;
 	}
 
 }

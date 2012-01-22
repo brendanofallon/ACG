@@ -861,9 +861,10 @@ public class MCMC {
 	
 	/**
 	 * Add additional listeners for mcmc events
+	 * This is synchronized since we'd like to be able to add listeners even while the chain is running
 	 * @param stateLogger
 	 */
-	public void addListener(MCMCListener listener) {
+	public synchronized void addListener(MCMCListener listener) {
 		getListeners().add(listener);
 		listener.setMCMC(this);
 	}

@@ -33,6 +33,7 @@ import newgui.gui.display.Display;
 import newgui.gui.display.DisplayPane;
 import newgui.gui.display.TestDisplay;
 import newgui.gui.display.jobDisplay.JobQueueDisplay;
+import newgui.gui.filepanel.AnalysisFilesManager;
 import newgui.gui.filepanel.FileTree;
 import newgui.gui.filepanel.InputFilesManager;
 import newgui.gui.widgets.BorderlessButton;
@@ -164,14 +165,17 @@ public class ViewerWindow extends JFrame {
 		PPanel inputsPanel = new PPanel(pile, "Input files");
 		FileTree inputsTree = new FileTree(InputFilesManager.getManager().getRootDirectory());
 		InputFilesManager.getManager().addListener(inputsTree);
-		
 		inputsPanel.add(inputsTree);
-		PPanel analPanel = new PPanel(pile, "Analyses");
-		JTree tree2 = new JTree();
-		analPanel.add(tree2);
-		PPanel resultsPanel = new PPanel(pile, "Results");
-		pile.addPanel(inputsPanel);
 		
+		PPanel analPanel = new PPanel(pile, "Analyses");
+		FileTree analysisTree = new FileTree(AnalysisFilesManager.getManager().getRootDirectory());
+		AnalysisFilesManager.getManager().addListener(analysisTree);
+		analPanel.add(analysisTree);
+		
+		PPanel resultsPanel = new PPanel(pile, "Results");
+		
+		
+		pile.addPanel(inputsPanel);
 		pile.addPanel(analPanel);
 		pile.addPanel(resultsPanel);
 		mainPanel.add(pile);

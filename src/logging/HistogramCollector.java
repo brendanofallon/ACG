@@ -104,6 +104,11 @@ public class HistogramCollector extends PropertyLogger {
 		return strB.toString();
 	}
 
+	@Override
+	public String getName() {
+		return "Histogram logger for param " + param.getName();
+	}
+
 	
 
 }

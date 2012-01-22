@@ -28,6 +28,7 @@ import javax.swing.event.ChangeListener;
 import sequence.Alignment;
 import sequence.Sequence;
 
+import newgui.trackView.AxisTrackView;
 import newgui.trackView.MultiTrackPanel;
 
 
@@ -66,10 +67,7 @@ public class AlignmentView extends MultiTrackPanel {
 	 */
 	public void setAlignment(Alignment aln) {
 		this.aln = aln;
-		if (aln.getReference()==null) {
-			Sequence consensus = aln.getConsensus();
-			aln.setReference(consensus);
-		}
+		
 		
 		initializeTracks();
 		initializeHInterval(0, aln.getSequenceLength(), 0, aln.getSequenceLength());

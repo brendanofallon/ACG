@@ -22,6 +22,7 @@ package component;
 import java.util.HashMap;
 
 import parameter.DoubleParameter;
+import xml.XMLLoader;
 
 /**
  * A simple LikelihoodComponent that depends on a single DoubleParameter and returns 
@@ -59,6 +60,10 @@ public class GaussianLikelihood extends LikelihoodComponent {
 	@Override
 	public String getLogHeader() {
 		return "GaussianLnL";
+	}
+	
+	public String getName() {
+		return "Gaussian likelihood";
 	}
 
 }
