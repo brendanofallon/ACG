@@ -46,6 +46,10 @@ import jobqueue.ExecutingChain;
 
 import mcmc.MCMC;
 import mcmc.mc3.MC3;
+import newgui.datafile.DataFile;
+import newgui.datafile.FileNote;
+import newgui.datafile.XMLDataFile;
+import newgui.gui.display.Display;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -63,7 +67,14 @@ import xml.InvalidInputFileException;
 import xml.XMLLoader;
 
 /**
- * Basically wraps an XML input file and provides some convenience methods like validity checking and 'getParameters...', etc
+ * An ACG document is a convenience wrapper for an DOM (XML) document that describes all parts of an analysis, including alignment info.
+ * Because this object also stores a reference to an XMLLoader it provides a convenient interface between the XML- version and java-object
+ * versions of various analysis elements. For instance, it provides a getObjectForLabel(...), which returns the object associated with
+ * a given XML label (the label given to the DOM element that generated the object). In addition it provides some error checking mechanisms,
+ * such as checkValidity(), and well as the important loadAndVerifyClasses() and instantiateAll() methods that actually load the classes
+ * referenced by the DOM document and create the objects described in it.  
+ * and real object 
+ * 
  * @author brendano
  *
  */
@@ -81,10 +92,8 @@ public class ACGDocument {
 	//XML class loading object which finds and loads the classes the document references
 	XMLLoader loader = null;
 	
+	//A map associated all XMLObjects with their element name
 	Map<String, XMLObject> objMap = new HashMap<String, XMLObject>();
-	
-	List<AbstractParameter<?>> params = new ArrayList<AbstractParameter<?>>();
-	List<LikelihoodComponent> likelihoods = new ArrayList<LikelihoodComponent>();
 	
 	ValidityChecker validityChecker = new ACGValidityChecker();
 	
@@ -297,12 +306,6 @@ public class ACGDocument {
 
 	}
 
-	/**
-	 * Instantiate all objects in this document
-	 */
-//	public void createAllObjects() {
-//		loader.instantiateAll();
-//	}
 	
 	/**
 	 * Put the key=value pair into the attribute list for the object with the given label. This will
@@ -460,68 +463,64 @@ public class ACGDocument {
 	
 	
 	
-//	public void readAllNodes() {
-//		readNodes(doc.getDocumentElement());
-//	}
-	
 	/**
 	 * Recursive helper function for node examination and class loading. Loads all classes below the given XML node
 	 */
-	private void readNodes(Node root) {
-		NodeList nodeList = root.getChildNodes();
-
-		for (int i = 0; i < nodeList.getLength(); i++) {
-
-			Node node = nodeList.item(i);
-
-			if (node.getNodeType() == Node.ELEMENT_NODE) {
-				Element el = (Element) node;
-				String className = el.getAttribute(CLASS_NAME_ATTR);
-				String label = el.getNodeName();
-				
-				if (objMap.containsKey(label)) {
-					String foundClass = objMap.get(label).className;
-					if (className != null && (className.trim().length()>0) && (!foundClass.equals(className)))
-						throw new InvalidInputFileException("Found conflicting classes for object with label : " + label );
-				}
-				else {
-					//Object map didn't contain this label, so this is a new object
-					if (className == null)
-						throw new InvalidInputFileException("Could not find class attribute for object : " + label);
-					
-					XMLObject newObj = new XMLObject();
-					newObj.label = label;
-					newObj.className = className;
-					objMap.put(label, newObj);
-				}
-				
-				readNodes(el);
-			}
-			
-		}	
-		
-		//Search for additional text elements to add in postorder
-		for (int i = 0; i < nodeList.getLength(); i++) {
-			Node node = nodeList.item(i);
-			if (node.getNodeType() == Node.TEXT_NODE) {
-				String label = root.getNodeName();
-				String text = node.getNodeValue();
-				if (text.trim().length()>0) {
-					XMLObject xmlObj = objMap.get(label);
-					if (xmlObj == null) {
-						System.err.println("Found a text node with text: " + node.getNodeValue() + " but there's no constructor info for label: " + label);
-					}
-					else {
-						//Add text content to the attribute map
-						if (text.trim().length()>0) {
-							xmlObj.attrs.put("content", text);
-							
-						}
-					}
-				}
-			}
-		}
-	}
+//	private void readNodes(Node root) {
+//		NodeList nodeList = root.getChildNodes();
+//
+//		for (int i = 0; i < nodeList.getLength(); i++) {
+//
+//			Node node = nodeList.item(i);
+//
+//			if (node.getNodeType() == Node.ELEMENT_NODE) {
+//				Element el = (Element) node;
+//				String className = el.getAttribute(CLASS_NAME_ATTR);
+//				String label = el.getNodeName();
+//				
+//				if (objMap.containsKey(label)) {
+//					String foundClass = objMap.get(label).className;
+//					if (className != null && (className.trim().length()>0) && (!foundClass.equals(className)))
+//						throw new InvalidInputFileException("Found conflicting classes for object with label : " + label );
+//				}
+//				else {
+//					//Object map didn't contain this label, so this is a new object
+//					if (className == null)
+//						throw new InvalidInputFileException("Could not find class attribute for object : " + label);
+//					
+//					XMLObject newObj = new XMLObject();
+//					newObj.label = label;
+//					newObj.className = className;
+//					objMap.put(label, newObj);
+//				}
+//				
+//				readNodes(el);
+//			}
+//			
+//		}	
+//		
+//		//Search for additional text elements to add in postorder
+//		for (int i = 0; i < nodeList.getLength(); i++) {
+//			Node node = nodeList.item(i);
+//			if (node.getNodeType() == Node.TEXT_NODE) {
+//				String label = root.getNodeName();
+//				String text = node.getNodeValue();
+//				if (text.trim().length()>0) {
+//					XMLObject xmlObj = objMap.get(label);
+//					if (xmlObj == null) {
+//						System.err.println("Found a text node with text: " + node.getNodeValue() + " but there's no constructor info for label: " + label);
+//					}
+//					else {
+//						//Add text content to the attribute map
+//						if (text.trim().length()>0) {
+//							xmlObj.attrs.put("content", text);
+//							
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
 	
 	
 	/**
@@ -541,17 +540,14 @@ public class ACGDocument {
         serializer.serialize(doc);
 
         return out.toString();
-		
-//		TransformerFactory transfac = TransformerFactory.newInstance();
-//		Transformer trans = transfac.newTransformer();
-//		trans.setOutputProperty(OutputKeys.INDENT, "yes");
-//		//create string from xml tree
-//		StringWriter sw = new StringWriter();
-//		StreamResult result = new StreamResult(sw);
-//		DOMSource source = new DOMSource(doc);
-//		trans.transform(source, result);
-//		String xmlString = sw.toString();
-//		return xmlString;
+	}
+	
+	/**
+	 * Obtain the DOM document containing data for this ACGDocument. 
+	 * @return
+	 */
+	public Document getDocument() {
+		return doc;
 	}
 	
 	/**
@@ -564,6 +560,9 @@ public class ACGDocument {
 		String className;
 		Map<String, String> attrs = new HashMap<String, String>();
 	}
+
+
+	
 
 	
 	

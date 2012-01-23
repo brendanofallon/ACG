@@ -23,7 +23,8 @@ import newgui.gui.ViewerWindow;
 
 
 /**
- * The file tree displays a tree of files in a jpanel, using a jtree
+ * The file tree displays a tree of files in a jpanel, using a jtree. 
+ * 
  * @author brendan
  *
  */

@@ -162,6 +162,7 @@ public class ViewerWindow extends JFrame {
 	 */
 	private JComponent createFilesPanel() {
 		PanelPile pile = new PanelPile();
+		
 		PPanel inputsPanel = new PPanel(pile, "Input files");
 		FileTree inputsTree = new FileTree(InputFilesManager.getManager().getRootDirectory());
 		InputFilesManager.getManager().addListener(inputsTree);

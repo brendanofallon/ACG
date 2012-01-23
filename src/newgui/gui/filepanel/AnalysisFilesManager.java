@@ -1,6 +1,7 @@
 package newgui.gui.filepanel;
 
 import gui.ErrorWindow;
+import gui.document.ACGDocument;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import newgui.datafile.AlignmentFile;
+import newgui.datafile.AnalysisDataFile;
+import newgui.datafile.XMLConversionError;
 import sequence.Alignment;
 
 public class AnalysisFilesManager {
@@ -59,6 +62,19 @@ public class AnalysisFilesManager {
 	}
 	
 
+	public void addAnalysisFile(ACGDocument doc, String path) {
+		AnalysisDataFile  dataFile = new AnalysisDataFile();
+		try {
+			dataFile.setACGDocument(doc);
+			dataFile.saveToFile(new File(rootDirectory + fileSep + path));
+			fireDirectoryChange(new File(path));
+		} catch (XMLConversionError e) {
+			ErrorWindow.showErrorWindow(e, "Could not save analysis " + path);
+		} catch (IOException e) {
+			ErrorWindow.showErrorWindow(e, "Could not save analysis " + path);
+		}
+		
+	}
 	
 	/**
 	 * Create a directory at the given parentPath, relative to the rootDirectory. parentPath must specify
