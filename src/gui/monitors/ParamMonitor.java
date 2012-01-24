@@ -19,13 +19,8 @@
 
 package gui.monitors;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.geom.Point2D;
 import java.util.List;
 
-import gui.figure.series.XYSeries;
-import gui.figure.series.XYSeriesElement;
 import parameter.AbstractParameter;
 import xml.XMLLoader;
 

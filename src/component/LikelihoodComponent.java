@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import logging.LogItemProvider;
+import logging.Named;
 import logging.StringUtils;
 import mcmc.AcceptRejectListener;
 import mcmc.MCMCListener;
@@ -46,7 +48,7 @@ import testing.Timer;
  * @author brendan
  *
  */
-public abstract class LikelihoodComponent implements ParameterListener, AcceptRejectListener {
+public abstract class LikelihoodComponent implements ParameterListener, AcceptRejectListener, LogItemProvider, Named {
 
 	//Whether to use Timers to do some simple profiling. Nice for debugging, but should be turned off for releases. 
 	private final boolean useTimers = false;
@@ -74,9 +76,6 @@ public abstract class LikelihoodComponent implements ParameterListener, AcceptRe
 	 * Compute and return the log likelihood based on proposed parameter values. 
 	 */
 	public abstract Double computeProposedLikelihood();
-	
-	
-	
 		
 	public String getAttribute(String key) {
 		return attrs.get(key);
@@ -204,15 +203,6 @@ public abstract class LikelihoodComponent implements ParameterListener, AcceptRe
 		return timer.getTotalTimeMS();
 	}
 	
-	/**
-	 * The likelihood verification procedure can leave some components in an inconsistent state, 
-	 * Especially trees, which need to put nodes into the proposed state to force recalculate their
-	 * likelihood. This method is called after verification and should be used to return the component
-	 * to the state it was in before verification. 
-	 */
-//	public void restoreAfterVerify() {
-//	 Not used, currently...	
-//	}
 	
 	/**
 	 * Called when the chain is finished executing. In general, we don't care about this
@@ -220,4 +210,28 @@ public abstract class LikelihoodComponent implements ParameterListener, AcceptRe
 	public void chainIsFinished() {
 		      //Most components don't care about this
 	}
+	
+	
+	//////////////////// LogItemProvider implementation ///////////////////////
+	/** Default behavior is just to return a single log item, the proposed likelihood **/
+	
+	public int getKeyCount() {
+		return 1;
+	}
+	
+	public String[] getLogKeys() {
+		return logKeys;
+	}
+
+	public Object getLogItem(String key) {
+		if (key.equals(logKeys[0])) {
+			return getProposedLogLikelihood();
+		}
+		else {
+			return null;
+		}
+	}
+	
+	
+	private String[] logKeys = new String[]{"likelihood"};
 }

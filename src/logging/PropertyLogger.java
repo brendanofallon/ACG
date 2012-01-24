@@ -41,7 +41,7 @@ import mcmc.MCMCListener;
  * @author brendano
  *
  */
-public abstract class PropertyLogger implements MCMCListener {
+public abstract class PropertyLogger implements MCMCListener, Named {
 	
 	public static final String FREQUENCY = "frequency";
 	public static final String BURNIN = "burnin";
@@ -85,6 +85,9 @@ public abstract class PropertyLogger implements MCMCListener {
 		} catch (FileNotFoundException e) {
 			System.out.println("Could not open output file for logging : " + filename);
 			//Shouldn't happen, right?
+			e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println("Could not open output file for logging : " + filename);
 			e.printStackTrace();
 		}
 		
@@ -147,7 +150,11 @@ public abstract class PropertyLogger implements MCMCListener {
 		}	
 	}
 	
-	public void setOutputFile(File outputfile) throws FileNotFoundException {
+	public void setOutputFile(File outputfile) throws IOException {
+		System.out.println("Attempting to create file : " + outputfile.getAbsolutePath());
+		if (! outputfile.exists()) {
+			outputfile.createNewFile();
+		}
 		outputStream = new PrintStream(new FileOutputStream(outputfile));
 	}
 	

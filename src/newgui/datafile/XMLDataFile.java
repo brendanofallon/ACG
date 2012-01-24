@@ -29,7 +29,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * A data file that stores its info as XML. 
+ * A data file that stores its info as XML. Right now this is probably the best base for all types of data fiels.
+ * This also implements a lot of the basic data file functions 
  * @author brendan
  *
  */
@@ -160,14 +161,29 @@ public class XMLDataFile extends DataFile {
 		}
 	}
 
+	/**
+	 * Obtain an xml-string representing all of the data in this data file
+	 * @return
+	 * @throws TransformerException
+	 */
 	protected String getXMLString() throws TransformerException {
+		return getXMLString(doc);
+	}
+	
+	/**
+	 * Obtain an xml-string with data from the subtree rooted at the given node
+	 * @param root
+	 * @return
+	 * @throws TransformerException
+	 */
+	protected String getXMLString(Node root) throws TransformerException {
 		TransformerFactory transfac = TransformerFactory.newInstance();
 		Transformer trans = transfac.newTransformer();
 		trans.setOutputProperty(OutputKeys.INDENT, "yes");
 		//create string from xml tree
 		StringWriter sw = new StringWriter();
 		StreamResult result = new StreamResult(sw);
-		DOMSource source = new DOMSource(doc);
+		DOMSource source = new DOMSource(root);
 		trans.transform(source, result);
 		String xmlString = sw.toString();
 		return xmlString;
@@ -175,7 +191,7 @@ public class XMLDataFile extends DataFile {
 	
 	/**
 	 * Obtain the element that is an immediate descendant of the root element 
-	 * and has a name equal to the given name
+	 * and has a node name equal to the given name
 	 * @param nodeName
 	 * @return
 	 */

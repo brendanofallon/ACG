@@ -277,6 +277,14 @@ public class SiteModelView extends JPanel {
 	    
 	    mutPanel.repaint();
 	}
+	
+	/**
+	 * Push changes from UI elements in this view to the underlying model
+	 */
+	public void updateModel() {
+		//I *think* that all components update the model right away, so we don't have to do 
+		//anything here. 
+	}
 
 	private final JPanel rateConfigPanel;
 	private JPanel mutPanel;

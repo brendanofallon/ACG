@@ -1,6 +1,9 @@
 package newgui.gui.display.primaryDisplay;
 
+import gui.ErrorWindow;
+import gui.document.ACGDocument;
 import gui.inputPanels.AnalysisModel;
+import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.MCMCModelView;
 import gui.inputPanels.loggerConfigs.LoggersPanel;
 
@@ -8,19 +11,31 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
+
+import jobqueue.ExecutingChain;
+import jobqueue.JobQueue;
+import jobqueue.QueueManager;
+import jobqueue.JobQueue.Mode;
+import logging.MemoryStateLogger;
 
 import net.miginfocom.swing.MigLayout;
 import newgui.UIConstants;
+import newgui.datafile.AnalysisDataFile;
+import newgui.datafile.XMLConversionError;
 import newgui.gui.ViewerWindow;
+import newgui.gui.filepanel.AnalysisFilesManager;
 import newgui.gui.modelViews.CoalModelView;
 import newgui.gui.modelViews.LoggersView;
 import newgui.gui.modelViews.MCModelView;
@@ -173,7 +188,8 @@ public class AnalysisDetailsPanel extends JPanel {
 		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
 		bottomPanel.setPreferredSize(new Dimension(buttonPanelWidth, 50));
 		bottomPanel.setMaximumSize(new Dimension(buttonPanelWidth, 50));
-		BorderlessButton backButton = new BorderlessButton("Back");
+		BorderlessButton backButton = new BorderlessButton(UIConstants.blueLeftArrow);
+		backButton.setToolTipText("Previous page");
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				displayParent.showAlignmentPrepPanel();
@@ -181,14 +197,26 @@ public class AnalysisDetailsPanel extends JPanel {
 		});
 		bottomPanel.add(backButton);
 		
-		BorderlessButton runButton = new BorderlessButton("Begin run");
-		backButton.addActionListener(new ActionListener() {
+		BorderlessButton saveButton = new BorderlessButton(UIConstants.saveButton);
+		saveButton.setToolTipText("Save these settings");
+		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// displayParent.();
+				saveAnalysisFile();
+			}
+		});
+		
+		
+		BorderlessButton runButton = new BorderlessButton(UIConstants.blueRightArrow);
+		runButton.setToolTipText("Begin run");
+		runButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				beginNewRun();
 			}			
 		});
 		bottomPanel.add(Box.createHorizontalGlue());
+		bottomPanel.add(saveButton);
 		bottomPanel.add(runButton);
+		bottomPanel.add(Box.createHorizontalStrut(25));
 		this.add(bottomPanel, BorderLayout.SOUTH);
 		
 		siteModelView = new SiteModelView();
@@ -197,6 +225,60 @@ public class AnalysisDetailsPanel extends JPanel {
 		mcView = new MCModelView();
 	}
 	
+	
+	protected void saveAnalysisFile() {
+		updateAllModels();
+		try {
+			
+			ACGDocument acgDocument = analysis.getACGDocument();
+			
+			AnalysisFilesManager manager = AnalysisFilesManager.getManager();
+			manager.addAnalysisFile(acgDocument, displayParent.getTitle());
+			
+		} catch (InputConfigException e) {
+			ErrorWindow.showErrorWindow(e);
+		}
+	}
+
+	/**
+	 * Start a new run of the analysis described in this pane. This involves  creating a new ACGDocument
+	 * based on the current settings, and then creating a new ExecutingChain object which can actually
+	 * run the analysis. We then submit the ExecutingChain to the default job queue, and tell the 
+	 * ViewerWindow to open the JobQueueDisplay so
+	 * we can watch it run. 
+	 */
+	protected void beginNewRun() {
+		ACGDocument acgDocument;
+		try {
+			updateAllModels();
+		
+			acgDocument = analysis.getACGDocument();
+			
+			displayParent.showJobPanel(acgDocument);
+			
+		} catch (InputConfigException e) {
+			System.out.println("Input config exception, could not create ACG document: " + e.getMessage());
+			e.printStackTrace();
+		} catch (Exception e) {
+			System.out.println("Input config exception, could not create ACG document: " + e.getMessage());
+			e.printStackTrace();
+		}
+		
+	}
+
+	private void updateAllModels() {
+		try {
+			siteModelView.updateModel();
+			coalView.updateModel();
+			loggersView.updateModels();
+			mcView.updateModel();
+		} catch (InputConfigException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
 	protected void setButtonHighlight(BorderlessButton button) {
 		if (prevButton != null)
 			prevButton.setFont(BorderlessButton.getDefaultFont());
@@ -204,6 +286,44 @@ public class AnalysisDetailsPanel extends JPanel {
 		prevButton = button;
 	}
 
+	
+	
+	/**
+	 * Open a file browser that allows the user to select a file to import
+	 * @return
+	 */
+	private File browseForFile() {
+		File selectedFile = null;
+        
+		//If we're on a mac then a FileDialog looks better and supports a few mac-specific options 
+		if (UIConstants.isMac()) {
+			FileDialog fileDialog = new FileDialog(ViewerWindow.getViewer(), "Choose a file");
+			fileDialog.setMode(FileDialog.LOAD);
+			String userDir = System.getProperty("user.dir");
+			if (userDir != null)
+				fileDialog.setDirectory(userDir);
+			
+			fileDialog.setVisible(true);
+			
+			String filename = fileDialog.getFile();
+			String path = fileDialog.getDirectory();
+			selectedFile = new File(path + filename);
+		}
+		else {
+			//Not on a mac, use a JFileChooser instead of a FileDialog
+			
+			//Construct a new file choose whose default path is the path to this executable, which 
+			//is returned by System.getProperty("user.dir")
+			JFileChooser fileChooser = new JFileChooser( System.getProperty("user.dir"));
+			int option = fileChooser.showOpenDialog(ViewerWindow.getViewer());
+			if (option == JFileChooser.APPROVE_OPTION) {
+				selectedFile = fileChooser.getSelectedFile();
+			}
+		}
+		
+		return selectedFile;
+	}
+	
 	private BorderlessButton demoButton;
 	private BorderlessButton coalescentButton;
 	private BorderlessButton loggingButton;

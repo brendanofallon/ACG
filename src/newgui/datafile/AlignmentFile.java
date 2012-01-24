@@ -85,7 +85,7 @@ public class AlignmentFile extends XMLDataFile {
 		Element oldAln = getTopLevelElement(XMLConverter.ALIGNMENT);
 		if (oldAln != null)
 			doc.removeChild(oldAln);
-		doc.appendChild(alnEl);
+		doc.getDocumentElement().appendChild(alnEl);
 	}
 
 

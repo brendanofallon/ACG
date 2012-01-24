@@ -5,6 +5,9 @@ import gui.ACGFrame;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.SwingWorker;
+
+import jobqueue.JobQueue.Mode;
 import jobqueue.JobState.State;
 
 /**
@@ -27,13 +30,38 @@ public class JobQueue implements JobListener {
 	 * @author brendan
 	 *
 	 */
-	enum Mode {RUN_AT_WILL, STOP_AFTER};
+	public enum Mode {RUN_AT_WILL, STOP_AFTER};
 	
 	protected Mode currentMode = Mode.RUN_AT_WILL;
 	protected ACGJob currentJob = null;
 	
 	public JobQueue() {
 		
+	}
+	
+	/**
+	 * Get the total size of the queue, including jobs that have already completed
+	 * @return
+	 */
+	public int getQueueSize() {
+		return queue.size();
+	}
+	
+	/**
+	 * Obtain the which'th job in the queue
+	 * @param which
+	 * @return
+	 */
+	public ACGJob getJob(int which) {
+		return queue.get(which);
+	}
+	
+	/**
+	 * Return a list of all jobs in the queue
+	 * @return
+	 */
+	public List<ACGJob> getJobs() {
+		return queue;
 	}
 	
 	/**
@@ -49,9 +77,14 @@ public class JobQueue implements JobListener {
 	 * @param job
 	 */
 	public void addJob(ACGJob job) {
+		System.out.println("Adding job " + job.getJobTitle() + " to queue, state is " + job.getJobState().getState() );
+		if (job.getJobState().getState() == State.RUNNING) {
+			throw new IllegalArgumentException("Job is already running! This can't happen because it may lead to concurrent jobs running");
+		}
 		job.addListener(this);
 		queue.add(job);
 		handleQueueUpdate();
+		fireQueueChangeEvent();
 	}
 
 	/**
@@ -61,6 +94,7 @@ public class JobQueue implements JobListener {
 	public void removeJob(ACGJob job) {
 		job.removeListener(this);
 		queue.remove(job);
+		fireQueueChangeEvent();
 	}
 	
 	/**
@@ -100,6 +134,12 @@ public class JobQueue implements JobListener {
 	public boolean isRunningJob() {
 		return currentJob != null;
 	}
+	
+	/**
+	 * Set the current 'Mode' of this queue, which determines whether jobs are run as soon
+	 * as previous jobs finish, or if we wait for user confirmation
+	 * @param newMode
+	 */
 	public void setMode(Mode newMode) {
 		if (currentMode == Mode.STOP_AFTER && newMode == Mode.RUN_AT_WILL) {
 			currentMode = newMode;
@@ -121,6 +161,7 @@ public class JobQueue implements JobListener {
 	@Override
 	public void statusUpdated(ACGJob job) {
 		JobState state = job.getJobState();
+		System.out.println("Status updated for job: " + job.getJobTitle() + " new status is: " + job.getJobState().getState());
 		if (state.getState() == State.COMPLETED) {
 			currentJob = null;
 		}
@@ -128,15 +169,23 @@ public class JobQueue implements JobListener {
 		handleQueueUpdate();
 	}
 	
+	public Mode getMode() {
+		return currentMode;
+	}
+	
 	/**
 	 * Submit a new job to the queue if the mode is comptible 
 	 */
 	private void handleQueueUpdate() {
+		System.out.println("Handling queue update, current job is " + currentJob + " mode is: " + currentMode);
 		if (currentJob == null && currentMode == Mode.RUN_AT_WILL) {
 			ACGJob nextJob = findNextJob();
 			if (nextJob != null) {
 				submitJob(nextJob);
 			}	
+			else {
+				System.out.println("nextJob is null, not submitting any job");
+			}
 		}
 	}
 	
@@ -145,14 +194,41 @@ public class JobQueue implements JobListener {
 	 * @param nextJob
 	 */
 	private void submitJob(final ACGJob nextJob) {
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				nextJob.beginJob();
-			}
-		});
+		JobRunner runner = new JobRunner(nextJob);
+		currentJob =  nextJob;
+		runner.execute();
 	}
 
 
+	/**
+	 * Add a new listener for changes to this queue. This method ensures that each
+	 * object is only added once! If list
+	 * @param l
+	 */
+	public void addListener(QueueListener l) {
+		if (!listeners.contains(l))
+			listeners.add(l);	
+	}
+	
+	/**
+	 * Remove this listener from the queue
+	 * @param l
+	 */
+	public void removeListener(QueueListener l) {
+		listeners.remove(l);
+	}
+	
+	
+	/**
+	 * Fire a change event to all listeners
+	 */
+	protected void fireQueueChangeEvent() {
+		for(QueueListener l : listeners) {
+			l.queueChanged(this);
+		}
+	}
+	
+	
 	/**
 	 * Find the job with the lowest index in the list whose 
 	 * status is NOT_STARTED. Returns null if there is no such job
@@ -167,5 +243,28 @@ public class JobQueue implements JobListener {
 		return null;
 	}
 	
+	/**
+	 * Mini class  to handle running ACGJobs in background
+	 * @author brendano
+	 *
+	 */
+	class JobRunner extends SwingWorker {
+
+		final ACGJob job;
+		public JobRunner(ACGJob job) {
+			this.job = job;
+		}
+		
+		@Override
+		protected Object doInBackground() throws Exception {
+			job.beginJob();
+			return job;
+		}
+		
+	}
+
+
 	
+	
+	private List<QueueListener> listeners = new ArrayList<QueueListener>();
 }

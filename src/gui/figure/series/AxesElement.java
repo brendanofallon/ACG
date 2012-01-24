@@ -731,13 +731,13 @@ public class AxesElement extends FigureElement {
 		if (isYSelected) {
 			g.setStroke(highlightStroke);
 			g.setColor(highlightColor);
-			paintYAxis(g);
+			paintYAxis(g, false);
 		}
 
 		g.setStroke(normalStroke);
 		g.setColor(Color.black);
 
-		paintYAxis(g);
+		paintYAxis(g, true);
 		
 		if (isXSelected) {
 			g.setStroke(highlightStroke);
@@ -770,9 +770,14 @@ public class AxesElement extends FigureElement {
 		this.allowMouseDragSelection = allowMouseDragSelection;
 	}
 	
-	protected void paintYAxis(Graphics2D g) {
+	/**
+	 * Paint the main y-axis line and tick marks
+	 * @param g
+	 * @param drawTicks If we should draw the tick marks
+	 */
+	protected void paintYAxis(Graphics2D g, boolean drawTicks) {
 		Color origColor = g.getColor();
-		Stroke origStroke = g.getStroke();
+		
 		// Y - axis
 		g.drawLine(round(graphAreaLeft), round(graphAreaTop), round(graphAreaLeft), round(graphAreaBottom));
 		
@@ -784,7 +789,7 @@ public class AxesElement extends FigureElement {
 			
 			int i=0;
 			int tickY = round(xAxisPos-i*tickStep);
-			while(tickStep > 0 && tickY>=bounds.y && positiveYTicks>0) {
+			while(drawTicks && tickStep > 0 && tickY>=bounds.y && positiveYTicks>0) {
 				//Major tick
 				g.drawLine(round(graphAreaLeft-yTickWidth*xFactor), tickY, round(graphAreaLeft), tickY);
 				if (drawYGrid) {
@@ -793,10 +798,7 @@ public class AxesElement extends FigureElement {
 					g.drawLine(round(graphAreaLeft)+1, tickY, round(graphAreaLeft+graphAreaWidth), tickY);
 				}
 				
-				//g.setStroke(origStroke);
-				//g.setColor(origColor);
 				//Minor tick
-				
 				if (round(xAxisPos-i*tickStep + tickStep/2.0) < graphAreaBottom )
 					g.drawLine(round(graphAreaLeft-yTickWidth/2.0*xFactor), round(xAxisPos-i*tickStep + tickStep/2.0), round(graphAreaLeft), round(xAxisPos-i*tickStep+tickStep/2.0));
 				
@@ -812,7 +814,7 @@ public class AxesElement extends FigureElement {
 
 			
 			//Negative Y ticks and labels
-			if (minYVal<0) {
+			if (drawTicks && minYVal<0) {
 				i=0;
 				tickY = round(xAxisPos+i*tickStep);
 				while(tickY<=graphAreaBottom) {

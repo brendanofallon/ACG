@@ -23,11 +23,12 @@ import newgui.gui.ViewerWindow;
 
 
 /**
- * The file tree displays a tree of files in a jpanel, using a jtree
+ * The file tree displays a tree of files in a jpanel, using a jtree. 
+ * 
  * @author brendan
  *
  */
-public class FileTree extends JPanel {
+public class FileTree extends JPanel implements DirectoryListener {
 
 	private JTree tree;
 	final File rootDir;
@@ -54,6 +55,14 @@ public class FileTree extends JPanel {
 		tree.setRootVisible(false);
 		buildTreeNodes(rootNode);
 		tree.setModel(treeModel);
+	}
+	
+	@Override
+	public void filesChanged(File root) {
+		//Right now we just re-scan all files
+		createTreeNodes();
+		revalidate();
+		repaint();
 	}
 	
 	/**
@@ -131,4 +140,6 @@ public class FileTree extends JPanel {
 	}
 
 	private DataFileUtils dataUtils; //Used for data file format checking
+
+
 }

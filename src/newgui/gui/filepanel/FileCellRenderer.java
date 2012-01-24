@@ -38,8 +38,8 @@ public class FileCellRenderer extends DefaultTreeCellRenderer {
 //            boolean hasFocus) {
 //	
 //		this.selected = selected;
-//		this.setText(value.toString());
-//		return this;
+//		this.setText(value.toString().replace(".xml", ""));
+//		return super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
 //	}
 	
 	public void paintComponent(Graphics g) {

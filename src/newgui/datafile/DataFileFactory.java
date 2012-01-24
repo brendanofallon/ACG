@@ -41,6 +41,10 @@ public class DataFileFactory {
 			if (testFile.containsElementByName(AlignmentFile.XMLConverter.ALIGNMENT)) {
 				return new AlignmentFile(file);
 			}
+			
+			if (testFile.containsElementByName(AnalysisDataFile.MODEL)) {
+				return new AnalysisDataFile(file);
+			}
 		}
 		
 		throw new FileParseException("Could not guess file type", file);

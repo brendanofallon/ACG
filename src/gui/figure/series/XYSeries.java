@@ -34,12 +34,15 @@ import java.util.List;
  * This should be rehashed at some point so it doesn't rely in element.Point and can be constructed in a more
  * general manner. 
  * 
- *  These are immutable, which allows for some additional optimizations. 
+ *  These are immutable outside of increasing x-order appending operations, which allows for some additional optimizations. 
  * 
  * @author brendan
  *
  */
 public class XYSeries extends AbstractSeries {
+
+	protected String name; //Arbitrary label for series
+	
 
 	protected List<Point2D> pointList;
 	protected double ySum = 0; //Stores sum of y-values, useful for calculating mean
@@ -62,7 +65,7 @@ public class XYSeries extends AbstractSeries {
 	 */
 	public XYSeries(String name) {
 		this.name = name;
-		pointList = new ArrayList<Point2D>();
+		pointList = new ArrayList<Point2D>(1024);
 	}
 	
 	public XYSeries(List<Point2D> points) {
@@ -75,6 +78,21 @@ public class XYSeries extends AbstractSeries {
 	public void clear() {
 		pointList.clear();
 		ySum = 0;
+	}
+	
+	/**
+	 * Get the label assigned to this series, most for UI purposes. 
+	 */
+	public String getName() {
+		return name;
+	}
+
+	
+	/**
+	 * Set an arbitrary label for this series
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	/**
@@ -107,6 +125,11 @@ public class XYSeries extends AbstractSeries {
 			return pointList.get( pointList.size()-1).getY();
 	}
 	
+	/**
+	 * Append a new point to the end of this series. The x-value of the point must be 
+	 * greater than the x-value of the previous point
+	 * @param newPoint
+	 */
 	public void addPointInOrder(Point2D newPoint) {
 		if (pointList.size()>0 && newPoint.getX() < getMaxX())
 			throw new IllegalArgumentException("Non-increasing x value");
@@ -129,19 +152,6 @@ public class XYSeries extends AbstractSeries {
 		return pointList;
 	}
 	
-	/**
-	 * Constructs a new array of points from the given list of points. 
-	 * @param points
-	 */
-//	protected void constructPointsFromList(List<Point2D> points) {
-//		pointList = new Point2D[points.size()];
-//		int index = 0;
-//		for(Point2D p : points) {
-//			pointList[index] = p;
-//			index++;
-//		}
-//		sortByX();
-//	}
 	
 	/**
 	 * Sorts the values in X order
@@ -168,7 +178,19 @@ public class XYSeries extends AbstractSeries {
 		return pointList.get(index).getY();
 	}
 	
-	
+	/**
+	 * Obtain two Point2D objects that satisfy the following characteristics:
+	 * bound the given x
+	 * Point[0].x < xVal
+	 * Point[1].x > xVal
+	 * 
+	 * There is some i such that Point[0].x = getX(i) and Point[0].y = getY(i)
+	 * (that is, the point's x and y values must be a point in this series)
+	 * same for Point[1]
+	 * 
+	 * @param xVal
+	 * @return
+	 */
 	public Point2D[] getLineForXVal(double xVal) {
 		int lower = getIndexForXVal(xVal);
 		
@@ -207,7 +229,7 @@ public class XYSeries extends AbstractSeries {
 			//System.out.println("Got it right on the first check, returning index : " + index);
 			return index;
 		}
-		
+				
 		//Make sure the starting index is sane (between upper and lower)
 		if (index<0 || index>=pointList.size() )
 			index = (upper+lower)/2; 
@@ -359,25 +381,13 @@ public class XYSeries extends AbstractSeries {
 	/**
 	 * Series may optionally provide information about the width of boxes used to represent data columns when
 	 * we're displaying this series in an XYSeriesElement. If we return null here, the Element attempts to
-	 * make a best guess.If a value is returned, it is assumed to be in data coordinates. 
+	 * make a best guess. If a value is returned, it is assumed to be in data coordinates. 
 	 * @return
 	 */
 	public Double getBoxWidth() {
 		return null;
 	}
 	
-	/**
-	 * Returns the Point at the given index in this list of points, or null if  i> this.size()
-	 * @param i
-	 * @return
-	 */
-	public Point2D get(int i) {
-		if (i>=pointList.size())
-			return null;
-		else {
-			return pointList.get(i);
-		}
-	}
 	
 	private Comparator<Point2D> getXComparator() {
 		return new XComparator();

@@ -74,4 +74,7 @@ public class ExponentialPrior extends AbstractPrior {
 		return "ExpPrior[ " + param.getName() + " ]";
 	}
 
+	public String getName() {
+		return "Exponential prior on param " + param.getName();
+	}
 }

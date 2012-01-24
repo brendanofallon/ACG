@@ -191,6 +191,14 @@ public class MC3 {
 	}
 	
 	/**
+	 * Add a new listener to the cold chain. 
+	 * @param l
+	 */
+	public synchronized void addListener(MCMCListener l) {
+		getColdChain().addListener(l);
+	}
+	
+	/**
 	 * Pause / unpause this chain in a thread-safe way
 	 * @param paused
 	 */

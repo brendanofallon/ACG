@@ -49,6 +49,7 @@ import arg.argIO.ARGParser;
 import sequence.DNAUtils;
 import sequence.DataMatrix;
 import testing.Timer;
+import xml.XMLLoader;
 
 import component.LikelihoodComponent;
 import dlCalculation.computeCore.CompressionCore2;
@@ -514,6 +515,14 @@ public class DataLikelihood extends LikelihoodComponent {
 	public String getLogString() {
 		//return "" + currentLogLikelihood;
 		return "" + currentLogLikelihood;
+	}
+	
+	public String getName() {
+		String name = this.getAttribute(XMLLoader.NODE_ID);
+		if (name == null)
+			return "Data likelihood";
+		else
+			return name;
 	}
 
 

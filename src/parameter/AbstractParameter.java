@@ -27,6 +27,7 @@ import java.util.Map;
 import xml.XMLLoader;
 
 import logging.LogItemProvider;
+import logging.Named;
 import math.RandomSource;
 import modifier.AbstractModifier;
 import modifier.ModificationImpossibleException;
@@ -37,7 +38,7 @@ import modifier.Modifier;
  * @author brendan
  *
  */
-public abstract class AbstractParameter<T> implements Parameter<T>, LogItemProvider {
+public abstract class AbstractParameter<T> implements Parameter<T>, LogItemProvider, Named {
 
 	public static final String XML_PARAM_FREQUENCY = "frequency";
 	
@@ -45,7 +46,7 @@ public abstract class AbstractParameter<T> implements Parameter<T>, LogItemProvi
 	
 	protected List<Modifier> modifiers = new ArrayList<Modifier>(2);
 	
-	protected T proposedValue;
+	protected T proposedValue; 
 	
 	protected T currentValue;
 	

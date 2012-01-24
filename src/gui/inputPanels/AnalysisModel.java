@@ -65,6 +65,12 @@ public class AnalysisModel {
 		loggerModels.add(new StateLoggerModel() );
 	}
 
+	/**
+	 * Read all analysis information from the given acg document. All current settings will
+	 * be overwritten
+	 * @param doc
+	 * @throws InputConfigException
+	 */
 	public void readFromDocument(ACGDocument doc) throws InputConfigException { 
 		alignmentEl.readElement(doc);
 		argModel.readElements(doc);
@@ -91,16 +97,14 @@ public class AnalysisModel {
 		
 		mcElement.readElements(doc);
 	}
-
+	
 	/**
-	 * Returns an ACG document describing the current state of all models
-	 * The contract with this class is that if we read in the document 
-	 * via readFromDocument(some doc), all models should be restored to the
-	 * exact state they were in when the document was created. 
+	 * Creates and returns an ACGDocumentBuilder with all analysis nodes added. This 
+	 * will throw an InputConfigException if there are errors in any of the nodes
 	 * @return
 	 * @throws InputConfigException 
 	 */
-	public ACGDocument getACGDocument() throws InputConfigException {
+	public ACGDocumentBuilder getACGDocBuilder() throws InputConfigException {
 		ACGDocumentBuilder docBuilder = null;
 		try {	
 			docBuilder = new ACGDocumentBuilder();
@@ -145,13 +149,6 @@ public class AnalysisModel {
 				
 			}
 
-			//			loggersPanel.setARGReference(argModel);
-			//			List<Element> loggers = loggersPanel.getLoggerNodes(docBuilder.getACGDocument());
-			//			for(Element node : loggers) {
-			//				docBuilder.appendNode(node);
-			//				mcElement.addListenerRef(node);
-			//			}
-
 			List<Element> params = docBuilder.getParameters();
 			for(Element param : params) {
 				mcElement.addParamRef(param);
@@ -170,6 +167,22 @@ public class AnalysisModel {
 			ErrorWindow.showErrorWindow(e);
 		} 
 
+		if (docBuilder != null)
+			return docBuilder;
+		else
+			return null;
+	}
+	
+	/**
+	 * Returns an ACG document describing the current state of all models
+	 * The contract with this class is that if we read in the document 
+	 * via readFromDocument(some doc), all models should be restored to the
+	 * exact state they were in when the document was created. 
+	 * @return
+	 * @throws InputConfigException 
+	 */
+	public ACGDocument getACGDocument() throws InputConfigException {
+		ACGDocumentBuilder docBuilder = getACGDocBuilder();
 		if (docBuilder != null)
 			return docBuilder.getACGDocument();
 		else

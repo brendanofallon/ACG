@@ -184,4 +184,9 @@ public class PopSizePrior extends AbstractPrior {
 		
 		System.out.println("Final pop size function :\n " + popsize.getFunction());
 	}
+
+	@Override
+	public String getName() {
+		return "Population size prior";
+	}
 }

@@ -44,7 +44,7 @@ public class DataFileUtils {
 		try {
 			Document doc = builder.parse(file);
 			Element root = doc.getDocumentElement();
-			if (root.getNodeName().equalsIgnoreCase(XMLDataFile.ROOT_NAME)) {
+			if (root.getNodeName().equalsIgnoreCase(XMLDataFile.ROOT_NAME) || root.getNodeName().equalsIgnoreCase("ACG")) {
 				return true;
 			}
 		} catch (Exception ex) {

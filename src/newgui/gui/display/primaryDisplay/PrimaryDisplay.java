@@ -1,5 +1,6 @@
 package newgui.gui.display.primaryDisplay;
 
+import gui.document.ACGDocument;
 import gui.inputPanels.AnalysisModel;
 
 import java.awt.BorderLayout;
@@ -26,7 +27,7 @@ public class PrimaryDisplay extends Display {
 	private AlignmentPrepPanel alnPrepPanel;
 	private AnalysisPrepPanel analPrepPanel;
 	private AnalysisDetailsPanel analDetailsPanel;
-	private RunJobPanel runJobPanel;
+	private RunningJobPanel runJobPanel;
 	
 	public PrimaryDisplay() {
 		
@@ -51,7 +52,7 @@ public class PrimaryDisplay extends Display {
 		alnPrepPanel = new AlignmentPrepPanel(this);
 		analPrepPanel = new AnalysisPrepPanel(this);
 		analDetailsPanel = new AnalysisDetailsPanel(this);
-		runJobPanel = new RunJobPanel();
+		runJobPanel = new RunningJobPanel(this);
 		mainPanel.add(alnPrepPanel, ALN_PREP);
 		mainPanel.add(analPrepPanel, ANALYSIS_PREP);
 		mainPanel.add(analDetailsPanel, ANALYSIS_DETAILS);
@@ -75,6 +76,12 @@ public class PrimaryDisplay extends Display {
 	public void showAlignmentPrepPanel() {
 		CardLayout cl = (CardLayout)(mainPanel.getLayout());
 		cl.show(mainPanel, ALN_PREP);
+	}
+
+	public void showJobPanel(ACGDocument acgDocument) {
+		CardLayout cl = (CardLayout)(mainPanel.getLayout());
+		runJobPanel.runJob(acgDocument);
+		cl.show(mainPanel, RUN_JOB);		
 	}
 	
 }

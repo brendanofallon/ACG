@@ -118,6 +118,23 @@ public class FTabPane extends JPanel implements ChangeListener {
 		return false;
 	}
 	
+	/**
+	 * Obtain the total number of components added to this pane
+	 */
+	public int getTabCount() {
+		return tabMap.size();
+	}
+	
+	/**
+	 * Return the component at index i
+	 * @param i
+	 * @return
+	 */
+	public JComponent getComponentAtIndex(int i) {
+		FancyTab tab= tabsPanel.getTabAt(i);
+		return tabMap.get(tab);
+	}
+	
 	public void showComponent(JComponent comp) {
 		FancyTab tab = tabForComponent(comp);
 		if (tab == null) {

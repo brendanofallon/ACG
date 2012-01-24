@@ -42,7 +42,7 @@ import mcmc.MCMCListener;
  * @author brendan
  *
  */
-public class StateLogger implements MCMCListener {
+public class StateLogger implements MCMCListener, Named {
 
 	public static final String XML_FILENAME = "filename";
 	public static final String XML_FREQUENCY = "frequency";
@@ -216,6 +216,11 @@ public class StateLogger implements MCMCListener {
 	@Override
 	public void setMCMC(MCMC chain) {
 		this.chain = chain;
+	}
+
+	@Override
+	public String getName() {
+		return "State logger";
 	}
 
 

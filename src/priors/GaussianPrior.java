@@ -65,5 +65,9 @@ public class GaussianPrior extends AbstractPrior {
 	public String getLogHeader() {
 		return "GaussianPrior[" + param.getName() + "]";
 	}
+	
+	public String getName() {
+		return "Gaussian prior on param " + param.getName();
+	}
 
 }

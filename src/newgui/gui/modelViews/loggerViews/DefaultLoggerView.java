@@ -150,8 +150,8 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 		BorderlessButton remove = new BorderlessButton(removeIcon);
 		//remove.setAlignmentY(TOP_ALIGNMENT);
 		remove.setToolTipText("Remove " + getModel().getModelLabel() );
-		remove.setXDif(-4);
-		remove.setYDif(-4);
+		remove.setXDif(-1);
+		remove.setYDif(-1);
 		remove.setMinimumSize(new Dimension(24, 28));
 		remove.setPreferredSize(new Dimension(24, 28));
 		remove.setMaximumSize(new Dimension(24, 28));
@@ -218,9 +218,7 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 		if (loggerPanelParent != null)
 			loggerPanelParent.removeLogger(this);
 	}
-	
-	
-	
+
 	
 	public LoggerModel getModel() {
 		return model;
@@ -250,7 +248,7 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 	
 	
 	public void updateFields() throws InputConfigException {
-		String filename = filenameField.getText();
+		String filename = filenameField.getText().trim();
 		filename.replaceAll(" ", "_");
 		model.setOutputFilename(filename);
 		model.setBurnin( (Integer)burninSpinner.getValue());

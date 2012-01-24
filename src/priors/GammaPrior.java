@@ -67,4 +67,7 @@ public class GammaPrior extends AbstractPrior {
 		return "GammaPrior[" + param.getName() + "]";
 	}
 
+	public String getName() {
+		return "Gamma prior on param " + param.getName();
+	}
 }

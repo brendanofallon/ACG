@@ -166,6 +166,10 @@ public class CoalModelView extends JPanel {
 		updateView();
 	}
 	
+	public void updateModel() {
+		//As in SiteModelView, all ui components here update the model as soon as they
+		//are changed, so we don't have to explicitly do anything here
+	}
 	
 	/**
 	 * Create GUI components

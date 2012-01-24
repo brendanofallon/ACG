@@ -85,7 +85,7 @@ public abstract class MonitorPanel extends FloatingPanel {
 	
 	HistogramSeries[] histoSeries;
 	String[] titles;
-	String logKey = null;
+	protected String logKey = null;
 	Mode mode = Mode.TRACE;
 
 	private int addedSeriesCount = 0; //The number of XYSeries that have been added via calls to addSeries.

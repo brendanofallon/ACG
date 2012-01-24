@@ -52,7 +52,7 @@ public class BaseFrequencies extends AbstractParameter<double[]> {
 	static final int A = DNAUtils.A;
 	static final int G = DNAUtils.G;
 	
-	String[] logKey = new String[]{"a.freq\tc.freq\tg.freq\tt.freq"};
+	String[] logKeys = new String[]{"a.freq", "c.freq", "g.freq", "t.freq"};
 			
 	public BaseFrequencies(Map<String, String> attrs, Modifier<?> mod) {
 		this(attrs);
@@ -117,7 +117,7 @@ public class BaseFrequencies extends AbstractParameter<double[]> {
 	}
 
 	public int getKeyCount() {
-		return 1;
+		return 4;
 	}
 	
 	/**
@@ -125,7 +125,7 @@ public class BaseFrequencies extends AbstractParameter<double[]> {
 	 * Default implementation is a single item whose key is 'getName()'
 	 */
 	public String[] getLogKeys() {
-		return logKey;
+		return logKeys;
 	}
 	
 	/**
@@ -134,7 +134,17 @@ public class BaseFrequencies extends AbstractParameter<double[]> {
 	 */
 	public Object getLogItem(String key) {
 		double[] freqs = getStationaries();
-		return "" + freqs[A] + "\t" + freqs[C] + "\t" + freqs[G] + "\t" + freqs[T];
+		
+		if (key.equals(logKeys[0]))
+			return freqs[A];
+		if (key.equals(logKeys[1]))
+			return freqs[C];
+		if (key.equals(logKeys[2]))
+			return freqs[G];
+		if (key.equals(logKeys[3]))
+			return freqs[T];
+		
+		return null;
 	}
 	
 	public String getLogString() {

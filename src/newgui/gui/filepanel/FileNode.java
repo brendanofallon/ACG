@@ -32,6 +32,6 @@ public class FileNode extends DefaultMutableTreeNode {
 	}
 
 	public String toString() {
-		return file.getName();
+		return file.getName().replace(".xml", "");
 	}
 }

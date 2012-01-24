@@ -27,6 +27,7 @@ import arg.ARGIntervals;
 import arg.ARGIntervals.IntervalType;
 
 import parameter.AbstractParameter;
+import xml.XMLLoader;
 
 
 import component.LikelihoodComponent;
@@ -141,5 +142,12 @@ public class CoalescentLikelihood extends LikelihoodComponent {
 		return "Coalescent";
 	}
 	
+	public String getName() {
+		String name = this.getAttribute(XMLLoader.NODE_ID);
+		if (name == null)
+			return "Coalescent likelihood";
+		else
+			return name;
+	}
 	
 }
