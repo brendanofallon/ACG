@@ -1,5 +1,6 @@
 package newgui.datafile;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -14,7 +15,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import newgui.gui.display.Display;
+import newgui.gui.display.primaryDisplay.PrimaryDisplay;
+import gui.ErrorWindow;
 import gui.document.ACGDocument;
+import gui.inputPanels.AnalysisModel;
+import gui.inputPanels.Configurator.InputConfigException;
 
 /**
  * An analysis data file basically wraps an ACGDocument and turns it into a DataFile. This may be
@@ -27,8 +32,27 @@ public class AnalysisDataFile extends XMLDataFile {
 
 	public static final String MODEL = "model"; 
 	
+	public AnalysisDataFile(File file) {
+		super(file);
+	}
+	
 	public Display getDisplay() {
-		throw new IllegalArgumentException("Not sure how to do this yet");
+		PrimaryDisplay display = new PrimaryDisplay();
+		
+		try {
+			ACGDocument doc = getACGDocument();
+			doc.loadAndVerifyClasses();
+			AnalysisModel model = new AnalysisModel();
+			model.readFromDocument( doc );
+			display.showAnalysisDetails( model );
+		} catch (InputConfigException e) {
+			e.printStackTrace();
+			ErrorWindow.showErrorWindow(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			ErrorWindow.showErrorWindow(e);
+		}
+		return display;
 	}
 	
 	public void setACGDocument(ACGDocument acgDoc) throws XMLConversionError {
@@ -71,7 +95,22 @@ public class AnalysisDataFile extends XMLDataFile {
 		try {
 			builder = factory.newDocumentBuilder();
 			Document newDoc = builder.newDocument();
-			Node clonedNode = newDoc.importNode(el, true);
+			NodeList children = el.getChildNodes();
+			Element childToClone = null;
+			for(int i=0; i<children.getLength(); i++) {
+				Node child = children.item(i);
+				if (child.getNodeType() == Node.ELEMENT_NODE) {
+					childToClone = (Element)child;
+					
+				}
+			}
+			if (childToClone == null) {
+				throw new XMLConversionError("Could not find analysis part of file", el);
+			}
+			Node clonedNode = newDoc.importNode(childToClone, true);
+			if (clonedNode == null) {
+				System.out.println("Cloned node is null!");
+			}
 			try {
 				String str = getXMLString(clonedNode);
 				System.out.println("Creating ACGDocument with this string: \n" + str);
@@ -79,7 +118,7 @@ public class AnalysisDataFile extends XMLDataFile {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			newDoc.getDocumentElement().appendChild(clonedNode);
+			newDoc.appendChild(clonedNode);
 			ACGDocument acgDoc = new ACGDocument(newDoc);
 			return acgDoc;
 		}
