@@ -21,7 +21,9 @@ import java.io.File;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import jobqueue.ExecutingChain;
@@ -65,7 +67,6 @@ public class AnalysisDetailsPanel extends JPanel {
 	 * @param analysis
 	 */
 	public void initialize(AnalysisModel analysis) {
-		//FIX ME!
 		this.analysis = analysis;
 		siteModelView.setSiteModel(analysis.getSiteModel());
 		coalView.setCoalModel(analysis.getCoalescentModel());
@@ -232,8 +233,19 @@ public class AnalysisDetailsPanel extends JPanel {
 			
 			ACGDocument acgDocument = analysis.getACGDocument();
 			
+			String analysisName = (String)JOptionPane.showInputDialog(ViewerWindow.getViewer(), 
+													"Choose a name for these settings:",
+													"Save analysis",
+													JOptionPane.PLAIN_MESSAGE,
+													null, 
+													null,
+													displayParent.getTitle());
+			if (! analysisName.endsWith(".xml")) {
+				analysisName = analysisName + ".xml";
+			}
+			
 			AnalysisFilesManager manager = AnalysisFilesManager.getManager();
-			manager.addAnalysisFile(acgDocument, displayParent.getTitle());
+			manager.addAnalysisFile(acgDocument, analysisName);
 			
 		} catch (InputConfigException e) {
 			ErrorWindow.showErrorWindow(e);
@@ -272,6 +284,8 @@ public class AnalysisDetailsPanel extends JPanel {
 			coalView.updateModel();
 			loggersView.updateModels();
 			mcView.updateModel();
+	
+			analysis.setLoggerModels(loggersView.getLoggerModels());		
 		} catch (InputConfigException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -323,6 +337,7 @@ public class AnalysisDetailsPanel extends JPanel {
 		
 		return selectedFile;
 	}
+	
 	
 	private BorderlessButton demoButton;
 	private BorderlessButton coalescentButton;

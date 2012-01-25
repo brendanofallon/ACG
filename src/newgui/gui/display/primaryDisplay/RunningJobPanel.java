@@ -30,7 +30,6 @@ public class RunningJobPanel extends JPanel {
 	
 	public RunningJobPanel(PrimaryDisplay parentDisplay) {
 		this.displayParent = parentDisplay;
-
 		memLogger = new MemoryStateLogger();
 		initComponents();
 	}

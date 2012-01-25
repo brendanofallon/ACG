@@ -79,7 +79,7 @@ public class AnalysisModel {
 		
 		//Loggers handled slightly differently since there may be zero or more...
 		List<String> docLoggers = doc.getLabelForClass(PropertyLogger.class);
-		docLoggers.addAll( doc.getLabelForClass(StateLogger.class));
+		//docLoggers.addAll( doc.getLabelForClass(StateLogger.class));
 		//Other things we should look for / add? Maybe all loggers should implement some interface
 		//just so we can easily find them here? Right now PopSizeLogger is just an MCListener,
 		//so it can't be loaded here
@@ -88,7 +88,7 @@ public class AnalysisModel {
 			Element el = doc.getElementForLabel(loggerLabel);
 			String className = el.getAttribute(XMLLoader.CLASS_NAME_ATTR);
 			for(LoggerModel model : AvailableLoggers.getLoggers()) {
-				if (model.getLoggerClass().equals( className )) {
+				if (model.getLoggerClass().getCanonicalName().equals( className )) {
 					loggerModels.add(model);
 				}
 			}
@@ -220,6 +220,16 @@ public class AnalysisModel {
 	public void addLoggerModel(LoggerModel model) {
 		loggerModels.add(model);
 	}
+
+	/**
+	 * Clear all current loggers and add all new ones from the list
+	 * @param newModels
+	 */
+	public void setLoggerModels(List<LoggerModel> newModels) {
+		loggerModels.clear();
+		loggerModels.addAll(newModels);
+	}
+	
 	/**
 	 * Set the alignment backing the alignment element used in this analysis
 	 * @param aln

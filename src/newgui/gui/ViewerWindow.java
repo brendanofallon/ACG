@@ -92,6 +92,14 @@ public class ViewerWindow extends JFrame {
 	 */
 	public void displayDataFile(DataFile dataFile) {
 		Display display = dataFile.getDisplay();
+		if (display.getTitle() == null) {
+		File sourceFile = dataFile.getSourceFile();
+			if (sourceFile != null)
+				display.setTitle( sourceFile.getName().replace(".xml", "")	);
+			else 
+				display.setTitle("New display");
+				
+		}
 		displayPane.addDisplay(display);
 	}
 
@@ -103,12 +111,12 @@ public class ViewerWindow extends JFrame {
 	 */
 	public void displayDataFile(DataFile dataFile, String title) {
 		Display display = dataFile.getDisplay();
-		displayPane.addDisplay(display, title);
+		display.setTitle(title);
+		displayPane.addDisplay(display);
 		repaint();
 	}
 	
 	public void showJobQueueDisplay() {
-		System.out.println("Attempting to show job display window");
 		JobQueueDisplay currentDisp = (JobQueueDisplay) displayPane.getDisplayForClass(JobQueueDisplay.class);
 		if ( currentDisp != null ) {
 			displayPane.selectComponent(currentDisp);
@@ -117,8 +125,7 @@ public class ViewerWindow extends JFrame {
 			if (jobDisplay == null) {
 				jobDisplay = new JobQueueDisplay();
 			}
-			System.out.println("Attempting to show newly created job display window");
-			displayPane.addDisplay(jobDisplay, "Job Manager");
+			displayPane.addDisplay(jobDisplay);
 		}
 	}
 	

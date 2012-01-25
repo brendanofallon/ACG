@@ -32,6 +32,10 @@ public class AnalysisDataFile extends XMLDataFile {
 
 	public static final String MODEL = "model"; 
 	
+	public AnalysisDataFile() {
+		//Blank on purpose
+	}
+	
 	public AnalysisDataFile(File file) {
 		super(file);
 	}
