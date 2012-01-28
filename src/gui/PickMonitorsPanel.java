@@ -49,6 +49,7 @@ import javax.swing.tree.TreePath;
 
 import jobqueue.ACGJob;
 import jobqueue.ExecutingChain;
+import jobqueue.QueueManager;
 
 import logging.PropertyLogger;
 import logging.StateLogger;
@@ -68,7 +69,7 @@ import xml.XMLLoader;
  */
 public class PickMonitorsPanel extends JPanel {
 
-	ACGDocument file;
+	ACGDocument acgDocument;
 	ACGFrame acgParent;
 	
 	//Holds list of things we'll display in the next panel
@@ -76,7 +77,7 @@ public class PickMonitorsPanel extends JPanel {
 	
 	public PickMonitorsPanel(ACGFrame acgParent, ACGDocument file) {
 		this.acgParent = acgParent;
-		this.file = file;
+		this.acgDocument = file;
 		initComponents();
 		setBackground(ACGFrame.backgroundColor);
 	}
@@ -137,15 +138,15 @@ public class PickMonitorsPanel extends JPanel {
 		DefaultMutableTreeNode paramRoot = new DefaultMutableTreeNode("Root");
 		paramTree = new JTree(paramRoot);
 		
-		List<String> paramLabels = file.getParameterLabels();
-		List<String> likeLabels = file.getLikelihoodLabels();
+		List<String> paramLabels = acgDocument.getParameterLabels();
+		List<String> likeLabels = acgDocument.getLikelihoodLabels();
 		
 		//All the things we could potentially plot
 		List<PlottableInfo> plottables = new ArrayList<PlottableInfo>();
 		for(String pLabel : paramLabels) {
 			Object obj;
 			try {
-				obj = file.getObjectForLabel(pLabel);
+				obj = acgDocument.getObjectForLabel(pLabel);
 				if (obj instanceof AbstractParameter<?>) {
 					addPropertiesToTree(paramTree, paramRoot, (AbstractParameter<?>)obj);
 				}
@@ -209,7 +210,7 @@ public class PickMonitorsPanel extends JPanel {
 		for(String pLabel : likeLabels) {
 			Object obj;
 			try {
-				obj = file.getObjectForLabel(pLabel);
+				obj = acgDocument.getObjectForLabel(pLabel);
 				if (obj instanceof LikelihoodComponent) {
 					addPropertiesToTree(likeTree, likeRoot, (LikelihoodComponent)obj);
 				}
@@ -288,8 +289,8 @@ public class PickMonitorsPanel extends JPanel {
 		infoPanel.add(loggerLabel);
 		infoPanel.add(Box.createVerticalStrut(2));
 		
-		List<String> loggerLabels = (file.getLabelForClass(PropertyLogger.class));
-		List<String> stateLoggers = (file.getLabelForClass(StateLogger.class));
+		List<String> loggerLabels = (acgDocument.getLabelForClass(PropertyLogger.class));
+		List<String> stateLoggers = (acgDocument.getLabelForClass(StateLogger.class));
 		loggerLabels.addAll(stateLoggers);
 		JPanel loggerPanel = new JPanel();
 		loggerPanel.setLayout(new BoxLayout(loggerPanel, BoxLayout.Y_AXIS));
@@ -335,18 +336,18 @@ public class PickMonitorsPanel extends JPanel {
 	 * @return
 	 */
 	private int countLoggers() {
-		List<String> loggerLabels = (file.getLabelForClass(PropertyLogger.class));
-		List<String> stateLoggers = (file.getLabelForClass(StateLogger.class));
+		List<String> loggerLabels = (acgDocument.getLabelForClass(PropertyLogger.class));
+		List<String> stateLoggers = (acgDocument.getLabelForClass(StateLogger.class));
 		return loggerLabels.size() + stateLoggers.size();
 		
 	}
 
 	private int findChainLength() {
-		if (file.hasMC3()) {
-			List<String> mc3Labels = (file.getLabelForClass(MC3.class));
+		if (acgDocument.hasMC3()) {
+			List<String> mc3Labels = (acgDocument.getLabelForClass(MC3.class));
 			MC3 mc3;
 			try {
-				mc3 = (MC3)file.getObjectForLabel(mc3Labels.get(0));
+				mc3 = (MC3)acgDocument.getObjectForLabel(mc3Labels.get(0));
 				return mc3.getRunLength();
 			} catch (Exception e) {
 				ErrorWindow.showErrorWindow(e);
@@ -354,10 +355,10 @@ public class PickMonitorsPanel extends JPanel {
 			
 		}
 		else {
-			List<String> mcLabels = file.getMCMCLabels();
+			List<String> mcLabels = acgDocument.getMCMCLabels();
 			MCMC chain;
 			try {
-				chain = (MCMC)file.getObjectForLabel(mcLabels.get(0));
+				chain = (MCMC)acgDocument.getObjectForLabel(mcLabels.get(0));
 				return chain.getUserRunLength();
 			} catch (Exception e) {
 				ErrorWindow.showErrorWindow(e);
@@ -373,7 +374,7 @@ public class PickMonitorsPanel extends JPanel {
 	 * @return
 	 */
 	private int countLikelihoods() {
-		return file.getLikelihoodLabels().size();
+		return acgDocument.getLikelihoodLabels().size();
 	}
 
 	/**
@@ -381,7 +382,7 @@ public class PickMonitorsPanel extends JPanel {
 	 * @return
 	 */
 	private int countAllParameters() {
-		return file.getParameterLabels().size();
+		return acgDocument.getParameterLabels().size();
 	}
 	
 	/**
@@ -390,11 +391,11 @@ public class PickMonitorsPanel extends JPanel {
 	 */
 	private int countModifiableParameters() {
 		int sum = 0;
-		List<String> parLabels = file.getParameterLabels();
+		List<String> parLabels = acgDocument.getParameterLabels();
 		for(String par : parLabels) {
 			Object obj;
 			try {
-				obj = file.getObjectForLabel(par);
+				obj = acgDocument.getObjectForLabel(par);
 				if (obj instanceof AbstractParameter<?>) {
 					AbstractParameter<?> param = (AbstractParameter<?>)obj;
 					if (param.getModifierCount()>0)
@@ -458,16 +459,16 @@ public class PickMonitorsPanel extends JPanel {
 			int freq;
 			int runMax;
 			
-			if (file.hasMC3()) {
-				List<String> mc3Labels = (file.getLabelForClass(MC3.class));
-				MC3 mc3 = (MC3)file.getObjectForLabel(mc3Labels.get(0));
+			if (acgDocument.hasMC3()) {
+				List<String> mc3Labels = (acgDocument.getLabelForClass(MC3.class));
+				MC3 mc3 = (MC3)acgDocument.getObjectForLabel(mc3Labels.get(0));
 				chain = mc3.getColdChain();
 				runMax = mc3.getRunLength();
 				
 			}
 			else {
-				List<String> mcLabels = file.getMCMCLabels();
-				chain = (MCMC)file.getObjectForLabel(mcLabels.get(0));
+				List<String> mcLabels = acgDocument.getMCMCLabels();
+				chain = (MCMC)acgDocument.getObjectForLabel(mcLabels.get(0));
 				runMax = chain.getUserRunLength();
 			}
 		
@@ -480,9 +481,9 @@ public class PickMonitorsPanel extends JPanel {
 			MainOutputFrame outputPane = new MainOutputFrame(chain, freq, burnin);
 
 			//Attempt to turn off System.out writing for state loggers...
-			List<String> stateLoggerLabels = file.getLabelForClass(StateLogger.class);
+			List<String> stateLoggerLabels = acgDocument.getLabelForClass(StateLogger.class);
 			for(String loggerLabel : stateLoggerLabels) {
-				Object obj = file.getObjectForLabel(loggerLabel);
+				Object obj = acgDocument.getObjectForLabel(loggerLabel);
 				if (obj instanceof StateLogger) { //Should be one of these, but you never know
 					((StateLogger)obj).removeStream(System.out);
 				}
@@ -494,7 +495,7 @@ public class PickMonitorsPanel extends JPanel {
 					outputPane.addMonitor(new SpeedMonitor(burnin));
 				}
 				else {
-					Object obj = file.getObjectForLabel(plottable.label);
+					Object obj = acgDocument.getObjectForLabel(plottable.label);
 					if (obj instanceof AbstractParameter<?>) {
 						outputPane.addChart( (AbstractParameter<?>)obj, plottable.key);
 					}
@@ -525,11 +526,10 @@ public class PickMonitorsPanel extends JPanel {
 			acgParent.pack();
 			acgParent.validate();
 			
+			ExecutingChain runner = new ExecutingChain(acgDocument);
+			QueueManager.getCurrentQueue().addJob(runner);
 			
-			ExecutingChain runningChain = new ExecutingChain(file);
-			JobRunner runner = new JobRunner(runningChain);
-			runner.execute();
-			acgParent.setRunner(runningChain);
+			acgParent.setRunner(runner);
 		} catch (InstantiationException e) {
 			ErrorWindow.showErrorWindow(e);
 		} catch (IllegalAccessException e) {

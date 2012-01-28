@@ -461,67 +461,14 @@ public class ACGDocument {
 		return hasRef;
 	}
 	
-	
-	
 	/**
-	 * Recursive helper function for node examination and class loading. Loads all classes below the given XML node
+	 * Returns true if objects have already been instantiated for this document
+	 * @return
 	 */
-//	private void readNodes(Node root) {
-//		NodeList nodeList = root.getChildNodes();
-//
-//		for (int i = 0; i < nodeList.getLength(); i++) {
-//
-//			Node node = nodeList.item(i);
-//
-//			if (node.getNodeType() == Node.ELEMENT_NODE) {
-//				Element el = (Element) node;
-//				String className = el.getAttribute(CLASS_NAME_ATTR);
-//				String label = el.getNodeName();
-//				
-//				if (objMap.containsKey(label)) {
-//					String foundClass = objMap.get(label).className;
-//					if (className != null && (className.trim().length()>0) && (!foundClass.equals(className)))
-//						throw new InvalidInputFileException("Found conflicting classes for object with label : " + label );
-//				}
-//				else {
-//					//Object map didn't contain this label, so this is a new object
-//					if (className == null)
-//						throw new InvalidInputFileException("Could not find class attribute for object : " + label);
-//					
-//					XMLObject newObj = new XMLObject();
-//					newObj.label = label;
-//					newObj.className = className;
-//					objMap.put(label, newObj);
-//				}
-//				
-//				readNodes(el);
-//			}
-//			
-//		}	
-//		
-//		//Search for additional text elements to add in postorder
-//		for (int i = 0; i < nodeList.getLength(); i++) {
-//			Node node = nodeList.item(i);
-//			if (node.getNodeType() == Node.TEXT_NODE) {
-//				String label = root.getNodeName();
-//				String text = node.getNodeValue();
-//				if (text.trim().length()>0) {
-//					XMLObject xmlObj = objMap.get(label);
-//					if (xmlObj == null) {
-//						System.err.println("Found a text node with text: " + node.getNodeValue() + " but there's no constructor info for label: " + label);
-//					}
-//					else {
-//						//Add text content to the attribute map
-//						if (text.trim().length()>0) {
-//							xmlObj.attrs.put("content", text);
-//							
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
-	
+	public boolean objectsCreated() {
+		return objectsCreated;
+	}
+
 	
 	/**
 	 * Obtain an xml-style String representation of the document 
@@ -561,6 +508,7 @@ public class ACGDocument {
 		Map<String, String> attrs = new HashMap<String, String>();
 	}
 
+	
 
 	
 

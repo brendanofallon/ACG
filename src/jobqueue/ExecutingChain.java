@@ -60,7 +60,8 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 	public ExecutingChain(ACGDocument doc) throws Exception {
 		doc.loadAndVerifyClasses();
 		doc.turnOffMCMC(); //Make sure we don't start running the chain immediately, which is the default behavior
-		doc.instantiateAll();
+		if (! doc.objectsCreated())
+			doc.instantiateAll();
 		
 		List<String> mcLabels = doc.getMCMCLabels();
 		if (mcLabels.size()==0) {
@@ -204,7 +205,6 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 	@Override
 	public void beginJob() {
 		state.setState(State.RUNNING);
-		//fireStatusUpdate();
 		try {
 			if (mc3 != null) {
 				mc3.run();

@@ -143,13 +143,13 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 					break;
 			}
 			
-			if (needsThinning) {
-				System.out.println("Thinning all series.....");
-				for(MonitorPanel fig : figureList) { 
-					fig.thinSeries();
-				}
-				frequency *= 2;
-			}
+//			if (needsThinning) {
+//				System.out.println("Thinning all series.....");
+//				for(MonitorPanel fig : figureList) { 
+//					fig.thinSeries();
+//				}
+//				frequency *= 2;
+//			}
 		}
 	}
 

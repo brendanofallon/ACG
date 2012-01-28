@@ -75,6 +75,10 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 		
 		
 	}
+	
+	public void updateTopLabel() {
+		
+	}
 
 	/**
 	 * Create various combo boxes, etc in bottom panel

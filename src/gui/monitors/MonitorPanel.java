@@ -567,16 +567,16 @@ public abstract class MonitorPanel extends FloatingPanel {
 	 * Removes every even-indexed elemtent of the series, thus halving it in size
 	 * @param series
 	 */
-	public void thinSeries() {
-		for(int j=0; j<series.length; j++) {
-			XYSeries ser = series[j];
-
-			//We're actually incrementing the index removed by two, since removing a point increments the index by one itself
-			for(int i=0; i<ser.size()/2; i++) {
-				ser.removePoint(i);
-			}
-		}
-	}
+//	public void thinSeries() {
+//		for(int j=0; j<series.length; j++) {
+//			XYSeries ser = series[j];
+//
+//			//We're actually incrementing the index removed by two, since removing a point increments the index by one itself
+//			for(int i=0; i<ser.size()/2; i++) {
+//				ser.removePoint(i);
+//			}
+//		}
+//	}
 	
 	/**
 	 * Returns the number of data points currently in series 0

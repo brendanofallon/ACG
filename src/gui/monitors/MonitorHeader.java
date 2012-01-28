@@ -19,6 +19,8 @@
 
 package gui.monitors;
 
+import gui.ACGFrame;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -28,24 +30,44 @@ import java.awt.RenderingHints;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import newgui.gui.ViewerWindow;
+import newgui.gui.widgets.BorderlessButton;
 
 public class MonitorHeader extends JPanel {
 
-	protected String text = "";
-	protected String label = "";
-	protected Font font = new Font("Sans", Font.PLAIN, 11);
+	protected JLabel text;
+	protected JLabel label;
+	protected Font font = ViewerWindow.sansFont.deriveFont(11f); //new Font("Sans", Font.PLAIN, 11);
 	
 	
 	Color[] gradient = new Color[25];
 	Color bottomLight = new Color(0.98f, 0.98f, 0.98f, 0.7f);
 	Color bottomDark = new Color(0.7f, 0.7f, 0.7f, 0.4f);
 	
+	ImageIcon saveIcon = ACGFrame.getIcon("icons/saveIcon3.png");
+	
 	public MonitorHeader() {
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setMinimumSize(new Dimension(10, 24));
 		this.add(Box.createRigidArea(new Dimension(10, 20)));
-		setBackground(Color.white);
+		setOpaque(false);
+		
+		text = new JLabel("");
+		label = new JLabel("");
+		text.setFont(font);
+		label.setFont(font);
+		
+		add(label);
+		add(text);
+		
+		add(Box.createHorizontalGlue());
+		
+		BorderlessButton saveButton = new BorderlessButton(saveIcon);
+		add(saveButton);
 		
 		float fadeStart = 0.7f;
 		float fadeEnd = 1.0f;
@@ -56,14 +78,16 @@ public class MonitorHeader extends JPanel {
 	}
 	
 	public void setText(String text) {
-		this.text = text;
+		this.text.setText( text );
 		repaint();
 	}
 	
 	public void setLabel(String label) {
-		this.label = label;
+		this.label.setText(label);
 		repaint();
 	}
+	
+	
 	
 	public void setFont(Font font) {
 		this.font = font;
@@ -87,18 +111,8 @@ public class MonitorHeader extends JPanel {
 			g2d.setColor(gradient[i]);
 			g2d.drawLine(0, i, getWidth(), i);
 		}
-		
-		int textX = Math.min(getWidth()/4, 20);
-		int textY = getHeight()-4;
-		
-		g2d.setFont(font);
-		
-		//Text and shadow
-		g2d.setColor(new Color(0.9f, 0.9f, 0.9f, 0.7f));		
-		g2d.drawString(label + "  " + text, textX+1, textY+1);
-		
-		g2d.setColor(Color.black);
-		g2d.drawString(label + "  " + text, textX, textY);
+
+		super.paintComponent(g);
 		
 	}
 	

@@ -742,14 +742,14 @@ public class AxesElement extends FigureElement {
 		if (isXSelected) {
 			g.setStroke(highlightStroke);
 			g.setColor(highlightColor);
-			paintXAxis(g);
+			paintXAxis(g, false);
 		}
 
 
 		g.setStroke(normalStroke);
 		g.setColor(Color.black);
 
-		paintXAxis(g);
+		paintXAxis(g, true);
 
 	}
 	
@@ -852,9 +852,8 @@ public class AxesElement extends FigureElement {
 		}// y tick & label drawing		
 	}
 	
-	protected void paintXAxis(Graphics2D g) {
-		Color origColor = g.getColor();
-		Stroke origStroke = g.getStroke();
+	protected void paintXAxis(Graphics2D g, boolean drawTicks) {
+		
 		//	X-axis			
 		g.drawLine(round(graphAreaLeft), round(xAxisPos), round(graphAreaLeft+graphAreaWidth), round(xAxisPos));
 				
@@ -878,7 +877,7 @@ public class AxesElement extends FigureElement {
 				tickX = graphAreaLeft;
 			}
 			
-			while(tickStep > 0 && tickX<=round(graphAreaLeft+graphAreaWidth)) {
+			while(tickStep > 0 && tickX<=round(graphAreaLeft+graphAreaWidth) && (drawTicks)) {
 				int iTickX = round(tickX);
 				g.drawLine(iTickX, round(xAxisPos), iTickX, Math.max(round(xAxisPos+2),round(xAxisPos+xTickWidth*yFactor)));
 				if (drawXGrid && tickX>(graphAreaLeft+1)) {

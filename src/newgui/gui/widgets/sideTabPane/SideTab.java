@@ -53,7 +53,7 @@ public class SideTab extends JPanel {
                 RenderingHints.VALUE_ANTIALIAS_ON);
 	
 	     if (selected) {
-	    	 g.setColor(UIConstants.componentBackground);
+	    	 g.setColor(UIConstants.lightBackground);
 	     }
 	     else {
 	    	 g.setColor(SideTabPane.sidePanelBackground);
