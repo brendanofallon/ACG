@@ -98,7 +98,7 @@ public abstract class AbstractLoggerView extends JPanel {
 		SpinnerNumberModel burninModel = new SpinnerNumberModel(1000000, 0, Integer.MAX_VALUE, 1000);
 		burninSpinner = new JSpinner(burninModel);
 		burninSpinner.setPreferredSize(new Dimension(120, 30));
-		burninSpinner.setMaximumSize(new Dimension(120, 300));
+		burninSpinner.setMaximumSize(new Dimension(120, 30));
 		burninSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				model.setBurnin( (Integer)burninSpinner.getValue());
@@ -110,7 +110,7 @@ public abstract class AbstractLoggerView extends JPanel {
 		SpinnerNumberModel freqModel = new SpinnerNumberModel(10000, 0, Integer.MAX_VALUE, 1000);
 		freqSpinner = new JSpinner(freqModel);
 		freqSpinner.setPreferredSize(new Dimension(120, 30));
-		freqSpinner.setMaximumSize(new Dimension(120, 300));
+		freqSpinner.setMaximumSize(new Dimension(120, 30));
 		freqSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				model.setLogFrequency( (Integer)freqSpinner.getValue());

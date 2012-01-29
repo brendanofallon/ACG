@@ -44,6 +44,8 @@ public class UIConstants {
 	
 	public static final ImageIcon saveButton = getIcon("gui/icons/saveIcon.png");
 	
+	public static final ImageIcon clearButton = getIcon("gui/icons/zeroIcon.png");
+	
 	//Fonts
 	public static final Font sansFont = getFont("gui/fonts/Trebuchet_MS.ttf");
 	

@@ -27,6 +27,7 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
+import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.geom.Point2D;
 
@@ -106,17 +107,20 @@ public class FloatingPanel extends JPanel {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
-		g2d.setColor(darkShadowColor);
-		g2d.drawLine(3, getHeight()-shadowYDepth-1, getWidth()-7, getHeight()-shadowYDepth-1);
+		//g2d.setColor(darkShadowColor);
+		//g2d.drawLine(3, getHeight()-shadowYDepth-1, getWidth()-7, getHeight()-shadowYDepth-1);
 	
-		gradientX = new GradientPaint(new Point2D.Double(getWidth()-shadowXDepth-3, 5), darkShadowColor, new Point2D.Double(getWidth()-1, 5), lightShadowColor);
+		gradientX = new GradientPaint(new Point2D.Double(getWidth()-shadowXDepth-4, 5), darkShadowColor, new Point2D.Double(getWidth()-1, 5), lightShadowColor);
 		g2d.setPaint(gradientX);
-		g2d.fillRoundRect(getWidth()-shadowXDepth-3, 4, shadowXDepth+1, getHeight()-6, 4, 4);
+		g2d.fillRoundRect(getWidth()-shadowXDepth-2, 4, shadowXDepth+2, getHeight()-8, 2, 4);
 		
 		gradientY = new GradientPaint(new Point2D.Double(5, getHeight()-shadowYDepth-2), darkShadowColor, new Point2D.Double(5, getHeight()), lightShadowColor);
 		g2d.setPaint(gradientY);
-		g2d.fillRoundRect(3, getHeight()-shadowYDepth-1, getWidth()-9, shadowYDepth, 4, 4);
+		g2d.fillRoundRect(3, getHeight()-shadowYDepth-1, getWidth()-9, shadowYDepth, 4, 2);
 		
+		RadialGradientPaint corner = new RadialGradientPaint(new Point2D.Double(getWidth()-shadowXDepth-2, getHeight()-shadowYDepth-3), 6f, new float[]{0.25f, 1.0f}, new Color[]{darkShadowColor, lightShadowColor});
+		g2d.setPaint(corner);
+		g2d.fillRoundRect(getWidth()-shadowXDepth-2, getHeight()-shadowYDepth, shadowXDepth+1, shadowYDepth+1, 1, 1);
 		super.paintComponent(g);
 	}
 }
