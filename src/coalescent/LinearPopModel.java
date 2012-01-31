@@ -40,7 +40,7 @@ public class LinearPopModel extends CompoundParameter<Void> implements Demograph
 	DoubleParameter growthRate; // units ?
 
 	/**
-	 * TODO: Explictly define parameters
+	 * TODO: Explicitly define parameters
 	 * @param attrs
 	 * @param baseSize
 	 * @param growthRate
@@ -59,7 +59,7 @@ public class LinearPopModel extends CompoundParameter<Void> implements Demograph
 	/**
 	 * ELB, 2012/01/18
 	 * Analytic calculation of the integral of the population size.
-	 * Simply the size of the equivalent rectangle divided by 2
+	 * Simply the area of the equivalent triangle divided by 2
 	 */
 	@Override
 	public double getIntegral(double t0, double t1) {
@@ -70,12 +70,13 @@ public class LinearPopModel extends CompoundParameter<Void> implements Demograph
 	/**
 	 * ELB, 2012/01/18
 	 * Returns the linear function of the population size at a 
-	 * time t, past (or before) the inital time.
+	 * time t, past (or before) the initial time.
 	 */
 	@Override
 	public double getPopSize(double t) {
 		return baseSize.getValue() + growthRate.getValue()*t;
 	}
+	
 	@Override
 	protected void proposeNewValue(Parameter<?> source) {
 		try {
