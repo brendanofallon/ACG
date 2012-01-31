@@ -30,7 +30,7 @@ import parameter.Parameter;
 /**
  * A demographic model of exponential growth over time. The population is assumed to be
  * at baseSize at time t=0, then grows (or shrinks) exponentially as one looks back
- * into the past, with growth rate given bythe growthRate param. 
+ * into the past, with growth rate given by the growthRate param. 
  * @author brendan
  *
  */
@@ -80,5 +80,24 @@ public class ExponentialGrowth extends CompoundParameter<Void> implements Demogr
 				baseSize.revertValue();
 		}
 	}
+	/**
+	 * ELB, 2012/01/27
+	 * Attempting to understand why these parameters are not included in the StateLogger
+	 * Perhpas because this function is not overloaded?
+ 	 */
+	@Override
+	public String getLogHeader() {
+		return String.format("%9s %9s", "growthRate", "baseSize");
+	}
 
+	/**
+	 * ELB, 2012/01/27
+	 * Attempting to understand why these parameters are not included in the StateLogger
+	 * Perhpas because this function is not overloaded?
+	 */
+	@Override
+	public String getLogString() {
+		return String.format("%.9e %.9e", growthRate.getValue(), baseSize.getValue());
+	}	
 }
+	
