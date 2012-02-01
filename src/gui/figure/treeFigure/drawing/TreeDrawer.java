@@ -346,6 +346,11 @@ public class TreeDrawer implements TreeListener {
 	 * @param bounds
 	 */
 	public void paint(Graphics2D g2d, Rectangle bounds) {
+		if (tree == null) {
+			System.err.println("Tree is null!");
+			return;
+		}
+			
 		if (! tree.getHasCalculatedNodePositions()) {
 			tree.calculateNodePositions();
 		}

@@ -24,14 +24,23 @@ public abstract class AbstractLoggerViz extends JPanel implements ActionListener
 	
 	public AbstractLoggerViz(PropertyLogger logger) {
 		this.logger = logger;
-		timer = new Timer(500, this);
+		timer = new Timer(getUpdateFrequency(), this);
 		initComponents();
 		timer.start();
 	}
 
 	public AbstractLoggerViz() {
-		timer = new Timer(500, this);
+		timer = new Timer(getUpdateFrequency(), this);
 		initComponents();
+	}
+	
+	/**
+	 * Timing frequency for update timer, in millis. Default is to
+	 * fire twice each second. Some methods may want to slow this down. 
+	 * @return
+	 */
+	protected int getUpdateFrequency() {
+		return 500;
 	}
 	
 	/**
@@ -53,11 +62,27 @@ public abstract class AbstractLoggerViz extends JPanel implements ActionListener
 	public abstract void update();
 	
 	/**
+	 * If updating takes a long time, then we may call this multiple times before 
+	 * the first one returns. To avoid this, set a boolean flag to indicate when
+	 * we're performing an update, and don't actually call the method if the
+	 * previous one hasn't finished. 
+	 */
+	public synchronized void updateViz() {
+		updating = true;
+		update();
+		updating = false;
+	}
+	
+	/**
 	 * Called when timer fires, we don't do much besides call .update() here
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		update();
+		if (! updating)
+			updateViz();
+		else {
+			System.out.println("Aborting update attempt for logger : " + this.getClass().getCanonicalName());
+		}
 	}
 	
 	/**
@@ -76,6 +101,7 @@ public abstract class AbstractLoggerViz extends JPanel implements ActionListener
 		this.add(bottomPanel, BorderLayout.SOUTH);
 	}
 	
+	private boolean updating = false; 
 	protected Timer timer;
 	protected JPanel bottomPanel;
 	protected XYSeriesFigure fig;

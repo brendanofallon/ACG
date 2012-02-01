@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import newgui.UIConstants;
 import newgui.gui.display.jobDisplay.JobView;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.BPDensityViz;
+import newgui.gui.display.primaryDisplay.loggerVizualizer.ConsensusTreeViz;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.TMRCAViz;
 import newgui.gui.widgets.sideTabPane.SideTabPane;
 
@@ -23,6 +24,7 @@ import jobqueue.ExecutingChain;
 import jobqueue.JobQueue;
 import jobqueue.QueueManager;
 import logging.BreakpointDensity;
+import logging.ConsensusTreeLogger;
 import logging.MemoryStateLogger;
 import logging.PropertyLogger;
 import logging.RootHeightDensity;
@@ -77,6 +79,15 @@ public class RunningJobPanel extends JPanel {
 					tmrcaViz.initialize(logger);
 					ImageIcon icon2 = UIConstants.getIcon("gui/icons/scaledBlueArrow.png");
 					sidePane.addTab("TMRCA Density", icon2, tmrcaViz);
+					sidePane.revalidate();
+				}
+				
+				
+				if (logger instanceof ConsensusTreeLogger) {
+					ConsensusTreeViz treeViz = new ConsensusTreeViz();
+					treeViz.initialize(logger);
+					ImageIcon icon2 = UIConstants.getIcon("gui/icons/scaledBlueArrow.png");
+					sidePane.addTab("Marginal tree", icon2, treeViz);
 					sidePane.revalidate();
 				}
 				

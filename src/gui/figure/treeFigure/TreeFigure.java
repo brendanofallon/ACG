@@ -86,7 +86,7 @@ public class TreeFigure extends Figure {
 	public TreeFigure() {
 		addComponentListener(this);
 
-		setRectangleSelection(true); 	//Turn on rectangle selection
+		setRectangleSelection(false); 	//Turn off rectangle selection
 		translatedRect = new Rectangle2D.Double(0, 0, 0, 0);
 		//this.display = display;
 		cartoonColor = Color.red;

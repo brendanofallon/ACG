@@ -464,7 +464,7 @@ public abstract class DrawableTree extends Tree {
 			return null;
 		
 		if (containsSample.size()>1) {
-			System.out.println("Found common ancestor : " + newroot.getLabel());
+			//.println("Found common ancestor : " + newroot.getLabel());
 			return newroot;
 		}
 		
@@ -501,7 +501,7 @@ public abstract class DrawableTree extends Tree {
 		for(Constructor cons : conList) {
 			if (cons.getParameterTypes().length==1 && cons.getParameterTypes()[0]==DrawableNode.class) {
 				try {
-					System.out.println("Invoking constructor for class " + this.getClass());
+					//System.out.println("Invoking constructor for class " + this.getClass());
 					newTree = (DrawableTree) cons.newInstance(new Object[] {newroot});
 				} catch (Exception ex) {
 					ErrorWindow.showErrorWindow(ex);
@@ -902,7 +902,7 @@ public abstract class DrawableTree extends Tree {
 				String[] keyVal = annotations[i].split("=");
 				if (keyVal.length == 2) {
 					dKid.addAnnotation(keyVal[0].trim(), keyVal[1].trim());
-					System.out.println("Found annotation : " + keyVal[0] + " = " + keyVal[1]);
+					//.println("Found annotation : " + keyVal[0] + " = " + keyVal[1]);
 				}
 				else {
 					System.err.println("Unrecognized node annotation : " + keyVal);

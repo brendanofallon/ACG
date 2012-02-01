@@ -33,7 +33,7 @@ import gui.inputPanels.loggerConfigs.ConsensusTreeModel;
 public class ConsensusTreeView extends DefaultLoggerView {
 
 	JTextField siteField;
-	ConsensusTreeModel bpModel;
+	ConsensusTreeModel treeModel;
 	
 	public ConsensusTreeView() {
 		this( new ConsensusTreeModel() );
@@ -42,7 +42,7 @@ public class ConsensusTreeView extends DefaultLoggerView {
 	
 	public ConsensusTreeView(final ConsensusTreeModel model) {
 		super(model);
-		this.bpModel = model;
+		this.treeModel = model;
 		siteField = new JTextField("Enter site");
 		siteField.setMinimumSize(new Dimension(60, 10));
 		siteField.setMaximumSize(new Dimension(60, 1000));
@@ -68,8 +68,8 @@ public class ConsensusTreeView extends DefaultLoggerView {
 	protected void updateSiteField() throws InputConfigException {
 		try {
 			Integer site = Integer.parseInt(siteField.getText());
-			bpModel.setSite(site);
-			if (bpModel.getUseDefaultFilename()) {
+			treeModel.setSite(site);
+			if (treeModel.getUseDefaultFilename()) {
 				filenameField.setText("ConsensusTree" + site + ".tre");
 			}
 		}
@@ -102,7 +102,7 @@ public class ConsensusTreeView extends DefaultLoggerView {
 		burninSpinner.setValue( model.getBurnin() );
 		burninSpinner.repaint();
 		freqSpinner.setValue( model.getLogFrequency() );
-		siteField.setText( bpModel.getSite() + "");
+		siteField.setText( treeModel.getSite() + "");
 		revalidate();
 		repaint();
 	}

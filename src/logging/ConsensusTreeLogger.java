@@ -1,6 +1,6 @@
 /********************************************************************
 *
-* 	Copyright 2011 Brendan O'Fallon
+	* 	Copyright 2011 Brendan O'Fallon
 *
 *   Licensed under the Apache License, Version 2.0 (the "License");
 *   you may not use this file except in compliance with the License.
@@ -94,6 +94,7 @@ public class ConsensusTreeLogger extends PropertyLogger {
 	 * Critical for MC3 runs, when the chain switches we must listen to another arg / chain
 	 */
 	public void setMCMC(MCMC chain) {
+		this.chain = chain;
 		ARG newARG = findARG(chain);
 		if (newARG == null) {
 			throw new IllegalArgumentException("Cannot listen to a chain without an arg parameter");

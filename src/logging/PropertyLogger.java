@@ -67,8 +67,10 @@ public abstract class PropertyLogger implements MCMCListener, Named {
 
 	public PropertyLogger(Map<String, String> attrs) {
 		Integer burn = XMLUtils.getOptionalInteger(BURNIN, attrs);
-		if (burn == null)
+		if (burn == null) {
 			this.burnin = 1000000;
+			System.err.println("WARNING : Burnin not specified in attributes for logger : " + this.getClass().getCanonicalName() + ", defaulting to 1,000,000");
+		}
 		else
 			this.burnin = burn;
 		
@@ -83,11 +85,11 @@ public abstract class PropertyLogger implements MCMCListener, Named {
 		try {
 			setOutputFile(file);
 		} catch (FileNotFoundException e) {
-			System.out.println("Could not open output file for logging : " + filename);
+			System.err.println("Could not open output file for logging : " + filename);
 			//Shouldn't happen, right?
 			e.printStackTrace();
 		} catch (IOException e) {
-			System.out.println("Could not open output file for logging : " + filename);
+			System.err.println("Could not open output file for logging : " + filename);
 			e.printStackTrace();
 		}
 		

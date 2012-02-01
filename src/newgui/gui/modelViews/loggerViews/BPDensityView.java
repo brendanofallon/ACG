@@ -100,6 +100,9 @@ public class BPDensityView extends DefaultLoggerView {
 	 * Updates widgets with info from model
 	 */
 	public void updateView() {
+		if (model.getOutputFilename() == null || model.getOutputFilename().length()==0) {
+			model.setOutputFilename("breakpoint_density.txt");
+		}
 		filenameField.setText( model.getOutputFilename() );
 		filenameField.repaint();
 		burninSpinner.setValue( model.getBurnin() );

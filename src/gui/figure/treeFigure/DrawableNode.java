@@ -3,6 +3,7 @@ package gui.figure.treeFigure;
 import gui.figure.treeFigure.drawing.BranchPainter;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +21,7 @@ import java.util.Set;
  */
 public class DrawableNode extends Node {
 	
-	Point pos;
+	Point2D pos;
 	boolean selected;
 	Color branchColor;
 	BasicStroke branchStroke;
@@ -40,7 +41,7 @@ public class DrawableNode extends Node {
 
 
 	public DrawableNode() {
-		pos = new Point(0, 0);
+		pos = new Point2D.Double(0.0, 0.0);
 		selected = false;
 		branchColor = Color.black;
 		font = new Font("Sans", Font.PLAIN, 11);
@@ -52,7 +53,7 @@ public class DrawableNode extends Node {
 	}
 
 	
-	protected DrawableNode(Point pos, boolean sel, Color col, BasicStroke strk, boolean coll, Font font) {
+	protected DrawableNode(Point2D pos, boolean sel, Color col, BasicStroke strk, boolean coll, Font font) {
 		this.pos = pos;
 		this.selected = sel;
 		this.branchColor = col;
@@ -117,7 +118,7 @@ public class DrawableNode extends Node {
 	 */
 	public DrawableNode cloneWithDescendants() {
 		Font newFont = font.deriveFont((float)font.getSize());
-		DrawableNode newnode = new DrawableNode(new Point(pos.x, pos.y),
+		DrawableNode newnode = new DrawableNode(new Point2D.Double(pos.getX(), pos.getY()),
 												selected,
 												branchColor,
 												new BasicStroke(1.0f),
@@ -236,15 +237,15 @@ public class DrawableNode extends Node {
 	}
 	
 	public double getX() {
-		return pos.x;
+		return pos.getX();
 	}
 	
 	public double getY() {
-		return pos.y;
+		return pos.getY();
 	}
 	
-	public Point getPosition() {
-		return new Point(pos.x, pos.y);
+	public Point2D getPosition() {
+		return new Point2D.Double(pos.getX(), pos.getY());
 	}
 
 
