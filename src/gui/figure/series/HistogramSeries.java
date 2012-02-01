@@ -47,6 +47,12 @@ public class HistogramSeries extends XYSeries {
 		pointList = null;
 	}
 	
+	public HistogramSeries(String name, Histogram histo) {
+		super(name);
+		this.histo = histo;
+		pointList = null;
+	}
+	
 	public HistogramSeries(int bins, double min, double max) {
 		this("Density", bins, min, max);
 	}

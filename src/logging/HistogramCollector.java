@@ -109,6 +109,13 @@ public class HistogramCollector extends PropertyLogger {
 		return "Histogram logger for param " + param.getName();
 	}
 
+	/**
+	 * Obtain the Histogram object used to store data for this HistogramCollector
+	 * @return
+	 */
+	public Histogram getHistogram() {
+		return histo;
+	}
 	
 
 }

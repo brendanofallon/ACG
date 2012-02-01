@@ -113,6 +113,7 @@ public class TextElement extends FigureElement {
 		else
 			g.setFont(font);
 		
+		
 	    Rectangle2D stringBounds = g.getFontMetrics().getStringBounds(text, 0, text.length(), g);
 	    
 		bounds.width = (double)stringBounds.getWidth()/xFactor; 

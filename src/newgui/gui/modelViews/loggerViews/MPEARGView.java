@@ -33,6 +33,7 @@ public class MPEARGView extends DefaultLoggerView {
 	public MPEARGView(LoggerModel model) {
 		super(model);
 		filenameField.setText("MPEARG.xml");
+		updateView();
 	}
 
 	@Override

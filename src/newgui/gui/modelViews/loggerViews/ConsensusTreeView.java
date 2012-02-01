@@ -57,6 +57,7 @@ public class ConsensusTreeView extends DefaultLoggerView {
 		});
 		centerPanel.add(new JLabel("Site :"));
 		centerPanel.add(siteField);
+		updateView();
 	}
 	
 	

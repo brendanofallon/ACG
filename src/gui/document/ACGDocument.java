@@ -205,6 +205,8 @@ public class ACGDocument {
 		loader.loadAllClasses(); //Attempt to load all of the classes referenced by the document
 		checkValidity(); //Must come after class loading
 	}
+	
+	
 	/**
 	 * Instantiate all of the objects described by the document. All exceptions are caught and
 	 * wrapped into an InvalidInputFileException  
@@ -344,7 +346,7 @@ public class ACGDocument {
 	 * @throws InstantiationException 
 	 * @throws InvocationTargetException 
 	 */
-	public Object getObjectForLabel(String label) throws InstantiationException, IllegalAccessException, InvocationTargetException {
+	public Object getObjectForLabel(String label) throws InstantiationException, IllegalAccessException, InvocationTargetException { 
 		return loader.getObjectForLabel(label);
 	}
 	
@@ -507,12 +509,6 @@ public class ACGDocument {
 		String className;
 		Map<String, String> attrs = new HashMap<String, String>();
 	}
-
-	
-
-	
-
-	
 	
 	
 }

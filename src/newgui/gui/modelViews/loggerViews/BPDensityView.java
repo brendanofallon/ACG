@@ -72,6 +72,7 @@ public class BPDensityView extends DefaultLoggerView {
 		});
 		centerPanel.add(new JLabel("Bins:"));
 		centerPanel.add(binsSpinner, "wrap");
+		updateView();
 	}
 	
 	

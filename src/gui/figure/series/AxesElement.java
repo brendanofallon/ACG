@@ -797,6 +797,7 @@ public class AxesElement extends FigureElement {
 					g.setColor(yGridColor);
 					g.drawLine(round(graphAreaLeft)+1, tickY, round(graphAreaLeft+graphAreaWidth), tickY);
 				}
+				g.setColor(origColor);
 				
 				//Minor tick
 				if (round(xAxisPos-i*tickStep + tickStep/2.0) < graphAreaBottom )

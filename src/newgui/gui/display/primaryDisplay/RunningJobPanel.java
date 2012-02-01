@@ -1,6 +1,9 @@
 package newgui.gui.display.primaryDisplay;
 
 import java.awt.BorderLayout;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import gui.ErrorWindow;
 import gui.document.ACGDocument;
@@ -12,12 +15,17 @@ import javax.swing.JPanel;
 
 import newgui.UIConstants;
 import newgui.gui.display.jobDisplay.JobView;
+import newgui.gui.display.primaryDisplay.loggerVizualizer.BPDensityViz;
+import newgui.gui.display.primaryDisplay.loggerVizualizer.TMRCAViz;
 import newgui.gui.widgets.sideTabPane.SideTabPane;
 
 import jobqueue.ExecutingChain;
 import jobqueue.JobQueue;
 import jobqueue.QueueManager;
+import logging.BreakpointDensity;
 import logging.MemoryStateLogger;
+import logging.PropertyLogger;
+import logging.RootHeightDensity;
 
 /**
  * A panel that shows various characteristics of an executing run. 
@@ -38,8 +46,9 @@ public class RunningJobPanel extends JPanel {
 	public void runJob(ACGDocument doc) {
 		if (chain != null)
 			throw new IllegalStateException("Only one chain per job panel");
-	
+
 		
+		//Must go first, otherwise objects in document will not be loaded / instantiated
 		String jobTitle = displayParent.getTitle().replace(".xml", ""); 
 		try {
 			chain = new ExecutingChain(doc);
@@ -47,6 +56,37 @@ public class RunningJobPanel extends JPanel {
 			ErrorWindow.showErrorWindow(e);
 			e.printStackTrace();
 		}
+		
+		//Grab all property loggers from document so we can create visualizers / tabs for them in the tab pane
+		for(String label : doc.getLabelForClass(PropertyLogger.class)) {
+			try {
+				PropertyLogger logger = (PropertyLogger) doc.getObjectForLabel(label);
+				propLoggers.add(logger);
+				System.out.println("Adding logger : " + logger);
+				
+				if (logger instanceof BreakpointDensity) {
+					BPDensityViz bpDensityViz = new BPDensityViz();
+					bpDensityViz.initialize(logger);
+					ImageIcon icon2 = UIConstants.getIcon("gui/icons/scaledBlueArrow.png");
+					sidePane.addTab("Breakpoint Density", icon2, bpDensityViz);
+					sidePane.revalidate();
+				}
+				
+				if (logger instanceof RootHeightDensity) {
+					TMRCAViz tmrcaViz = new TMRCAViz();
+					tmrcaViz.initialize(logger);
+					ImageIcon icon2 = UIConstants.getIcon("gui/icons/scaledBlueArrow.png");
+					sidePane.addTab("TMRCA Density", icon2, tmrcaViz);
+					sidePane.revalidate();
+				}
+				
+			} catch (Exception e) {
+				ErrorWindow.showErrorWindow(e);
+				e.printStackTrace();
+			} 
+			
+		}
+
 		
 		
 		//Sneak in a new listener that will store data that we can quickly write to displays
@@ -78,8 +118,10 @@ public class RunningJobPanel extends JPanel {
 		
 		
 		ImageIcon icon2 = UIConstants.getIcon("gui/icons/scaledBlueArrow.png");
-		JLabel label2 = new JLabel("Component for tab 2");
-		sidePane.addTab("Tab number dos", icon2, label2);
+		
+		BPDensityViz bpDensityViz = new BPDensityViz();
+		
+		//sidePane.addTab("Breakpoint Density", icon2, bpDensityViz);
 		
 		sidePane.selectTab(0);
 		
@@ -88,7 +130,7 @@ public class RunningJobPanel extends JPanel {
 	
 	MultiSeriesPanel seriesPanel;
 	MemoryStateLogger memLogger; //Listens to chains and logs parameter values / likelihoods
-	//SeriesFigurePanel seriesPanel = new SeriesFigurePanel();
+	List<PropertyLogger> propLoggers = new ArrayList<PropertyLogger>();
 	SideTabPane sidePane;
 	JobView jobView;
 }

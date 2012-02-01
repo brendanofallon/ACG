@@ -118,6 +118,17 @@ public abstract class PropertyLogger implements MCMCListener, Named {
 	}
 
 	/**
+	 * Returns true if the burnin period has been exceeded for this logger
+	 * @return
+	 */
+	public boolean getBurninExceeded() {
+		if (chain == null)
+			return false;
+		else
+			return chain.getCurrentState() > burnin;
+	}
+	
+	/**
 	 * Optionally translate coordinates into different space defined by the given map. Right now this is used 
 	 * to translate sites back to original coordinates when columns have been removed from input alignment
 	 * @param map
