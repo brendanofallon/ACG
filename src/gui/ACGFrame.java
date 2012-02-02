@@ -20,6 +20,7 @@
 package gui;
 
 import gui.document.ACGDocument;
+import gui.document.StructureWarningException;
 import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.DocMemberConfigPanel;
 import gui.widgets.ButtonBar;
@@ -59,6 +60,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
+import jobqueue.ExecutingChain;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -290,15 +293,32 @@ public class ACGFrame extends JFrame implements WindowListener {
 		try {
 			doc.loadAndVerifyClasses();
 			doc.turnOffMCMC();
-			String title = null;
-			if (doc.getSourceFile() != null)
-				title = doc.getSourceFile().getName();
-			pickParameters(title, doc);
+			
+		}
+		catch (StructureWarningException warning) {
+			Object[] options = {"Cancel",
+			"Continue"};
+			int op = JOptionPane.showOptionDialog(this,
+					"Warning : " + warning.getMessage(),
+					"Document structure warning",
+					JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					options,
+					options[1]);
+			if (op == 0) {
+				return;
+			}
 		}
 		catch (Exception e1) {
 			ErrorWindow.showErrorWindow(e1);
 			return;
 		}
+		
+		String title = null;
+		if (doc.getSourceFile() != null)
+			title = doc.getSourceFile().getName();
+		pickParameters(title, doc);
 	}
 	
 	/**
@@ -345,9 +365,18 @@ public class ACGFrame extends JFrame implements WindowListener {
 	protected void loadAndRun() {
 		File file = browseForFile();
 		if (file != null) {
-			this.setTitle("ACG : " + file.getName());
-			ACGDocument doc = new ACGDocument(file);
-			startRunFromDocument(doc);
+			ACGDocument doc = null;
+			try {
+				doc = new ACGDocument(file);
+			}
+			catch (InvalidInputFileException ex) {
+				ErrorWindow.showErrorWindow(ex);
+			}
+			
+			if (doc != null) {
+				this.setTitle("ACG : " + file.getName());
+				startRunFromDocument(doc);
+			}
 		}
 	}
 	

@@ -22,6 +22,10 @@ public class DisplayPane extends JPanel {
 		add(tabPane, BorderLayout.CENTER);
 	}
 	
+	public void addDisplay(Display display, String title) {
+		tabPane.addComponent(title, display);
+	}
+	
 	public void addDisplay(Display display) {
 		tabPane.addComponent(display.getTitle(), display);
 	}

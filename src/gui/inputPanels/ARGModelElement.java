@@ -48,6 +48,7 @@ import xml.XMLLoader;
  */
 public class ARGModelElement extends ModelElement {
 
+	
 	@Override
 	public List<Node> getElements(ACGDocument doc) throws InputConfigException {
 		List<Node> elements = new ArrayList<Node>();
@@ -211,6 +212,7 @@ public class ARGModelElement extends ModelElement {
 
 	public void setStartingNewick(String startingNewick) {
 		this.startingNewick = new Newick(startingNewick);
+		startingFilePath = null;
 	}
 
 	public String getStartingFilePath() {
@@ -219,6 +221,7 @@ public class ARGModelElement extends ModelElement {
 
 	public void setStartingFilePath(String startingFilePath) {
 		this.startingFilePath = startingFilePath;
+		startingNewick = null;
 	}
 
 	public AlignmentElement getAlignmentRef() {
@@ -258,6 +261,14 @@ public class ARGModelElement extends ModelElement {
 		return new ArrayList<DoubleParamElement>();
 	}
 	
+	public boolean isUseUPGMA() {
+		return useUPGMA;
+	}
+
+	public void setUseUPGMA(boolean useUPGMA) {
+		this.useUPGMA = useUPGMA;
+	}
+	
 	/**
 	 * Little wrapper for ARG modifiers
 	 * @author brendano
@@ -269,14 +280,16 @@ public class ARGModelElement extends ModelElement {
 		Double frequency = 1.0;
 	}
 
+	
+	
 	private List<ARGModifierElement> argMods = new ArrayList<ARGModifierElement>();
 	
 	private String startingFilePath = null;
 	private AlignmentElement alignmentRef = null;
 	private Double frequency = 10.0;
 	private boolean useAllModifiers = true;
+	private boolean useUPGMA = true;
 	private String argLabel = "ARG";
 	private Newick startingNewick = null;
-
 	
 }

@@ -19,7 +19,6 @@
 
 package gui.document;
 
-import gui.ExecutingChain;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +41,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import jobqueue.ExecutingChain;
 
 import mcmc.MCMC;
 import mcmc.mc3.MC3;
@@ -114,14 +115,7 @@ public class ACGDocument {
 			ex.printStackTrace();
 			throw new InvalidInputFileException(ex.getTargetException().getMessage());
 		} catch (Exception e) {
-			try {
-				System.out.println("Input file is : " + getXMLString());
-			} catch (Exception ex) {
-				// TODO Auto-generated catch block
-				ex.printStackTrace();
-			}
-			System.out.println(e.getMessage());
-			e.printStackTrace();
+			
 			throw new InvalidInputFileException(e.getMessage());
 		}
 	}

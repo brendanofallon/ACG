@@ -30,7 +30,7 @@ import parameter.Parameter;
 /**
  * A demographic model of exponential growth over time. The population is assumed to be
  * at baseSize at time t=0, then grows (or shrinks) exponentially as one looks back
- * into the past, with growth rate given bythe growthRate param. 
+ * into the past, with growth rate given by the growthRate param. 
  * @author brendan
  *
  */
@@ -80,5 +80,5 @@ public class ExponentialGrowth extends CompoundParameter<Void> implements Demogr
 				baseSize.revertValue();
 		}
 	}
-
 }
+	

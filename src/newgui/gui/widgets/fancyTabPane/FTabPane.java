@@ -2,10 +2,13 @@ package newgui.gui.widgets.fancyTabPane;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 
@@ -52,7 +55,7 @@ public class FTabPane extends JPanel implements ChangeListener {
 	 * @param comp
 	 */
 	public void addComponent(String label, JComponent comp) {
-		FancyTab tab = new FancyTab(label);
+		FancyTab tab = new FancyTab(this, label);
 		tab.addListener(this);
 		tabMap.put(tab, comp);
 		tabsPanel.addTab(tab);
@@ -61,16 +64,32 @@ public class FTabPane extends JPanel implements ChangeListener {
 	
 	public void removeComponent(JComponent comp) {
 		FancyTab tab = tabForComponent(comp);
-		if (tab != null) {
-			tabsPanel.removeTab(tab);
-		}
+		removeComponentForTab(tab);
+	}
+	
+	/**
+	 * Remove the component associated with the given tab (as well as the tab) from everything
+	 * @param tab
+	 */
+	public void removeComponentForTab(FancyTab tab) {
+		tabsPanel.removeTab(tab);
 		tabMap.remove(tab);
 		tab.removeListener(this);
 		
-		System.out.println("Ahh! Component not actually removed from parent!");
+		if (tabMap.size() > 0) {
+			Collection<FancyTab> tabs = tabMap.keySet();
+			Iterator<FancyTab> fit = tabs.iterator();
+			FancyTab newTab = fit.next();
+			if (newTab != null)
+				showComponent( tabMap.get(newTab));
+		}
+		else {
+			centerPanel.removeAll();
+			revalidate();
+			repaint();
+		}
 	}
 	
-
 	/**
 	 * Returns the tab associated with the given component
 	 * @param comp
@@ -109,6 +128,7 @@ public class FTabPane extends JPanel implements ChangeListener {
 		if (! (comp instanceof JScrollPane)) {
 			JScrollPane scrollPane = new JScrollPane(comp);
 			scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
+			scrollPane.setBorder(BorderFactory.createEmptyBorder());
 			centerPanel.add(scrollPane, BorderLayout.CENTER);
 		}
 		else {

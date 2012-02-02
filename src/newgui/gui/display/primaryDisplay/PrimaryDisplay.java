@@ -50,7 +50,7 @@ public class PrimaryDisplay extends Display {
 		
 		alnPrepPanel = new AlignmentPrepPanel(this);
 		analPrepPanel = new AnalysisPrepPanel(this);
-		analDetailsPanel = new AnalysisDetailsPanel();
+		analDetailsPanel = new AnalysisDetailsPanel(this);
 		runJobPanel = new RunJobPanel();
 		mainPanel.add(alnPrepPanel, ALN_PREP);
 		mainPanel.add(analPrepPanel, ANALYSIS_PREP);
@@ -70,6 +70,11 @@ public class PrimaryDisplay extends Display {
 		analDetailsPanel.initialize(model);
 		CardLayout cl = (CardLayout)(mainPanel.getLayout());
 		cl.show(mainPanel, ANALYSIS_DETAILS);
+	}
+
+	public void showAlignmentPrepPanel() {
+		CardLayout cl = (CardLayout)(mainPanel.getLayout());
+		cl.show(mainPanel, ALN_PREP);
 	}
 	
 }

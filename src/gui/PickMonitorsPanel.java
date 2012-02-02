@@ -45,6 +45,8 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import jobqueue.ExecutingChain;
+
 import logging.PropertyLogger;
 import logging.StateLogger;
 import mcmc.MCMC;

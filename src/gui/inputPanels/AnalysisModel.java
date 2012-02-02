@@ -215,6 +215,10 @@ public class AnalysisModel {
 		alignmentEl.setElement(aln);
 	}
 
+	public ARGModelElement getARGModel() {
+		return argModel;
+	}
+
 	public SiteModelElement getSiteModel() {
 		return siteModel;
 	}

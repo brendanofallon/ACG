@@ -64,7 +64,7 @@ public class SpinArrow extends JPanel implements MouseListener, ActionListener {
 
 		text = "";
 		currentImage = triArray[openState];
-		int delay = 40; //milliseconds
+		int delay = 30; //milliseconds
 		timer = new javax.swing.Timer(delay, this);
 		addMouseListener(this);
 		this.setMinimumSize(new Dimension(15, 14));
@@ -140,7 +140,7 @@ public class SpinArrow extends JPanel implements MouseListener, ActionListener {
 		((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		g.drawImage(currentImage, 1, 1, null);
+		g.drawImage(currentImage, 1, 2, null);
 		g.setFont(getFont());
 		g.setColor(getForeground());
 		int strHeight = getFontMetrics(getFont()).getHeight();
