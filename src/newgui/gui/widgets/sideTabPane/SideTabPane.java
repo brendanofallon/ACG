@@ -89,6 +89,36 @@ public class SideTabPane extends JPanel {
 		repaint();
 	}
 	
+	/**
+	 * Cause the tab at the given index to be selected
+	 * @param tabIndex
+	 */
+	public void selectTab(int tabIndex) {
+		SideTab tab = compList.get(tabIndex).tab;
+		selectTab(tab);
+	}
+	
+	/**
+	 * Cause the tab associated with the given component to be selected
+	 * @param comp
+	 */
+	public void selectTabForComponent(Component comp) {
+		for(TabCompPair pair : compList) {
+			if (pair.comp == comp) {
+				selectTab(pair.tab);
+			}
+		}
+	}
+	
+	/**
+	 * Get the number of tabs (/components) added to this panel
+	 * @return
+	 */
+	public int getTabCount() {
+		return compList.size();
+	}
+	
+	
 	private void showComponent(Component comp) {
 		centerPanel.removeAll();
 		centerPanel.add(comp, BorderLayout.CENTER);

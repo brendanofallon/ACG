@@ -55,7 +55,6 @@ public class RootHeightDensity extends PropertyLogger {
 	double[] rootHeights; //Tracks mean root height across sites
 	LazyHistogram[] heightHistos; //Stores histograms of root heights across sequence length
 	
-	MCMC chain;
 	int bins = 100;
 	int binStep;
 
@@ -109,6 +108,71 @@ public class RootHeightDensity extends PropertyLogger {
 	}
 	
 	/**
+	 * Obtain an array containing the mean TMRCA across sites
+	 * @return
+	 */
+	public double[] getMeans() {
+		if (means == null) {
+			means = new double[heightHistos.length];
+		}
+		if (heightHistos[0] != null) {
+			for(int i=0; i<heightHistos.length; i++) {
+				means[i] = heightHistos[i].getMean();
+			}
+		}
+		return means;
+	}
+	
+	/**
+	 * Returns true if the histograms have dumped their values yet
+	 * @return
+	 */
+	public boolean getHistoTriggerReached() {
+		if (heightHistos[0]==null)
+			return false;
+		else 
+			return heightHistos[0].triggerReached();
+	}
+	
+	
+	public double[] getLower95s() {
+		if (lower95s == null) {
+			lower95s = new double[heightHistos.length];
+		}
+		if (heightHistos[0] != null) {
+			for(int i=0; i<heightHistos.length; i++) {
+				lower95s[i] = heightHistos[i].lowerHPD(0.05);
+			}
+		}
+		return lower95s;
+	}
+	
+	public double[] getUpper95s() {
+		if (upper95s == null) {
+			upper95s = new double[heightHistos.length];
+		}
+		if (heightHistos[0] != null) {
+			for(int i=0; i<heightHistos.length; i++) {
+				upper95s[i] = heightHistos[i].upperHPD(0.05);
+			}
+		}
+		return upper95s;
+	}
+	
+	public double[] getBinPositions() {
+		if (binSites == null) {
+			int site = 0;
+			binSites = new double[heightHistos.length];
+			for(int i=0; i<rootHeights.length; i++) {
+				binSites[i] = site;
+				site += binStep;
+			}
+		}
+		
+		return binSites;
+	}
+	
+	/**
 	 * Sets a map to translate the output of this collector, 
 	 * @param map
 	 */
@@ -117,7 +181,7 @@ public class RootHeightDensity extends PropertyLogger {
 	}
 	
 	public void addValue(int stateNumber) {
-		if (stateNumber >= burnin && heightHistos[0] == null) {
+		if (stateNumber >= burnin/2 && heightHistos[0] == null) {
 			for(int i=0; i<bins; i++) {
 				heightHistos[i] = new LazyHistogram(1000);
 			}
@@ -175,7 +239,11 @@ public class RootHeightDensity extends PropertyLogger {
 			int mappedSite = site;
 			if (siteMap != null)
 				mappedSite = siteMap.getOriginalSite(site);
-			strB.append(mappedSite + "\t" + heightHistos[i].lowerHPD(0.025) + "\t" + heightHistos[i].lowerHPD(0.05)+ "\t" + heightHistos[i].lowerHPD(0.1)  + "\t" + heightHistos[i].getMedian() + "\t" + heightHistos[i].upperHPD(0.1) + "\t" + heightHistos[i].upperHPD(0.05) + "\t" + heightHistos[i].upperHPD(0.025) + "\n");
+			if (getHistoTriggerReached())
+				strB.append(mappedSite + "\t" + heightHistos[i].lowerHPD(0.025) + "\t" + heightHistos[i].lowerHPD(0.05)+ "\t" + heightHistos[i].lowerHPD(0.1)  + "\t" + heightHistos[i].getMedian() + "\t" + heightHistos[i].upperHPD(0.1) + "\t" + heightHistos[i].upperHPD(0.05) + "\t" + heightHistos[i].upperHPD(0.025) + "\n");
+			else
+				strB.append(mappedSite + "\t" +  heightHistos[i].getMean() + "\n");
+
 			site += binStep;
 		}
 		
@@ -199,6 +267,8 @@ public class RootHeightDensity extends PropertyLogger {
 		return "Root height logger";
 	}
 
-
-	
+	private double[] binSites = null;
+	private double[] means = null; //Stores mean values across sites for rapid retrieval
+	private double[] lower95s = null;
+	private double[] upper95s = null;
 }

@@ -31,10 +31,17 @@ import xml.XMLLoader;
 public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 
 	private MemoryStateLogger memLogger; //Logger that stores information about param values and likelihoods
+	private MultiSeriesPanel parentPanel; //Reference to parent, used to notify when we want to remove this component 
 	
 	public SeriesFigurePanel() {
 		initComponents();
 	}
+	
+	public SeriesFigurePanel(MultiSeriesPanel parentPanel) {
+		this();
+		this.parentPanel = parentPanel;
+	}
+	
 
 	/**
 	 * Set the memory logger that will be used to find series information
@@ -48,15 +55,8 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 	private void initComponents() {
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(1, 10, 0, 0));
+		//setBorder(BorderFactory.createLineBorder(Color.green));
 		setOpaque(false);
-		
-		JPanel topPanel = new JPanel();
-		topPanel.setOpaque(false);
-		topLabel = new JLabel("Top label here");
-		topLabel.setFont(UIConstants.sansFont);
-		topPanel.add(topLabel);
-		this.add(topPanel, BorderLayout.NORTH);
-		
 		
 		fig = new XYSeriesFigure();
 		fig.setAllowMouseDragSelection(false);
@@ -66,13 +66,24 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 		fig.getAxes().setNumYTicks(4);
 		add(fig, BorderLayout.CENTER);
 		
+
+		//Components to bottom panel are added when the memory logger is set (via initializeBottomPanel())	
 		bottomPanel = new JPanel();
-		bottomPanel.setOpaque(false);
+		bottomPanel.setBackground(fig.getBackground());
 		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
 		this.add(bottomPanel, BorderLayout.SOUTH);
 
-		//Components to bottom panel are added when the memory logger is set (via initializeBottomPanel())
 		
+		JPanel topPanel = new JPanel();
+		topPanel.setBackground(fig.getBackground());
+		topLabel = new JLabel("Top label here");
+		topLabel.setFont(UIConstants.sansFont);
+		topPanel.add(topLabel);
+		this.add(topPanel, BorderLayout.NORTH);
+		
+	}
+	
+	public void updateTopLabel() {
 		
 	}
 
@@ -89,7 +100,8 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 		
 		bottomPanel.add(Box.createHorizontalStrut(10));
 		bottomPanel.add(Box.createHorizontalGlue());
-		clearButton = new BorderlessButton(UIConstants.closeButton);
+		clearButton = new BorderlessButton(UIConstants.clearButton);
+		clearButton.setXDif(-1);
 		clearButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				fig.removeAllSeries();
@@ -118,15 +130,30 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 		});
 		bottomPanel.add(saveButton);
 		
+		BorderlessButton removeButton = new BorderlessButton(UIConstants.closeButton);
+		removeButton.setToolTipText("Remove this panel");
+		removeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				removeThisFigure();
+			}
+		});
+		bottomPanel.add(removeButton);
+		
 		bottomPanel.add(Box.createHorizontalGlue());
 		bottomPanel.revalidate();
 		bottomPanel.repaint();
 	}
 	
+	protected void removeThisFigure() {
+		if (parentPanel != null) {
+			parentPanel.removeFigure(this);
+		}
+	}
+
 	protected void addSelectedSeries() {
 		String seriesName = (String) chooseBox.getSelectedItem();
 		XYSeries series = memLogger.getSeries(seriesName);
-		addSeries(seriesName, series);
+		addSeries(series);
 	}
 
 	/**
@@ -134,7 +161,7 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 	 * @param name
 	 * @param series
 	 */
-	public void addSeries(String name, XYSeries series) {
+	public void addSeries(XYSeries series) {
 		XYSeriesElement element = new XYSeriesElement(series, fig.getAxes(), fig);
 		fig.addSeriesElement(element);
 		element.setLineColor(Color.blue);

@@ -43,7 +43,7 @@ public abstract class LoggerModel extends ModelElement {
 
 	protected String modelLabel = null;
 	protected String outputFilename = null;
-	protected int logFrequency = 10000;
+	protected int logFrequency = 2000;
 	protected int burnin = 1000000;	
 	protected ARGModelElement argRef = null; //Many loggers need a reference to the ARG
 	

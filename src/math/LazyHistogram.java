@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * A histogram for which you don't need to specify the min and max initially. This collects the
- * first 1000 values in a list, then computes the min and max based on the list, makes a real 
+ * first 'triggerSize' values in a list, then computes the min and max based on the list, makes a real 
  * histogram, and dumps the list and all subsequent values into the histogram
  * @author brendan
  *
@@ -34,7 +34,7 @@ public class LazyHistogram {
 
 	Histogram histo;
 	int triggerSize = 500;
-	List<Double> vals = new ArrayList<Double>(500);
+	List<Double> vals = Collections.synchronizedList(new ArrayList<Double>(500));
 	final int bins;
 	int count = 0;
 	
@@ -46,7 +46,7 @@ public class LazyHistogram {
 		this.bins = bins;
 	}
 	
-	public void addValue(double val) {
+	public synchronized void addValue(double val) {
 		count++;
 		
 		if (! triggerReached) {
@@ -111,7 +111,7 @@ public class LazyHistogram {
 	/**
 	 * Infer min and max histogram values, then dump all values into the histogram
 	 */
-	private void makeHistoFromList() {
+	private synchronized void makeHistoFromList() {
 		Collections.sort(vals);
 		double min = vals.get(0);
 		double max = vals.get(vals.size()-1);
@@ -128,7 +128,16 @@ public class LazyHistogram {
 		
 		for(Double val : vals)
 			histo.addValue(val);
-		
+		System.out.println("Dumping values to histo, values size is: " + vals.size() + " min: " + min + " max: " + max);
+	}
+	
+	/**
+	 * Returns true if the trigger size has been reached and the boundaries have been 
+	 * inferred for this histogram
+	 * @return
+	 */
+	public boolean triggerReached() {
+		return triggerReached;
 	}
 	
 	

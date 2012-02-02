@@ -53,6 +53,7 @@ public class RootHeightView extends DefaultLoggerView {
 		});
 		centerPanel.add(new JLabel("Bins:"));
 		centerPanel.add(binsSpinner);
+		updateView();
 	}
 
 	public Dimension getPreferredDimensionsLarge() {

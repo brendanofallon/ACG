@@ -122,7 +122,6 @@ public class FileTree extends JPanel implements DirectoryListener {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			handleMouseClick(e);
-			
 		}
 
 		@Override

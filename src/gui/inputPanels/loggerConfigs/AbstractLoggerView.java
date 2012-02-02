@@ -62,7 +62,6 @@ public abstract class AbstractLoggerView extends JPanel {
 		this.model = model;
 		initializeComponents();
 		this.setBorder(BorderFactory.createEmptyBorder(2, 3, 2, 3));
-		this.setBorder(BorderFactory.createLineBorder(Color.BLUE));
 	}
 	
 	/**
@@ -98,7 +97,8 @@ public abstract class AbstractLoggerView extends JPanel {
 		
 		SpinnerNumberModel burninModel = new SpinnerNumberModel(1000000, 0, Integer.MAX_VALUE, 1000);
 		burninSpinner = new JSpinner(burninModel);
-		burninSpinner.setPreferredSize(new Dimension(130, 30));
+		burninSpinner.setPreferredSize(new Dimension(120, 30));
+		burninSpinner.setMaximumSize(new Dimension(120, 30));
 		burninSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				model.setBurnin( (Integer)burninSpinner.getValue());
@@ -109,7 +109,8 @@ public abstract class AbstractLoggerView extends JPanel {
 		
 		SpinnerNumberModel freqModel = new SpinnerNumberModel(10000, 0, Integer.MAX_VALUE, 1000);
 		freqSpinner = new JSpinner(freqModel);
-		freqSpinner.setPreferredSize(new Dimension(100, 30));
+		freqSpinner.setPreferredSize(new Dimension(120, 30));
+		freqSpinner.setMaximumSize(new Dimension(120, 30));
 		freqSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				model.setLogFrequency( (Integer)freqSpinner.getValue());
@@ -124,7 +125,7 @@ public abstract class AbstractLoggerView extends JPanel {
 	 * @return
 	 */
 	public Dimension getPreferredDimensions() {
-		return new Dimension(700, 100);
+		return new Dimension(800, 60);
 	}
 	
 	public LoggerModel getModel() {

@@ -56,6 +56,7 @@ public class StateLoggerView extends DefaultLoggerView {
 	
 	public StateLoggerView(StateLoggerModel model) {
 		super(model);
+		updateView();
 	}
 
 	@Override

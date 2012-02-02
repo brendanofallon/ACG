@@ -56,6 +56,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import jobqueue.ExecutingChain;
+import jobqueue.JobQueue;
+import jobqueue.QueueManager;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -232,8 +234,15 @@ public class StartFrame extends JPanel {
 		
 
 		ACGDocument acgDocument = new ACGDocument(inputFile);
-		acgDocument.instantiateAll();
-		ExecutingChain runner = acgDocument.runMCMC();
+		ExecutingChain runner;
+		try {
+			runner = new ExecutingChain(acgDocument);
+			QueueManager.getCurrentQueue().addJob(runner);
+		} catch (Exception e) {
+			ErrorWindow.showErrorWindow(e);
+			e.printStackTrace();
+		}
+		
 		this.setVisible(false);
 		acgParent.dispose();
 	}
