@@ -34,8 +34,6 @@ public class SideTab extends JPanel {
 	
 	protected void setSelected(boolean selected) {
 		this.selected = selected;
-		System.out.println("Tab " + text + " selected is: " + selected);
-	
 		repaint();
 	}
 	

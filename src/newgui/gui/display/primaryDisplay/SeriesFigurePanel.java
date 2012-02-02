@@ -71,7 +71,7 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 		bottomPanel = new JPanel();
 		bottomPanel.setBackground(fig.getBackground());
 		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
-		this.add(bottomPanel, BorderLayout.SOUTH);
+		this.add(bottomPanel, BorderLayout.NORTH);
 
 		
 		JPanel topPanel = new JPanel();
@@ -79,7 +79,7 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 		topLabel = new JLabel("Top label here");
 		topLabel.setFont(UIConstants.sansFont);
 		topPanel.add(topLabel);
-		this.add(topPanel, BorderLayout.NORTH);
+		//this.add(topPanel, BorderLayout.NORTH);
 		
 	}
 	
@@ -139,6 +139,16 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 		});
 		bottomPanel.add(removeButton);
 		
+		
+		BorderlessButton histoButton = new BorderlessButton(UIConstants.histogramButton);
+		histoButton.setToolTipText("Switch to histogram view");
+		histoButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//removeThisFigure();
+			}
+		});
+		bottomPanel.add(histoButton);
+		
 		bottomPanel.add(Box.createHorizontalGlue());
 		bottomPanel.revalidate();
 		bottomPanel.repaint();
@@ -166,6 +176,7 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 		fig.addSeriesElement(element);
 		element.setLineColor(Color.blue);
 		element.setLineWidth(1.25f);
+		element.setCanConfigure(true);
 		this.series = series;
 		fig.repaint();
 		

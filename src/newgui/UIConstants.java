@@ -32,7 +32,7 @@ public class UIConstants {
 	
 	public static final ImageIcon blueLeftArrow = getIcon("gui/icons/blueLeftArrow.png");
 	
-	public static final ImageIcon closeButton = getIcon("gui/icons/closeButtonGray.png");
+	public static final ImageIcon closeButton = getIcon("gui/icons/closeButton.png");
 
 	public static final ImageIcon startButton = getIcon("gui/icons/startArrow.png");
 	
@@ -40,11 +40,13 @@ public class UIConstants {
 	
 	public static final ImageIcon stopButton = getIcon("gui/icons/stopButton.png");
 	
-	public static final ImageIcon addButton = getIcon("gui/icons/addButtonGray.png");
+	public static final ImageIcon addButton = getIcon("gui/icons/addButton.png");
 	
-	public static final ImageIcon saveButton = getIcon("gui/icons/saveIconGray.png");
+	public static final ImageIcon saveButton = getIcon("gui/icons/saveIcon.png");
 	
-	public static final ImageIcon clearButton = getIcon("gui/icons/zeroIconGray.png");
+	public static final ImageIcon clearButton = getIcon("gui/icons/zeroIcon.png");
+	
+	public static final ImageIcon histogramButton = getIcon("gui/icons/histogramButton.png");
 	
 	//Fonts
 	public static final Font sansFont = getFont("gui/fonts/Trebuchet_MS.ttf");

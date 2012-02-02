@@ -1,6 +1,7 @@
 package newgui.gui.display.primaryDisplay;
 
 import gui.figure.series.XYSeries;
+import gui.figure.series.XYSeriesElement;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;

@@ -57,8 +57,6 @@ public class XYSeriesElement extends SeriesElement {
 	
 	SeriesConfigFrame configFrame;
 	
-	
-	
 	//Flag to indicate if we should recalculate data bounds
 	//False indicates we should recalculate
 	boolean dataBoundsSet = false;
@@ -77,7 +75,7 @@ public class XYSeriesElement extends SeriesElement {
 	//Ensure boxes are linked 
 	boolean connectBoxes = true;
 	
-	//The transformation object that maps 'figure' points (in 0..1 scale) into pixel space
+	//The transformation object that transforms 'figure' points (in 0..1 scale) into pixel space
 	//We keep track of it to avoid having to make a new one all the time, and 
 	//so that, when new transforms are needed, we can call the .invert() method
 	//on it to unapply the previous transform before a new one is applied
@@ -205,6 +203,7 @@ public class XYSeriesElement extends SeriesElement {
 	}
 	
 	public void popupConfigureTool(java.awt.Point pos) {
+		//System.out.println("Showing configure tool");
 		if (xySeries instanceof HistogramSeries) {
 			//TODO pop up a different tool where you can configure bin number?
 			configFrame.display(getName(), currentMode, getLineColor(), round(((BasicStroke)normalStroke).getLineWidth()), markerSize, currentMarkerType);
@@ -388,6 +387,7 @@ public class XYSeriesElement extends SeriesElement {
 	 */
 	public void doubleClicked(Point pos) { 
 		setSelected(true);
+		System.out.println("Double clicked, can configure is: " + canConfigure);
 		if (canConfigure) {
 			popupConfigureTool(pos);
 		}
