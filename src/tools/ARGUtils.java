@@ -380,11 +380,11 @@ public class ARGUtils {
 			for(int i=1; i<args.length; i++) {
 				BasicSequenceAlignment aln = new BasicSequenceAlignment(args[i]);
 				
-				System.out.println("<alignment" + (i) + " class=\"sequence.Alignment\">");
+				System.out.println("<alignment" + (i) + " class=\"sequence.BasicSequenceAlignment\">");
 				System.out.println("\t<sequences" + i + " class=\"list\">");
 				for(Sequence seq : aln.getSequences()) {
 					String seqName = seq.getLabel();
-					System.out.println("\t\t<" + seqName + " class=\"sequence.Sequence\">");
+					System.out.println("\t\t<" + seqName + " class=\"sequence.SimpleSequence\">");
 					System.out.println("\t\t\t" + seq.getSequenceString() );
 					System.out.println("\t\t</" + seqName + ">");
 				}

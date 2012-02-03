@@ -19,6 +19,7 @@
 
 package gui.inputPanels.loggerConfigs;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -106,7 +107,7 @@ public class LoggersPanel extends JPanel implements LoggerReceiver {
 	
 	public void addLogger(AbstractLoggerView logger) {
 		LoggerWrapper wrapped = new LoggerWrapper(logger);
-		
+		wrapped.setAlignmentX(Component.LEFT_ALIGNMENT);
 		loggers.add(wrapped);
 		this.remove(addButton);
 		add(wrapped);
@@ -207,7 +208,7 @@ public class LoggersPanel extends JPanel implements LoggerReceiver {
 			setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 			setOpaque(false);
 			setPreferredSize(conf.getPreferredDimensions());
-			setMaximumSize(conf.getPreferredDimensions());
+			setMaximumSize(new Dimension(32000, (int)conf.getPreferredDimensions().getHeight()));
 			setBorder(BorderFactory.createEmptyBorder(0, 0, 4, 0));
 			conf.setAlignmentY(TOP_ALIGNMENT);
 			add(conf);

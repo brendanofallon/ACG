@@ -62,7 +62,6 @@ public abstract class AbstractLoggerView extends JPanel {
 		this.model = model;
 		initializeComponents();
 		this.setBorder(BorderFactory.createEmptyBorder(2, 3, 2, 3));
-		this.setBorder(BorderFactory.createLineBorder(Color.BLUE));
 	}
 	
 	/**
@@ -124,7 +123,7 @@ public abstract class AbstractLoggerView extends JPanel {
 	 * @return
 	 */
 	public Dimension getPreferredDimensions() {
-		return new Dimension(700, 100);
+		return new Dimension(700, 60);
 	}
 	
 	public LoggerModel getModel() {

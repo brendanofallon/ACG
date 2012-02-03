@@ -7,9 +7,9 @@
 <!-- A initial random seed can be specified with the seed="XXX" attribute -->
 <RandomSource class="math.RandomSource" />
 
-<!-- Sequence data is provided in the form of an alignment, which can refer to a file -->
+<!-- SimpleSequence data is provided in the form of an alignment, which can refer to a file -->
 <!-- or contain a list of sequences -->
-<alignment class="sequence.Alignment" filename="doc/example5.fas" />
+<alignment class="sequence.BasicSequenceAlignment" filename="doc/example5.fas" />
 
 
 <!--  The Ancestral Recombination Graph (ARG) that is the central feature of the analysis -->
