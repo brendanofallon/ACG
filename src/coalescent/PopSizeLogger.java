@@ -20,6 +20,7 @@
 package coalescent;
 
 import java.io.PrintStream;
+import java.util.Map;
 
 import arg.ARG;
 import arg.CoalNode;
@@ -46,7 +47,7 @@ public class PopSizeLogger implements MCMCListener {
 	DemographicParameter popSize;
 	
 	int bins = 100;
-	int burnin;
+	int burnin = 1000000;
 	
 	LazyHistogram[] sizeHistos;
 	
@@ -55,6 +56,11 @@ public class PopSizeLogger implements MCMCListener {
 	int collectionFrequency;
 	
 	PrintStream outStream = System.out;
+	
+	public PopSizeLogger(Map<String, String> attrs, ARG arg, DemographicParameter demoParam) {
+		this.arg = arg;
+		this.popSize = demoParam;
+	}
 	
 	
 	public PopSizeLogger(int burnin, int collectionFrequency, ARG arg, DemographicParameter demoParam, PrintStream outputStream) {
