@@ -57,6 +57,7 @@ public class AnalysisDetailsPanel extends JPanel {
 	private JPanel detailsPanel;
 	private PrimaryDisplay displayParent;
 	private AnalysisModel analysis = null; //Will be set after call to initialize(..)
+	private AnalysisDataFile sourceFile = null; //Data file from which current model was read. May be null. 
 	
 	public AnalysisDetailsPanel(PrimaryDisplay displayParent) {
 		this.displayParent = displayParent;
@@ -67,8 +68,9 @@ public class AnalysisDetailsPanel extends JPanel {
 	 * Populate various widgets and settings in this panel with the options in the given model
 	 * @param analysis
 	 */
-	public void initialize(AnalysisModel analysis) {
+	public void initialize(AnalysisModel analysis, AnalysisDataFile sourceFile) {
 		this.analysis = analysis;
+		this.sourceFile = sourceFile;
 		siteModelView.setSiteModel(analysis.getSiteModel());
 		coalView.setCoalModel(analysis.getCoalescentModel());
 		loggersView.setLoggerModels(analysis.getLoggerModels());
@@ -234,19 +236,29 @@ public class AnalysisDetailsPanel extends JPanel {
 			
 			ACGDocument acgDocument = analysis.getACGDocument();
 			
+			String suggestedName = displayParent.getTitle();
+			if (sourceFile != null) {
+				suggestedName = sourceFile.getSourceFile().getName().replace(".xml", "");
+			}
+			
 			String analysisName = (String)JOptionPane.showInputDialog(ViewerWindow.getViewer(), 
 													"Choose a name for these settings:",
 													"Save analysis",
 													JOptionPane.PLAIN_MESSAGE,
 													null, 
 													null,
-													displayParent.getTitle());
+													suggestedName);
+			if (analysisName == null) {
+				return;
+			}
+			
 			if (! analysisName.endsWith(".xml")) {
 				analysisName = analysisName + ".xml";
 			}
 			
 			AnalysisFilesManager manager = AnalysisFilesManager.getManager();
-			manager.addAnalysisFile(acgDocument, analysisName);
+			AnalysisDataFile savedFile = manager.addAnalysisFile(acgDocument, analysisName);
+			sourceFile = savedFile;
 			
 		} catch (InputConfigException e) {
 			ErrorWindow.showErrorWindow(e);

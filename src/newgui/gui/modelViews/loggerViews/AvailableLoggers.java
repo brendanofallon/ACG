@@ -11,6 +11,8 @@ import gui.inputPanels.loggerConfigs.StateLoggerModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Element;
+
 
 /**
  * Stores a list of all (user-ready) logger models that can be added to an analysis. This
@@ -68,6 +70,34 @@ public class AvailableLoggers {
 		}
 		if (model instanceof MPEARGModel) {
 			return new MPEARGView( (MPEARGModel)model);
+		}
+		
+		throw new IllegalArgumentException("Could not find a suitable view for logger model: " + model.getModelLabel() );
+	}
+	
+	/**
+	 * Create a new model of the same class as the given model. Does not copy data stored in the model.
+	 * @param model
+	 * @return
+	 */
+	public static LoggerModel createModel(LoggerModel model) {
+		if (model instanceof StateLoggerModel) {
+			return new StateLoggerModel();
+		}
+		if (model instanceof BPDensityModel) {
+			return new BPDensityModel();
+		}
+		if (model instanceof BPLocationModel) {
+			return new BPLocationModel();
+		}
+		if (model instanceof RootHeightModel) {
+			return new RootHeightModel();
+		}
+		if (model instanceof ConsensusTreeModel) {
+			return new ConsensusTreeModel();
+		}
+		if (model instanceof MPEARGModel) {
+			return new MPEARGModel();
 		}
 		
 		throw new IllegalArgumentException("Could not find a suitable view for logger model: " + model.getModelLabel() );

@@ -30,6 +30,7 @@ import gui.inputPanels.Configurator.InputConfigException;
  */
 public class AnalysisDataFile extends XMLDataFile {
 
+	//Used to specify the element that actually contains the xml-formatted ACGDocument
 	public static final String MODEL = "model"; 
 	
 	public AnalysisDataFile() {
