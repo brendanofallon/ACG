@@ -43,6 +43,7 @@ import newgui.gui.modelViews.LoggersView;
 import newgui.gui.modelViews.MCModelView;
 import newgui.gui.modelViews.SiteModelView;
 import newgui.gui.widgets.BorderlessButton;
+import newgui.gui.widgets.HighlightButton;
 
 /**
  * This panel appears when the user has selected an alignment and analysis type from the AnalysisPrepPanel
@@ -198,7 +199,7 @@ public class AnalysisDetailsPanel extends JPanel {
 		});
 		bottomPanel.add(backButton);
 		
-		BorderlessButton saveButton = new BorderlessButton(UIConstants.saveButton);
+		HighlightButton saveButton = new HighlightButton(UIConstants.saveGrayButton, UIConstants.saveBlueButton);
 		saveButton.setToolTipText("Save these settings");
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -207,7 +208,7 @@ public class AnalysisDetailsPanel extends JPanel {
 		});
 		
 		
-		BorderlessButton runButton = new BorderlessButton(UIConstants.blueRightArrow);
+		HighlightButton runButton = new HighlightButton(UIConstants.grayRightArrow, UIConstants.blueRightArrow);
 		runButton.setToolTipText("Begin run");
 		runButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

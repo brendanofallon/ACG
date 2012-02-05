@@ -230,6 +230,9 @@ public class ScaleAxisElement extends FigureElement {
 		
 		if (treeDrawer.getTree().getOrientation()==DrawableTree.Direction.RIGHT || treeDrawer.getTree().getOrientation()==DrawableTree.Direction.LEFT) {
 				
+			if (treeDrawer.getDrawingWidth()==0) {
+				treeDrawer.initializeBoundaries(treeDrawer.getBoundaries(), g2d);
+			}
 			int drawWidth = treeDrawer.getDrawingWidth();
 			//double tickStep = drawWidth/ticks;
 

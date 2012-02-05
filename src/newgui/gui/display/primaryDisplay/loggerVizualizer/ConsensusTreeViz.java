@@ -37,7 +37,6 @@ public class ConsensusTreeViz extends AbstractLoggerViz {
 	public void update() {
 		if (burninMessage != null && logger.getBurninExceeded()) {
 			treeFig.removeElement(burninMessage);
-			treeFig.setScaleType(DrawableTree.SCALE_AXIS);
 			burninMessage = null;
 		}
 		if (logger.getBurninExceeded()) {
@@ -45,6 +44,8 @@ public class ConsensusTreeViz extends AbstractLoggerViz {
 			SquareTree drawableTree = new SquareTree(consNewick);
 			treeFig.removeAllTrees();
 			treeFig.addTree(drawableTree);
+			if (treeFig.getScaleType()==DrawableTree.NO_SCALE_BAR)
+				treeFig.setScaleType(DrawableTree.SCALE_AXIS);
 			treeFig.repaint();
 		}
 		repaint();

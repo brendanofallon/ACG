@@ -26,6 +26,7 @@ import newgui.alignment.FastaImporter;
 import newgui.alignment.FileParseException;
 import newgui.alignment.UnrecognizedBaseException;
 import newgui.gui.filepanel.InputFilesManager;
+import newgui.gui.widgets.HighlightButton;
 
 /**
  * Panel that holds a couple of buttons and the search text field
@@ -34,25 +35,22 @@ import newgui.gui.filepanel.InputFilesManager;
  */
 public class TopLeftPanel extends JPanel {
 	
-	BorderlessButton importButton;
+	HighlightButton importButton;
 	
 	public TopLeftPanel() {
 		this.setBackground(UIConstants.lightBackground);
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
 		this.setPreferredSize(new Dimension(200, 50));
-		ImageIcon openIcon =  UIConstants.blueRightArrow;
-		if (openIcon != null) {
-			importButton = new BorderlessButton(null, openIcon);
-			importButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					openImportDialog();
-				}
-			});
-			importButton.setYDif(-1);
-		}
-		else {
-			importButton = new BorderlessButton("Open", null);
-		}
+		importButton = new HighlightButton(UIConstants.grayRightArrow, UIConstants.blueRightArrow);
+		importButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				openImportDialog();
+			}
+		});
+		importButton.setYDif(-1);
+		importButton.setXDif(-1);
+
+		
 		importButton.setPreferredSize(new Dimension(32, 28));
 		this.add(importButton);
 	

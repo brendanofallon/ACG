@@ -10,18 +10,27 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import newgui.UIConstants;
 import newgui.gui.widgets.BorderlessButton;
+import newgui.gui.widgets.HighlightButton;
 
 import logging.MemoryStateLogger;
 
@@ -96,41 +105,49 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 		List<String> seriesNames = memLogger.getSeriesNames();
 		String[] nameArray = seriesNames.toArray(new String[]{});
 		chooseBox = new JComboBox(nameArray);
-		bottomPanel.add(chooseBox);
-		
-		bottomPanel.add(Box.createHorizontalStrut(10));
-		bottomPanel.add(Box.createHorizontalGlue());
-		clearButton = new BorderlessButton(UIConstants.clearButton);
-		clearButton.setXDif(-1);
-		clearButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		chooseBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent iv) {
 				fig.removeAllSeries();
+				addSelectedSeries();
 				fig.repaint();
 			}
 		});
-		clearButton.setToolTipText("Remove all series");
-		bottomPanel.add(clearButton);
+		bottomPanel.add(chooseBox);
+		bottomPanel.add(Box.createHorizontalGlue());
 		
+//		bottomPanel.add(Box.createHorizontalStrut(10));
+//		bottomPanel.add(Box.createHorizontalGlue());
+//		clearButton = new BorderlessButton(UIConstants.clearButton);
+//		clearButton.setXDif(-1);
+//		clearButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				fig.removeAllSeries();
+//				fig.repaint();
+//			}
+//		});
+//		clearButton.setToolTipText("Remove all series");
+//		bottomPanel.add(clearButton);
+//		
+//		
+//		addButton = new BorderlessButton(UIConstants.addButton);
+//		addButton.setToolTipText("Add new series");
+//		addButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				addSelectedSeries();
+//			}
+//		});
+//		bottomPanel.add(addButton);
 		
-		addButton = new BorderlessButton(UIConstants.addButton);
-		addButton.setToolTipText("Add new series");
-		addButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				addSelectedSeries();
-			}
-		});
-		bottomPanel.add(addButton);
-		
-		BorderlessButton saveButton = new BorderlessButton(UIConstants.saveButton);
+		HighlightButton saveButton = new HighlightButton(UIConstants.saveGrayButton, UIConstants.saveBlueButton);
 		saveButton.setToolTipText("Save image");
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				saveImage();
 			}
 		});
 		bottomPanel.add(saveButton);
 		
-		BorderlessButton removeButton = new BorderlessButton(UIConstants.closeButton);
+		HighlightButton removeButton = new HighlightButton(UIConstants.grayCloseButton, UIConstants.redCloseButton);
 		removeButton.setToolTipText("Remove this panel");
 		removeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -139,8 +156,7 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 		});
 		bottomPanel.add(removeButton);
 		
-		
-		BorderlessButton histoButton = new BorderlessButton(UIConstants.histogramButton);
+		HighlightButton histoButton = new HighlightButton(UIConstants.grayHistogram, UIConstants.blueHistogram);
 		histoButton.setToolTipText("Switch to histogram view");
 		histoButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -153,7 +169,28 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 		bottomPanel.revalidate();
 		bottomPanel.repaint();
 	}
-	
+
+	/**
+	 * Create an image of the figure and save it to a file (right now, always in .png format)
+	 */
+	protected void saveImage() {
+		BufferedImage image = fig.getImage();
+
+		if (fileChooser == null)
+			fileChooser = new JFileChooser( System.getProperty("user.dir"));
+
+		int val = fileChooser.showSaveDialog(this);
+		if (val==JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			try {
+				ImageIO.write(image, "png", file);
+			}
+			catch(IOException ioe) {
+				JOptionPane.showMessageDialog(this, "Error saving image: " + ioe.getLocalizedMessage());
+			}
+		}		
+	}
+
 	protected void removeThisFigure() {
 		if (parentPanel != null) {
 			parentPanel.removeFigure(this);
@@ -164,6 +201,7 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 		String seriesName = (String) chooseBox.getSelectedItem();
 		XYSeries series = memLogger.getSeries(seriesName);
 		addSeries(series);
+		fig.inferBoundsFromCurrentSeries();
 	}
 
 	/**
@@ -195,6 +233,7 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 		fig.repaint();
 	}
 	
+	private JFileChooser fileChooser;
 	private JPanel bottomPanel;
 	private JComboBox chooseBox;
 	private BorderlessButton clearButton;

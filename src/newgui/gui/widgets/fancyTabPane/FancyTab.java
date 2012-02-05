@@ -49,7 +49,7 @@ public class FancyTab extends JPanel {
 	private static final Color lighterColor = new Color(0.95f, 0.95f, 0.99f);
 	private static final Color lightColor = new Color(1f, 1f, 1f);
 	
-	private static final ImageIcon closeIcon = UIConstants.getIcon("gui/icons/GrayClose.png");
+	private static final ImageIcon closeIcon = UIConstants.getIcon("gui/icons/smallGrayClose.png");
 	
 	private FTabPane parentPane;
 	

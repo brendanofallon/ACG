@@ -65,7 +65,6 @@ public class TreeElement extends FigureElement {
 	 * in pixel (component) space. 
 	 */
 	public void paint(Graphics2D g) {
-		//System.out.println("painting tree, xFactor: " + xFactor + " bounds x: " + bounds.x + " bounds width: " + bounds.width);
 		pixelBounds.x = round(xFactor*getX());
 		pixelBounds.y = round(yFactor*getY());
 		pixelBounds.width =round(bounds.width*xFactor);
