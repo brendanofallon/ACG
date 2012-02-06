@@ -41,19 +41,21 @@ public class MultiSeriesPanel extends JPanel {
 	 * Add a new panel that displays the given series to this multi-panel container
 	 * @param series
 	 */
-	public void addSeriesPanel(XYSeries series) {
-		SeriesFigurePanel fig = new SeriesFigurePanel(this);
-		fig.setMemoryLogger(memLogger);
-		multiPanel.addComponent(fig);
-		fig.addSeries(series);
-	}
+//	public void addSeriesPanel(XYSeries series) {
+//		SeriesFigurePanel fig = new SeriesFigurePanel(this);
+//		fig.setMemoryLogger(memLogger);
+//		multiPanel.addComponent(fig);
+//		fig.addSeries(series);
+//	}
 	
 	/**
 	 * Add a new panel displaying the default basic series (current the "data likelihood series")
 	 */
 	public void addDefaultSeriesPanel() {
-		XYSeries dlSeries = memLogger.getSeries( memLogger.getSeriesNames().get(0) );
-		addSeriesPanel(dlSeries);
+		SeriesFigurePanel fig = new SeriesFigurePanel(this);
+		fig.setMemoryLogger(memLogger);
+		multiPanel.addComponent(fig);
+		fig.addSelectedSeries();
 	}
 	
 	/**
@@ -75,32 +77,33 @@ public class MultiSeriesPanel extends JPanel {
 		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
 		bottomPanel.setOpaque(false);
 		
-		Object[] rowNums = new Object[20];
-		for(int i=0; i<rowNums.length; i++) {
-			rowNums[i] = new Integer(i);
-		}
-		JComboBox rowsBox = new JComboBox(rowNums);
+//		Object[] rowNums = new Object[20];
+//		for(int i=0; i<rowNums.length; i++) {
+//			rowNums[i] = new Integer(i);
+//		}
+//		JComboBox rowsBox = new JComboBox(rowNums);
+//		
+//		bottomPanel.add(Box.createHorizontalStrut(30));
+//		bottomPanel.add(rowsBox);
+//		
+//		
+//		Object[] colNums = new Object[20];
+//		for(int i=0; i<colNums.length; i++) {
+//			colNums[i] = new Integer(i);
+//		}
+//		JComboBox colBox = new JComboBox(colNums);
+//		bottomPanel.add(colBox);
 		
-		bottomPanel.add(Box.createHorizontalStrut(30));
-		bottomPanel.add(rowsBox);
-		
-		
-		Object[] colNums = new Object[20];
-		for(int i=0; i<colNums.length; i++) {
-			colNums[i] = new Integer(i);
-		}
-		JComboBox colBox = new JComboBox(colNums);
-		bottomPanel.add(colBox);
-		
+		bottomPanel.add(Box.createHorizontalGlue());
 		BorderlessButton addSeriesButton = new BorderlessButton("Add new panel");
 		addSeriesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				addDefaultSeriesPanel();
 			}
 		});
-		bottomPanel.add(Box.createHorizontalStrut(25));
 		bottomPanel.add(addSeriesButton);
-		bottomPanel.add(Box.createHorizontalGlue());
+		bottomPanel.add(Box.createHorizontalStrut(25));
+		
 		
 		this.add(bottomPanel, BorderLayout.SOUTH);
 	}

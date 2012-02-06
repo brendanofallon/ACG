@@ -40,7 +40,7 @@ public class FancyTab extends JPanel {
 
 	private String text;
 	private boolean selected = false;
-	private static final Font normalFont = ViewerWindow.sansFont.deriveFont(14f);
+	private static final Font normalFont = ViewerWindow.sansFont.deriveFont(12f);
 	//private static final Font selectedFont = ViewerWindow.sansFont.deriveFont(Font.BOLD);
 	private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
 
@@ -57,7 +57,7 @@ public class FancyTab extends JPanel {
 		this.text = label;
 		this.parentPane = parentPane;
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-		int targetSize = Math.max(40, label.length()*8 + 35); //Preferred width of tab
+		int targetSize = Math.max(40, label.length()*7 + 35); //Preferred width of tab
 		this.setPreferredSize(new Dimension(targetSize , 30));
 		this.setMinimumSize(new Dimension(20, 30));
 		this.setMaximumSize(new Dimension(targetSize, 40));

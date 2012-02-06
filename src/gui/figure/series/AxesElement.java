@@ -71,7 +71,7 @@ public class AxesElement extends FigureElement {
 	boolean hasUserYTickNum = false;	//True if user has set y tick number
 	double xTickWidth = 0.02;
 	double yTickWidth = 0.01;
-	int fontSize = 12;
+	int fontSize = 11;
 	
 	//These indicate if the user has set values for the x or y axis, and they we should not auto-set them
 	boolean hasUserX = false;

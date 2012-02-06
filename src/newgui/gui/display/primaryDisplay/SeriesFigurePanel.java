@@ -1,5 +1,7 @@
 package newgui.gui.display.primaryDisplay;
 
+import gui.figure.TextElement;
+import gui.figure.series.HistogramSeries;
 import gui.figure.series.XYSeries;
 import gui.figure.series.XYSeriesElement;
 import gui.figure.series.XYSeriesFigure;
@@ -21,6 +23,7 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -156,20 +159,78 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 		});
 		bottomPanel.add(removeButton);
 		
-		HighlightButton histoButton = new HighlightButton(UIConstants.grayHistogram, UIConstants.blueHistogram);
-		histoButton.setToolTipText("Switch to histogram view");
-		histoButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//removeThisFigure();
+//		HighlightButton histoButton = new HighlightButton(UIConstants.grayHistogram, UIConstants.blueHistogram);
+//		histoButton.setToolTipText("Switch to histogram view");
+//		histoButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				switchToHistogram();
+//			}
+//		});
+//		bottomPanel.add(histoButton);
+		
+		final ImageIcon histoSwitchIconLeft = UIConstants.getIcon("gui/icons/histoSwitcherLeft.png");
+		final ImageIcon histoSwitchIconRight = UIConstants.getIcon("gui/icons/histoSwitcherRight.png");
+		
+		final BorderlessButton histoSwitchButton = new BorderlessButton(histoSwitchIconLeft);
+		histoSwitchButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if (showHistogram) {
+					showHistogram = false;
+					histoSwitchButton.setIcon(histoSwitchIconLeft);
+				}
+				else {
+					showHistogram = true;
+					histoSwitchButton.setIcon(histoSwitchIconRight);	
+				}
+				switchHistogramTrace();
 			}
+			
 		});
-		bottomPanel.add(histoButton);
+		bottomPanel.add(histoSwitchButton);
 		
 		bottomPanel.add(Box.createHorizontalGlue());
 		bottomPanel.revalidate();
 		bottomPanel.repaint();
 	}
 
+	/**
+	 * Switches to histogram mode by removing all current series from the figure and adding
+	 * a newly created HistogramSeries using the currently selected series as the data source
+	 */
+	protected void switchHistogramTrace() {
+		fig.removeAllSeries();
+		String seriesName = (String) chooseBox.getSelectedItem();
+
+		if (burninMessage != null && memLogger.getBurninExceeded()) {
+			fig.removeElement(burninMessage);
+			burninMessage = null;
+		}
+		
+		if (showHistogram) {
+			if ( (!memLogger.getBurninExceeded()) && burninMessage == null) {
+				burninMessage = new TextElement("(Burnin period not yet exceeded)", fig);
+				burninMessage.setPosition(0.4, 0.4);
+				fig.addElement(burninMessage);
+			}	
+			
+			HistogramSeries histo = memLogger.getHistogram(seriesName);
+			addSeries(histo);
+			
+			fig.setYLabel("Frequency");
+			fig.setXLabel("Value");
+		}
+		else {
+			addSelectedSeries();
+		}
+		
+		
+		fig.inferBoundsFromCurrentSeries();
+	}
+
+	
+	
 	/**
 	 * Create an image of the figure and save it to a file (right now, always in .png format)
 	 */
@@ -197,25 +258,73 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 		}
 	}
 
+	/**
+	 * Add the series that is currently selected in the "ChooseBox". This adds both
+	 * the burn-in and the values series
+	 */
 	protected void addSelectedSeries() {
+		fig.removeAllSeries();
 		String seriesName = (String) chooseBox.getSelectedItem();
-		XYSeries series = memLogger.getSeries(seriesName);
-		addSeries(series);
-		fig.inferBoundsFromCurrentSeries();
+
+		if (burninMessage != null && memLogger.getBurninExceeded()) {
+			fig.removeElement(burninMessage);
+			burninMessage = null;
+		}
+		
+		if (showHistogram) {
+			if ( (!memLogger.getBurninExceeded()) && burninMessage == null) {
+				burninMessage = new TextElement("(Burnin period not yet exceeded)", fig);
+				burninMessage.setPosition(0.4, 0.4);
+				fig.addElement(burninMessage);
+			}	
+			
+			HistogramSeries histo = memLogger.getHistogram(seriesName);
+			addSeries(histo);
+			
+			fig.setYLabel("Frequency");
+			fig.setXLabel("Value");
+		}
+		else {
+			XYSeries burnin = memLogger.getBurninSeries(seriesName);
+			addSeries(burnin, Color.gray);
+
+			XYSeries series = memLogger.getSeries(seriesName);
+			addSeries(series);
+
+			//Never show the burnin message when we're drawing traces
+			if (burninMessage != null) {
+				fig.removeElement(burninMessage);
+			}
+
+			fig.setYLabel("Value");
+			fig.setXLabel("State");
+			fig.inferBoundsFromCurrentSeries();
+		}
 	}
 
 	/**
-	 * Adds a new series for this figure to draw
+	 * Add a single series with the default series color (blue)
+	 * @param series
+	 */
+	private void addSeries(XYSeries series) {
+		addSeries(series, Color.blue);
+	}
+	
+	/**
+	 * Adds a new series for this figure to draw, using the line color indicated
 	 * @param name
 	 * @param series
 	 */
-	public void addSeries(XYSeries series) {
+	private void addSeries(XYSeries series, Color seriesColor) {
 		XYSeriesElement element = new XYSeriesElement(series, fig.getAxes(), fig);
 		fig.addSeriesElement(element);
-		element.setLineColor(Color.blue);
+		element.setLineColor(seriesColor);
 		element.setLineWidth(1.25f);
 		element.setCanConfigure(true);
-		this.series = series;
+		
+		if (series instanceof HistogramSeries) {
+			element.setMode(XYSeriesElement.BOXES);
+		}
 		fig.repaint();
 		
 		//Timer ticks twice a second to monitor series for changes
@@ -229,6 +338,10 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 	 * Gets called when timer ticks so we can repaint series...
 	 */
 	public void actionPerformed(ActionEvent arg0) {
+		if (memLogger.getBurninExceeded() && burninMessage != null) {
+			fig.removeElement(burninMessage);
+			burninMessage = null;
+		}
 		fig.inferBoundsPolitely();
 		fig.repaint();
 	}
@@ -236,13 +349,10 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 	private JFileChooser fileChooser;
 	private JPanel bottomPanel;
 	private JComboBox chooseBox;
-	private BorderlessButton clearButton;
-	private BorderlessButton addButton;
-	private BorderlessButton saveButton;
-	
 	private JLabel topLabel;
-	private XYSeries series;
 	private Timer repaintTimer = null;
 	private XYSeriesFigure fig; //Actually draws series, graph axes, etc
 
+	TextElement burninMessage = null;
+	private boolean showHistogram = false; //If true, draw histogram instead of trace
 }
