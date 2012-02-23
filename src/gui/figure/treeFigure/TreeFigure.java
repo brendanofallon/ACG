@@ -190,7 +190,7 @@ public class TreeFigure extends Figure {
 		if (currentScaleType == DrawableTree.SCALE_AXIS) {
 			scaleElement = new ScaleAxisElement(this);
 
-			scaleElement.setZPosition(-5); //draw underneath the tree so grid lines aren't on top
+			scaleElement.setZPosition(5); //draw on top
 			((ScaleAxisElement)scaleElement).setTreeDrawer(newElement.getTreeDrawer());
 			addElement(scaleElement);
 			scaleElements.put(newElement, scaleElement);			
@@ -286,6 +286,18 @@ public class TreeFigure extends Figure {
 		}
 	}
 	
+	
+	/**
+	 * Returns an int representing the current scale type. These ints are 
+	 * defined in DrawableTree, and possible values are
+	 * DrawableTree.NO_SCALE
+	 * DrawableTree.SCALE_BAR
+	 * DrawableTree.SCALE_AXIS
+	 * @return
+	 */
+	public int getScaleType() {
+		return currentScaleType;
+	}
 	/**
 	 * Note that there is a bit of disagreement regarding what controls the 'scale bar' and 
 	 * 'scale axis' properties. In MultiTreeDisplays, this is a property of the tree. Here,
@@ -320,7 +332,7 @@ public class TreeFigure extends Figure {
 			if (type == DrawableTree.SCALE_AXIS) {
 				ScaleAxisElement scaleElement = new ScaleAxisElement(this);
 
-				scaleElement.setZPosition(-5); //draw underneath the tree so grid lines aren't on top
+				scaleElement.setZPosition(5); //draw on top so tree will be initialized before we draw the scale bar
 				scaleElement.setBounds(x, 0.9, width, 0.075); //Width and height parts are ignored
 				scaleElement.setTreeDrawer(treeElement.getTreeDrawer());
 				treeElement.setBounds(x, y, width, 0.9);

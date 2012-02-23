@@ -453,6 +453,12 @@ public class Tree {
 			return true;
 	}
 	
+	/**
+	 * Return a list of Strings where each one is a newick-formatted subtree of all 
+	 * @param startIndex
+	 * @param treeStr
+	 * @return
+	 */
 	protected static ArrayList<String> getOffspringStrings(int startIndex, String treeStr) {
 		ArrayList<String> children = new ArrayList<String>();
 		treeStr = treeStr.trim();

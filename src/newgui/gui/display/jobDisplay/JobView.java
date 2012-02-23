@@ -122,22 +122,22 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 	
 	protected void pauseJob() {
 		if (job.getJobState().getState() == State.RUNNING) {
-			System.out.println("Pausing job");
 			job.pause();
 		}
 	}
 
 	protected void resumeJob() {
 		if (job.getJobState().getState() == State.PAUSED) {
-			System.out.println("Resuming job");
 			job.resume();
 		}
 	}
 
 	protected void killJob() {
-		int n = JOptionPane.showConfirmDialog(this, "Abort this job?");
-		if (n == JOptionPane.OK_OPTION) {
-			job.abort();	
+		if (currentState != JobState.State.COMPLETED) {
+			int n = JOptionPane.showConfirmDialog(this, "Abort this job?");
+			if (n == JOptionPane.OK_OPTION) {
+				job.abort();	
+			}
 		}
 	}
 
@@ -193,7 +193,7 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 		updateStatusLabel();
 		
 		if (job.getJobState().getState() != currentState) {
-			previousState = currentState;
+			//previousState = currentState;
 			currentState = job.getJobState().getState();
 		}
 		
@@ -202,6 +202,7 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 		}
 		
 		if (currentState == State.COMPLETED) {
+			actionPerformed(null); //updates status label & progress bar
 			timer.stop();
 		}
 		
@@ -216,7 +217,6 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 	}
 	
 	private State currentState = State.NOT_STARTED;
-	private State previousState = State.NOT_STARTED;
 	private Timer timer;
 	private JLabel statusLabel;
 	private JProgressBar progressBar;

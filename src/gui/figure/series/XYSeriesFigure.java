@@ -67,12 +67,12 @@ public class XYSeriesFigure extends SeriesFigure {
 		xLabelElement.setFontSize(13);
 		xLabelElement.setMobile(true);
 		yLabelElement = new VerticalTextElement("     Value     ", this);
-		yLabelElement.setPosition(0.02, 0.4);
-		yLabelElement.setFontSize(13);
+		yLabelElement.setPosition(0.01, 0.4);
+		yLabelElement.setFontSize(12);
 		yLabelElement.setCanConfigure(true);
 		yLabelElement.setMobile(true);
 		axes = new AxesElement(this);
-		axes.setBounds(0.05, 0.05, 0.86, 0.85);
+		axes.setBounds(0.065, 0.05, 0.85, 0.85);
 		axes.setCanConfigure(true);
 		addMouseListeningElement(axes);
 		//Note that is is probably necessary to have the axes element as first in this list
@@ -142,11 +142,11 @@ public class XYSeriesFigure extends SeriesFigure {
 			
 			for(int i=1; i<seriesElements.size(); i++) {	
 				double serMaxY = seriesElements.get(i).getMaxY(); 
-				if (serMaxY > ymax)
+				if ( (!Double.isNaN(serMaxY)) && serMaxY > ymax)
 					ymax = serMaxY;
 				
 				double serMinY = seriesElements.get(i).getMinY(); 
-				if (serMinY < ymin)
+				if ((!Double.isNaN(serMinY)) && serMinY < ymin)
 					ymin = serMinY;
 				
 			}
@@ -166,7 +166,7 @@ public class XYSeriesFigure extends SeriesFigure {
 				}
 			}
 			
-		//	System.out.println("Upperval max y is : " + ymax);
+			//System.out.println("Upperval max y is : " + ymax);
 			axes.setDataBounds(axes.getXMin(), axes.getXMax(), ymin, ymax);
 			axes.setRationalTicks();
 		}

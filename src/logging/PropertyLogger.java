@@ -81,27 +81,34 @@ public abstract class PropertyLogger implements MCMCListener, Named {
 			this.collectionFrequency = collect;
 		
 		String filename = XMLUtils.getStringOrFail(FILENAME, attrs);
-		File file = new File(filename);
-		try {
-			setOutputFile(file);
-		} catch (FileNotFoundException e) {
-			System.err.println("Could not open output file for logging : " + filename);
-			//Shouldn't happen, right?
-			e.printStackTrace();
-		} catch (IOException e) {
-			System.err.println("Could not open output file for logging : " + filename);
-			e.printStackTrace();
-		}
-		
-		Boolean writeTempData = XMLUtils.getOptionalBoolean(WRITE_TEMP_DATA, attrs);
-		if (writeTempData != null) {
-			this.writeTempData = writeTempData;
-			tempFileName = filename;
+		if (filename == null || filename.length() == 0) {
+			writeTempData = false;
+			outputStream = null;
+			System.out.println("Filename is null, not writing property logger data to file.");
 		}
 		else {
-			//Nothing provided, which means we ARE writing temp data, to a file of the same name as the final output file
-			if (filename != null)
+			File file = new File(filename);
+			try {
+				setOutputFile(file);
+			} catch (FileNotFoundException e) {
+				System.err.println("Could not open output file for logging : " + filename);
+				//Shouldn't happen, right?
+				e.printStackTrace();
+			} catch (IOException e) {
+				System.err.println("Could not open output file for logging : " + filename);
+				e.printStackTrace();
+			}
+
+			Boolean writeTempData = XMLUtils.getOptionalBoolean(WRITE_TEMP_DATA, attrs);
+			if (writeTempData != null) {
+				this.writeTempData = writeTempData;
 				tempFileName = filename;
+			}
+			else {
+				//Nothing provided, which means we ARE writing temp data, to a file of the same name as the final output file
+				if (filename != null)
+					tempFileName = filename;
+			}
 		}
 	}
 	
@@ -165,6 +172,11 @@ public abstract class PropertyLogger implements MCMCListener, Named {
 	
 	public void setOutputFile(File outputfile) throws IOException {
 		System.out.println("Attempting to create file : " + outputfile.getAbsolutePath());
+		if (outputfile == null || outputfile.isDirectory())  {
+			System.out.println("Output file is directory, ignoring and not writing data to file.");
+			outputStream = null;
+			return;
+		}
 		if (! outputfile.exists()) {
 			outputfile.createNewFile();
 		}
@@ -209,7 +221,9 @@ public abstract class PropertyLogger implements MCMCListener, Named {
 	@Override
 	public void chainIsFinished() {
 		String str = getSummaryString();
-		outputStream.println(str);
-		outputStream.close();
+		if (outputStream != null) {
+			outputStream.println(str);
+			outputStream.close();
+		}
 	}
 }

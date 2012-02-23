@@ -28,23 +28,30 @@ public class UIConstants {
 	public static final Color darkBackground = new Color(0.90f, 0.90f, 0.92f);
 
 	//Some oft-used icons
-	public static final ImageIcon blueRightArrow = getIcon("gui/icons/scaledBlueArrow.png");
+	public static final ImageIcon blueRightArrow = getIcon("gui/icons/blueRightArrow.png");
+	public static final ImageIcon grayRightArrow = getIcon("gui/icons/grayRightArrow.png");
 	
 	public static final ImageIcon blueLeftArrow = getIcon("gui/icons/blueLeftArrow.png");
 	
-	public static final ImageIcon closeButton = getIcon("gui/icons/closeButtonGray.png");
+	public static final ImageIcon redCloseButton = getIcon("gui/icons/redClose.png");
+	public static final ImageIcon grayCloseButton = getIcon("gui/icons/grayClose.png");
 
+	
 	public static final ImageIcon startButton = getIcon("gui/icons/startArrow.png");
 	
 	public static final ImageIcon pauseButton = getIcon("gui/icons/pauseButton.png");
 	
 	public static final ImageIcon stopButton = getIcon("gui/icons/stopButton.png");
 	
-	public static final ImageIcon addButton = getIcon("gui/icons/addButtonGray.png");
+	public static final ImageIcon addButton = getIcon("gui/icons/addButton.png");
 	
-	public static final ImageIcon saveButton = getIcon("gui/icons/saveIconGray.png");
+	public static final ImageIcon saveGrayButton = getIcon("gui/icons/saveGray.png");
+	public static final ImageIcon saveBlueButton = getIcon("gui/icons/saveBlue.png");
 	
-	public static final ImageIcon clearButton = getIcon("gui/icons/zeroIconGray.png");
+	public static final ImageIcon clearButton = getIcon("gui/icons/zeroIcon.png");
+	
+	public static final ImageIcon grayHistogram = getIcon("gui/icons/grayHistogram.png");
+	public static final ImageIcon blueHistogram = getIcon("gui/icons/blueHistogram.png");
 	
 	//Fonts
 	public static final Font sansFont = getFont("gui/fonts/Trebuchet_MS.ttf");

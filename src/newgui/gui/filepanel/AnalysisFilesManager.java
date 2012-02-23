@@ -53,7 +53,7 @@ public class AnalysisFilesManager {
 	public void addAlignment(Alignment aln, String path) {
 		AlignmentFile alnFile = new AlignmentFile(aln);
 		try {
-			System.out.println("Attempting to save a file at path : " + rootDirectory + path);
+			//System.out.println("Attempting to save a file at path : " + rootDirectory + path);
 			alnFile.saveToFile(new File(rootDirectory + fileSep + path));
 			fireDirectoryChange(new File(path));
 		} catch (IOException e) {
@@ -62,18 +62,19 @@ public class AnalysisFilesManager {
 	}
 	
 
-	public void addAnalysisFile(ACGDocument doc, String path) {
+	public AnalysisDataFile addAnalysisFile(ACGDocument doc, String path) {
 		AnalysisDataFile  dataFile = new AnalysisDataFile();
 		try {
 			dataFile.setACGDocument(doc);
 			dataFile.saveToFile(new File(rootDirectory + fileSep + path));
 			fireDirectoryChange(new File(path));
+			return dataFile;
 		} catch (XMLConversionError e) {
 			ErrorWindow.showErrorWindow(e, "Could not save analysis " + path);
 		} catch (IOException e) {
 			ErrorWindow.showErrorWindow(e, "Could not save analysis " + path);
 		}
-		
+		return null;
 	}
 	
 	/**

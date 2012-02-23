@@ -5,7 +5,6 @@ import gui.document.ACGDocument;
 import gui.document.ACGDocumentBuilder;
 import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.loggerConfigs.AbstractLoggerView;
-import gui.inputPanels.loggerConfigs.AvailableLoggers;
 import gui.inputPanels.loggerConfigs.LoggerModel;
 import gui.inputPanels.loggerConfigs.StateLoggerModel;
 
@@ -17,6 +16,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import logging.PropertyLogger;
 import logging.StateLogger;
+
+import newgui.gui.modelViews.loggerViews.AvailableLoggers;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -77,6 +78,8 @@ public class AnalysisModel {
 		siteModel.readElements(doc);
 		coalModel.readElements(doc);
 		
+		loggerModels.clear();
+		
 		//Loggers handled slightly differently since there may be zero or more...
 		List<String> docLoggers = doc.getLabelForClass(PropertyLogger.class);
 		//docLoggers.addAll( doc.getLabelForClass(StateLogger.class));
@@ -89,14 +92,34 @@ public class AnalysisModel {
 			String className = el.getAttribute(XMLLoader.CLASS_NAME_ATTR);
 			for(LoggerModel model : AvailableLoggers.getLoggers()) {
 				if (model.getLoggerClass().getCanonicalName().equals( className )) {
-					loggerModels.add(model);
+					//Clone model since the one from availableLoggers is stored statically and we don't want to
+					//change the default for everyone
+					LoggerModel newModel = AvailableLoggers.createModel(model);
+					newModel.readElements(doc);
+					loggerModels.add( newModel );
 				}
 			}
 			
 		}
 		
+		//StateLogger is, for some reason, not a PropertyLogger, it won't be in the above list. Handle it separately...
+		List<String> stateLoggerLabels = doc.getLabelForClass(StateLogger.class);
+		if (stateLoggerLabels.size() > 0) {
+			if (stateLoggerLabels.size() > 2) {
+				throw new InputConfigException("Can't handle multiple State loggers right now");
+			}
+			
+			StateLoggerModel stateLoggerModel = new StateLoggerModel();
+			stateLoggerModel.readElements(doc);
+			loggerModels.add(stateLoggerModel);
+			
+		}
+		
+		
 		mcElement.readElements(doc);
 	}
+	
+	
 	
 	/**
 	 * Creates and returns an ACGDocumentBuilder with all analysis nodes added. This 

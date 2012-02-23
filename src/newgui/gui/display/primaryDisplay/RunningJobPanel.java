@@ -99,9 +99,9 @@ public class RunningJobPanel extends JPanel {
 		}
 
 		
-		
 		//Sneak in a new listener that will store data that we can quickly write to displays
 		chain.addListener(memLogger);
+		memLogger.setBurnin( chain.getTotalRunLength()/10 ); //Someday we'll probably want to be more flexible about this
 		
 		//XYSeries dlSeries = memLogger.getSeries( memLogger.getSeriesNames().get(0) );
 		seriesPanel.initializeLogger(memLogger);
@@ -127,13 +127,7 @@ public class RunningJobPanel extends JPanel {
 		seriesPanel = new MultiSeriesPanel();
 		sidePane.addTab("Parameters & Likelihoods", icon, seriesPanel);
 		
-		
-		ImageIcon icon2 = UIConstants.getIcon("gui/icons/scaledBlueArrow.png");
-		
-		BPDensityViz bpDensityViz = new BPDensityViz();
-		
-		//sidePane.addTab("Breakpoint Density", icon2, bpDensityViz);
-		
+
 		sidePane.selectTab(0);
 		
 		add(sidePane, BorderLayout.CENTER);

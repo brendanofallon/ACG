@@ -1,5 +1,7 @@
 package newgui.gui.widgets.fancyTabPane;
 
+import gui.figure.treeFigure.DrawableTree;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -38,7 +40,7 @@ public class FancyTab extends JPanel {
 
 	private String text;
 	private boolean selected = false;
-	private static final Font normalFont = ViewerWindow.sansFont.deriveFont(14f);
+	private static final Font normalFont = ViewerWindow.sansFont.deriveFont(12f);
 	//private static final Font selectedFont = ViewerWindow.sansFont.deriveFont(Font.BOLD);
 	private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
 
@@ -47,7 +49,7 @@ public class FancyTab extends JPanel {
 	private static final Color lighterColor = new Color(0.95f, 0.95f, 0.99f);
 	private static final Color lightColor = new Color(1f, 1f, 1f);
 	
-	private static final ImageIcon closeIcon = UIConstants.getIcon("gui/icons/GrayClose.png");
+	private static final ImageIcon closeIcon = UIConstants.getIcon("gui/icons/smallGrayClose.png");
 	
 	private FTabPane parentPane;
 	
@@ -55,9 +57,10 @@ public class FancyTab extends JPanel {
 		this.text = label;
 		this.parentPane = parentPane;
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-		this.setPreferredSize(new Dimension(120, 30));
+		int targetSize = Math.max(40, label.length()*7 + 35); //Preferred width of tab
+		this.setPreferredSize(new Dimension(targetSize , 30));
 		this.setMinimumSize(new Dimension(20, 30));
-		this.setMaximumSize(new Dimension(label.length()*6, 40));
+		this.setMaximumSize(new Dimension(targetSize, 40));
 		setFont(normalFont);
 		
 		this.add(Box.createHorizontalStrut(20));
@@ -74,7 +77,7 @@ public class FancyTab extends JPanel {
 			}
 		});
 		this.add(closeButton);
-		this.add(Box.createHorizontalStrut(4));
+		this.add(Box.createHorizontalStrut(1));
 		
 		this.addMouseListener(new MouseListener() {
 
@@ -154,10 +157,14 @@ public class FancyTab extends JPanel {
 	     g2d.setColor(Color.LIGHT_GRAY);
 		g.drawRoundRect(0, 2, getWidth()-1, getHeight()+10, 8, 8);
 	
-		g2d.setColor(Color.DARK_GRAY);
 		g.setFont(getFont());
 		int strWidth = g.getFontMetrics().stringWidth(text);
-		g.drawString(text, getWidth()/2 - strWidth/2 - 2, getHeight()-6);
+		
+		g2d.setColor(new Color(1f, 1f, 1f, 0.5f));
+		g.drawString(text, Math.max(3, getWidth()/2 - strWidth/2 - 7), getHeight()-5);
+		
+		g2d.setColor(Color.DARK_GRAY);
+		g.drawString(text, Math.max(2, getWidth()/2 - strWidth/2 - 8), getHeight()-6);
 		
 		//g.drawImage(closeIcon.getImage(), getWidth()-closeIcon.getIconWidth()-10, getHeight()/2-closeIcon.getIconHeight()/2, null);
 		

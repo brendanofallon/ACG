@@ -26,7 +26,8 @@ import java.util.List;
 import math.Histogram;
 
 /**
- * A type of XY series that wraps a Histogram
+ * A type of XY series that wraps a Histogram. All point data re stored in the histogram itself,
+ * there's no List<Point> or array of doubles here
  * @author brendan
  *
  */
@@ -64,6 +65,14 @@ public class HistogramSeries extends XYSeries {
 //	public void removeValue(double x) {
 //		histo.removeValue(x);
 //	}
+
+	
+	public void replace(double[] points, int bins, double min, double max) {
+		histo = new Histogram(min, max, bins);
+		for(int i=0; i<points.length; i++) {
+			histo.addValue(points[i]);
+		}
+	}
 	
 	public void replace(List<Point2D> points, int bins, double min, double max) {
 		histo = new Histogram(min, max, bins);
@@ -84,6 +93,17 @@ public class HistogramSeries extends XYSeries {
 		
 		if (Double.isNaN(maxY) || newPoint.getY() > maxY)
 			maxY = newPoint.getY();
+	}
+	
+	/**
+	 * Add a new value to this histogram series
+	 * @param val
+	 */
+	public void addValue(double val) {
+		histo.addValue(val);
+		if (val > maxY) {
+			maxY = val;
+		}
 	}
 	
 	/**

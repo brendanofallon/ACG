@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 
 import sequence.Alignment;
 
+import newgui.datafile.AnalysisDataFile;
 import newgui.gui.display.Display;
 
 
@@ -67,10 +68,15 @@ public class PrimaryDisplay extends Display {
 		cl.show(mainPanel, ANALYSIS_PREP);
 	}
 	
-	public void showAnalysisDetails(AnalysisModel model) {
-		analDetailsPanel.initialize(model);
+	
+	public void showAnalysisDetails(AnalysisModel model, AnalysisDataFile sourceFile) {
+		analDetailsPanel.initialize(model, sourceFile);
 		CardLayout cl = (CardLayout)(mainPanel.getLayout());
 		cl.show(mainPanel, ANALYSIS_DETAILS);
+	}
+	
+	public void showAnalysisDetails(AnalysisModel model) {
+		showAnalysisDetails(model, null);
 	}
 
 	public void showAlignmentPrepPanel() {

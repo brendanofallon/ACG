@@ -43,6 +43,7 @@ import newgui.gui.modelViews.LoggersView;
 import newgui.gui.modelViews.MCModelView;
 import newgui.gui.modelViews.SiteModelView;
 import newgui.gui.widgets.BorderlessButton;
+import newgui.gui.widgets.HighlightButton;
 
 /**
  * This panel appears when the user has selected an alignment and analysis type from the AnalysisPrepPanel
@@ -56,6 +57,7 @@ public class AnalysisDetailsPanel extends JPanel {
 	private JPanel detailsPanel;
 	private PrimaryDisplay displayParent;
 	private AnalysisModel analysis = null; //Will be set after call to initialize(..)
+	private AnalysisDataFile sourceFile = null; //Data file from which current model was read. May be null. 
 	
 	public AnalysisDetailsPanel(PrimaryDisplay displayParent) {
 		this.displayParent = displayParent;
@@ -66,8 +68,9 @@ public class AnalysisDetailsPanel extends JPanel {
 	 * Populate various widgets and settings in this panel with the options in the given model
 	 * @param analysis
 	 */
-	public void initialize(AnalysisModel analysis) {
+	public void initialize(AnalysisModel analysis, AnalysisDataFile sourceFile) {
 		this.analysis = analysis;
+		this.sourceFile = sourceFile;
 		siteModelView.setSiteModel(analysis.getSiteModel());
 		coalView.setCoalModel(analysis.getCoalescentModel());
 		loggersView.setLoggerModels(analysis.getLoggerModels());
@@ -198,7 +201,7 @@ public class AnalysisDetailsPanel extends JPanel {
 		});
 		bottomPanel.add(backButton);
 		
-		BorderlessButton saveButton = new BorderlessButton(UIConstants.saveButton);
+		HighlightButton saveButton = new HighlightButton(UIConstants.saveGrayButton, UIConstants.saveBlueButton);
 		saveButton.setToolTipText("Save these settings");
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -207,7 +210,7 @@ public class AnalysisDetailsPanel extends JPanel {
 		});
 		
 		
-		BorderlessButton runButton = new BorderlessButton(UIConstants.blueRightArrow);
+		HighlightButton runButton = new HighlightButton(UIConstants.grayRightArrow, UIConstants.blueRightArrow);
 		runButton.setToolTipText("Begin run");
 		runButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -233,19 +236,29 @@ public class AnalysisDetailsPanel extends JPanel {
 			
 			ACGDocument acgDocument = analysis.getACGDocument();
 			
+			String suggestedName = displayParent.getTitle();
+			if (sourceFile != null) {
+				suggestedName = sourceFile.getSourceFile().getName().replace(".xml", "");
+			}
+			
 			String analysisName = (String)JOptionPane.showInputDialog(ViewerWindow.getViewer(), 
 													"Choose a name for these settings:",
 													"Save analysis",
 													JOptionPane.PLAIN_MESSAGE,
 													null, 
 													null,
-													displayParent.getTitle());
+													suggestedName);
+			if (analysisName == null) {
+				return;
+			}
+			
 			if (! analysisName.endsWith(".xml")) {
 				analysisName = analysisName + ".xml";
 			}
 			
 			AnalysisFilesManager manager = AnalysisFilesManager.getManager();
-			manager.addAnalysisFile(acgDocument, analysisName);
+			AnalysisDataFile savedFile = manager.addAnalysisFile(acgDocument, analysisName);
+			sourceFile = savedFile;
 			
 		} catch (InputConfigException e) {
 			ErrorWindow.showErrorWindow(e);

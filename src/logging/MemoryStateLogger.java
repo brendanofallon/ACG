@@ -1,5 +1,6 @@
 package logging;
 
+import gui.figure.series.HistogramSeries;
 import gui.figure.series.XYSeries;
 
 import java.awt.geom.Point2D;
@@ -29,17 +30,35 @@ public class MemoryStateLogger implements MCMCListener {
 	private Integer logFrequency = null; //Computed when we 'initialize'
 	private boolean initialized = false;
 	private MCMC chain;
+	private int ignorePeriod = 10000; //Totally ignore the first few values
+	private int burnin = 0;
+	private boolean burninExceeded = false; //Turns to true when we're beyond the burnin period
+	
 	
 	//Storage for all series that store likelihoods
-	private Map<String, XYSeries> likelihoodSeriesMap = new HashMap<String, XYSeries>();
+	private Map<String, SeriesWrapper> likelihoodSeriesMap = new HashMap<String, SeriesWrapper>();
 	
 	//Storage for series that are from parameters
-	private Map<String, XYSeries> paramSeriesMap = new HashMap<String, XYSeries>();
+	private Map<String, SeriesWrapper> paramSeriesMap = new HashMap<String, SeriesWrapper>();
 	
 	private List<String> seriesNames = new ArrayList<String>();
 	
 	public MemoryStateLogger() {
 		
+	}
+	
+	public boolean getBurninExceeded() {
+		return burninExceeded;
+	}
+	
+	/**
+	 * Set the burn-in period for this memory logger. Results are undefined if this is called
+	 * after we start collecting values.
+	 *
+	 * @param burninLength
+	 */
+	public void setBurnin(int burninLength) {
+		this.burnin = burninLength;
 	}
 	
 	/**
@@ -71,18 +90,76 @@ public class MemoryStateLogger implements MCMCListener {
 	public XYSeries getSeries(String seriesName) {
 		for(String ser : likelihoodSeriesMap.keySet()) {
 			if (ser.equals(seriesName))
-				return likelihoodSeriesMap.get(ser);
+				return likelihoodSeriesMap.get(ser).values;
 		}
 		
 		for(String ser : paramSeriesMap.keySet()) {
 			if (ser.equals(seriesName)) {
-				return paramSeriesMap.get(ser);
+				return paramSeriesMap.get(ser).values;
 			}
 		}
 		
 		return null;
 	}
 	
+	public XYSeries getBurninSeries(String seriesName) {
+		for(String ser : likelihoodSeriesMap.keySet()) {
+			if (ser.equals(seriesName))
+				return likelihoodSeriesMap.get(ser).burnin;
+		}
+		
+		for(String ser : paramSeriesMap.keySet()) {
+			if (ser.equals(seriesName)) {
+				return paramSeriesMap.get(ser).burnin;
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Obtain a HistogramSeries associated with the given series name. The histogram is 
+	 * continually updates as the chain progresses. 
+	 * @param seriesName
+	 * @return
+	 */
+	public HistogramSeries getHistogram(String seriesName) {
+		for(String ser : likelihoodSeriesMap.keySet()) {
+			if (ser.equals(seriesName)) {
+				SeriesWrapper wrapper = likelihoodSeriesMap.get(ser);
+				if (wrapper.histo == null)
+					createHistogramForSeries(wrapper);
+				return wrapper.histo;
+			}
+		}
+		
+		for(String ser : paramSeriesMap.keySet()) {
+			if (ser.equals(seriesName)) {
+				SeriesWrapper wrapper = paramSeriesMap.get(ser);
+				if (wrapper.histo == null)
+					createHistogramForSeries(wrapper);
+				return paramSeriesMap.get(ser).histo;
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Creates a HistogramSeries for the given series name and stores it in the appropriate SeriesWrapper.
+	 * This clobbers the old value in wrapper.histo, if there is one. 
+	 * @param ser
+	 */
+	private void createHistogramForSeries(SeriesWrapper wrapper) {
+		double min = wrapper.values.getMinY();
+		double max = wrapper.values.getMaxY();
+		int bins = 100;
+		HistogramSeries histoSeries = new HistogramSeries(wrapper.name, wrapper.values.getPointList(), bins, min, max);
+		wrapper.histo = histoSeries;
+	}
+	
+	
+
 	@Override
 	public void setMCMC(MCMC chain) {
 		this.chain = chain;
@@ -103,7 +180,12 @@ public class MemoryStateLogger implements MCMCListener {
 		
 		for(LikelihoodComponent comp : chain.getComponents()) {
 			XYSeries series = new XYSeries(comp.getLogHeader());
-			likelihoodSeriesMap.put(comp.getName(), series);
+			XYSeries burnin = new XYSeries(comp.getLogHeader() + " (burnin)");
+			SeriesWrapper wrapper = new SeriesWrapper();
+			wrapper.name = comp.getName();
+			wrapper.values = series;
+			wrapper.burnin = burnin;
+			likelihoodSeriesMap.put(comp.getName(), wrapper);
 			seriesNames.add(comp.getName());
 		}
 		
@@ -112,7 +194,12 @@ public class MemoryStateLogger implements MCMCListener {
 			for(int i=0; i<absParam.getKeyCount(); i++) {
 				String serName = absParam.getName() + " - " + absParam.getLogKeys()[i];
 				XYSeries series = new XYSeries(serName);
-				paramSeriesMap.put(serName, series);
+				XYSeries burnin= new XYSeries(serName + " (burnin)");
+				SeriesWrapper wrapper = new SeriesWrapper();
+				wrapper.name = serName;
+				wrapper.values = series;
+				wrapper.burnin = burnin;
+				paramSeriesMap.put(serName, wrapper);
 				seriesNames.add(serName);
 			}
 		}
@@ -122,12 +209,26 @@ public class MemoryStateLogger implements MCMCListener {
 
 	@Override
 	public void newState(int stateNumber) {
+		if (stateNumber < ignorePeriod) {
+			return;
+		}
 		if (stateNumber % logFrequency == 0) {
+			burninExceeded = stateNumber >= burnin;
+			
 			for(LikelihoodComponent comp : chain.getComponents()) {
 				String name = comp.getName();
-				XYSeries series = getLikelihoodSeries(name);
+				SeriesWrapper wrapper = getLikelihoodSeries(name);
+				//XYSeries series = wrapper.values;
 				Point2D p = new Point2D.Float(stateNumber, new Float(comp.getProposedLogLikelihood()));
-				series.addPointInOrder(p);
+				
+				if (! burninExceeded)
+					wrapper.burnin.addPointInOrder(p);
+				else
+					wrapper.values.addPointInOrder(p);
+				
+				if (wrapper.histo != null) {
+					wrapper.histo.addValue(comp.getProposedLogLikelihood());
+				}
 			}
 			
 			for(Parameter<?> param : chain.getParameters()) {
@@ -136,7 +237,8 @@ public class MemoryStateLogger implements MCMCListener {
 					String key = absParam.getLogKeys()[i];
 				
 					String serName = absParam.getName() + " - " + key;
-					XYSeries series = paramSeriesMap.get(serName);
+					SeriesWrapper wrapper = paramSeriesMap.get(serName);
+					
 					Object obj = absParam.getLogItem(key);
 					Float val = null;
 					if (obj instanceof Double) {
@@ -148,12 +250,20 @@ public class MemoryStateLogger implements MCMCListener {
 					if (obj instanceof Integer) {
 						val = new Float( (Integer)obj );
 					}
+					
 					if (val == null) {
 						System.err.println("Cannot find plottable value for param: " + absParam.getName() + " item:" + obj);
 					}
 					else {
 						Point2D p = new Point2D.Float(stateNumber, val);
-						series.addPointInOrder(p);
+						if (! burninExceeded)
+							wrapper.burnin.addPointInOrder(p);
+						else
+							wrapper.values.addPointInOrder(p);
+						if (wrapper.histo != null) {
+							wrapper.histo.addValue(val);
+						}
+						
 					}
 				}
 				
@@ -170,7 +280,7 @@ public class MemoryStateLogger implements MCMCListener {
 	 * @param name
 	 * @return
 	 */
-	private XYSeries getLikelihoodSeries(String name) {
+	private SeriesWrapper getLikelihoodSeries(String name) {
 		return likelihoodSeriesMap.get(name);
 	}
 
@@ -179,4 +289,15 @@ public class MemoryStateLogger implements MCMCListener {
 		//Nothing to do
 	}
 	
+	/**
+	 * Stores a variety of data series associated with a given series type 
+	 * @author brendano
+	 *
+	 */
+	class SeriesWrapper {
+		String name;
+		XYSeries burnin = null;
+		XYSeries values = null;
+		HistogramSeries histo = null;
+	}
 }

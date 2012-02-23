@@ -145,6 +145,10 @@ public class BorderlessButton extends JPanel {
 		repaint();
 	}
 	
+	public void setIcon(ImageIcon newIcon) {
+		this.icon = newIcon;
+	}
+	
 	class Listener extends MouseInputAdapter {
 		
 		public void mouseClicked(MouseEvent me) {
@@ -267,6 +271,8 @@ public class BorderlessButton extends JPanel {
 	public void setXDif(int xDif) {
 		this.xDif = xDif;
 	}
+
+	
 	
 }
 
