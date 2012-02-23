@@ -16,30 +16,37 @@
 *
 ***********************************************************************/
 
-
 package coalescent;
 
+import modifier.Modifier;
+import modifier.ScaleModifier;
+import modifier.SimpleModifier;
+import java.lang.Double;
 import java.util.Map;
-
-import modifier.ModificationImpossibleException;
 
 import parameter.CompoundParameter;
 import parameter.DoubleParameter;
 import parameter.Parameter;
+import modifier.ModificationImpossibleException;
 
 /**
- * A demographic model of exponential growth over time. The population is assumed to be
- * at baseSize at time t=0, then grows (or shrinks) exponentially as one looks back
- * into the past, with growth rate given by the growthRate param. 
- * @author brendan
+ * Class representing a linear model for population growth
+ * @author elliottb
  *
  */
-public class ExponentialGrowth extends CompoundParameter<Void> implements DemographicParameter {
-
-	DoubleParameter baseSize;
-	DoubleParameter growthRate;
+public class LinearPopModel extends CompoundParameter<Void> implements DemographicParameter {
 	
-	public ExponentialGrowth(Map<String, String> attrs, DoubleParameter baseSize, DoubleParameter growthRate) {	
+	DoubleParameter baseSize; // units ?
+	DoubleParameter growthRate; // units ?
+
+	/**
+	 * TODO: Explicitly define parameters
+	 * @param attrs
+	 * @param baseSize
+	 * @param growthRate
+	 */
+	public LinearPopModel(Map<String, String> attrs, DoubleParameter baseSize, 
+			               DoubleParameter growthRate) {	
 		super(attrs);
 		this.baseSize = baseSize;
 		addParameter(baseSize);
@@ -48,27 +55,28 @@ public class ExponentialGrowth extends CompoundParameter<Void> implements Demogr
 		baseSize.acceptValue();
 		growthRate.acceptValue();
 	}
-	
+
+	/**
+	 * ELB, 2012/01/18
+	 * Analytic calculation of the integral of the population size.
+	 * Simply the area of the equivalent triangle divided by 2
+	 */
 	@Override
 	public double getIntegral(double t0, double t1) {
-		double r = growthRate.getValue();
-		if (Math.abs(r) < 1e-10) {
-			return (t1-t0)/baseSize.getValue();
-		}
-		else 
-			return (Math.exp(r*t1)-Math.exp(r*t0))/(baseSize.getValue()*r);
+		double size0 = getPopSize(t0);
+		double size1 = getPopSize(t1);
+		return (1.0/2)*(size1 - size0)/(t1 - t0);
 	}
-
+	/**
+	 * ELB, 2012/01/18
+	 * Returns the linear function of the population size at a 
+	 * time t, past (or before) the initial time.
+	 */
 	@Override
 	public double getPopSize(double t) {
-		return baseSize.getValue()*Math.exp(-growthRate.getValue()*t);
+		return baseSize.getValue() + growthRate.getValue()*t;
 	}
 	
-	@Override
-	public String getName() {
-		return "exp.growth";
-	}
-
 	@Override
 	protected void proposeNewValue(Parameter<?> source) {
 		try {
@@ -81,4 +89,3 @@ public class ExponentialGrowth extends CompoundParameter<Void> implements Demogr
 		}
 	}
 }
-	

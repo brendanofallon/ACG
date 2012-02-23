@@ -78,8 +78,8 @@ public class CoalescentView extends JPanel {
 
 	private Stylist stylist = new Stylist();
 	
-	
-	public CoalescentView() {
+	public CoalescentView(CoalescentModelElement coalModel) {
+		this.coalModel = coalModel;
 		stylist.addStyle(new Style() {
 			public void apply(JComponent comp) {
 				comp.setOpaque(false);
@@ -87,8 +87,11 @@ public class CoalescentView extends JPanel {
 			}
 		});
 		
-		coalModel = new CoalescentModelElement();
 		initComponents();
+	}
+	
+	public CoalescentView() {
+		this( new CoalescentModelElement() );
 	}
 	
 	/**

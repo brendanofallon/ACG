@@ -19,66 +19,96 @@
 
 package coalescent;
 
-import java.io.PrintStream;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+
+import parameter.AbstractParameter;
 
 import arg.ARG;
 import arg.CoalNode;
-import arg.TreeUtils;
+import logging.PropertyLogger;
 import logging.StringUtils;
 import math.LazyHistogram;
 import mcmc.MCMC;
-import mcmc.MCMCListener;
 
 /**
  * Creates histograms of population sizes over time. At some point this should be
  * converted to extend PropertyLogger so it can inherit all that functionality, but
  * for now this mostly just exists for testing/debugging purposes. 
  * 
- * ACTUALLY ACG DOCUMENT READING DEPENDS ON THIS BEING A PROPERTYLOGGER! YOU WONT
- * BE ABLE TO READ THESE SETTINGS FROM AN ACGDOCUMENT UNTIL THIS IS FIXED 
- * 
  * @author brendano
  *
  */
-public class PopSizeLogger implements MCMCListener {
+public class PopSizeLogger extends PropertyLogger {
 
 	ARG arg;
 	DemographicParameter popSize;
 	
 	int bins = 100;
-	int burnin = 1000000;
-	
 	LazyHistogram[] sizeHistos;
 	
-	double maxHeight = Double.NEGATIVE_INFINITY; //Tracks max height of trees during 
-	double binStep;
-	int collectionFrequency;
-	
-	PrintStream outStream = System.out;
-	
+	Double maxTreeHeight = null; 
+
 	public PopSizeLogger(Map<String, String> attrs, ARG arg, DemographicParameter demoParam) {
+		super(attrs);
 		this.arg = arg;
 		this.popSize = demoParam;
 	}
 	
 	
-	public PopSizeLogger(int burnin, int collectionFrequency, ARG arg, DemographicParameter demoParam, PrintStream outputStream) {
-		this(burnin, collectionFrequency, arg, demoParam);
-		this.outStream = outputStream;
-	}
-	
-	
-	public PopSizeLogger(int burnin, int collectionFrequency, ARG arg, DemographicParameter demoParam) {
-		this.burnin = burnin;
-		this.collectionFrequency = collectionFrequency;
-		this.arg = arg;
-		this.popSize = demoParam;
-		sizeHistos = new LazyHistogram[100];
-	}
+//	public PopSizeLogger(int burnin, int collectionFrequency, ARG arg, DemographicParameter demoParam, PrintStream outputStream) {
+//		this(burnin, collectionFrequency, arg, demoParam);
+//		this.outStream = outputStream;
+//	}
 	
 
-	protected void addValue() {
+	/**
+	 * Example xml-friendly constructor. We need a reference to both the ARG (so we can find it's
+	 * height, so we now how deep to make the historgram) and the DemographicParameter, which
+	 * stores what the population size function actually looks like.
+	 * 
+	 * @param attrs
+	 * @param arg
+	 * @param demoParam
+	 */
+//	public PopSizeLogger(Map<String, String> attrs, ARG arg, DemographicParameter demoParam) {
+//		super(attrs);
+//		this.arg = arg;
+//		this.popSize = demoParam;
+//	}
+	
+//	public PopSizeLogger(int burnin, int collectionFrequency, ARG arg, DemographicParameter demoParam, PrintStream outputStream) {
+//		this(burnin, collectionFrequency, arg, demoParam);
+//		this.outStream = outputStream;
+//	}
+	
+	
+//	public PopSizeLogger(int burnin, int collectionFrequency, ARG arg, DemographicParameter demoParam) {
+//		this.burnin = burnin;
+//		this.collectionFrequency = collectionFrequency;
+//		this.arg = arg;
+//		this.popSize = demoParam;
+//		sizeHistos = new LazyHistogram[100];
+//	}
+	
+
+	public void addValue(int stateNumber) {
+		//If it's the first call, figure out how tall the tree is and use that for the 
+		//deepest time bin
+		if (maxTreeHeight == null) {
+			List<CoalNode> dlNodes = arg.getDLCoalNodes();
+			Collections.sort(dlNodes, arg.getNodeHeightComparator());
+			double maxDLHeight = dlNodes.get( dlNodes.size()-1).getHeight();
+			maxTreeHeight = 2.0*Math.round(maxDLHeight*10000.0)/10000.0;
+			
+			sizeHistos = new LazyHistogram[bins];
+			for(int i=0; i<sizeHistos.length; i++) {
+				sizeHistos[i] = new LazyHistogram(500);
+			}
+		}
+		
+		double binStep = maxTreeHeight / (sizeHistos.length-1);
 		double time = 0;
 		for(int i=0; i<sizeHistos.length; i++) {
 			sizeHistos[i].addValue( popSize.getPopSize(time));
@@ -87,53 +117,61 @@ public class PopSizeLogger implements MCMCListener {
 	}
 	
 	
+	
 	@Override
-	public void newState(int stateNumber) {
-		if ( stateNumber < burnin && stateNumber > burnin/2) {
-			double height = arg.getMaxHeight();
-			if (height > maxHeight)
-				maxHeight = height;
+	public void setMCMC(MCMC chain) {
+		this.chain = chain;
+		this.arg = findARG(chain);
+		if (arg == null) {
+			throw new IllegalArgumentException("No ARG found in chain");
 		}
 		
-		if (stateNumber == burnin) {
-			
-			//If burnin is very low maxHeight may not have been set at all
-			if (Double.isInfinite(maxHeight))
-				maxHeight = arg.getMaxHeight();
-			
-			//Convert max height to reasonable value
-			maxHeight = Math.round( 2.0*maxHeight * 1000.0) / 1000.0;
-			binStep = maxHeight / (double)bins;
-			System.out.println("PopSizeLogger is setting max root height to : " + maxHeight);
-			
-			for(int i=0; i<bins; i++) {
-				sizeHistos[i] = new LazyHistogram(1000);
-			}
-			
-			
+		this.popSize = findDemoParam(chain);
+		if (popSize == null) {
+			throw new IllegalArgumentException("No demographic parameter found in chain");
 		}
-		
-		if (stateNumber > 0 && stateNumber % collectionFrequency == 0 && stateNumber>burnin) {
-			addValue();
-		}		
 	}
 
 	@Override
-	public void chainIsFinished() {
-		outStream.println("\n Population sizes over time : \n");
+	public String getSummaryString() {
+		StringBuilder str = new StringBuilder();
 		if (sizeHistos[0] == null) {
-			outStream.println("Histograms have not been initialized, probably burnin ( " + burnin +" states ) has not been reached yet");
-			return;
+			str.append("Histograms have not been initialized, probably burnin has not been exceeded\n");
 		}
+		
+		double binStep = maxTreeHeight / (sizeHistos.length-1);
 		double time = 0;
 		for(int i=0; i<bins; i++) {
-			outStream.println(StringUtils.format(time, 4) + "\t" + sizeHistos[i].lowerHPD(0.05) + "\t" + sizeHistos[i].lowerHPD(0.1) + "\t" + sizeHistos[i].lowerHPD(0.20) + "\t" + sizeHistos[i].getMean() + "\t" + sizeHistos[i].upperHPD(0.20) + "\t" + sizeHistos[i].upperHPD(0.10) + "\t" + sizeHistos[i].upperHPD(0.05));
+			str.append(StringUtils.format(time, 5) + "\t" + sizeHistos[i].lowerHPD(0.025) + "\t" + sizeHistos[i].lowerHPD(0.05) + "\t" + sizeHistos[i].lowerHPD(0.1) + "\t" + sizeHistos[i].getMean() + "\t" + sizeHistos[i].upperHPD(0.10) + "\t" + sizeHistos[i].upperHPD(0.05) + "\t" + sizeHistos[i].upperHPD(0.025) + "\n");
+			//str.append(StringUtils.format(time, 5) + "\t" + sizeHistos[i].getMean() + "\n");
 			time += binStep;
 		}
+		
+		return str.toString();
 	}
 
 	
-	@Override
-	public void setMCMC(MCMC chain) {		
+	private ARG findARG(MCMC mc) {
+		for(AbstractParameter<?> par : mc.getParameters()) {
+			if (par instanceof ARG)
+				return (ARG)par;
+		}
+		return null;
 	}
+	
+	private DemographicParameter findDemoParam(MCMC mc) {
+		for(AbstractParameter<?> par : mc.getParameters()) {
+			if (par instanceof DemographicParameter)
+				return (DemographicParameter)par;
+		}
+		return null;
+	}
+
+
+	@Override
+	public String getName() {
+		return "Population size logger";
+	}
+
+	
 }

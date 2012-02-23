@@ -48,7 +48,7 @@ public abstract class PropertyLogger implements MCMCListener, Named {
 	public static final String FILENAME = "filename";
 	public static final String WRITE_TEMP_DATA = "write.temp.data";
 	
-	MCMC chain = null;
+	protected MCMC chain = null;
 	int collectionFrequency;
 	int calls = 0;
 	//Don't collect info before this number of states
