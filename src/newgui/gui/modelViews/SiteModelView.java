@@ -49,18 +49,20 @@ import org.w3c.dom.Element;
 public class SiteModelView extends JPanel {
 
 	//The 'model' portion that stores the data
-	private SiteModelElement siteModel = new SiteModelElement();
+	private SiteModelElement siteModel;
 		
 	private final String[] rateTypes = new String[]{"One rate", "Gamma rates" /* "Custom rates" */};
 	
 	private Stylist stylist = new Stylist();
 
-	public SiteModelView() {		
+	public SiteModelView(SiteModelElement siteModel) {
+		this.siteModel = siteModel;
 		oneRatePanel = new JPanel();
 		rateConfigPanel = new JPanel();
 		gammaPanel = new JPanel();
 		customPanel = new JPanel();
 		initComponents();
+		updateView();
 	}
 	
 	
@@ -68,10 +70,10 @@ public class SiteModelView extends JPanel {
 	 * Sets the model associated with this view
 	 * @param siteModel
 	 */
-	public void setSiteModel(SiteModelElement siteModel) {
-		this.siteModel = siteModel;
-		updateView();
-	}
+//	public void setSiteModel(SiteModelElement siteModel) {
+//		this.siteModel = siteModel;
+//		updateView();
+//	}
 	
 	/**
 	 * Get the site model that holds the model data 

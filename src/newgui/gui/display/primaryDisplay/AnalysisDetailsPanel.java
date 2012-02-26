@@ -71,8 +71,8 @@ public class AnalysisDetailsPanel extends JPanel {
 	public void initialize(AnalysisModel analysis, AnalysisDataFile sourceFile) {
 		this.analysis = analysis;
 		this.sourceFile = sourceFile;
-		siteModelView.setSiteModel(analysis.getSiteModel());
-		coalView.setCoalModel(analysis.getCoalescentModel());
+		siteModelView = new SiteModelView( analysis.getSiteModel() );
+		coalView = new CoalModelView( analysis.getCoalescentModel() );
 		loggersView.setLoggerModels(analysis.getLoggerModels());
 		mcView.setModel( analysis.getMCModelElement() );
 		repaint();
@@ -223,8 +223,8 @@ public class AnalysisDetailsPanel extends JPanel {
 		bottomPanel.add(Box.createHorizontalStrut(25));
 		this.add(bottomPanel, BorderLayout.SOUTH);
 		
-		siteModelView = new SiteModelView();
-		coalView = new CoalModelView();
+		//siteModelView = new SiteModelView();
+		//coalView = new CoalModelView();
 		loggersView = new LoggersView();
 		mcView = new MCModelView();
 	}

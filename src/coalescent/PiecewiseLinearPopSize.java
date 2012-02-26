@@ -227,46 +227,46 @@ public class PiecewiseLinearPopSize extends AbstractParameter<PiecewiseLinearFun
 		return y0 + ((xp-x0)*y1 - (xp-x0)*y0)/(x1-x0);
 	}
 	
-//	public static void main(String[] args) {
-//		RandomSource.initialize(-1303301468);
-//		
-//		PiecewiseLinearPopSize size = new PiecewiseLinearPopSize();
-//		
-//		Modifier<PiecewiseLinearPopSize> mod = new LinearFunctionMover();
-//		size.addModifier(mod);
-//		
-//		for(int j=0; j<100; j++) {
-//			
-//			try {
-//				System.out.println("\n\nStep #" + j);
-//				for(int i=0; i<30; i++) {
-//					double t = (double)i / 5.0;
-//					System.out.println(t + "\t" + size.getPopSize(t));
-//				}
-//				
-//				mod.modify();
-//				size.acceptValue();
-//				
-//			} catch (InvalidParameterValueException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IllegalModificationException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (ModificationImpossibleException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			
-//		}
-//		
-//		System.out.println("Integrals...");
-//		
-//		for(int i=0; i<30; i++) {
-//			double t = (double)i / 5.0;
-//			System.out.println(t + "\t" + size.getIntegral(0, t));
-//		}
-//		
-//	}
+	public static void main(String[] args) {
+		RandomSource.initialize(-1303301468);
+		
+		PiecewiseLinearPopSize size = new PiecewiseLinearPopSize();
+		
+		Modifier<PiecewiseLinearPopSize> mod = new LinearFunctionMover();
+		size.addModifier(mod);
+		
+		for(int j=0; j<100; j++) {
+			
+			try {
+				System.out.println("\n\nStep #" + j);
+				for(int i=0; i<30; i++) {
+					double t = (double)i / 5.0;
+					System.out.println(t + "\t" + size.getPopSize(t));
+				}
+				
+				mod.modify();
+				size.acceptValue();
+				
+			} catch (InvalidParameterValueException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalModificationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ModificationImpossibleException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+		System.out.println("Integrals...");
+		
+		for(int i=0; i<30; i++) {
+			double t = (double)i / 5.0;
+			System.out.println(t + "\t" + size.getIntegral(0, t));
+		}
+		
+	}
 
 }

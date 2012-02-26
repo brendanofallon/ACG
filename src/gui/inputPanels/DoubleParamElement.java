@@ -167,9 +167,13 @@ public class DoubleParamElement {
 	 */
 	public void readSettings(ACGDocument doc, Element el) throws InputConfigException {
 		String className = el.getAttribute(XMLLoader.CLASS_NAME_ATTR);
-		if (className == null || (!className.equals(DoubleParameter.class.getCanonicalName()))) {
-			throw new InputConfigException("Element is not of class DoubleParameter");
-		}
+		
+		//The following sanity check actually breaks if we pass in an element that is a subclass of 
+		//DoubleParameter (for instance, ConstantPopSize)... so it's turned off for now. If we do happen
+		//to pass in something totally bogus, the later sanity checks in this method will catch it 
+//		if (className == null || (!className.equals(DoubleParameter.class.getCanonicalName()))) {
+//			throw new InputConfigException("Element is not of class DoubleParameter");
+//		}
 		
 		String label = el.getNodeName();
 		setLabel(label);

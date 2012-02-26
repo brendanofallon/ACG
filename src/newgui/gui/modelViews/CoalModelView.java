@@ -65,7 +65,7 @@ public class CoalModelView extends JPanel {
 	private Stylist stylist = new Stylist();
 	
 	
-	public CoalModelView() {
+	public CoalModelView(CoalescentModelElement coalModel) {
 		stylist.addStyle(new Style() {
 			public void apply(JComponent comp) {
 				comp.setOpaque(false);
@@ -74,9 +74,9 @@ public class CoalModelView extends JPanel {
 			}
 		});
 		
-		coalModel = new CoalescentModelElement();
+		this.coalModel = coalModel;
 		initComponents();
-		//this.setBorder(BorderFactory.createLineBorder(Color.RED));
+		updateView();
 	}
 	
 	/**
@@ -113,12 +113,12 @@ public class CoalModelView extends JPanel {
 	 * components from scratch
 	 * @param coalescentModel
 	 */
-	public void setCoalModel(CoalescentModelElement coalescentModel) {
-		this.coalModel = coalescentModel;
-		this.removeAll();
-		initComponents();
-		updateView();
-	}
+//	public void setCoalModel(CoalescentModelElement coalescentModel) {
+//		this.coalModel = coalescentModel;
+//		this.removeAll();
+//		initComponents();
+//		updateView();
+//	}
 	
 	/**
 	 * Called when recombination selection has changed

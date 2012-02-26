@@ -140,6 +140,7 @@ public class PopSizeModelElement extends ModelElement {
 					constSizeModel.setModifierLabel( modEl.getLabel() );
 					constSizeModel.setModifierFrequency( modEl.getFrequency() );
 				}
+				constSizeModel.readSettings(doc, popSizeElement);
 			}
 		}
 		
