@@ -1569,6 +1569,19 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 		return null;
 	}
 	
+	/**
+	 * Obtain a new comparator object which compares recomb nodes based on interior breakpoint
+	 * @return
+	 */
+	public BPPosComparator getBPPosComparator() {
+		return new BPPosComparator();
+	}
+	
+	/**
+	 * Compares nodes based on height
+	 * @author brendan
+	 *
+	 */
 	class NodeHeightComparator implements Comparator<ARGNode> {
 
 		@Override
@@ -1576,6 +1589,20 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 			return nodeA.getHeight() < nodeB.getHeight() ? -1 : 1;
 		}
 		
+		
+	}
+	
+	/**
+	 * Compares nodes based on
+	 * @author brendan
+	 *
+	 */
+	class BPPosComparator implements Comparator<RecombNode> {
+
+		@Override
+		public int compare(RecombNode o1, RecombNode o2) {
+			return o1.getInteriorBP() - o2.getInteriorBP();
+		}
 		
 	}
 

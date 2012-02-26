@@ -203,9 +203,7 @@ public class DocMemberConfigPanel extends JPanel {
 	 * @throws ParserConfigurationException 
 	 */
 	public ACGDocument getACGDocument() throws InputConfigException {
-
 		return analysisModel.getACGDocument();
-
 	}
 	
 	private void browseForAlignmentFile() {
@@ -291,13 +289,13 @@ public class DocMemberConfigPanel extends JPanel {
 		this.add(topPanel, BorderLayout.NORTH);
 		
 		tabPane = new JTabbedPane();
-		siteModelPanel = new SiteModelView();
+		siteModelPanel = new SiteModelView(analysisModel.getSiteModel());
 		tabPane.insertTab("Site model", null, siteModelPanel, "Substitution model for this alignment", 0);
 		
-		coalescentModelPanel = new CoalescentView();
+		coalescentModelPanel = new CoalescentView(analysisModel.getCoalescentModel());
 		tabPane.insertTab("Coalescent model", null, coalescentModelPanel, "Coalescent model for this alignment", 1);
 		
-		loggersPanel = new LoggersPanel();
+		loggersPanel = new LoggersPanel(analysisModel.getLoggerModels());
 		tabPane.insertTab("Loggers", null, loggersPanel, "Logging and output options", 2);
 		
 		mcView = new MCMCModelView( analysisModel.getMCModelElement()  );

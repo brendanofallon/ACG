@@ -63,6 +63,11 @@ public class LoggersPanel extends JPanel implements LoggerReceiver {
 	
 	static final ImageIcon removeIcon = ACGFrame.getIcon("inputPanels/loggerConfigs/icons/removeButton.png");
 	
+	public LoggersPanel(List<LoggerModel> loggerModels) {
+		this();
+		setLoggerModels(loggerModels);
+	}
+	
 	public LoggersPanel() {
 		this.setOpaque(false);
 		

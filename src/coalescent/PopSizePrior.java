@@ -173,7 +173,7 @@ public class PopSizePrior extends AbstractPrior {
 		slogger.addStream(System.out);
 		listeners.add( slogger );
 		
-		listeners.add(new PopSizeLogger(100000, 100, arg, popsize));
+		listeners.add(new PopSizeLogger(new HashMap<String, String>(), arg, popsize));
 
 		Map<String, String> mcAttrs = new HashMap<String, String>();
 		mcAttrs.put("length", "5000000");		

@@ -187,8 +187,8 @@ public class ARGUtils {
 	
 	public static String getHelpString() {
 		StringBuilder str = new StringBuilder();
-		str.append("ARGUtils v0.01 : Some utilities read extracting information from ARG text files \n");
-		str.append(" Author: Brendan O'Fallon (brendano@u.washington.edu) \n");
+		str.append("ARGUtils v0.01 : Some utilities for extracting information from ARG text files \n");
+		str.append(" Author: Brendan O'Fallon (brendanofallon@fastmail.fm) \n");
 		str.append("  For now, all ARGs must be in GraphML-like format \n");
 		str.append("  usage \n");
 		str.append(" --extract-trees [argfile.xml]         \n\t Emit all marginal trees in newick format \n");
@@ -307,6 +307,7 @@ public class ARGUtils {
 				List<RecombNode> rNodes = arg.getRecombNodes();
 				System.out.println("Number of breakpoints : " + rNodes.size());
 				System.out.println("Site \t Height");
+				Collections.sort(rNodes, arg.getBPPosComparator());
 				for(RecombNode node : rNodes) {
 					System.out.println(node.getInteriorBP() + "\t" + node.getHeight());
 				}
@@ -380,11 +381,11 @@ public class ARGUtils {
 			for(int i=1; i<args.length; i++) {
 				BasicSequenceAlignment aln = new BasicSequenceAlignment(args[i]);
 				
-				System.out.println("<alignment" + (i) + " class=\"sequence.Alignment\">");
+				System.out.println("<alignment" + (i) + " class=\"sequence.BasicSequenceAlignment\">");
 				System.out.println("\t<sequences" + i + " class=\"list\">");
 				for(Sequence seq : aln.getSequences()) {
 					String seqName = seq.getLabel();
-					System.out.println("\t\t<" + seqName + " class=\"sequence.Sequence\">");
+					System.out.println("\t\t<" + seqName + " class=\"sequence.SimpleSequence\">");
 					System.out.println("\t\t\t" + seq.getSequenceString() );
 					System.out.println("\t\t</" + seqName + ">");
 				}
