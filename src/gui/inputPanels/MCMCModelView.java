@@ -126,7 +126,22 @@ public class MCMCModelView extends JPanel {
 	public void updateFromModel() {
 		lengthSpinner.setValue( model.getRunLength() );
 		useHeatingBox.setSelected( model.isUseMC3());
+		if (model.isUseMC3()) {
+			chainsSpinner.setEnabled(true);
+			threadsSpinner.setEnabled(true);
+		}
+		else {
+			chainsSpinner.setEnabled(true);
+			threadsSpinner.setEnabled(true);
+		}
+		
 		adaptiveHeatingBox.setSelected(model.isUseAdaptiveMC3());
+		lambdaField.setText("" + model.getLambda());
+		if ( model.isUseAdaptiveMC3() )
+			lambdaField.setEnabled(false);
+		else
+			lambdaField.setEnabled(true);
+			
 		chainsSpinner.setValue( model.getChains() );
 		threadsSpinner.setValue( model.getThreads() );
 		revalidate();

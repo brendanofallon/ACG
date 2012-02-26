@@ -36,11 +36,7 @@ public class MCModelView extends JPanel {
 	public MCModelView(MCMCModelElement model) {
 		this.model = model;
 		initComponents();
-	}
-	
-	public MCModelView() {
-		model = new MCMCModelElement();
-		initComponents();
+		updateView();
 	}
 	
 	private void initComponents() {
@@ -139,10 +135,25 @@ public class MCModelView extends JPanel {
 	/**
 	 * Update widgets to reflect changes in model settings
 	 */
-	public void updateFromModel() {
+	public void updateView() {
 		lengthSpinner.setValue( model.getRunLength() );
 		useHeatingBox.setSelected( model.isUseMC3());
+		if (model.isUseMC3()) {
+			chainsSpinner.setEnabled(true);
+			threadsSpinner.setEnabled(true);
+		}
+		else {
+			chainsSpinner.setEnabled(false);
+			threadsSpinner.setEnabled(false);
+		}
+		
 		adaptiveHeatingBox.setSelected(model.isUseAdaptiveMC3());
+		lambdaField.setText("" + model.getLambda().getValue());
+		if ( model.isUseAdaptiveMC3() )
+			lambdaField.setEnabled(false);
+		else
+			lambdaField.setEnabled(true);
+			
 		chainsSpinner.setValue( model.getChains() );
 		threadsSpinner.setValue( model.getThreads() );
 		revalidate();
@@ -227,7 +238,7 @@ public class MCModelView extends JPanel {
 
 	public void setModel(MCMCModelElement mcModelElement) {
 		this.model = mcModelElement;
-		updateFromModel();
+		updateView();
 	}
 }
 
