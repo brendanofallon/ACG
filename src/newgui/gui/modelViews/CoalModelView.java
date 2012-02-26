@@ -147,10 +147,10 @@ public class CoalModelView extends JPanel {
 		if (coalModel.getPopSizeModel().getModelType() == PopSizeModel.ExpGrowth)
 			coalModelBox.setSelectedIndex(1);
 		
-		if (coalModel.getRecombModel()==null)
-			recombModelBox.setSelectedIndex(0);
-		else {
+		if (coalModel.getUseRecombination())
 			recombModelBox.setSelectedIndex(1);
+		else {
+			recombModelBox.setSelectedIndex(0);
 		}
 		
 		constPopView.updateView();
@@ -239,7 +239,15 @@ public class CoalModelView extends JPanel {
 				updateRecombModelBox();
 			}
 		});
-		recombModelBox.setSelectedIndex(1);
+		
+
+		if (coalModel.getUseRecombination()) {
+			recombModelBox.setSelectedIndex(1);
+		}
+		else {
+			recombModelBox.setSelectedIndex(0);
+		}
+		
 		recTop.add(recombModelBox);
 		this.add(recPanel);
 		this.add(Box.createVerticalGlue());

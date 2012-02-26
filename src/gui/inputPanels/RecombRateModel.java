@@ -88,8 +88,12 @@ public class RecombRateModel extends ModelElement {
 	@Override
 	public void readElements(ACGDocument doc) throws InputConfigException {
 		Element recRateEl = getOptionalElementForClass(doc, RecombinationParameter.class);
+
+
 		if (recRateEl == null) {
 			recModel.setValue(0);
+			recModel.setLowerBound(0.0);
+			recModel.setUpperBound(0.0);
 			recModel.setModifierType(null);
 			return;
 		}
@@ -108,7 +112,7 @@ public class RecombRateModel extends ModelElement {
 		if (upperBound != null)
 			recModel.setUpperBound(upperBound);
 		
-		
+		boolean foundModifier = false;
 		if ( getChildCount(doc, recRateEl) > 0) {
 			Element child = getChild(doc, recRateEl, 0);
 			if (DoubleModifierElement.isAssignable( child )) {
@@ -116,8 +120,12 @@ public class RecombRateModel extends ModelElement {
 				recModel.setModifierFrequency( modEl.getFrequency() );
 				recModel.setModifierLabel( modEl.getLabel() );
 				recModel.setModifierType( modEl.getType() );
+				foundModifier = true;
 			}
 		}
+		
+		if (! foundModifier) 
+			recModel.setModifierType(null);
 	}
 
 

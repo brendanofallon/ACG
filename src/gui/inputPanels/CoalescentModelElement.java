@@ -48,12 +48,9 @@ public class CoalescentModelElement extends ModelElement {
 	
 	private String modelLabel = "CoalescentLikelihood";
 	
-	
-
 	public CoalescentModelElement() {
 		popSizeModel = new PopSizeModelElement();
-		popSizeModel.setModelType(PopSizeModel.Constant);
-		
+		popSizeModel.setModelType(PopSizeModel.Constant);	
 		recRateModel = new RecombRateModel();
 	}
 
@@ -100,11 +97,33 @@ public class CoalescentModelElement extends ModelElement {
 	public void setARGRef(ARGModelElement argModel) {
 		this.argRef = argModel;
 	}
-	
+
+	/**
+	 * Obtain whether or not the recomb model is 'on'. If not on, the value and both boundaries are equal to zero
+	 * and there is no modifier. 
+	 * @return
+	 */
+	public boolean getUseRecombination() {
+		if (recRateModel.getModel().getValue()==0
+			&& recRateModel.getModel().getLowerBound()==0
+			&& recRateModel.getModel().getUpperBound()==0
+			&& recRateModel.getModel().getModType()==null) {
+			return false;
+		}
+		else
+			return true;
+	}
+	/**
+	 * Turn on/off recombination for this model. Off is equivalent to no modifier, and upper
+	 * lower, and initial values all equal to zero
+	 * @param useRecomb
+	 */
 	public void setUseRecombination(boolean useRecomb) {
 		if (! useRecomb) {
 			recRateModel.getModel().setValue(0);
 			recRateModel.getModel().setModifierType(null);
+			recRateModel.getModel().setLowerBound(0.0);
+			recRateModel.getModel().setUpperBound(0.0);
 		}
 		else {
 			recRateModel.getModel().setValue(1.0);
