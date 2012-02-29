@@ -86,7 +86,7 @@ public class LoggersPanel extends JPanel implements LoggerReceiver {
 		add(addButton);
 		
 		//Must come after above initialization
-		addLogger( new StateLoggerView(new StateLoggerModel()) );
+		//addLogger( new StateLoggerView(new StateLoggerModel()) );
 	}
 	
 	protected void showAddFrame() {
