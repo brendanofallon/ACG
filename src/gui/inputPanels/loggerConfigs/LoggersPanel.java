@@ -104,7 +104,7 @@ public class LoggersPanel extends JPanel implements LoggerReceiver {
 	 * @param newModels
 	 */
 	public void setLoggerModels(List<LoggerModel> newModels) {
-		loggers.clear();
+		clearLoggers();
 		for(LoggerModel model : newModels) {
 			addLogger(AvailableLoggers.createViewForModel(model));
 		}
@@ -117,6 +117,20 @@ public class LoggersPanel extends JPanel implements LoggerReceiver {
 		this.remove(addButton);
 		add(wrapped);
 		this.add(addButton);
+		revalidate();
+		repaint();
+	}
+	
+	/**
+	 * Remove all loggers (and wrappers) from this component
+	 */
+	public void clearLoggers() {
+		for(LoggerWrapper logger : loggers) {
+			remove(logger);
+		}
+		
+		loggers.clear();				
+		
 		revalidate();
 		repaint();
 	}

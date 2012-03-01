@@ -58,6 +58,8 @@ public class BPDensityView extends AbstractLoggerView {
 		this.bpModel = model;
 		SpinnerNumberModel binsModel = new SpinnerNumberModel(500, 1, 50000, 10);
 		binsSpinner = new JSpinner(binsModel);
+		binsSpinner.setPreferredSize(new Dimension(60, 30));
+		binsSpinner.setMaximumSize(new Dimension(60, 35));
 		binsSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				model.setBins( (Integer)binsSpinner.getValue());

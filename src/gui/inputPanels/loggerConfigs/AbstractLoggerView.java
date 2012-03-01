@@ -22,6 +22,7 @@ package gui.inputPanels.loggerConfigs;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -31,6 +32,7 @@ import java.awt.event.ActionListener;
 import gui.inputPanels.Configurator.InputConfigException;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -54,6 +56,7 @@ public abstract class AbstractLoggerView extends JPanel {
 	JTextField filenameField;
 	JSpinner burninSpinner;
 	JSpinner freqSpinner;
+	//Font defaultFont = new Font("Sans", Font.PLAIN, 12);
 	
 	static final Color lightColor = new Color(0.99f, 0.99f, 0.99f, 0.8f);
 	static final Color darkColor = new Color(0.55f, 0.55f, 0.55f, 0.7f);
@@ -68,12 +71,15 @@ public abstract class AbstractLoggerView extends JPanel {
 	 * Default component layout
 	 */
 	protected void initializeComponents() {
-		setLayout(new MigLayout());
+		MigLayout layout = new MigLayout();
+		//this.setFont(defaultFont);
+		setLayout(layout);
 		setOpaque(false);
 		
-		JLabel modelLabel = new JLabel(model.getDefaultLabel());
+		JLabel modelLabel = new JLabel("<html><i>" + model.getDefaultLabel() + "</i><html>");
+		modelLabel.setMinimumSize(new Dimension(10, 36));
 		add(modelLabel);
-		
+		add(Box.createHorizontalStrut(8));
 		filenameField = new JTextField( model.getDefaultLabel() + ".log");
 		filenameField.setFont(getFont());
 		Dimension fieldSize = new Dimension(160, 30);
@@ -92,11 +98,13 @@ public abstract class AbstractLoggerView extends JPanel {
 		});
 		
 		JLabel filenameLabel = new JLabel("File name:");
+		filenameLabel.setFont(getFont());
 		add(filenameLabel);
 		add(filenameField);
-		
+		add(Box.createHorizontalStrut(8));
 		SpinnerNumberModel burninModel = new SpinnerNumberModel(1000000, 0, Integer.MAX_VALUE, 1000);
 		burninSpinner = new JSpinner(burninModel);
+		burninSpinner.setFont(getFont());
 		burninSpinner.setPreferredSize(new Dimension(120, 30));
 		burninSpinner.setMaximumSize(new Dimension(120, 30));
 		burninSpinner.addChangeListener(new ChangeListener() {
@@ -106,11 +114,12 @@ public abstract class AbstractLoggerView extends JPanel {
 		});
 		add(new JLabel("Burn-in:"));
 		add(burninSpinner);
-		
+		add(Box.createHorizontalStrut(8));
 		SpinnerNumberModel freqModel = new SpinnerNumberModel(10000, 0, Integer.MAX_VALUE, 1000);
 		freqSpinner = new JSpinner(freqModel);
-		freqSpinner.setPreferredSize(new Dimension(120, 30));
-		freqSpinner.setMaximumSize(new Dimension(120, 30));
+		freqSpinner.setFont(getFont());
+		freqSpinner.setPreferredSize(new Dimension(100, 30));
+		freqSpinner.setMaximumSize(new Dimension(100, 30));
 		freqSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				model.setLogFrequency( (Integer)freqSpinner.getValue());
@@ -125,7 +134,7 @@ public abstract class AbstractLoggerView extends JPanel {
 	 * @return
 	 */
 	public Dimension getPreferredDimensions() {
-		return new Dimension(800, 60);
+		return new Dimension(800, 59);
 	}
 	
 	public LoggerModel getModel() {

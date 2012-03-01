@@ -28,6 +28,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -42,6 +44,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import logging.BreakpointDensity;
 import logging.BreakpointLocation;
 import logging.StateLogger;
+
+import net.miginfocom.swing.MigLayout;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -80,21 +84,23 @@ public class BPLocationView extends AbstractLoggerView {
 	 * Default component layout
 	 */
 	protected void initializeComponents() {
-		setLayout(new GridLayout(2, 1));
+		setLayout(new GridLayout(2, 1, 2, 2));
+		
 		JPanel topPanel = new JPanel();
-		topPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
 		topPanel.setOpaque(false);
 		add(topPanel);
 		
 		JPanel bottomPanel = new JPanel();
-		bottomPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
 		bottomPanel.setOpaque(false);
 		add(bottomPanel);
 		
 		setOpaque(false);
 		
-		topPanel.add(new JLabel(model.getDefaultLabel()));
-		
+		JLabel modelLabel = new JLabel("<html><i>" + model.getDefaultLabel() + "</i><html>");
+		topPanel.add(modelLabel);
+		topPanel.add(Box.createHorizontalStrut(8));
 		filenameField = new JTextField( model.getDefaultLabel() + ".log");
 		filenameField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -107,7 +113,7 @@ public class BPLocationView extends AbstractLoggerView {
 		});
 		topPanel.add(new JLabel("File name:"));
 		topPanel.add(filenameField);
-		
+		topPanel.add(Box.createHorizontalStrut(8));
 		SpinnerNumberModel burninModel = new SpinnerNumberModel(1000000, 0, Integer.MAX_VALUE, 10000);
 		burninSpinner = new JSpinner(burninModel);
 		burninSpinner.setPreferredSize(new Dimension(130, 30));
@@ -118,7 +124,7 @@ public class BPLocationView extends AbstractLoggerView {
 		});
 		topPanel.add(new JLabel("Burn-in:"));
 		topPanel.add(burninSpinner);
-		
+		topPanel.add(Box.createHorizontalStrut(8));
 		SpinnerNumberModel freqModel = new SpinnerNumberModel(10000, 0, Integer.MAX_VALUE, 1000);
 		freqSpinner = new JSpinner(freqModel);
 		freqSpinner.setPreferredSize(new Dimension(100, 30));
@@ -130,19 +136,22 @@ public class BPLocationView extends AbstractLoggerView {
 		topPanel.add(new JLabel("Frequency:"));
 		topPanel.add(freqSpinner);
 		
-		
 		SpinnerNumberModel binsModel = new SpinnerNumberModel(250, 1, 50000, 10);
 		seqBinsSpinner = new JSpinner(binsModel);
+		seqBinsSpinner.setMaximumSize(new Dimension(100, 30));
 		seqBinsSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				((BPLocationModel) model).setSeqBins( (Integer)seqBinsSpinner.getValue());
 			}
 		});
+		bottomPanel.add(Box.createHorizontalStrut(20));
 		bottomPanel.add(new JLabel("Seq. Bins:"));
 		bottomPanel.add(seqBinsSpinner);
+		bottomPanel.add(Box.createHorizontalStrut(15));
 		
 		binsModel = new SpinnerNumberModel(250, 1, 50000, 10);
 		timeBinsSpinner = new JSpinner(binsModel);
+		timeBinsSpinner.setMaximumSize(new Dimension(100, 30));
 		timeBinsSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				((BPLocationModel) model).setTimeBins( (Integer)seqBinsSpinner.getValue());
@@ -150,6 +159,7 @@ public class BPLocationView extends AbstractLoggerView {
 		});
 		bottomPanel.add(new JLabel("Time Bins:"));
 		bottomPanel.add(timeBinsSpinner);
+		bottomPanel.add(Box.createHorizontalStrut(15));
 		
 		setHeightBox = new JCheckBox("Set max. height");
 		setHeightBox.setToolTipText("If checked, use the given value as the max. height of the tree to collect information. \n If unchecked, the value will be the mean of the ARG height during burnin");
@@ -160,11 +170,12 @@ public class BPLocationView extends AbstractLoggerView {
 			
 		});
 		bottomPanel.add(setHeightBox);
-		
+		bottomPanel.add(Box.createHorizontalStrut(8));
 		bottomPanel.add(new JLabel("Max height:"));
 		heightField = new JTextField("0.01");
 		heightField.setToolTipText("Maximum depth at which to collect breakpoint locations");
 		heightField.setPreferredSize(new Dimension(50, 30));
+		heightField.setMaximumSize(new Dimension(70, 30));
 		heightField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
