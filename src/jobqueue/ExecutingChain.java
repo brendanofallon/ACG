@@ -48,7 +48,7 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 	protected MC3 mc3 = null;		//Will be null if user supplies MCMC object to constructor
 	protected MCMC coldChain = null; //Reference to cold chain, only non-null if we're in MC3 mode 
 	private boolean paused = false;
-	private boolean done = false;
+	//private boolean done = false;
 	
 	/**
 	 * Create a new ExecutingChain that can run the analysis described in the ACGDocument provided.
@@ -130,9 +130,9 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 		return paused;
 	}
 	
-	public void done() {
-		this.done = true;
-	}
+//	public void done() {
+//		this.done = true;
+//	}
 	
 	/**
 	 * We actually retain the ability to add listeners to the chain at any time

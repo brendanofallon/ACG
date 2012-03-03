@@ -12,8 +12,9 @@ import newgui.datafile.AlignmentFile;
 import sequence.Alignment;
 
 /**
- * A class to managing the manipulations of various files in the inputFiles folder. This is a singleton class, meaning
- * there should only ever be one in existence. It is accessible through the .getManager() static method
+ * A class to managing the manipulations of various files in the inputFiles folder. This is a singleton 
+ * class, meaning there should only ever be one in existence. It is accessible through the .getManager() 
+ * static method
  * @author brendano
  *
  */
@@ -121,7 +122,6 @@ public class InputFilesManager {
 	}
 	
 	private void fireDirectoryChange(File rootChange) {
-		System.out.println("Firing change for directory " + rootChange);
 		for(DirectoryListener l : listeners) {
 			l.filesChanged( rootChange );
 		}

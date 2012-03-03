@@ -44,6 +44,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.print.attribute.standard.JobState;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -62,6 +63,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import jobqueue.ExecutingChain;
+import jobqueue.JobState.State;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -598,13 +600,12 @@ public class ACGFrame extends JFrame implements WindowListener {
 		saveButton.setEnabled(true);
 	}
 	
-	@Override
-	public void windowClosed(WindowEvent e) { }
-
-
+	
+	/***************************** Window listener implementation **************/
+	
 	@Override
 	public void windowClosing(WindowEvent e) {  
-		if (runner != null && (!runner.isDone())) {
+		if (runner != null && !(runner.getJobState().getState() == State.COMPLETED)) {
 			Object[] options = {"Cancel",
 					"Continue in background",
 			"Abort run"};
@@ -646,6 +647,12 @@ public class ACGFrame extends JFrame implements WindowListener {
 		}
 	}
 
+	
+	@Override
+	public void windowClosed(WindowEvent e) { }
+
+
+	
 	@Override
 	public void windowActivated(WindowEvent e) { 	}
 	

@@ -89,6 +89,15 @@ public class AlignmentContainerPanel extends JPanel {
 		}
 		layoutAlignments();
 	}
+	
+	/**
+	 * Remove all alignments from this container
+	 */
+	public void clearAlignments() {
+		alignments.clear();
+		layoutAlignments();
+		
+	}
 
 	/**
 	 * Obtain a new list containing all of the alignment summary objects 

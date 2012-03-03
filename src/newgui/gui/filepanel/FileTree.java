@@ -50,6 +50,8 @@ public class FileTree extends JPanel implements DirectoryListener {
 	private JPopupMenu renamerPopup; //Holds renaming field
 	private JTextField renamer;
 	final static String fileSeparator = System.getProperty("file.separator");
+	private boolean openFilesOnDoubleClick = true;
+	private boolean popupEnabled = true;
 	
 	public FileTree(File rootDir) {
 		this.rootDir = rootDir;
@@ -65,6 +67,24 @@ public class FileTree extends JPanel implements DirectoryListener {
 		initializePopupMenu();
 	}
 
+	/**
+	 * If true, double-clicking a file in this tree will attempt to open it. If false,
+	 * double-clicks are ignored
+	 * @param open
+	 */
+	public void setOpenFilesOnDoubleClick(boolean open) {
+		this.openFilesOnDoubleClick = open;
+	}
+	
+	/**
+	 * If true, popup triggers will cause the popup to open, false and no
+	 * popup will be shown
+	 * @param enabled
+	 */
+	public void setPopupEnabled(boolean enabled) {
+		this.popupEnabled = enabled;
+	}
+	
 	/**
 	 * Create the popup menu and add a bunch of menu items to it
 	 */
@@ -164,8 +184,6 @@ public class FileTree extends JPanel implements DirectoryListener {
 	 * @param dirNode
 	 */
 	private void buildTreeNodes(DirectoryNode dirNode) {
-
-		
 		File[] files = dirNode.getFiles();
 		
 		for(int i=0; i<files.length; i++) {
@@ -264,12 +282,12 @@ public class FileTree extends JPanel implements DirectoryListener {
 	 * @param me
 	 */
 	protected void handleMouseClick(MouseEvent me) {
-		if (me.isPopupTrigger() || (UIConstants.isMac() && me.isControlDown()) || (me.getButton()==MouseEvent.BUTTON3)) {
+		if (popupEnabled && me.isPopupTrigger() || (UIConstants.isMac() && me.isControlDown()) || (me.getButton()==MouseEvent.BUTTON3)) {
 			popup.show(this, me.getX(), me.getY());
 			return;
 		}
 
-		if (me.getClickCount()>1) {
+		if (openFilesOnDoubleClick && me.getClickCount()>1) {
 			openSelectedFile();
 		}
 	}

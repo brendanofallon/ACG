@@ -34,6 +34,8 @@ import newgui.alignment.AlignmentSummary;
 import newgui.analysisTemplate.AnalysisTemplate;
 import newgui.analysisTemplate.BasicAnalysis;
 import newgui.gui.display.Display;
+import newgui.gui.filepanel.ChooseAlignmentListener;
+import newgui.gui.filepanel.ChooseAlignmentPanel;
 import newgui.gui.widgets.BorderlessButton;
 import newgui.gui.widgets.TextButton;
 import newgui.gui.widgets.VerticalTextButtons;
@@ -69,7 +71,12 @@ public class AlignmentPrepPanel extends JPanel {
 		JPanel alnButtons = new JPanel();
 		alnButtons.setBackground(Display.defaultDisplayBackground);
 		alnButtons.setLayout(new BoxLayout(alnButtons, BoxLayout.X_AXIS));
-		BorderlessButton addAlnButton = new BorderlessButton("Add alignment");
+		BorderlessButton addAlnButton = new BorderlessButton("Choose alignment");
+		addAlnButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showAlignmentChoicePanel();
+			}
+		});
 		alnButtons.add(Box.createHorizontalStrut(20));
 		alnButtons.add(addAlnButton);
 		alnButtons.add(Box.createHorizontalGlue());
@@ -151,7 +158,26 @@ public class AlignmentPrepPanel extends JPanel {
 		this.add(Box.createVerticalGlue());
 	}
 
-	
+	/**
+	 * Displays a dialog that allows the user to choose a new Alignment
+	 */
+	protected void showAlignmentChoicePanel() {
+		ChooseAlignmentPanel.chooseAlignment(new ChooseAlignmentListener() {
+			public void alignmentChosen(Alignment aln) {
+				if (aln != null)
+					replaceAlignment(aln);
+			}
+		});
+	}
+
+
+	protected void replaceAlignment(Alignment aln) {
+		alnContainer.clearAlignments();
+		alnContainer.addAlignment(aln, "New alignment");
+		repaint();
+	}
+
+
 	/**
 	 * Called when chooseButton has been pressed. We grab the current analysisTemplate,
 	 * inject alignment data into it, and do.... something to be determined 

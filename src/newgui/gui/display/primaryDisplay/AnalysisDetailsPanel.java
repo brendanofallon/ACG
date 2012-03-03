@@ -131,7 +131,6 @@ public class AnalysisDetailsPanel extends JPanel {
 		demoButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				detailsPanel.removeAll();
-//				detailsPanel.add(siteModelView, BorderLayout.CENTER);
 				setButtonHighlight(demoButton);
 				revalidate();
 				repaint();
