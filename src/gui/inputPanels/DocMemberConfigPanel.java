@@ -40,6 +40,7 @@ import gui.document.ACGDocument;
 import gui.document.ACGDocumentBuilder;
 import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.loggerConfigs.LoggersPanel;
+import gui.inputPanels.loggerConfigs.StateLoggerView;
 import gui.widgets.BorderlessButton;
 
 import javax.swing.BorderFactory;
@@ -55,6 +56,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.Element;
+
+import sequence.Alignment;
 import sequence.BasicSequenceAlignment;
 
 /**
@@ -86,6 +89,8 @@ public class DocMemberConfigPanel extends JPanel {
 		this.acgParent = acgParent;
 		
 		initComponents();
+		
+		loggersPanel.addLogger(new StateLoggerView());
 	}
 
 
@@ -102,6 +107,7 @@ public class DocMemberConfigPanel extends JPanel {
 			loggersPanel.setLoggerModels(analysisModel.getLoggerModels());
 			mcView.updateFromModel();
 			
+			updateTopLabel( doc.getSourceFile().getName() );
 			revalidate();
 			repaint();
 		} catch (InputConfigException e) {
@@ -244,6 +250,12 @@ public class DocMemberConfigPanel extends JPanel {
 			String shortname = selectedFile.getName();
 			shortname = shortname.substring(0, shortname.lastIndexOf("."));
 			BasicSequenceAlignment aln = new BasicSequenceAlignment(selectedFile);
+			
+			if (aln.getSequenceCount()<2) {
+				JOptionPane.showMessageDialog(this, "Could not find any sequences in the file \'"+ selectedFile.getName() + "\'", "Warning", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			
 			analysisModel.setAlignment(aln);
 			//alignmentEl.setElement(aln);
 			updateTopLabel(shortname);
@@ -284,8 +296,8 @@ public class DocMemberConfigPanel extends JPanel {
 		alnPanel.add(chooseButton);
 		topPanel.add(alnPanel);
 		
-		argView = new ARGModelView(analysisModel.getARGModel());
-		topPanel.add(argView);
+		//argView = new ARGModelView(analysisModel.getARGModel());
+		//topPanel.add(argView);
 		this.add(topPanel, BorderLayout.NORTH);
 		
 		tabPane = new JTabbedPane();
@@ -305,7 +317,7 @@ public class DocMemberConfigPanel extends JPanel {
 		
 	}
 	
-	private ARGModelView argView;
+	//private ARGModelView argView;
 
 	private File selectedFile = null;
 	private JFileChooser fileChooser; //Used on non-mac platforms

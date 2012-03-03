@@ -41,7 +41,7 @@ public class ConsensusTreeView extends AbstractLoggerView {
 	public ConsensusTreeView(final ConsensusTreeModel model) {
 		super(model);
 		this.bpModel = model;
-		siteField = new JTextField("Enter site");
+		siteField = new JTextField("Enter #");
 		siteField.setMinimumSize(new Dimension(60, 10));
 		siteField.setMaximumSize(new Dimension(60, 1000));
 		siteField.addActionListener(new ActionListener() {
@@ -53,10 +53,28 @@ public class ConsensusTreeView extends AbstractLoggerView {
 				}
 			}
 		});
-		add(new JLabel("Site :"));
+		add(new JLabel("Site:"));
 		add(siteField);
 	}
 	
+	/**
+	 * Returns true if a valid integer can be parsed from the site text field
+	 * @return
+	 */
+	public boolean isSiteSet() {
+		if (siteField.getText().contains("Enter")) {
+			return false;
+		}
+		
+		try {
+			Integer.parseInt( siteField.getText() );
+			return true;
+		}
+		catch (NumberFormatException nfe) {
+			return false;
+		}
+		
+	}
 	
 	protected void updateSiteField() throws InputConfigException {
 		try {

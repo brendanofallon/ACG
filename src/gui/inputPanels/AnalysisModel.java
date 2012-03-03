@@ -63,7 +63,7 @@ public class AnalysisModel {
 		argModel = new ARGModelElement();
 		siteModel = new SiteModelElement();
 		coalModel = new CoalescentModelElement();
-		loggerModels.add(new StateLoggerModel() );
+		//loggerModels.add( );
 	}
 
 	/**

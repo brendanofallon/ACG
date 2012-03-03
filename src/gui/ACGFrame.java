@@ -115,7 +115,8 @@ public class ACGFrame extends JFrame implements WindowListener {
 		//We handle things from a listener of our own design
 		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(this);
-		this.setLocationByPlatform(true);
+		//this.setLocationByPlatform(true);
+		this.setLocationRelativeTo(null);
 		pack();
 	}
 	
@@ -344,6 +345,7 @@ public class ACGFrame extends JFrame implements WindowListener {
 	 */
 	public void showDocMemberConfigPanel() {
 		DocMemberConfigPanel configPanel = new DocMemberConfigPanel(this);
+		
 		replaceCenterPanel(configPanel);
 		runButton.setEnabled(false);
 		saveButton.setEnabled(false);

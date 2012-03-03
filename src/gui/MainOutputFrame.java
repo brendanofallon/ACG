@@ -28,6 +28,7 @@ import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import mcmc.MCMC;
@@ -113,6 +114,8 @@ public class MainOutputFrame extends JPanel implements MCMCListener {
 		GridLayout layout = new GridLayout(rows, cols, 2, 2);
 		this.setLayout(layout);
 		this.setBackground(Color.LIGHT_GRAY);
+		
+		this.setBorder(BorderFactory.createEmptyBorder(4, 1, 2, 1));
 	}
 
 	@Override
