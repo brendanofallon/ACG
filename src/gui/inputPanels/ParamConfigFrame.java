@@ -54,11 +54,11 @@ public class ParamConfigFrame extends JFrame {
 	private DoubleParamView view;
 	
 	private JPanel valuesPanel;
-	private JPanel modifierPanel;
+	//private JPanel modifierPanel;
 	private JPanel priorPanel;
 	
 	public ParamConfigFrame(final DoubleParamView paramView) {
-		super("Configure " + paramView.getModel().getLabel());
+		super("Configure parameter " + paramView.getModel().getLabel());
 		this.view = paramView;
 		this.model = paramView.getModel();
 		stylist.addStyle(new Style() {
@@ -79,21 +79,21 @@ public class ParamConfigFrame extends JFrame {
 		
 		
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
-		this.setPreferredSize(new Dimension(650, 280));
-		this.setMaximumSize(new Dimension(650, 320));
+		this.setPreferredSize(new Dimension(500, 300));
+		this.setMaximumSize(new Dimension(500, 320));
 		
 		createValuesPanel();
 		mainPanel.add(valuesPanel);
 		
-		createModifiersPanel();
 		JSeparator sep0 = new JSeparator(JSeparator.VERTICAL);
 		mainPanel.add(sep0);
-		mainPanel.add(modifierPanel);
 		
 		createPriorsPanel();
-		JSeparator sep = new JSeparator(JSeparator.VERTICAL);
-		mainPanel.add(sep);
 		mainPanel.add(priorPanel);
+		
+		JPanel bottomPanel = new JPanel();
+		bottomPanel.setOpaque(false);
+		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
 		
 		JButton doneButton = new JButton("Done");
 		doneButton.addActionListener(new ActionListener() {
@@ -102,7 +102,22 @@ public class ParamConfigFrame extends JFrame {
 			}
 		});
 		doneButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-		this.getContentPane().add(doneButton, BorderLayout.SOUTH);
+		
+		
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cancel();
+			}
+		});
+		
+		
+		bottomPanel.add(Box.createHorizontalGlue());
+		bottomPanel.add(cancelButton);
+		bottomPanel.add(Box.createHorizontalGlue());
+		bottomPanel.add(doneButton);
+		bottomPanel.add(Box.createHorizontalGlue());
+		this.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
 		
 		pack();
 		setVisible(false);
@@ -111,12 +126,23 @@ public class ParamConfigFrame extends JFrame {
 		updateView();
 	}
 	
+	/**
+	 * Make the config frame not visible, but dont write anything to the model
+	 */
+	protected void cancel() {
+		setVisible(false);
+	}
+
+	/**
+	 * Write the values of all components to the model and make the config frame not visible
+	 */
 	protected void done() {
 		//ActionPerformed is only called if the user hits the return button whilst the cursor is in
 		//one of the fields, which may never happen. When the done button is clicked we therefore
 		//have to make sure that all of the info is updated in the models
 		updateFieldInfo(paramNameField);
 		updateFieldInfo(initValueField);
+		updateFieldInfo(paramFreqField);
 		updateFieldInfo(lowerBoundField);
 		updateFieldInfo(upperBoundField);
 		if (priorBox.getSelectedIndex() != 0)
@@ -124,6 +150,7 @@ public class ParamConfigFrame extends JFrame {
 		
 		if (priorBox.getSelectedIndex() != 0 && priorBox.getSelectedIndex() != 2)
 			updatePriorStdevField();
+		updatePriorBox();
 		setVisible(false);
 		view.updateView();
 	}
@@ -139,6 +166,7 @@ public class ParamConfigFrame extends JFrame {
 		
 		paramNameField.setText(model.getLabel());
 		initValueField.setText("" + model.getValue() );
+		paramFreqField.setText("" + model.getFrequency());
 		lowerBoundField.setText("" + model.getLowerBound());
 		upperBoundField.setText("" + model.getUpperBound());
 		
@@ -177,21 +205,22 @@ public class ParamConfigFrame extends JFrame {
 		
 		paramFreqField = new JTextField("" + model.getFrequency() );
 		paramFreqField.setToolTipText("Relative frequency of new proposals for this parameter");
-		addComps(valuesPanel,"Sample rate : ", paramFreqField);
+		addComps(valuesPanel,"Sample rate : ", paramFreqField, 10);
 		
 		initValueField = new JTextField("" + model.getValue() );
-		addComps(valuesPanel,"Initial value : ", initValueField);
+		addComps(valuesPanel,"Initial value : ", initValueField, 10);
 		lowerBoundField = new JTextField("" + model.getLowerBound() );
-		addComps(valuesPanel,"Lower bound:", lowerBoundField);
+		addComps(valuesPanel,"Lower bound:", lowerBoundField, 10);
 		upperBoundField = new JTextField("" + model.getUpperBound() );
-		addComps(valuesPanel,"Upper bound:", upperBoundField);
+		addComps(valuesPanel,"Upper bound:", upperBoundField, 10);
 		
 		valuesPanel.add(Box.createVerticalGlue());
 	}
+
 	
-	private void createModifiersPanel() {
-		modifierPanel = new JPanel();
-		modifierPanel.setLayout(new BorderLayout());
+	private void createPriorsPanel() {
+		priorPanel = new JPanel();
+		priorPanel.setLayout(new BoxLayout(priorPanel, BoxLayout.Y_AXIS));
 		
 		modifierBox = new JComboBox(modTypes);
 		modifierBox.addItemListener(new ItemListener() {
@@ -204,38 +233,19 @@ public class ParamConfigFrame extends JFrame {
 					model.setModifierType(ModType.Scale);
 			}
 		});
-		addComps(modifierPanel, "Modifier type: ", modifierBox);
-	}
-	
-	private void createPriorsPanel() {
-		priorPanel = new JPanel();
-		priorPanel.setLayout(new BoxLayout(priorPanel, BoxLayout.Y_AXIS));
+		addComps(priorPanel, "Modifier type: ", modifierBox);
+		
+
 		priorBox = new JComboBox(priorTypes);
 		priorBox.setSelectedIndex(0);
-		priorBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				updatePriorBox();
-			}
-		});
-		
 
 		addComps(priorPanel, "Prior type:", priorBox);
 		
 		priorMeanField = new JTextField("Enter mean");
-		addComps(priorPanel, "Prior mean:", priorMeanField);
-		priorMeanField.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				updatePriorMeanField();
-			}
-		});
+		addComps(priorPanel, "Prior mean:", priorMeanField, 10);
 		
 		priorStdevField = new JTextField("Enter st. dev.");
-		addComps(priorPanel, "Prior stdev:", priorStdevField);
-		priorStdevField.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				updatePriorStdevField();
-			}
-		});
+		addComps(priorPanel, "Prior stdev:", priorStdevField, 10);
 		priorPanel.add(Box.createVerticalGlue());
 		priorMeanField.setEnabled(false);
 		priorStdevField.setEnabled(false);
@@ -304,25 +314,33 @@ public class ParamConfigFrame extends JFrame {
 	}
 	
 	private void addComps(JComponent parent, String label, final JTextField field) {
+		addComps(parent, label, field, 0);
+	}
+	
+	private void addComps(JComponent parent, String label, final JTextField field, int indent) {
 		field.setPreferredSize(new Dimension(100, 28));
-		field.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				updateFieldInfo(field);
-			}
-		});
+
 		stylist.applyStyle(field);
 		JPanel panel = new JPanel();
 		stylist.applyStyle(panel);
 		panel.setOpaque(false);
 		panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		if (indent > 0) {
+			panel.add(Box.createHorizontalStrut(indent));
+		}
+		
 		panel.add(stylist.applyStyle(new JLabel(label)));
 		panel.add(field);
 		parent.add(panel);
 	}
 	
+	/**
+	 * Parse value from given field and update the appropriate model value
+	 * @param field
+	 */
 	protected void updateFieldInfo(JTextField field) {
 		if (field.getText().trim().length() == 0) {
-			JOptionPane.showMessageDialog(this, "Field cannot be empty");
+			JOptionPane.showMessageDialog(this, "Please enter a numerical value in the text box");
 			return;
 		}
 		
@@ -333,7 +351,7 @@ public class ParamConfigFrame extends JFrame {
 			String[] toks = text.split("[\\s\\t]+");
 			if (toks.length>1) {
 				JOptionPane.showMessageDialog(this, "Warning: white space in label will be removed.");
-				text = text.replaceAll(" ", ".");
+				text = text.replaceAll(" ", "_");
 			}
 			model.setLabel(text);
 			view.updateView();
@@ -354,6 +372,10 @@ public class ParamConfigFrame extends JFrame {
 			model.setValue( value );
 		}
 		if (field == paramFreqField) {
+			if (value < 0) {
+				JOptionPane.showMessageDialog(this, "Sample rate must be a positive number");
+				return;
+			}
 			model.setFrequency( value );
 		}
 		if (field == lowerBoundField)

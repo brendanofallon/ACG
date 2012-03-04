@@ -52,7 +52,6 @@ public class DoubleParamElement {
 	
 	double frequency = 1.0;
 	
-
 	double value = 1.0; 
 	double upperBound = Double.POSITIVE_INFINITY;
 	double lowerBound = Double.NEGATIVE_INFINITY;

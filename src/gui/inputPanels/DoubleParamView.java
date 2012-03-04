@@ -71,7 +71,12 @@ public class DoubleParamView extends JPanel {
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		stylist.applyStyle(this);
 		
-		infoLabel = new JLabel(model.getLabel() + " : "  + model.getValue() + " [" + model.getLowerBound() + " - " + model.getUpperBound() + "]");
+		
+		String infoText = model.getLabel() + " : "  + model.getValue() + " [" + model.getLowerBound() + " - " + model.getUpperBound() + "]";
+		if (model.getFrequency()==0 || model.getModType() == null) {
+			infoText = model.getLabel() + " : "  + model.getValue() + " [ constant ]";
+		}
+		infoLabel = new JLabel(infoText);
 		stylist.applyStyle(infoLabel);
 		add(Box.createHorizontalGlue());
 		add(infoLabel);
@@ -110,7 +115,11 @@ public class DoubleParamView extends JPanel {
 
 	
 	private void redrawLabel() {
-		infoLabel.setText(model.getLabel() + " : "  + model.getValue() + " [" + model.getLowerBound() + " - " + model.getUpperBound() + "]");
+		String infoText = model.getLabel() + " : "  + model.getValue() + " [" + model.getLowerBound() + " - " + model.getUpperBound() + "]";
+		if (model.getFrequency()==0 || model.getModType() == null) {
+			infoText = model.getLabel() + " : "  + model.getValue() + " [ constant ]";
+		}
+		infoLabel.setText(infoText);
 		revalidate();
 	}
 

@@ -113,7 +113,7 @@ public class ACGFrame extends JFrame implements WindowListener {
         }
         
 		initComponents();
-		setPreferredSize(new Dimension(950, 450));
+		setPreferredSize(new Dimension(850, 450));
 		//We handle things from a listener of our own design
 		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(this);
