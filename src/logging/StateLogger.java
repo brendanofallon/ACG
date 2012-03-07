@@ -188,7 +188,7 @@ public class StateLogger implements MCMCListener, Named {
 		else {
 			str.append("0");
 		}
-		str.append("\n");
+		str.append(PropertyLogger.lineSep);
 		return str.toString();
 	}
 	

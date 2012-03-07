@@ -34,6 +34,9 @@ import java.text.NumberFormat;
  */
 public class Histogram {
 
+	//Used for platform-specific writing of histograms - this is user facing since it's used 
+	//to create the log files for some property loggers
+	public static final String lineSep = System.getProperty("line.separator");
 	double[] hist;
 	double minValue;
 	double maxValue;
@@ -284,11 +287,11 @@ public class Histogram {
 			str.append("(no data collected)");
 		}
 		else {
-			str.append(" < " + minValue + " : " + formatter.format((double)lessThanMin/(double)count) + "\n");
+			str.append(" < " + minValue + " : " + formatter.format((double)lessThanMin/(double)count) + " " + lineSep);
 			for(int i=0; i<hist.length; i++) {
-				str.append(formatter.format(i*binSpacing+minValue) + "\t" + formatter.format(hist[i]/(double)count) + "\n");
+				str.append(formatter.format(i*binSpacing+minValue) + "\t" + formatter.format(hist[i]/(double)count) + " " + lineSep);
 			}
-			str.append(" > " + maxValue + " : " + formatter.format((double)moreThanMax/(double)count) + "\n");
+			str.append(" > " + maxValue + " : " + formatter.format((double)moreThanMax/(double)count) + " " + lineSep);
 			
 		}
 		return str.toString();

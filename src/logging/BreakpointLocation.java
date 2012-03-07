@@ -150,10 +150,10 @@ public class BreakpointLocation extends PropertyLogger {
 	@Override
 	public String getSummaryString() {
 		StringBuilder strB = new StringBuilder();
-		strB.append("# Fraction of states with a recombination breakpoint at the given position.\n");
-		strB.append("# Rows of following matrix describe sites along sequence, columns are depths in ARG with rightmost column being the greatest depth\n");
-		strB.append("# Max depth : " + maxTreeHeight + "\n");
-		strB.append("# States sampled : " + count + "\n");
+		strB.append("# Fraction of states with a recombination breakpoint at the given position." + lineSep);
+		strB.append("# Rows of following matrix describe sites along sequence, columns are depths in ARG with rightmost column being the greatest depth" + lineSep);
+		strB.append("# Max depth : " + maxTreeHeight + " " + lineSep);
+		strB.append("# States sampled : " + count + " " + lineSep);
 		
 		double site = 0;
 		double siteBinStep =  (double)arg.getSiteCount() / (double)seqBins;
@@ -167,7 +167,7 @@ public class BreakpointLocation extends PropertyLogger {
 			for(int j=0; j<depthBins; j++) {
 				strB.append(StringUtils.format(hist[i][j]/(double)count, 4) + "\t");
 			}
-			strB.append("\n");
+			strB.append(lineSep);
 			site += siteBinStep;
 		}
 		return strB.toString();

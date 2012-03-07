@@ -52,7 +52,7 @@ public class MarginalRootHeightLogger extends PropertyLogger {
 
 	@Override
 	public String getSummaryString() {
-		String str = "Distribution of marginal root heights at site " + site + "\n";
+		String str = "Distribution of marginal root heights at site " + site + " " + lineSep;
 		str += histo.toString();
 		return str;
 	}

@@ -47,6 +47,7 @@ public abstract class PropertyLogger implements MCMCListener, Named {
 	public static final String BURNIN = "burnin";
 	public static final String FILENAME = "filename";
 	public static final String WRITE_TEMP_DATA = "write.temp.data";
+	public static final String lineSep = System.getProperty("line.separator");
 	
 	protected MCMC chain = null;
 	int collectionFrequency;

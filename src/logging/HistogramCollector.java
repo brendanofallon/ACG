@@ -91,14 +91,14 @@ public class HistogramCollector extends PropertyLogger {
 	public String getSummaryString() {
 		StringBuilder strB = new StringBuilder();
 		
-		strB.append("\n Histogram of values for parameter " + param.getName() + " item: " + logKey + "\n");
+		strB.append("\n Histogram of values for parameter " + param.getName() + " item: " + logKey + " " + lineSep);
 		if (histo.getCount()==0) {
 			strB.append("Histogram is empty, burnin (" + burnin + " states) has probably not been exceeded.");
 		}
 		else {
 			strB.append( histo.toString() );
-			strB.append("Mean value: "+  histo.getMean() + "\n");
-			strB.append("Count : " + histo.getCount() + "\n");
+			strB.append("Mean value: "+  histo.getMean() + " " + lineSep);
+			strB.append("Count : " + histo.getCount() + " " + lineSep);
 		}
 		
 		return strB.toString();

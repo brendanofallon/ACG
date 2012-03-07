@@ -84,7 +84,7 @@ public class ConsensusTreeLogger extends PropertyLogger {
 			node.removeAnnotation("height");
 		}
 		
-		return tree.getNewick();
+		return tree.getNewick() + lineSep;
 	}
 	
 
