@@ -128,8 +128,8 @@ public class BreakpointDensity extends HistogramCollector  {
 	public String getSummaryString() {
 		StringBuilder strB = new StringBuilder();
 		
-		strB.append("\n#Fraction of sampled states with recombination breakpoints at given position for ARG \'" + param.getName() + "\' \n");
-		strB.append("\n#Site \t Density \n");
+		strB.append("\n#Fraction of sampled states with recombination breakpoints at given position for ARG \'" + param.getName() + "\' " + lineSep);
+		strB.append("\n#Site \t Density " + lineSep);
 
 		if (histo.getCount()==0) {
 			strB.append("Histogram is empty, burnin (" + burnin + " states) has probably not been exceeded.");
@@ -139,9 +139,9 @@ public class BreakpointDensity extends HistogramCollector  {
 				int site = (int)Math.round(i*histo.getBinWidth());
 				if (siteMap != null)
 					site = siteMap.getOriginalSite(site);
-				strB.append(site + "\t" + formatter.format( histo.getCount(i) / (double)statesSampled ) + "\n");
+				strB.append(site + "\t" + formatter.format( histo.getCount(i) / (double)statesSampled ) + " " + lineSep);
 			}
-			strB.append("States sampled : " + statesSampled + "\n");
+			strB.append("States sampled : " + statesSampled + lineSep);
 		}
 		
 		return strB.toString();

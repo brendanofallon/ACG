@@ -227,11 +227,11 @@ public class RootHeightDensity extends PropertyLogger {
 	public String getSummaryString() {
 		StringBuilder strB = new StringBuilder();
 		if (calls == 0) {
-			strB.append("Histogram of root heights : No data to display (probably burn-in has not been exceeded) \n");
+			strB.append("Histogram of root heights : No data to display (probably burn-in has not been exceeded) " + lineSep);
 			return strB.toString();
 		}
-		strB.append("\n# Histogram of root heights across sites : \n");
-		strB.append("\n# lower95\t lower90\t lower80\t mean\t upper80\t upper90\t upper95: \n");
+		strB.append("# Histogram of root heights across sites : " + lineSep);
+		strB.append("# lower95\t lower90\t lower80\t mean\t upper80\t upper90\t upper95: " + lineSep);
 		
 		int site = 0;
 		
@@ -240,9 +240,9 @@ public class RootHeightDensity extends PropertyLogger {
 			if (siteMap != null)
 				mappedSite = siteMap.getOriginalSite(site);
 			if (getHistoTriggerReached())
-				strB.append(mappedSite + "\t" + heightHistos[i].lowerHPD(0.025) + "\t" + heightHistos[i].lowerHPD(0.05)+ "\t" + heightHistos[i].lowerHPD(0.1)  + "\t" + heightHistos[i].getMedian() + "\t" + heightHistos[i].upperHPD(0.1) + "\t" + heightHistos[i].upperHPD(0.05) + "\t" + heightHistos[i].upperHPD(0.025) + "\n");
+				strB.append(mappedSite + "\t" + heightHistos[i].lowerHPD(0.025) + "\t" + heightHistos[i].lowerHPD(0.05)+ "\t" + heightHistos[i].lowerHPD(0.1)  + "\t" + heightHistos[i].getMedian() + "\t" + heightHistos[i].upperHPD(0.1) + "\t" + heightHistos[i].upperHPD(0.05) + "\t" + heightHistos[i].upperHPD(0.025) + " " + lineSep);
 			else
-				strB.append(mappedSite + "\t" +  heightHistos[i].getMean() + "\n");
+				strB.append(mappedSite + "\t" +  heightHistos[i].getMean() + " " + lineSep);
 
 			site += binStep;
 		}
