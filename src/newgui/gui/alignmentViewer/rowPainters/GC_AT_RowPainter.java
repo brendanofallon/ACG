@@ -7,7 +7,9 @@ import java.awt.RenderingHints;
 import java.util.HashMap;
 import java.util.Map;
 
-import element.sequence.*;
+import sequence.Alignment;
+import sequence.Sequence;
+
 
 public class GC_AT_RowPainter extends AbstractRowPainter {
 
@@ -32,12 +34,12 @@ public class GC_AT_RowPainter extends AbstractRowPainter {
 	
 	Map<Character, Color> baseColorMap;
 	
-	public GC_AT_RowPainter(SequenceGroup sg) {
+	public GC_AT_RowPainter(Alignment sg) {
 		super(sg);
 		fillBaseColors();
 	}
 	
-	public AbstractRowPainter getNew(SequenceGroup sg) {
+	public AbstractRowPainter getNew(Alignment sg) {
 		return new GC_AT_RowPainter(sg);
 	}
 	
@@ -88,7 +90,7 @@ public class GC_AT_RowPainter extends AbstractRowPainter {
 	
 	protected void drawBackground(Graphics2D g2d, int x, int y2, int colWidth, int rowHeight,
 			int row, int site, Sequence seq) {
-		Color bColor = baseColorMap.get(seq.at(site));
+		Color bColor = baseColorMap.get(seq.baseAt(site));
 		if (bColor == null) {
 			bColor = unknownColor;
 		}
@@ -105,14 +107,14 @@ public class GC_AT_RowPainter extends AbstractRowPainter {
 						int y, 
 						int cellWidth,
 						int rowHeight) {
-		Sequence seq = currentSG.get(row);
+		Sequence seq = currentSG.getSequence(row);
 		base = new char[1];
 		
 		setCellSize(cellWidth, rowHeight);
 	
 		int firstDrawCol = firstCol - firstCol%hashBlockSize;
 		
-		for(int blockStart=firstDrawCol; blockStart<Math.min(lastCol, seq.length()); blockStart+=hashBlockSize) {			
+		for(int blockStart=firstDrawCol; blockStart<Math.min(lastCol, seq.getLength()); blockStart+=hashBlockSize) {			
 			drawBaseGroup(g2d, blockStart*cellWidth, y, cellWidth, rowHeight, row, blockStart, seq);	
 		}
 		
@@ -120,7 +122,7 @@ public class GC_AT_RowPainter extends AbstractRowPainter {
 
 	public static class Instantiator extends AbstractRowPainter.Instantiator {
 		
-		public AbstractRowPainter getNewRowPainter(SequenceGroup sg) {
+		public AbstractRowPainter getNewRowPainter(Alignment sg) {
 			return new GC_AT_RowPainter(sg);
 		}
 		

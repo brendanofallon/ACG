@@ -38,43 +38,6 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import plugins.SGPlugin.SGPlugin;
-import plugins.SGPlugin.analyzer.DotPlotAnalyzer;
-import plugins.SGPlugin.analyzer.PairwiseDifChart;
-import plugins.SGPlugin.analyzer.SequenceBarChart;
-import plugins.SGPlugin.analyzer.SequenceGroupSummary;
-import plugins.SGPlugin.analyzer.SequenceLineChart;
-import plugins.SGPlugin.analyzer.UsageLogoChart;
-import plugins.SGPlugin.analyzer.haplotype.HapNetworkAnalyzer;
-import plugins.SGPlugin.analyzer.haplotype.HaplotypeNetwork;
-import plugins.SGPlugin.display.SGContentPanel.Selection;
-
-import topLevelGUI.FileParser;
-import topLevelGUI.SunFishFrame;
-import topLevelGUI.analyzer.Analyzable;
-import undoRedo.UndoableAction;
-import undoRedo.UndoableActionSource;
-
-import display.*;
-import displayPane.SaveCancelledException;
-import plugins.SGPlugin.display.rowPainters.*;
-import plugins.SGPlugin.parsers.FastaParser;
-import plugins.SGPlugin.parsers.IMAParser;
-import plugins.SGPlugin.parsers.PhyParser;
-
-import element.IntegerRange;
-import element.sequence.SequenceGroup;
-import element.codon.GeneticCodeFactory;
-import element.codon.GeneticCodeFactory.GeneticCodes;
-import element.sequence.Sequence;
-import element.sequence.SimpleORFAnnotator;
-import element.sequence.StringSequence;
-import errorHandling.ErrorWindow;
-import fileTree.FileTreePanel;
-import guiWidgets.glassDropPane.GlassDropPane;
-import guiWidgets.glassDropPane.GlassPaneThing;
-import guiWidgets.CFButton;
-import guiWidgets.GTKFixSeparator;
 
 public class SGContentPanelDisplay extends Display implements UndoableActionSource {
 

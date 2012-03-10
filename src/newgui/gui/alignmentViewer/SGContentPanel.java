@@ -32,15 +32,11 @@ import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.Timer;
 
-import plugins.SGPlugin.display.rowPainters.AbstractRowPainter;
-import plugins.SGPlugin.display.rowPainters.PartitionRowPainter;
+import newgui.UIConstants;
+import newgui.gui.alignmentViewer.rowPainters.AbstractRowPainter;
 
-import topLevelGUI.SunFishFrame;
-
-import element.sequence.*;
-import element.codon.GeneticCodeFactory;
-import element.codon.GeneticCodeFactory.GeneticCodes;
-import element.sequence.Sequence;
+import sequence.Alignment;
+import sequence.Sequence;
 
 
 /**
@@ -59,7 +55,7 @@ import element.sequence.Sequence;
  * @author brendan
  *
  */
-public class SGContentPanel extends JPanel implements PartitionChangeListener {
+public class SGContentPanel extends JPanel {
 
 	public static final Color selectionRegionColor = new Color(10, 100, 250, 130); //Color of selection region 
 	
@@ -86,7 +82,7 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 	
 	Font headerFont = new Font("Sans", Font.PLAIN, 12);
 	
-	SequenceGroup seqs;
+	Alignment seqs;
 	
 	private JTextField seqRenamer;
 	
@@ -148,11 +144,10 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 	 * of default fields 
 	 * @param sg
 	 */
-	public void setSequenceGroup(SequenceGroup sg) {
+	public void setAlignment(Alignment sg) {
 		seqs = sg;
-		seqs.addPartitionListener(this);
 		
-		int nameWidth = sg.getMaxNameLength();
+		int nameWidth = getMaxNameLength(sg);
 		headerPainter.setFont(headerFont);
 		rowHeaderWidth = 20 + nameWidth*9;
 		
@@ -183,7 +178,7 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 			rowHeader.repaint();
 		}
 		if (rowPainter != null)
-			rowPainter.setSequenceGroup(sg);
+			rowPainter.setAlignment(sg);
 		this.setBackground(Color.white);
 	}
 
@@ -213,6 +208,19 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 		flashTimer.start();
 	}
 
+	/**
+	 * Returns the number of characters in the longest sequence label of the given alignment
+	 * @param aln
+	 * @return
+	 */
+	private static int getMaxNameLength(Alignment aln) {
+		int max = 0;
+		for(String label : aln.getLabels()) {
+			if (label.length() > max)
+				max = label.length();
+		}
+		return max;
+	}
 	
 	protected void switchFlash() {
 		selectionColor = selectionRegionColor;
@@ -235,8 +243,8 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 	public int getNumSelectedRows() {
 		if (selectionMode == Selection.ROWS) {
 			
-			if (selection.length()>seqs.size())
-				selection.set(seqs.size(), selection.length(), false);
+			if (selection.length()>seqs.getSequenceCount())
+				selection.set(seqs.getSequenceCount(), selection.length(), false);
 			
 			return selection.cardinality();
 		}
@@ -251,8 +259,8 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 		if (selectionMode == Selection.COLUMNS) {
 			//If rows were previously selected and there were more rows than columns, some bits may still be 
 			//set beyond maxSeqLength columns, we need to clear these..
-			if (selection.length()>seqs.getMaxSeqLength())
-				selection.set(seqs.getMaxSeqLength()+1, selection.length(), false);
+			if (selection.length()>seqs.getSequenceLength())
+				selection.set(seqs.getSequenceLength()+1, selection.length(), false);
 			
 			int dragCols = Math.abs(dragStart - dragEnd);
 			
@@ -313,8 +321,8 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 	 * @return
 	 */
 	public Dimension getNaturalSize() {
-		int width = columnWidth*seqs.getMaxSeqLength();
-		int height = seqs.size()*rowHeight;
+		int width = columnWidth*seqs.getSequenceLength();
+		int height = seqs.getSequenceCount()*rowHeight;
 		return new Dimension(width, height);
 	}
 	
@@ -385,10 +393,10 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 		int firstRow = (int)Math.floor( yMin / rowHeight );
 		int lastRow = (int)Math.floor( yMax / rowHeight )+1;
 		
-		lastVisCol = Math.min(seqs.getMaxSeqLength(), lastVisCol);
+		lastVisCol = Math.min(seqs.getSequenceLength(), lastVisCol);
 		
 		//System.out.println("Painting rows " + firstRow + " .. " + Math.min(seqs.size(), lastRow));
-		for(int row=firstRow; row<Math.min(seqs.size(), lastRow); row++) {
+		for(int row=firstRow; row<Math.min(seqs.getSequenceCount(), lastRow); row++) {
 			rowPainter.paintRow(g2d, row, firstVisCol, lastVisCol, 0, row*rowHeight, columnWidth, rowHeight);
 		}
 		
@@ -398,7 +406,7 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 			g2d.setColor(selectionColor);
 			int min = Math.min(dragStart, dragEnd);
 			int max = Math.max(dragStart, dragEnd);
-			max = Math.min(max, seqs.getMaxSeqLength());
+			max = Math.min(max, seqs.getSequenceLength());
 			
 			while (i>-1 && i<=lastVisCol) {
 				if (i<min || i>=max)
@@ -460,19 +468,7 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 		int max = Math.max(begin, end);
 		min = Math.max(0, min); 
 		selection.set(min, max);
-		if (selectionMode == Selection.ROWS) {
-			if (max-min == 1)
-				SunFishFrame.getSunFishFrame().setInfoLabelText("Selected 1 sequence");
-			else
-				SunFishFrame.getSunFishFrame().setInfoLabelText("Selected " + (max-min) + " sequences");
-		}
-		else {
-			if (max-min == 1)
-				SunFishFrame.getSunFishFrame().setInfoLabelText("Selected 1 column");
-			else
-				SunFishFrame.getSunFishFrame().setInfoLabelText("Selected " + (max-min) + " columns");
-			colHeader.repaint();
-		}
+		colHeader.repaint();
 	}
 	
 	/**
@@ -496,7 +492,6 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 		selection.clear();
 		dragStart = -1;
 		dragEnd = -1;
-		SunFishFrame.getSunFishFrame().setInfoLabelText("");
 		repaint();
 	}
 	
@@ -505,7 +500,7 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 	 * @return
 	 */
 	public int getColumnCount() {
-		return seqs.getMaxSeqLength();
+		return seqs.getSequenceLength();
 	}
 
 	/**
@@ -531,7 +526,7 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 	 * @return
 	 */
 	public int getRowCount() {
-		return seqs.size();
+		return seqs.getSequenceCount();
 	}
 
 	/**
@@ -556,7 +551,7 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 	 * @return
 	 */
 	public Sequence getSequenceForRow(int i) {
-		return seqs.get(i);
+		return seqs.getSequence(i);
 	}
 	
 	
@@ -574,7 +569,7 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 		g2d.setColor(getBackground());
 		g2d.fillRect(0, 0, getWidth(), natSize.height);
 
-		for(int row=0; row<seqs.size(); row++) {
+		for(int row=0; row<seqs.getSequenceCount(); row++) {
 			headerPainter.paintHeaderCell(g2d, row, 0, row*rowHeight, rowHeaderWidth, rowHeight, seqs);
 		}
 	}
@@ -617,7 +612,7 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 			int count = 0;
 			while (i>-1) {
 				rows[count] = i;
-				if (i>seqs.size()) {
+				if (i>seqs.getSequenceCount()) {
 					throw new IllegalStateException("A row was selected whose index is greater than the number of sequences...probably selection didn't get cleared after a mode switch");
 				}
 				count++;
@@ -674,7 +669,7 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 			int count = 0;
 			while (i>-1) {
 				cols[count] = i;
-				if (i>seqs.getMaxSeqLength()) {
+				if (i>seqs.getSequenceLength()) {
 					throw new IllegalStateException("A column was selected whose index is greater than the max seq length...probably selection didn't get cleared after a mode switch");
 				}
 				i = selection.nextSetBit(i+1);
@@ -691,31 +686,31 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 	 * never preserved. If there is no selection an empty sg is returned.  
 	 * @return A new sequence group built from the selected rows or columns.
 	 */
-	public SequenceGroup getSelectionAsSG() {
-		SequenceGroup sg = new SequenceGroup();
-		if (hasSelectedRows()) {
-			int[] rows = getSelectedRows();
-			for(int i=0; i<rows.length; i++) {
-				Sequence seq = seqs.get(rows[i]).clone();
-				seq.removeSequenceChangeListeners();
-				sg.add(seq);
-			}
-		}
-		
-		if (hasSelectedColumns()) {
-			int[] cols = getSelectedColumns();
-			for(int i=0; i<seqs.size(); i++) {
-				StringBuilder strb = new StringBuilder();
-				for(int j=0; j<cols.length; j++) {
-					strb.append( seqs.get(i).at(cols[j]));
-				}
-				sg.add(new StringSequence(strb.toString(), seqs.get(i).getName()));
-			}
-		}
-		
-		//System.out.println("Returning a new sg with " + sg.size() + " sequences and max length: " + sg.getMaxSeqLength());
-		return sg;
-	}
+//	public Alignment getSelectionAsSG() {
+//		Alignment sg = new Alignment();
+//		if (hasSelectedRows()) {
+//			int[] rows = getSelectedRows();
+//			for(int i=0; i<rows.length; i++) {
+//				Sequence seq = seqs.get(rows[i]).clone();
+//				seq.removeSequenceChangeListeners();
+//				sg.add(seq);
+//			}
+//		}
+//		
+//		if (hasSelectedColumns()) {
+//			int[] cols = getSelectedColumns();
+//			for(int i=0; i<seqs.size(); i++) {
+//				StringBuilder strb = new StringBuilder();
+//				for(int j=0; j<cols.length; j++) {
+//					strb.append( seqs.get(i).at(cols[j]));
+//				}
+//				sg.add(new StringSequence(strb.toString(), seqs.get(i).getName()));
+//			}
+//		}
+//		
+//		//System.out.println("Returning a new sg with " + sg.size() + " sequences and max length: " + sg.getSequenceLength());
+//		return sg;
+//	}
 	
 	/**
 	 * Set the zero column and fire a zeroColumnChanged event to all zeroColumnListeners. This also 
@@ -755,19 +750,19 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 	public void removeSelection() {
 		if (hasSelectedRows()) {
 			int[] rows = getSelectedRows();
-			seqs.removeRows( rows );
+			//seqs.removeRows( rows );
 		}
 		
 		if (hasSelectedColumns()) {
 			int[] cols = getSelectedColumns();
-			seqs.removeCols( cols );
+			//seqs.removeCols( cols );
 		}
 		
 		selection.clear();
 		dragStart = -1;
 		dragEnd = -1;
 		dragOffEdge = false;
-		setSequenceGroup(seqs);
+		setAlignment(seqs);
 		repaint();
 	}
 	
@@ -807,7 +802,7 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 			
 			if (selectionMode == Selection.ROWS) {
 				dragEnd = getRowForPoint( new Point(0, scrollPane.getVerticalScrollBar().getValue()+viewport.getHeight()) );
-				dragEnd = Math.min(seqs.size(), dragEnd);
+				dragEnd = Math.min(seqs.getSequenceCount(), dragEnd);
 				setSelectionInterval(dragStart, dragEnd);
 			}
 		}
@@ -833,7 +828,7 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 			}
 
 			if (selectionMode == Selection.COLUMNS) {
-				dragEnd = Math.min(dragEnd, seqs.getMaxSeqLength()); //Make sure we dont selects columns outside of the appropriate range
+				dragEnd = Math.min(dragEnd, seqs.getSequenceLength()); //Make sure we dont selects columns outside of the appropriate range
 				dragEnd = Math.max(0, dragEnd);
 				setSelectionInterval(dragStart, dragEnd);
 			}
@@ -862,7 +857,7 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 		boolean dragging = false;
 		JComponent parent;
 		boolean mouseOverRightEdge = false;
-		JPopupMenu rowHeaderPopup;
+		//JPopupMenu rowHeaderPopup;
 		int editingRow = -1;	//Keeps track of which row we're editing
 		
 		public RowHeader(JComponent parent) {
@@ -875,7 +870,7 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					seqs.get(editingRow).setName(seqRenamer.getText());
+					seqs.getSequence(editingRow).setLabel(seqRenamer.getText());
 					drawRowHeaderImage();
 					repaint();
 					seqRenamer.setVisible(false);
@@ -883,51 +878,51 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 				}
 			});
 			
-			rowHeaderPopup = new JPopupMenu();
-			rowHeaderPopup.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY) );
-			rowHeaderPopup.setBackground(new Color(100,100,100) );
+//			rowHeaderPopup = new JPopupMenu();
+//			rowHeaderPopup.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY) );
+//			rowHeaderPopup.setBackground(new Color(100,100,100) );
+//			
+//			JMenuItem popupCopy = new JMenuItem("Copy");
+//			popupCopy.addActionListener(new java.awt.event.ActionListener() {
+//	            public void actionPerformed(java.awt.event.ActionEvent evt) {
+//	            	sgDisplay.copy();
+//	            }
+//	        });
+//			rowHeaderPopup.add(popupCopy);
+//			
+//			JMenuItem popupCut = new JMenuItem("Cut");
+//			popupCut.addActionListener(new java.awt.event.ActionListener() {
+//	            public void actionPerformed(java.awt.event.ActionEvent evt) {
+//	            	sgDisplay.cut();
+//	            }
+//	        });
+//			rowHeaderPopup.add(popupCut);
+//			
+//			JMenuItem popupPaste = new JMenuItem("Paste");
+//			popupPaste.addActionListener(new java.awt.event.ActionListener() {
+//	            public void actionPerformed(java.awt.event.ActionEvent evt) {
+//	            	sgDisplay.paste();
+//	            }
+//	        });
+//			rowHeaderPopup.add(popupPaste);
 			
-			JMenuItem popupCopy = new JMenuItem("Copy");
-			popupCopy.addActionListener(new java.awt.event.ActionListener() {
-	            public void actionPerformed(java.awt.event.ActionEvent evt) {
-	            	sgDisplay.copy();
-	            }
-	        });
-			rowHeaderPopup.add(popupCopy);
+			//rowHeaderPopup.add(new JSeparator());
 			
-			JMenuItem popupCut = new JMenuItem("Cut");
-			popupCut.addActionListener(new java.awt.event.ActionListener() {
-	            public void actionPerformed(java.awt.event.ActionEvent evt) {
-	            	sgDisplay.cut();
-	            }
-	        });
-			rowHeaderPopup.add(popupCut);
-			
-			JMenuItem popupPaste = new JMenuItem("Paste");
-			popupPaste.addActionListener(new java.awt.event.ActionListener() {
-	            public void actionPerformed(java.awt.event.ActionEvent evt) {
-	            	sgDisplay.paste();
-	            }
-	        });
-			rowHeaderPopup.add(popupPaste);
-			
-			rowHeaderPopup.add(new JSeparator());
-			
-			JMenuItem popupRemove = new JMenuItem("Delete selection");
-			popupRemove.addActionListener(new java.awt.event.ActionListener() {
-	            public void actionPerformed(java.awt.event.ActionEvent evt) {
-	            	sgDisplay.removeSelection();
-	            }
-	        });
-			rowHeaderPopup.add(popupRemove);
-			
-			JMenuItem popupDisplay = new JMenuItem("Display selection");
-			popupDisplay.addActionListener(new java.awt.event.ActionListener() {
-	            public void actionPerformed(java.awt.event.ActionEvent evt) {
-	            	sgDisplay.exportSelectionActionPerformed(evt);
-	            }
-	        });
-			rowHeaderPopup.add(popupDisplay);
+//			JMenuItem popupRemove = new JMenuItem("Delete selection");
+//			popupRemove.addActionListener(new java.awt.event.ActionListener() {
+//	            public void actionPerformed(java.awt.event.ActionEvent evt) {
+//	            	sgDisplay.removeSelection();
+//	            }
+//	        });
+//			rowHeaderPopup.add(popupRemove);
+//			
+//			JMenuItem popupDisplay = new JMenuItem("Display selection");
+//			popupDisplay.addActionListener(new java.awt.event.ActionListener() {
+//	            public void actionPerformed(java.awt.event.ActionEvent evt) {
+//	            	sgDisplay.exportSelectionActionPerformed(evt);
+//	            }
+//	        });
+//			rowHeaderPopup.add(popupDisplay);
 			
 			addMouseMotionListener(new MouseMotionListener() {
 				
@@ -943,7 +938,7 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 						if (!dragging) 
 							dragStart = getRowForPoint(e.getPoint());
 						dragEnd = getRowForPoint(e.getPoint());
-						dragEnd = Math.min(dragEnd, seqs.size());
+						dragEnd = Math.min(dragEnd, seqs.getSequenceLength());
 						setSelectionInterval(dragStart, dragEnd);
 						repaintParent();
 						dragging = true;
@@ -998,21 +993,21 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 				public void mouseClicked(MouseEvent e) {
 					if (e.getClickCount()>1) {
 						int row = getRowForPoint(e.getPoint());
-						if (row<0 || row>=seqs.size()) {
+						if (row<0 || row>=seqs.getSequenceLength()) {
 							return;
 						}
 						editingRow = row;
 						Rectangle taBounds = new Rectangle(15, row*rowHeight, rowHeaderWidth-15, rowHeight+4);
 						seqRenamer.setBounds(taBounds);
 			
-						seqRenamer.setText(seqs.get(row).getName());
+						seqRenamer.setText(seqs.getSequence(row).getLabel());
 						seqRenamer.setOpaque(true);
 						seqRenamer.setVisible(true);
 
 						return;
 					}
-					if (e.isPopupTrigger() || (SunFishFrame.getSunFishFrame().onAMac() && e.isControlDown()) || (e.getButton()==MouseEvent.BUTTON3)) {
-						rowHeaderPopup.show(rowHeader, e.getX(), e.getY());
+					if (e.isPopupTrigger() || (UIConstants.isMac() && e.isControlDown()) || (e.getButton()==MouseEvent.BUTTON3)) {
+						//rowHeaderPopup.show(rowHeader, e.getX(), e.getY());
 					}
 					else {
 						if (editingRow > -1) {
@@ -1098,18 +1093,6 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 		
 	}
 
-
-	@Override
-	public void partitionStateChanged(Partitionable source,
-			PartitionChangeType type) {
-
-		if (rowPainter instanceof PartitionRowPainter) {
-			drawAllImages();
-			repaint();
-		}
-		colHeader.drawColumnHeaderImage();
-	}
-
 	/**
 	 * Set the selection mode to columns and the dragStart and dragEnd variables to the supplied values. This is a 
 	 * more efficient way to select a big region, since it avoids repainting each individual column 
@@ -1129,17 +1112,6 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 	public void setLetterMode(int mode) {
 		rowPainter.setLetterMode(mode);
 	}
-
-	/**
-	 * Turns on translation for the given row painter and sets the frame to the given index and 
-	 * reverse complementing to the supplied value
-	 * @param frame
-	 */
-	public void setRowPainterTranslationFrame(int frame, boolean revComp) {
-		rowPainter.setTranslate(true, GeneticCodeFactory.createGeneticCode(GeneticCodes.Universal), frame, revComp);
-		repaint();
-	}
-	
 	
 	
 	/**
@@ -1153,7 +1125,7 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if (e.isPopupTrigger() || (SunFishFrame.getSunFishFrame().onAMac() && e.isControlDown()) || (e.getButton()==MouseEvent.BUTTON3)) {
+			if (e.isPopupTrigger() || (UIConstants.isMac() && e.isControlDown()) || (e.getButton()==MouseEvent.BUTTON3)) {
 				return;
 			}
 			dragStart = -1;
@@ -1210,7 +1182,7 @@ public class SGContentPanel extends JPanel implements PartitionChangeListener {
 				dragStart = getColumnForPoint(e.getPoint());
 			
 			dragEnd = getColumnForPoint(e.getPoint());
-			dragEnd = Math.min(dragEnd, seqs.getMaxSeqLength()); //Make sure we dont selects columns outside of the appropriate range
+			dragEnd = Math.min(dragEnd, seqs.getSequenceLength()); //Make sure we dont selects columns outside of the appropriate range
 			dragEnd = Math.max(0, dragEnd);
 			setSelectionInterval(dragStart, dragEnd);
 			colHeader.repaint(); //So we can draw the fancy selection indicator

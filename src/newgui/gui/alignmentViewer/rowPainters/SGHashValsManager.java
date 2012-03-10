@@ -3,16 +3,16 @@ package newgui.gui.alignmentViewer.rowPainters;
 import java.util.HashMap;
 import java.util.Map;
 
-import element.sequence.Sequence;
-import element.sequence.SequenceChangeListener;
-import element.sequence.SequenceGroup;
+import sequence.Alignment;
+import sequence.Sequence;
+
 
 /**
  * A small class that handles mappings from sequences to lists of hash values
  * @author brendan
  *
  */
-public class SGHashValsManager implements SequenceChangeListener {
+public class SGHashValsManager {
 
 	private int blockSize;
 	private Map<Integer, int[]> hashMapMap = new HashMap<Integer, int[]>();
@@ -24,12 +24,12 @@ public class SGHashValsManager implements SequenceChangeListener {
 	}
 	
 	/**
-	 * Add all sequences in the SequenceGroup to those tracked 
+	 * Add all sequences in the Alignment to those tracked 
 	 * @param sg
 	 */
-	public void addSequences(SequenceGroup sg) {
-		for(Sequence seq : sg.getSequences()) {
-			addSequence(seq);
+	public void addSequences(Alignment sg) {
+		for(int i=0; i<sg.getSequenceCount(); i++) {
+			addSequence(sg.getSequence(i));
 		}
 	}
 	
@@ -43,13 +43,12 @@ public class SGHashValsManager implements SequenceChangeListener {
 	 */
 	public boolean addSequence(Sequence seq) {
 		//Don't bother if it's already in there
-		if (hashMapMap.containsKey(seq.myNumber))
+		if (hashMapMap.containsKey(seq.uniqueNumber()))
 			return false;
 		
-		seq.addSequenceChangeListener(this);
-		int[] hashValues = new int[seq.length()/blockSize];
+		int[] hashValues = new int[seq.getLength()/blockSize];
 		constructSequenceHash(seq, hashValues);
-		hashMapMap.put(seq.myNumber, hashValues);
+		hashMapMap.put(seq.uniqueNumber(), hashValues);
 		return true;
 	}
 	
@@ -60,7 +59,7 @@ public class SGHashValsManager implements SequenceChangeListener {
 	 * @return
 	 */
 	public int[] getHashForSequence(Sequence seq) {
-		return hashMapMap.get(seq.myNumber);
+		return hashMapMap.get(seq.uniqueNumber());
 	}
 	
 	/**
@@ -92,7 +91,7 @@ public class SGHashValsManager implements SequenceChangeListener {
 		int hash = 0;
 		int prod = 1;
 		for(int i=index; i<(index+size); i++) {
-			Integer val = baseIntMap.get(seq.at(i));
+			Integer val = baseIntMap.get(seq.baseAt(i));
 			if (val == null)
 				return -1;
 			hash += val*prod;
@@ -101,25 +100,9 @@ public class SGHashValsManager implements SequenceChangeListener {
 		return hash;
 	}
 	
-	@Override
-	/**
-	 * Handles sequence change events. We remove the old hash values from the map, and then re-add
-	 * the sequence. 
-	 */
-	public void sequenceChanged(Sequence source, SequenceEventType eventType) {
-//		if (! hashMapMap.containsKey(source.myNumber))
-//			throw new IllegalArgumentException("HashValuesManager recieved a sequence change event from a sequence we don't track!");
-//		
-//		hashMapMap.remove(source.myNumber);
-		
-		int[] hashValues = new int[source.length()/blockSize];
-		constructSequenceHash(source, hashValues);
-		hashMapMap.put(source.myNumber, hashValues);
-		//System.out.println("SGHashValsManager : Sequence " + source.getName() + " has changed, updating hash values");
-	}
 	
 	public void removeSequence(Sequence seq) {
-		hashMapMap.remove(seq.myNumber);
+		hashMapMap.remove(seq.uniqueNumber());
 	}
 	
 	private void constructBaseIntMap() {

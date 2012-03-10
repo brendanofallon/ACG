@@ -219,6 +219,7 @@ public class CompressedAlignment implements Alignment {
 			System.out.println( DNAUtils.baseForInt(col[i]) );
 		}
 	}
+
 	
 //	public static void main(String[] args) {
 //		Alignment aln = new BasicAlignment();

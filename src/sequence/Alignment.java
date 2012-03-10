@@ -4,7 +4,7 @@ import java.util.List;
 
 
 /**
- * A collection of Sequences
+ * A collection of Sequences where all sequences have the same length
  * @author brendan
  *
  */
@@ -55,6 +55,7 @@ public interface Alignment {
 	 * @return True if sequence existed in this alignment, false otw
 	 */
 	public boolean removeSequence(Sequence seqToRemove);
+
 	
 //	/**
 //	 * Get the reference sequence for this alignment

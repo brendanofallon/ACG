@@ -17,12 +17,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
-import plugins.SGPlugin.analyzer.SequenceGroupCalculator;
-import plugins.SGPlugin.display.SGContentPanel.Selection;
-import element.sequence.PartitionChangeListener;
-import element.sequence.Partitionable;
-import element.sequence.Sequence;
-import element.sequence.SequenceGroup;
+import newgui.gui.alignmentViewer.SGContentPanel.Selection;
+
+import sequence.Alignment;
+import sequence.Sequence;
 
 /**
  * Handles the drawing of the image used to display the column header information for the sgContentPanel. Note
@@ -35,7 +33,7 @@ import element.sequence.SequenceGroup;
  * @author brendan
  *
  */
-public class SGColumnHeader extends JPanel implements ZeroColumnListener, PartitionChangeListener {
+public class SGColumnHeader extends JPanel implements ZeroColumnListener {
 
 	private boolean drawPartitions = false;
 	private boolean drawNumbers = true;
@@ -74,7 +72,7 @@ public class SGColumnHeader extends JPanel implements ZeroColumnListener, Partit
 	//Set to true if we will redraw the header image on the next call to paint
 	private boolean redrawImage = true;
 	
-	SequenceGroup currentSG = null;
+	Alignment currentSG = null;
 	
 	public SGColumnHeader(SGContentPanel contentPanel) {
 		this.contentPanel = contentPanel;
@@ -94,14 +92,7 @@ public class SGColumnHeader extends JPanel implements ZeroColumnListener, Partit
 	public void setShowPartitions(boolean show) {
 		drawPartitions = show;
 	}
-	
 
-	@Override
-	public void partitionStateChanged(Partitionable source,
-			PartitionChangeType type) {
-		redrawImage = true;
-		repaint();
-	}
 	
 	/**
 	 * This component keeps track of how high it 'should' be via the totalHeight field, which
@@ -158,7 +149,7 @@ public class SGColumnHeader extends JPanel implements ZeroColumnListener, Partit
 	public void paintColumnHeader(Graphics2D g2d, 
 									int cellWidth,
 									int height, 
-									SequenceGroup sg) {
+									Alignment sg) {
 	
 		g2d.setColor(Color.GRAY);
 		g2d.setFont(font);
@@ -178,11 +169,9 @@ public class SGColumnHeader extends JPanel implements ZeroColumnListener, Partit
 		}
 
 		if (drawNumbers) {
-			int max = sg.getMaxSeqLength();
+			int max = sg.getSequenceLength();
 			int rulerHeight = Math.min(maxRulerHeight, height);
 
-			
-			
 			g2d.drawLine(0, rulerHeight-1, max*cellWidth, rulerHeight-1); //Bottom horizontal line
 			int offSet = 0;
 			
@@ -206,64 +195,30 @@ public class SGColumnHeader extends JPanel implements ZeroColumnListener, Partit
 				}
 			}
 
-
-			
-			Color[] partitionColors = ColorDefaults.partitionColors;
-			for (int i=0; i<=sg.getMaxSeqLength(); i++) {
-				Integer part = sg.getPartitionNumForSite(i);
-				if (part!= null && part>0) {
-					g2d.setColor( partitionColors[(part)%partitionColors.length]);
-					g2d.fillRect(i*(cellWidth)+1 , rulerHeight, cellWidth, 2);
-				}
-				
-			}
-
 			sumHeight += rulerHeight;
 		}
 		
 		if (drawConsensus) {
-			char[] base = new char[1];
-			if (consensus==null) {
-				SequenceGroupCalculator calc = new SequenceGroupCalculator(sg);
-				consensus = calc.getConsensusSequence(true);
-			}
-			g2d.setColor(Color.black);
-			
-			sumHeight += consensusHeight;
-			float fontSize = cellWidth+2;
-			conFont = conFont.deriveFont( fontSize );
-			g2d.setFont(conFont);
-			
-			for(int i=0; i<consensus.length(); i++) {
-				base[0] = consensus.at(i);
-				if (base[0] == 'G' || base[0] == 'C')
-					g2d.drawChars(base, 0, 1, i*cellWidth-1, sumHeight-3);
-				else
-					g2d.drawChars(base, 0, 1, i*cellWidth, sumHeight-3);
-			}
+//			char[] base = new char[1];
+//			if (consensus==null) {
+//				consensus = sg.get;
+//			}
+//			g2d.setColor(Color.black);
+//			
+//			sumHeight += consensusHeight;
+//			float fontSize = cellWidth+2;
+//			conFont = conFont.deriveFont( fontSize );
+//			g2d.setFont(conFont);
+//			
+//			for(int i=0; i<consensus.getLength(); i++) {
+//				base[0] = consensus.charAt(i);
+//				if (base[0] == 'G' || base[0] == 'C')
+//					g2d.drawChars(base, 0, 1, i*cellWidth-1, sumHeight-3);
+//				else
+//					g2d.drawChars(base, 0, 1, i*cellWidth, sumHeight-3);
+//			}
 		}
 		
-		
-		if (drawPartitions) {
-			if (prevCellWidth != cellWidth) {
-				float fontSize = cellWidth;
-				parFont = parFont.deriveFont( fontSize );
-				prevCellWidth = cellWidth;
-			}
-			sumHeight += partitionHeight;
-			Color[] partitionColors = ColorDefaults.partitionColors;
-			g2d.setFont(parFont);
-			for (int i=0; i<=sg.getMaxSeqLength(); i++) {
-				Integer part = sg.getPartitionNumForSite(i);
-				if (part!= null && part>0) {
-					g2d.setColor(Color.white);
-					g2d.fillRect(i*(cellWidth)+1 , sumHeight-partitionHeight+2, cellWidth+1, partitionHeight-2);
-					g2d.setColor( partitionColors[(part)%partitionColors.length]);
-					g2d.drawString(String.valueOf(partitionLetters[(part-1)%partitionLetters.length]), i*(cellWidth)+2, sumHeight-3);
-				}
-				
-			}
-		}
 	}
 
 	@Override
@@ -282,7 +237,6 @@ public class SGColumnHeader extends JPanel implements ZeroColumnListener, Partit
 		//We must listen for partition change events so we know when to redraw the image
 		if (currentSG == null) {
 			currentSG = contentPanel.seqs;
-			currentSG.addPartitionListener(this);
 		}
 		
 		if (redrawImage)

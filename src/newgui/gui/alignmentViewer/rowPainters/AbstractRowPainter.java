@@ -14,21 +14,16 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
-import topLevelGUI.SunFishFrame;
+import newgui.gui.ViewerWindow;
 
-
-import element.sequence.*;
-import element.codon.GeneticCode;
-import element.codon.GeneticCode.AbstractGeneticCode;
-import element.codon.GeneticCode.AminoAcid;
-import element.sequence.Sequence;
-import element.sequence.SequenceGroupChangeListener.ChangeType;
+import sequence.Alignment;
+import sequence.Sequence;
 
 /**
  * Abstract base class for many of the row painter classes. This class houses code for rapid drawing
  * of contiguous sequences of bases. The basic idea is that we divide sequences into blocks of
  * hashBlockSize bases, then compute a hash value unique to a particular sub-sequence. We compute and
- * store all of these for the entire group of sequences whenever we load a new sequenceGroup. 
+ * store all of these for the entire group of sequences whenever we load a new Alignment. 
  * Finally, when it comes time to paint, we store a bunch of images of the drawn bases in a map that 
  * is keyed by hash values. So painting is the fairly fast - load the (already computed) hash value
  * for the block of bases we want to paint, use that hash value to get the (already drawn) image, and
@@ -43,7 +38,7 @@ import element.sequence.SequenceGroupChangeListener.ChangeType;
  * @author brendan
  *
  */
-public abstract class AbstractRowPainter implements SGRowPainter, SequenceGroupChangeListener {
+public abstract class AbstractRowPainter implements SGRowPainter {
 
 	protected char[] base = new char[1];
 	protected static Color shadowColor =  new Color(200, 200, 200,  155);
@@ -69,9 +64,10 @@ public abstract class AbstractRowPainter implements SGRowPainter, SequenceGroupC
 	//to identify differences
 	Sequence referenceSeq = null;
 	
-	SequenceGroup currentSG = null;
+	Alignment currentSG = null;
 	
 	static final int hashBlockSize = 4; //Means we hash four bases together to make a block
+	private char[] chars = new char[hashBlockSize]; //Storage for lists of bases to avoid multiple array creation calls
 	//Total number of images we draw will then be hashBlockSize^4 
 	
 	protected static SGHashValsManager sequenceHashes = new SGHashValsManager(hashBlockSize);
@@ -104,29 +100,17 @@ public abstract class AbstractRowPainter implements SGRowPainter, SequenceGroupC
 	
 	int frame = 0; //Corresponds to offset form seq.at(0), so frame will either be 0, 1, 2. Frames > 2 will be interpreted as mod%3
 	boolean revComp = false; 
-	AbstractGeneticCode translator = null;
 	
-	public AbstractRowPainter(SequenceGroup sg) {
+	public AbstractRowPainter(Alignment sg) {
 		currentSG = sg;
-		currentSG.addSGChangeListener(this);
 		constructBaseIntMap();
 	}
 	
 	
-	public void setSequenceGroup(SequenceGroup sg) {
+	public void setAlignment(Alignment sg) {
 		if (currentSG != sg) {
-			currentSG.removeSGChangeListener(this);
 		}
 		currentSG = sg;
-		currentSG.addSGChangeListener(this);
-
-	}
-	
-	public void sgChanged(SequenceGroup source, ChangeType type) {
-		//Hmm..not entirely clear if we care about this anymore. The new hash value indexing mechanism
-		//listens for individual sequence changes, and stores everything by sequence, so if a sequence
-		//is lost or something I don't think we care. 
-		//Frequency row painter definitely cares about this, however, and overrides this method
 	}
 
 	
@@ -138,7 +122,7 @@ public abstract class AbstractRowPainter implements SGRowPainter, SequenceGroupC
 	 * @return A bufferedImage representing the sequence of bases 
 	 */
 	protected BufferedImage createBaseImage(char[] bases, int hashVal, int width, int height) {
-		BufferedImage newImage = SunFishFrame.getSunFishFrame().getGraphicsConfiguration().createCompatibleImage(width*hashBlockSize, height, Transparency.TRANSLUCENT );
+		BufferedImage newImage = ViewerWindow.getViewer().getGraphicsConfiguration().createCompatibleImage(width*hashBlockSize, height, Transparency.TRANSLUCENT );
 		drawImageForBases(newImage.createGraphics(), width, height, bases);
 		hashImageMap.put(hashVal, newImage);
 		//System.out.println("Creating base image for " + String.valueOf(bases) + " map size is now: " + hashImageMap.size());
@@ -168,18 +152,6 @@ public abstract class AbstractRowPainter implements SGRowPainter, SequenceGroupC
 			g2d.drawChars(new char[]{bases[i]}, 0, 1, x, height-4);
 			x += colWidth;
 		}
-	}
-	
-	/**
-	 * Turn on/off translation. If on, use the specified genetic code. If off, code is ignored. 
-	 * @param trans
-	 * @param code
-	 */
-	public void setTranslate(boolean trans, AbstractGeneticCode code, int frame, boolean revComp) {
-		translate = trans;
-		translator = code;
-		this.revComp = revComp;
-		this.frame = frame %3;
 	}
 	
 	
@@ -227,7 +199,7 @@ public abstract class AbstractRowPainter implements SGRowPainter, SequenceGroupC
 	
 	/**
 	 * Paint the current used using the specified graphics object and other params, and the 
-	 * sequenceGroup associated with this rowPainter. The given sequenceGroup is ignored
+	 * Alignment associated with this rowPainter. The given Alignment is ignored
 	 */	
 	public abstract void paintRow(Graphics2D g2d, 
 			int row, 
@@ -303,19 +275,19 @@ public abstract class AbstractRowPainter implements SGRowPainter, SequenceGroupC
 	}
 	
 	protected void drawBaseNoShadow(Graphics2D g2d, int x, int y, int colWidth, int row, int site, Sequence seq) {
-		if (site>=seq.length())
+		if (site>=seq.getLength())
 			base[0] = ' ';
 		else
-			base[0] = seq.at(site);
+			base[0] = seq.charAt(site);
 		
 		if (letterMode == NO_LETTERS) {
 			return;
 		}
 		if (letterMode == DIF_LETTERS) {
 			if (referenceSeq == null)
-				referenceSeq = currentSG.get(0);
+				referenceSeq = currentSG.getSequence(0);
 			
-			if (seq != referenceSeq && base[0] == referenceSeq.at(site))
+			if (seq != referenceSeq && base[0] == referenceSeq.charAt(site))
 				base[0] = '.';
 			
 		}
@@ -354,14 +326,14 @@ public abstract class AbstractRowPainter implements SGRowPainter, SequenceGroupC
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		if (letterMode == NO_LETTERS) {
-			for(int i=site; i<Math.min(site+hashBlockSize, seq.length()); i++)
+			for(int i=site; i<Math.min(site+hashBlockSize, seq.getLength()); i++)
 				drawBackground(g2d, x+i*colWidth, y, colWidth, rowHeight, row, i, seq);
 			return;
 		}
 		
 		if (letterMode == DIF_LETTERS) {
 			if (referenceSeq == null)
-				referenceSeq = currentSG.get(0);
+				referenceSeq = currentSG.getSequence(0);
 		
 			if (seq==referenceSeq) {
 				int hashVal = sequenceHashes.getHashForSequence(seq)[site/hashBlockSize];
@@ -382,15 +354,15 @@ public abstract class AbstractRowPainter implements SGRowPainter, SequenceGroupC
 				return;
 			}
 			
-			for(int i=site; i<Math.min(seq.length(), site+hashBlockSize); i++) {
+			for(int i=site; i<Math.min(seq.getLength(), site+hashBlockSize); i++) {
 				int xMod = 0;
-				base[0] = seq.at(i);
-				if (seq != referenceSeq && base[0] == referenceSeq.at(i)) { 
+				base[0] = seq.charAt(i);
+				if (seq != referenceSeq && base[0] == referenceSeq.charAt(i)) { 
 					base[0] = '.';
 					xMod = 2;
 				}
 				else {
-					base[0] = seq.at(i);
+					base[0] = seq.charAt(i);
 					xMod = 0;
 				}
 
@@ -406,9 +378,9 @@ public abstract class AbstractRowPainter implements SGRowPainter, SequenceGroupC
 	
 		
 		//If we're at the end of the sequence then just draw the last few bases individually
-		if (site >= (seq.length() - hashBlockSize)) {
+		if (site >= (seq.getLength() - hashBlockSize)) {
 			int xPos = x+1;
-			for(int i=site; i<seq.length(); i++) { 
+			for(int i=site; i<seq.getLength(); i++) { 
 				drawBase(g2d, xPos, y+rowHeight, colWidth, rowHeight, row, i, seq);
 				xPos += colWidth;
 			}
@@ -435,7 +407,8 @@ public abstract class AbstractRowPainter implements SGRowPainter, SequenceGroupC
 	private void drawBasesFromHashMap(Graphics2D g2d, int x, int y, int hashVal, int colWidth, int rowHeight, int site, Sequence seq) {
 		BufferedImage image = hashImageMap.get(hashVal);
 		if (image == null) {
-			image = createBaseImage(seq.toCharArray(site, site+hashBlockSize), hashVal, colWidth, rowHeight );			
+			seq.toCharArray(site, site+hashBlockSize, chars);
+			image = createBaseImage(chars, hashVal, colWidth, rowHeight );			
 		}
 		g2d.drawImage(image, x, y, null);
 	}
@@ -455,7 +428,7 @@ public abstract class AbstractRowPainter implements SGRowPainter, SequenceGroupC
 	 */
 	private void drawBasesIndividually(Graphics2D g2d, int x, int y, int colWidth, int rowHeight, int row, int startSite, int end, Sequence seq) {
 		int xPos = x+1;
-		for(int i=startSite; i<Math.min(end, seq.length()); i++) { 
+		for(int i=startSite; i<Math.min(end, seq.getLength()); i++) { 
 			drawBase(g2d, xPos, y+rowHeight, colWidth, rowHeight, row, i, seq);
 			xPos += colWidth;
 		}
@@ -476,19 +449,19 @@ public abstract class AbstractRowPainter implements SGRowPainter, SequenceGroupC
 			throw new IllegalStateException("Not sure drawBase is supposed to get called for a translated sequence..?");
 		}
 		
-		if (site>=seq.length())
+		if (site>=seq.getLength())
 			base[0] = ' ';
 		else
-			base[0] = seq.at(site);
+			base[0] = seq.charAt(site);
 		
 		if (letterMode == NO_LETTERS) {
 			return;
 		}
 		if (letterMode == DIF_LETTERS) {
 			if (referenceSeq == null)
-				referenceSeq = currentSG.get(0);
+				referenceSeq = currentSG.getSequence(0);
 			
-			if (seq != referenceSeq && base[0] == referenceSeq.at(site))
+			if (seq != referenceSeq && base[0] == referenceSeq.charAt(site))
 				base[0] = '.';
 			
 		}
@@ -551,7 +524,7 @@ public abstract class AbstractRowPainter implements SGRowPainter, SequenceGroupC
 	
 	public abstract static class Instantiator {
 		
-		public abstract AbstractRowPainter getNewRowPainter(SequenceGroup sg);
+		public abstract AbstractRowPainter getNewRowPainter(Alignment sg);
 		
 	}
 

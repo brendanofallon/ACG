@@ -7,8 +7,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import element.IntegerRange;
-
 /**
  * A frame that displays a few options regarding selecting columns of a sequence group
  * @author brendan
@@ -238,6 +236,11 @@ public class ColumnSelectionFrame extends javax.swing.JFrame {
     }
 
 
+    class IntegerRange {
+    	int start;
+    	int end;
+    }
+    
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton doneButton;
     private javax.swing.JLabel jLabel1;

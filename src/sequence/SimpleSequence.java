@@ -15,6 +15,9 @@ import newgui.alignment.UnrecognizedBaseException;
  */
 public class SimpleSequence implements Sequence {
 	
+	private static int sequenceCount = 0;
+	private int myNumber = sequenceCount;
+	
 	protected String label = null;
 	protected final int[] bases;
 	
@@ -31,12 +34,14 @@ public class SimpleSequence implements Sequence {
 		for(int i=0; i<seqStr.length(); i++) {
 			bases[i] = DNAUtils.intForBase(seqStr.charAt(i));
 		}
+		sequenceCount++;
 	}
 	
 	public SimpleSequence(String label, int[] bases) {
 		this.label = label;
 		this.bases = new int[bases.length];
 		System.arraycopy(bases, 0, this.bases, 0, bases.length);
+		sequenceCount++;
 	}
 	
 	public SimpleSequence(String label, String seq) throws UnrecognizedBaseException {
@@ -45,7 +50,7 @@ public class SimpleSequence implements Sequence {
 		for(int i=0; i<seq.length(); i++) {
 			bases[i] = DNAUtils.intForBase(seq.charAt(i));
 		}
-		
+		sequenceCount++;
 	}
 
 	public void setReference(Sequence ref) {
@@ -103,6 +108,11 @@ public class SimpleSequence implements Sequence {
 	@Override
 	public void mask(int pos) {
 		bases[pos] = DNAUtils.N;
+	}
+
+	@Override
+	public int uniqueNumber() {
+		return myNumber;
 	}
 	
 }

@@ -51,4 +51,18 @@ public interface Sequence {
 	 * @param string
 	 */
 	public void setLabel(String string);
+	
+	/**
+	 * A unique id value for this sequence
+	 * @return
+	 */
+	public int uniqueNumber();
+	
+	/**
+	 * Obtain an array of character bases representing the values from [start..end)
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public void toCharArray(int start, int end, char[] output);
 }

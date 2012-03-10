@@ -5,7 +5,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 
-import element.sequence.SequenceGroup;
+import sequence.Alignment;
 
 /**
  * A small class that implements the row header painter interface and which handles painting
@@ -17,7 +17,7 @@ class DefaultHeaderPainter implements SGRowHeaderPainter {
 	
 	@Override
 	public void paintHeaderCell(Graphics2D g2d, int row, int x, int y, int width,
-			int height, SequenceGroup sg) {
+			int height, Alignment sg) {
 
 		g2d.setFont(font);
 		g2d.setColor(Color.GRAY);
@@ -25,8 +25,8 @@ class DefaultHeaderPainter implements SGRowHeaderPainter {
 		
 		g2d.setColor(Color.BLACK);
 		FontMetrics fm = g2d.getFontMetrics();
-		int strWidth = fm.stringWidth(sg.get(row).getName());
-		g2d.drawString(sg.get(row).getName(), Math.max(25, width-strWidth-3) , y-2+height);
+		int strWidth = fm.stringWidth(sg.getSequence(row).getLabel());
+		g2d.drawString(sg.getSequence(row).getLabel(), Math.max(25, width-strWidth-3) , y-2+height);
 		
 		g2d.setColor(new Color(255, 255, 255, 155));
 		g2d.fillRect(width-3, y, 3, height);
