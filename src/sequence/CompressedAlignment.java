@@ -220,48 +220,15 @@ public class CompressedAlignment implements Alignment {
 		}
 	}
 
-	
-//	public static void main(String[] args) {
-//		Alignment aln = new BasicAlignment();
-//
-//		
-//		try {
-//			Sequence s1 = new SimpleSequence("first",  "ACTGACTGACTACGCCTCCGTACG");
-//													//	ACTGACTGACTACGCCTCCGTACG
-//			Sequence s2 = new SimpleSequence("second", "ACTGACTGACTACGACTACGCACG");
-//			Sequence s3 = new SimpleSequence("third",  "ACTGACTGACTACTACTATGTAAG");
-//			Sequence s4 = new SimpleSequence("fourth", "ACGGACGGACTACGACTACGCACG");
-//												      //ACGGACGGACTACGACTACGCACG
-//
-//			aln.addSequence(s1);
-//			aln.addSequence(s2);
-//			aln.addSequence(s3);
-//			aln.addSequence(s4);
-//			
-//			CompressedAlignment caln = new CompressedAlignment(aln);
-//			System.out.println("Number of unique columns: " + caln.getUniqueColumnCount());
-//			int[] col = caln.getAbsoluteColumn(0);
-//			printColumn(col);
-//			
-//			AlignmentFile alnFile = new AlignmentFile(caln);
-//			try {
-//				alnFile.saveToFile(new File("samplealn.xml"));
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			
-//			File alnFile2 = new File("samplealn.xml");
-//			AlignmentFile afile2 = new AlignmentFile(alnFile2);
-//			Alignment newAln = afile2.getAlignment();
-//			Sequence s = newAln.getSequence(3);
-//			System.out.println(s);
-//		}
-//		catch (UnrecognizedBaseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//	}
+	@Override
+	public char[] getColumn(int column) {
+		char[] col = new char[seqLabels.length];
+		int[] colInts = columns.get(colMap[column]);
+		for(int i=0; i<colInts.length; i++) {
+			col[i] = DNAUtils.baseForInt( colInts[i]);
+		}
+		
+		return col;
+	}
 		
 }

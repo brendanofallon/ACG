@@ -96,7 +96,6 @@ public class AlignmentContainerPanel extends JPanel {
 	public void clearAlignments() {
 		alignments.clear();
 		layoutAlignments();
-		
 	}
 
 	/**

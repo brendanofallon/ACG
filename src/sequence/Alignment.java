@@ -56,6 +56,12 @@ public interface Alignment {
 	 */
 	public boolean removeSequence(Sequence seqToRemove);
 
+	/**
+	 * Obtain an array of bases across all sequences at the given alignment column
+	 * @param column
+	 * @return
+	 */
+	public char[] getColumn(int column);
 	
 //	/**
 //	 * Get the reference sequence for this alignment

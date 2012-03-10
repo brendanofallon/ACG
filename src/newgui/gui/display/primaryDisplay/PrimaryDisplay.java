@@ -26,12 +26,10 @@ public class PrimaryDisplay extends Display {
 	
 	private JPanel mainPanel;
 	private AlignmentPrepPanel alnPrepPanel;
-	private AnalysisPrepPanel analPrepPanel;
 	private AnalysisDetailsPanel analDetailsPanel;
 	private RunningJobPanel runJobPanel;
 	
 	public PrimaryDisplay() {
-		
 		initComponents();
 	
 		 CardLayout cl = (CardLayout)(mainPanel.getLayout());
@@ -51,22 +49,20 @@ public class PrimaryDisplay extends Display {
 		mainPanel.setLayout(new CardLayout());
 		
 		alnPrepPanel = new AlignmentPrepPanel(this);
-		analPrepPanel = new AnalysisPrepPanel(this);
 		analDetailsPanel = new AnalysisDetailsPanel(this);
 		runJobPanel = new RunningJobPanel(this);
 		mainPanel.add(alnPrepPanel, ALN_PREP);
-		mainPanel.add(analPrepPanel, ANALYSIS_PREP);
 		mainPanel.add(analDetailsPanel, ANALYSIS_DETAILS);
 		mainPanel.add(runJobPanel, RUN_JOB);
 		this.add(mainPanel, BorderLayout.CENTER);
 		
 	}
 	
-	public void showAnalysisPanel() {
-		analPrepPanel.initialize(alnPrepPanel.getAlnSummaries());
-		CardLayout cl = (CardLayout)(mainPanel.getLayout());
-		cl.show(mainPanel, ANALYSIS_PREP);
-	}
+//	public void showAnalysisPanel() {
+//		analPrepPanel.initialize(alnPrepPanel.getAlnSummaries());
+//		CardLayout cl = (CardLayout)(mainPanel.getLayout());
+//		cl.show(mainPanel, ANALYSIS_PREP);
+//	}
 	
 	
 	public void showAnalysisDetails(AnalysisModel model, AnalysisDataFile sourceFile) {

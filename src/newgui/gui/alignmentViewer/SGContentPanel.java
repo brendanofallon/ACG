@@ -34,6 +34,7 @@ import javax.swing.Timer;
 
 import newgui.UIConstants;
 import newgui.gui.alignmentViewer.rowPainters.AbstractRowPainter;
+import newgui.gui.alignmentViewer.rowPainters.GC_AT_RowPainter;
 
 import sequence.Alignment;
 import sequence.Sequence;
@@ -111,8 +112,6 @@ public class SGContentPanel extends JPanel {
 	int zeroColumn = -1; //The column in the display that the user sees as 'column zero', this is shadowed in the columnHeader
 	List<ZeroColumnListener> zeroColListeners = new ArrayList<ZeroColumnListener>(2);
 	
-	SGContentPanelDisplay sgDisplay;
-	
 	Timer flashTimer; //Used to 'flash' the selected sequences
 	private boolean flashing = false; //Whether or not we are in the middle of a flash
 	
@@ -121,8 +120,7 @@ public class SGContentPanel extends JPanel {
 	//not fired
 	Timer dragOffEdgeTimer;
 	
-	public SGContentPanel(SGContentPanelDisplay sgDisplay) {
-		this.sgDisplay = sgDisplay;
+	public SGContentPanel() {
 		
 		PanelMouseListener mouseListener = new PanelMouseListener();
 		addMouseListener(mouseListener);
@@ -177,8 +175,12 @@ public class SGContentPanel extends JPanel {
 			drawRowHeaderImage();
 			rowHeader.repaint();
 		}
+		
 		if (rowPainter != null)
 			rowPainter.setAlignment(sg);
+		else {
+			rowPainter = new GC_AT_RowPainter(sg);
+		}
 		this.setBackground(Color.white);
 	}
 
@@ -340,14 +342,12 @@ public class SGContentPanel extends JPanel {
 	 */
 	public void setToNaturalSize() {
 		Dimension size = getNaturalSize();
-
 		this.setMinimumSize(size);
 		this.setPreferredSize(size);
 		
 		colHeader.setMinimumSize(new Dimension(size.width, 2));
 		colHeader.setPreferredSize(new Dimension(size.width, colHeader.getTotalHeight()));
 		colHeader.revalidate();
-		
 		
 		Dimension rowHeaderSize = new Dimension(rowHeaderWidth, size.height);
 		rowHeader.setMinimumSize(rowHeaderSize);
@@ -395,6 +395,9 @@ public class SGContentPanel extends JPanel {
 		
 		lastVisCol = Math.min(seqs.getSequenceLength(), lastVisCol);
 		
+		if (rowPainter == null) {
+			return;
+		}
 		//System.out.println("Painting rows " + firstRow + " .. " + Math.min(seqs.size(), lastRow));
 		for(int row=firstRow; row<Math.min(seqs.getSequenceCount(), lastRow); row++) {
 			rowPainter.paintRow(g2d, row, firstVisCol, lastVisCol, 0, row*rowHeight, columnWidth, rowHeight);
@@ -554,6 +557,14 @@ public class SGContentPanel extends JPanel {
 		return seqs.getSequence(i);
 	}
 	
+	/**
+	 * Obtain the current alignment displayed in this panel, may be null if alignment has
+	 * never been set
+	 * @return
+	 */
+	public Alignment getAlignment() {
+		return seqs;
+	}
 	
 	private void drawRowHeaderImage() {
 		Dimension natSize = getNaturalSize();
@@ -1241,5 +1252,7 @@ public class SGContentPanel extends JPanel {
 		public void mouseMoved(MouseEvent e) {	}
 		
 	}
+
+	
 	
 }

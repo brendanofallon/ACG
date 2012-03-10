@@ -58,7 +58,6 @@ public class AnalysisPrepPanel extends JPanel {
 		for(AlignmentSummary sum : alnSums) {
 			topPanel.add(sum);
 			alignmentSums.add(sum);
-			
 		}
 		topPanel.revalidate();
 		repaint();

@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,9 +20,15 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JSlider;
 import javax.swing.JTextArea;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.xml.transform.TransformerException;
 
 import sequence.Alignment;
@@ -33,6 +40,9 @@ import newgui.UIConstants;
 import newgui.alignment.AlignmentSummary;
 import newgui.analysisTemplate.AnalysisTemplate;
 import newgui.analysisTemplate.BasicAnalysis;
+import newgui.gui.alignmentViewer.SGContentPanel;
+import newgui.gui.alignmentViewer.rowPainters.FrequencyRowPainter;
+import newgui.gui.alignmentViewer.rowPainters.GC_AT_RowPainter;
 import newgui.gui.display.Display;
 import newgui.gui.filepanel.ChooseAlignmentListener;
 import newgui.gui.filepanel.ChooseAlignmentPanel;
@@ -51,22 +61,62 @@ import newgui.gui.widgets.VerticalTextButtons;
 public class AlignmentPrepPanel extends JPanel {
 
 	//private AlignmentView alignmentView;
-	private AlignmentContainerPanel alnContainer;
+	private JPanel alnPanel;
+	private SGContentPanel contentPanel;
 	private JPanel bottomHalf;
 	private PrimaryDisplay displayParent;
-
+	private JScrollPane sgScrollPane;
+	
 	public AlignmentPrepPanel(PrimaryDisplay displayParent) {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBackground(Display.defaultDisplayBackground);
 		this.displayParent = displayParent;
 		
-		alnContainer = new AlignmentContainerPanel();
-		alnContainer.setBorder(BorderFactory.createEmptyBorder(4, 10, 4, 10));
-		alnContainer.setBackground(Display.defaultDisplayBackground);
-		alnContainer.setPreferredSize(new Dimension(500, 100));
-		alnContainer.setMaximumSize(new Dimension(10000, 300));
+		contentPanel = new SGContentPanel();
+		contentPanel.setMinimumSize(new Dimension(100, 500));
+		sgScrollPane = new JScrollPane( contentPanel );
+        JPanel corner1 = new JPanel();
+        corner1.setBackground(Color.white);
+        sgScrollPane.setCorner(JScrollPane.UPPER_RIGHT_CORNER, corner1);
+        JPanel corner2 = new JPanel();
+        corner2.setBackground(Color.white);
+        sgScrollPane.setCorner(JScrollPane.LOWER_LEFT_CORNER, corner2);
+        JPanel corner3 = new JPanel();
+        corner3.setBackground(Color.white);
+        sgScrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER, corner3);
+        
+		alnPanel = new JPanel();
+		alnPanel.setOpaque(false);
+		alnPanel.setLayout(new BorderLayout());
+		alnPanel.add(sgScrollPane, BorderLayout.CENTER);
 		
-		this.add(alnContainer);
+		this.add(alnPanel);
+		
+		JPanel topPanel = new JPanel();
+		topPanel.setOpaque(false);
+		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+		
+		topPanel.add(Box.createHorizontalGlue());
+		alnPanel.add(topPanel, BorderLayout.NORTH);
+		
+		String[] colorSchemes = new String[]{GC_AT_RowPainter.getIdentifier(), FrequencyRowPainter.getIdentifier()};
+		JComboBox colorSchemeBox = new JComboBox(colorSchemes);
+		topPanel.add(colorSchemeBox);
+		topPanel.add(Box.createHorizontalGlue());
+		
+		zoomSlider = new JSlider();
+		zoomSlider.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				zoomValueChanged();
+			}
+		});
+		zoomSlider.setPreferredSize(new Dimension(100, 20));
+		zoomSlider.setMaximumSize(new Dimension(100, 50));
+		zoomSlider.setToolTipText("Change column width");
+		zoomSlider.setFont(new Font("Sans", Font.PLAIN, 0));
+		zoomSlider.setPaintLabels(false);
+		zoomSlider.setPaintTicks(false);
+		topPanel.add(zoomSlider);
 		
 		JPanel alnButtons = new JPanel();
 		alnButtons.setBackground(Display.defaultDisplayBackground);
@@ -172,8 +222,7 @@ public class AlignmentPrepPanel extends JPanel {
 
 
 	protected void replaceAlignment(Alignment aln) {
-		alnContainer.clearAlignments();
-		alnContainer.addAlignment(aln, "New alignment");
+		contentPanel.setAlignment(aln);
 		repaint();
 	}
 
@@ -186,13 +235,13 @@ public class AlignmentPrepPanel extends JPanel {
 		if (selectedTemplate != null) {
 			AnalysisModel model = selectedTemplate.getModel();
 			
-			if (alnContainer.getAlignments().size()==0)
-				throw new IllegalArgumentException("No alignments have been added");
-			if (alnContainer.getAlignments().size()>1)
-				throw new IllegalArgumentException("We currently cannot handle multiple alignments");
+//			if (alnContainer.getAlignments().size()==0)
+//				throw new IllegalArgumentException("No alignments have been added");
+//			if (alnContainer.getAlignments().size()>1)
+//				throw new IllegalArgumentException("We currently cannot handle multiple alignments");
 			
 			List<Sequence> seqs = new ArrayList<Sequence>();
-			Alignment aln = alnContainer.getAlignments().get(0);
+			Alignment aln = contentPanel.getAlignment();
 			for(int i=0; i<aln.getSequenceCount(); i++) {
 				seqs.add( aln.getSequence(i) );
 			}
@@ -213,31 +262,39 @@ public class AlignmentPrepPanel extends JPanel {
 	 * @param title
 	 */
 	public void addAlignment(Alignment aln, String title) {
-		alnContainer.addAlignment(aln, title);
+		contentPanel.setAlignment(aln);
+		contentPanel.setToNaturalSize();
+		sgScrollPane.getVerticalScrollBar().setUnitIncrement(contentPanel.getRowHeight());
+		sgScrollPane.getHorizontalScrollBar().setUnitIncrement(Math.max(5, contentPanel.getColumnWidth()));
+		sgScrollPane.setPreferredSize(new Dimension(100, 200));
+		sgScrollPane.setMinimumSize(new Dimension(100, 200));
 		revalidate();
 		repaint();
 	}
 	
-	public void removeAlignment(Alignment aln) {
-		alnContainer.removeAlignment(aln);
+	protected void zoomValueChanged() {
+		int val = (int)Math.round(zoomSlider.getValue()/10.0)+1;
+		contentPanel.setColumnWidth(val);
+		sgScrollPane.getHorizontalScrollBar().setUnitIncrement(Math.max(5, contentPanel.getColumnWidth()));
 	}
 	
-	public List<Alignment> getAlignments() {
-		return alnContainer.getAlignments();
+	public Alignment getAlignment() {
+		return contentPanel.getAlignment();
 	}
 	
-	protected void showConfigAnalysisWindow() {
-		displayParent.showAnalysisPanel();
-	}
+//	protected void showConfigAnalysisWindow() {
+//		displayParent.showAnalysisPanel();
+//	}
 
-	public List<AlignmentSummary> getAlnSummaries() {
-		return alnContainer.getSummaries();
-	}
+//	public List<AlignmentSummary> getAlnSummaries() {
+//		return alnContainer.getSummaries();
+//	}
 	
 	
 	private JPanel topPanel;
 	private JTextArea analDescBox; //Shows descriptions of analysis types
 	private AnalysisTemplate selectedTemplate = null;
 	private BorderlessButton chooseButton;
-
+	private JSlider zoomSlider;
+	
 }

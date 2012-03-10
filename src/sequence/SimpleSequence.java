@@ -114,5 +114,12 @@ public class SimpleSequence implements Sequence {
 	public int uniqueNumber() {
 		return myNumber;
 	}
+
+	@Override
+	public void toCharArray(int start, int end, char[] output) {
+		for(int i=start; i<end; i++) {
+			output[i-start] = DNAUtils.baseForInt( bases[i]);
+		}
+	}
 	
 }

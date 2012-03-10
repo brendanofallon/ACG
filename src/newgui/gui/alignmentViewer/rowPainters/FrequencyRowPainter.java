@@ -3,9 +3,9 @@ package newgui.gui.alignmentViewer.rowPainters;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import plugins.SGPlugin.analyzer.SequenceGroupCalculator;
-import element.sequence.*;
-import element.sequence.SequenceGroupChangeListener.ChangeType;
+import sequence.Alignment;
+import sequence.Sequence;
+
 
 /**
  * A row painter that colors bases based on their column frequency. Non-polymorphic columns are all colored blue, but the color of polymorphic 
@@ -33,7 +33,7 @@ public class FrequencyRowPainter extends AbstractRowPainter {
     int prevRowSize = 0;
     
     
-	public FrequencyRowPainter(SequenceGroup sg) {
+	public FrequencyRowPainter(Alignment sg) {
 		super(sg);
 		
 	  	for(int i=0; i<colorArraySize; i++) {
@@ -42,7 +42,7 @@ public class FrequencyRowPainter extends AbstractRowPainter {
 	  	
     }
 	
-	public static AbstractRowPainter getNew(SequenceGroup sg) {
+	public static AbstractRowPainter getNew(Alignment sg) {
 		return new FrequencyRowPainter(sg);
 	}
 	
@@ -51,7 +51,7 @@ public class FrequencyRowPainter extends AbstractRowPainter {
 	}
 	
 	private void recalculateFreqs() {
-		int columnCount = currentSG.getMaxSeqLength();
+		int columnCount = currentSG.getSequenceLength();
 		colorIt = new boolean[columnCount];
 		freqs = new int[columnCount][4];
 		for(int i=0; i<columnCount; i++) {
@@ -79,13 +79,6 @@ public class FrequencyRowPainter extends AbstractRowPainter {
 		recalculateFreqs = true;
 	}
 	
-	/**
-	 * If the SequenceGroup ever changes recalculate all frequencies
-	 */
-	public void sgChanged(SequenceGroup source, ChangeType type) {
-		setRecalculateFreqs();
-	}
-	
 	@Override
 	public void paintRow(Graphics2D g2d, 
 			int row, 
@@ -96,10 +89,10 @@ public class FrequencyRowPainter extends AbstractRowPainter {
 			int cellWidth,
 			int rowHeight) {
 		
-		if (freqs == null || prevRowSize != currentSG.size() || prevColSize != currentSG.getMaxSeqLength() || recalculateFreqs) {
+		if (freqs == null || prevRowSize != currentSG.getSequenceCount() || prevColSize != currentSG.getSequenceLength() || recalculateFreqs) {
 			recalculateFreqs();
-			prevRowSize = currentSG.size();
-			prevColSize = currentSG.getMaxSeqLength();
+			prevRowSize = currentSG.getSequenceCount();
+			prevColSize = currentSG.getSequenceLength();
 		}
 	
 		setCellSize(cellWidth, rowHeight);
@@ -108,14 +101,14 @@ public class FrequencyRowPainter extends AbstractRowPainter {
 		g2d.setColor(color);
 		g2d.fillRect(x+firstCol*cellWidth, y, cellWidth*(lastCol-firstCol), rowHeight);
 		
-		Sequence seq = currentSG.get(row);
+		Sequence seq = currentSG.getSequence(row);
 		int colPos = x+firstCol*cellWidth;
-		for(int col=firstCol; col < Math.min(lastCol, seq.length()); col++) {
+		for(int col=firstCol; col < Math.min(lastCol, seq.getLength()); col++) {
 			if (colorIt[col]) {
 				int baseIndex = -1;
 				color = Color.LIGHT_GRAY;
 
-				Integer value = baseIntMap.get(seq.at(col));
+				Integer value = baseIntMap.get(seq.baseAt(col));
 				if (value != null)
 					baseIndex = value;
 
@@ -137,7 +130,7 @@ public class FrequencyRowPainter extends AbstractRowPainter {
 		}
 		
 		int firstDrawCol = firstCol - firstCol%hashBlockSize;
-		for(int blockStart=firstDrawCol; blockStart<Math.min(lastCol, seq.length()); blockStart+=hashBlockSize) {			
+		for(int blockStart=firstDrawCol; blockStart<Math.min(lastCol, seq.getLength()); blockStart+=hashBlockSize) {			
 			drawBaseGroup(g2d, blockStart*cellWidth, y, cellWidth, rowHeight, row, blockStart, seq);	
 		}
 
@@ -145,7 +138,7 @@ public class FrequencyRowPainter extends AbstractRowPainter {
 	}
 
 	
-	public static float[] getColumnBaseFreqs(SequenceGroup seqs, int colNum) {
+	public static float[] getColumnBaseFreqs(Alignment seqs, int colNum) {
 		float[] freqs = new float[4];
 		char[] col = seqs.getColumn(colNum);
 		double counted = 0;
@@ -242,7 +235,7 @@ public class FrequencyRowPainter extends AbstractRowPainter {
 
 	public static class Instantiator extends AbstractRowPainter.Instantiator {
 		
-		public AbstractRowPainter getNewRowPainter(SequenceGroup sg) {
+		public AbstractRowPainter getNewRowPainter(Alignment sg) {
 			return new FrequencyRowPainter(sg);
 		}
 		
