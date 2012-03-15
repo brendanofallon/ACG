@@ -124,9 +124,11 @@ public class SGColumnHeader extends JPanel implements ZeroColumnListener {
 	 * Re-construct the column header image, creating a new BufferedImage if necessary
 	 */
 	public void drawColumnHeaderImage() {
-		
 		if (columnHeaderImage==null || prevColHeaderWidth != getWidth() || totalHeight != getHeight()) {
 			prevColHeaderWidth = getWidth();
+			if (this.getGraphicsConfiguration()==null) {
+				return;
+			}
 			columnHeaderImage = this.getGraphicsConfiguration().createCompatibleImage(getWidth(), totalHeight);
 			//System.out.println("Reallocating column header image with width: " + getWidth());
 		}

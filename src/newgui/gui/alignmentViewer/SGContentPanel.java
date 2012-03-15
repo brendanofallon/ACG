@@ -37,6 +37,7 @@ import newgui.gui.alignmentViewer.rowPainters.AbstractRowPainter;
 import newgui.gui.alignmentViewer.rowPainters.GC_AT_RowPainter;
 
 import sequence.Alignment;
+import sequence.BasicSequenceAlignment;
 import sequence.Sequence;
 
 
@@ -128,6 +129,8 @@ public class SGContentPanel extends JPanel {
 	
 		addZeroColumnListener(colHeader);
 		setBackground(Color.LIGHT_GRAY);
+		
+		seqs = new BasicSequenceAlignment();
 		
 		dragOffEdgeTimer = new Timer(30, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -323,6 +326,10 @@ public class SGContentPanel extends JPanel {
 	 * @return
 	 */
 	public Dimension getNaturalSize() {
+		if (seqs == null || seqs.getSequenceCount()==0){
+			return new Dimension(100, 100);
+		}
+		
 		int width = columnWidth*seqs.getSequenceLength();
 		int height = seqs.getSequenceCount()*rowHeight;
 		return new Dimension(width, height);
@@ -580,6 +587,9 @@ public class SGContentPanel extends JPanel {
 		g2d.setColor(getBackground());
 		g2d.fillRect(0, 0, getWidth(), natSize.height);
 
+		if (seqs == null) {
+			return;
+		}
 		for(int row=0; row<seqs.getSequenceCount(); row++) {
 			headerPainter.paintHeaderCell(g2d, row, 0, row*rowHeight, rowHeaderWidth, rowHeight, seqs);
 		}
