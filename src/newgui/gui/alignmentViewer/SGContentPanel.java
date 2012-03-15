@@ -624,7 +624,9 @@ public class SGContentPanel extends JPanel {
 			while (i>-1) {
 				rows[count] = i;
 				if (i>seqs.getSequenceCount()) {
-					throw new IllegalStateException("A row was selected whose index is greater than the number of sequences...probably selection didn't get cleared after a mode switch");
+					//throw new IllegalStateException("A row was selected whose index is greater than the number of sequences...probably selection didn't get cleared after a mode switch");
+					System.err.println("A row was selected whose index is greater than the number of sequences...probably selection didn't get cleared after a mode switch");
+					continue;
 				}
 				count++;
 				i = selection.nextSetBit(i+1);
@@ -723,6 +725,10 @@ public class SGContentPanel extends JPanel {
 //		return sg;
 //	}
 	
+	protected void exportSelectionActionPerformed(ActionEvent evt) {
+		
+	}
+	
 	/**
 	 * Set the zero column and fire a zeroColumnChanged event to all zeroColumnListeners. This also 
 	 * forces a redraw of the columnHeaderImage and repaints the column header component
@@ -730,7 +736,6 @@ public class SGContentPanel extends JPanel {
 	 */
 	public void setZeroColumn(int col) {
 			zeroColumn = col;
-			System.out.println("Setting zero column to : " + zeroColumn);
 			for(ZeroColumnListener z : zeroColListeners)
 				z.zeroColumnChanged(zeroColumn);
 			
@@ -761,12 +766,12 @@ public class SGContentPanel extends JPanel {
 	public void removeSelection() {
 		if (hasSelectedRows()) {
 			int[] rows = getSelectedRows();
-			//seqs.removeRows( rows );
+			seqs.removeRows( rows );
 		}
 		
 		if (hasSelectedColumns()) {
 			int[] cols = getSelectedColumns();
-			//seqs.removeCols( cols );
+			seqs.removeCols( cols );
 		}
 		
 		selection.clear();
@@ -868,7 +873,7 @@ public class SGContentPanel extends JPanel {
 		boolean dragging = false;
 		JComponent parent;
 		boolean mouseOverRightEdge = false;
-		//JPopupMenu rowHeaderPopup;
+		JPopupMenu rowHeaderPopup;
 		int editingRow = -1;	//Keeps track of which row we're editing
 		
 		public RowHeader(JComponent parent) {
@@ -889,10 +894,10 @@ public class SGContentPanel extends JPanel {
 				}
 			});
 			
-//			rowHeaderPopup = new JPopupMenu();
-//			rowHeaderPopup.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY) );
-//			rowHeaderPopup.setBackground(new Color(100,100,100) );
-//			
+			rowHeaderPopup = new JPopupMenu();
+			rowHeaderPopup.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY) );
+			rowHeaderPopup.setBackground(new Color(100,100,100) );
+			
 //			JMenuItem popupCopy = new JMenuItem("Copy");
 //			popupCopy.addActionListener(new java.awt.event.ActionListener() {
 //	            public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -917,23 +922,23 @@ public class SGContentPanel extends JPanel {
 //	        });
 //			rowHeaderPopup.add(popupPaste);
 			
-			//rowHeaderPopup.add(new JSeparator());
+			JMenuItem popupDisplay = new JMenuItem("New from selection");
+			popupDisplay.addActionListener(new java.awt.event.ActionListener() {
+	            public void actionPerformed(java.awt.event.ActionEvent evt) {
+	            	exportSelectionActionPerformed(evt);
+	            }
+	        });
+			rowHeaderPopup.add(popupDisplay);
 			
-//			JMenuItem popupRemove = new JMenuItem("Delete selection");
-//			popupRemove.addActionListener(new java.awt.event.ActionListener() {
-//	            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//	            	sgDisplay.removeSelection();
-//	            }
-//	        });
-//			rowHeaderPopup.add(popupRemove);
-//			
-//			JMenuItem popupDisplay = new JMenuItem("Display selection");
-//			popupDisplay.addActionListener(new java.awt.event.ActionListener() {
-//	            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//	            	sgDisplay.exportSelectionActionPerformed(evt);
-//	            }
-//	        });
-//			rowHeaderPopup.add(popupDisplay);
+			JMenuItem popupRemove = new JMenuItem("Delete selection");
+			popupRemove.addActionListener(new java.awt.event.ActionListener() {
+	            public void actionPerformed(java.awt.event.ActionEvent evt) {
+	            	removeSelection();
+	            }
+	        });
+			rowHeaderPopup.add(popupRemove);
+			
+
 			
 			addMouseMotionListener(new MouseMotionListener() {
 				
@@ -1018,7 +1023,7 @@ public class SGContentPanel extends JPanel {
 						return;
 					}
 					if (e.isPopupTrigger() || (UIConstants.isMac() && e.isControlDown()) || (e.getButton()==MouseEvent.BUTTON3)) {
-						//rowHeaderPopup.show(rowHeader, e.getX(), e.getY());
+						rowHeaderPopup.show(rowHeader, e.getX(), e.getY());
 					}
 					else {
 						if (editingRow > -1) {
@@ -1058,7 +1063,6 @@ public class SGContentPanel extends JPanel {
 
 			});
 		}
-	
 
 		protected void repaintParent() {
 			repaint();

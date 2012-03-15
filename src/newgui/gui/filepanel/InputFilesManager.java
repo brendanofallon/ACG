@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import newgui.datafile.AlignmentFile;
+import newgui.gui.ViewerWindow;
 
 import sequence.Alignment;
 
@@ -129,5 +132,33 @@ public class InputFilesManager {
 	
 	private List<DirectoryListener> listeners = new ArrayList<DirectoryListener>();
 	
+	/**
+	 * Open a dialog prompting the user to enter a name for the alignment, 
+	 * and if accepted save the alignment with the name specified
+	 * @param aln
+	 * @param suggestedName
+	 * @return
+	 */
+	public boolean saveAlignment(Alignment aln, String suggestedName) {
+		String name = (String)JOptionPane.showInputDialog(ViewerWindow.getViewer(), 
+				"Choose a name for the alignment:",
+				"Save analysis",
+				JOptionPane.PLAIN_MESSAGE,
+				null, 
+				null,
+				suggestedName);
+		
+		if (name == null) {
+			return false;
+		}
+
+		if (! name.endsWith(".xml")) {
+			name = name + ".xml";
+		}
+		
+		addAlignment(aln, name);
+		return true;
+	}
+
 	
 }

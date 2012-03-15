@@ -92,8 +92,7 @@ public class GC_AT_RowPainter extends AbstractRowPainter {
 			bColor = unknownColor;
 		}
 		g2d.setColor(bColor);
-		g2d.fillRect(site*colWidth, rowHeight*row, colWidth, rowHeight);
-		
+		g2d.fillRect(site*colWidth, rowHeight*row, colWidth, rowHeight);	
 	}
 	
 	public void paintRow(Graphics2D g2d, 

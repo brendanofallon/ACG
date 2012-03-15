@@ -1,5 +1,8 @@
 package sequence;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import xml.XMLLoader;
@@ -19,7 +22,7 @@ public class SimpleSequence implements Sequence {
 	private int myNumber = sequenceCount;
 	
 	protected String label = null;
-	protected final int[] bases;
+	protected int[] bases;
 	
 	private Sequence reference = null;
 	
@@ -115,6 +118,27 @@ public class SimpleSequence implements Sequence {
 		return myNumber;
 	}
 
+	public void removeCols(int[] cols) {
+		List<Integer> newBases = new ArrayList<Integer>();
+		for(int i=0; i<bases.length; i++)
+			newBases.add(bases[i]);
+		
+		Arrays.sort(cols);
+
+		//Must run from end of columns backward so indices stay the same
+		for(int i=cols.length-1; i>=0; i--) {
+			newBases.remove(cols[i]);
+//			if (i==0 || cols[i] != cols[i-1])
+//				buf.replace(cols[i], cols[i]+1, empty);
+		}
+		
+		bases = new int[newBases.size()];
+		for(int i=0; i<newBases.size(); i++) {
+			bases[i] = newBases.get(i);
+		}
+	}
+
+	
 	@Override
 	public void toCharArray(int start, int end, char[] output) {
 		for(int i=start; i<end; i++) {

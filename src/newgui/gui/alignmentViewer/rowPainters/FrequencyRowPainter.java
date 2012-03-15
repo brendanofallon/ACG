@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import sequence.Alignment;
+import sequence.DNAUtils;
 import sequence.Sequence;
 
 
@@ -37,7 +38,8 @@ public class FrequencyRowPainter extends AbstractRowPainter {
 		super(sg);
 		
 	  	for(int i=0; i<colorArraySize; i++) {
-    		freqColorArray[i] = new Color(1.0f-(float)i/(float)colorArraySize, 0.3f+0.3f*(float)i/(float)colorArraySize, 0.5f+0.5f*(float)i/(float)colorArraySize);
+	  		float frac = (float)i / (float)colorArraySize;
+    		freqColorArray[i] = new Color((1f-0.75f*frac), (0.25f+0.5f*frac), 0.3f+0.7f*frac);
 	  	}
 	  	
     }
@@ -56,7 +58,7 @@ public class FrequencyRowPainter extends AbstractRowPainter {
 		freqs = new int[columnCount][4];
 		for(int i=0; i<columnCount; i++) {
 			float[] frequencies = getColumnBaseFreqs(currentSG, i);
-			boolean colorCol = currentSG.hasGap(i) || currentSG.hasUnknown(i); //If there's a gap or unknown we color this column
+			boolean colorCol = currentSG.hasGapOrUnknown(i); //If there's a gap or unknown we color this column
 			for(int j=0; j<4; j++) {
 				freqs[i][j] = (int)((colorArraySize-1)*frequencies[j]);
 				if (frequencies[j] > 0.0f && frequencies[j] < 1.0f) {
@@ -68,7 +70,6 @@ public class FrequencyRowPainter extends AbstractRowPainter {
 			
 		}
 		
-		//System.out.println("Recalculating frequencies");
 		recalculateFreqs = false;
 	}
 	
@@ -108,7 +109,7 @@ public class FrequencyRowPainter extends AbstractRowPainter {
 				int baseIndex = -1;
 				color = Color.LIGHT_GRAY;
 
-				Integer value = baseIntMap.get(seq.baseAt(col));
+				Integer value = seq.baseAt(col);
 				if (value != null)
 					baseIndex = value;
 
@@ -146,82 +147,82 @@ public class FrequencyRowPainter extends AbstractRowPainter {
 		for(int i=0; i<col.length; i++)
 			switch (col[i]) {
 				case 'A' :
-					freqs[A]++;
+					freqs[DNAUtils.A]++;
 					counted++;
 					break;
 				case 'C' : 
-					freqs[C]++;
+					freqs[DNAUtils.C]++;
 					counted++;
 					break;
 				case 'T' : 
-					freqs[T]++;
+					freqs[DNAUtils.T]++;
 					counted++;
 					break;
 				case 'G' : 
-					freqs[G]++;
+					freqs[DNAUtils.G]++;
 					counted++;
 					break;
 				case 'M' :
-					freqs[A]+=0.5;
-					freqs[C]+=0.5;
+					freqs[DNAUtils.A]+=0.5;
+					freqs[DNAUtils.C]+=0.5;
 					counted++;
 					break;
 				case 'R' :
-					freqs[A]+=0.5;
-					freqs[G]+=0.5;
+					freqs[DNAUtils.A]+=0.5;
+					freqs[DNAUtils.G]+=0.5;
 					counted++;
 					break;
 				case 'W' :
-					freqs[A]+=0.5;
-					freqs[T]+=0.5;
+					freqs[DNAUtils.A]+=0.5;
+					freqs[DNAUtils.T]+=0.5;
 					counted++;
 					break;
 				case 'S' :
-					freqs[G]+=0.5;
-					freqs[C]+=0.5;
+					freqs[DNAUtils.G]+=0.5;
+					freqs[DNAUtils.C]+=0.5;
 					counted++;
 					break;
 				case 'Y' :
-					freqs[C]+=0.5;
-					freqs[T]+=0.5;
+					freqs[DNAUtils.C]+=0.5;
+					freqs[DNAUtils.T]+=0.5;
 					counted++;
 					break;
 				case 'V' :
-					freqs[A]+=0.3333;
-					freqs[C]+=0.3333;
-					freqs[G]+=0.3333;
+					freqs[DNAUtils.A]+=0.3333;
+					freqs[DNAUtils.C]+=0.3333;
+					freqs[DNAUtils.G]+=0.3333;
 					counted++;
 					break;
 				case 'H' :
-					freqs[A]+=0.3333;
-					freqs[C]+=0.3333;
-					freqs[T]+=0.3333;
+					freqs[DNAUtils.A]+=0.3333;
+					freqs[DNAUtils.C]+=0.3333;
+					freqs[DNAUtils.T]+=0.3333;
 					counted++;
 					break;
 				case 'D' :
-					freqs[A]+=0.3333;
-					freqs[G]+=0.3333;
-					freqs[T]+=0.3333;
+					freqs[DNAUtils.A]+=0.3333;
+					freqs[DNAUtils.G]+=0.3333;
+					freqs[DNAUtils.T]+=0.3333;
 					counted++;
 					break;
 				case 'B' :
-					freqs[C]+=0.3333;
-					freqs[G]+=0.3333;
-					freqs[T]+=0.3333;
+					freqs[DNAUtils.C]+=0.3333;
+					freqs[DNAUtils.G]+=0.3333;
+					freqs[DNAUtils.T]+=0.3333;
 					counted++;
 					break;
 				case 'N' :
-					freqs[A]+=0.25;
-					freqs[C]+=0.25;
-					freqs[G]+=0.25;
-					freqs[T]+=0.25;
+					freqs[DNAUtils.A]+=0.25;
+					freqs[DNAUtils.C]+=0.25;
+					freqs[DNAUtils.G]+=0.25;
+					freqs[DNAUtils.T]+=0.25;
 					counted++;
 					break;
 				case 'X' :
-					freqs[A]+=0.25;
-					freqs[C]+=0.25;
-					freqs[G]+=0.25;
-					freqs[T]+=0.25;
+					freqs[DNAUtils.A]+=0.25;
+					freqs[DNAUtils.C]+=0.25;
+					freqs[DNAUtils.G]+=0.25;
+					freqs[DNAUtils.T]+=0.25;
 					counted++;
 					break;
 			}

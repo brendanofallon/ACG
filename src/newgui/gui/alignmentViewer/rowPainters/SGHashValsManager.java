@@ -9,6 +9,9 @@ import sequence.Sequence;
 
 /**
  * A small class that handles mappings from sequences to lists of hash values
+ * 
+ * Optimization: This thing stupidly stores a map from char to int, but chars ARE Int's! 
+ * 
  * @author brendan
  *
  */
@@ -41,11 +44,7 @@ public class SGHashValsManager {
 	 * @param seq
 	 * @return
 	 */
-	public boolean addSequence(Sequence seq) {
-		//Don't bother if it's already in there
-		if (hashMapMap.containsKey(seq.uniqueNumber()))
-			return false;
-		
+	public boolean addSequence(Sequence seq) {		
 		int[] hashValues = new int[seq.getLength()/blockSize];
 		constructSequenceHash(seq, hashValues);
 		hashMapMap.put(seq.uniqueNumber(), hashValues);
@@ -82,6 +81,8 @@ public class SGHashValsManager {
 	 * at position index and extending for size bases. If the sequence contains bases that are
 	 * 'unknown', then the hash function returns -1, indicating that we should paint this block
 	 * of sequences one base at a time
+	 * 
+	 * TODO: Given that chars ARE integers, do we need a baseIntMap? 
 	 * @param seq 	
 	 * @param index
 	 * @param size

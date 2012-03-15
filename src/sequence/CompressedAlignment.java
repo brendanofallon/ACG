@@ -3,9 +3,11 @@ package sequence;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import newgui.alignment.UnrecognizedBaseException;
+import newgui.datafile.AlignmentFile;
 
 
 
@@ -21,6 +23,7 @@ public class CompressedAlignment implements Alignment {
 	private String[] seqLabels;
 	private int[] colMap;
 	private List<int[]> columns;
+	private AlignmentFile sourceFile;
 	
 	public CompressedAlignment(Alignment aln) {
 		List<Sequence> seqs = new ArrayList<Sequence>();
@@ -230,5 +233,80 @@ public class CompressedAlignment implements Alignment {
 		
 		return col;
 	}
+	
+	public boolean hasGap(int site) {
+		int[] col = getAbsoluteColumn(site);
+		for(int i=0; i<col.length; i++) {
+			if (col[i] == DNAUtils.GAP)
+				return true;
+		}
+		return false;
+	}
+	
+	public boolean hasUnknown(int site) {
+		int[] col = getAbsoluteColumn(site);
+		for(int i=0; i<col.length; i++) {
+			if (col[i] == DNAUtils.N)
+				return true;
+		}
+		return false;
+	}
+	
+	public boolean hasGapOrUnknown(int column) {
+		if (hasGap(column) || hasUnknown(column))
+			return true;
+		return false;
+	}
+
+	@Override
+	public void removeCols(int[] cols) {
+		List<Integer> newCols = new ArrayList<Integer>();
+		for(int i=0; i<colMap.length; i++)
+			newCols.add(colMap[i]);
 		
+		Arrays.sort(cols);
+
+		//Must run from end of columns backward so indices stay the same
+		for(int i=cols.length-1; i>=0; i--) {
+			newCols.remove(cols[i]);
+		}
+		
+		colMap = new int[newCols.size()];
+		for(int i=0; i<newCols.size(); i++) {
+			colMap[i] = newCols.get(i);
+		}
+	}
+
+	@Override
+	public void removeRows(int[] rows) {
+		List<Sequence> newSeqs = new ArrayList<Sequence>();
+		for(int i=0; i<seqLabels.length; i++) {
+			newSeqs.add( getSequence(i));
+		}
+		Arrays.sort(rows);
+		for(int i=rows.length-1; i>=0; i--) {
+			newSeqs.remove(rows[i]);
+		}
+		buildMap(newSeqs);
+	}
+	
+	
+	@Override
+	public AlignmentFile getSourceFile() {
+		return sourceFile;
+	}
+
+	@Override
+	public void setSourceFile(AlignmentFile source) {
+		this.sourceFile = source;
+	}
+
+	@Override
+	public Alignment newAlignmentFromColumns(int[] cols) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+		
+	
+	
 }

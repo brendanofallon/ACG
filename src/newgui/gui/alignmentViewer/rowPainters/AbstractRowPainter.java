@@ -17,6 +17,7 @@ import java.util.Map;
 import newgui.gui.ViewerWindow;
 
 import sequence.Alignment;
+import sequence.DNAUtils;
 import sequence.Sequence;
 
 /**
@@ -72,17 +73,6 @@ public abstract class AbstractRowPainter implements SGRowPainter {
 	
 	protected static SGHashValsManager sequenceHashes = new SGHashValsManager(hashBlockSize);
 	
-	public static final int A = 0;
-	public static final int C = 1;
-	public static final int G = 2;
-	public static final int T = 3;
-	public static final int S = 4;
-	public static final int R = 5;
-	public static final int Y = 6;
-	public static final int M = 7;
-	public static final int W = 8;
-	public static final int GAP = 9;
-	
 	//Stores a mapping from a base character to an integer
 	protected Map<Character, Integer> baseIntMap = new HashMap<Character, Integer>();
 	
@@ -127,6 +117,14 @@ public abstract class AbstractRowPainter implements SGRowPainter {
 		hashImageMap.put(hashVal, newImage);
 		//System.out.println("Creating base image for " + String.valueOf(bases) + " map size is now: " + hashImageMap.size());
 		return newImage;
+	}
+	
+	/**
+	 * Obtain the (singleton) SGHashValsManager object that contains the hashed sequence blocks
+	 * @return
+	 */
+	public SGHashValsManager getSeqHashManager() {
+		return sequenceHashes;
 	}
 	
 	
@@ -493,30 +491,31 @@ public abstract class AbstractRowPainter implements SGRowPainter {
 	 */
 	private void constructBaseIntMap() {
 		baseIntMap.clear();
-		baseIntMap.put('A', A);
-		baseIntMap.put('C', C);
-		baseIntMap.put('G', G);
-		baseIntMap.put('T', T);
-		baseIntMap.put('S', S);
-		baseIntMap.put('R', R);
-		baseIntMap.put('Y', Y);
-		baseIntMap.put('M', M);
-		baseIntMap.put('W', W);
-		baseIntMap.put('-', GAP);
-		baseIntMap.put(' ', GAP);
-		baseIntMap.put('?', GAP);
-		baseIntMap.put('N', GAP);
+		baseIntMap.put('A', DNAUtils.A);
+		baseIntMap.put('C', DNAUtils.C);
+		baseIntMap.put('G', DNAUtils.G);
+		baseIntMap.put('T', DNAUtils.T);
+//		baseIntMap.put('S', S);
+//		baseIntMap.put('R', R);
+//		baseIntMap.put('Y', Y);
+//		baseIntMap.put('M', M);
+//		baseIntMap.put('W', W);
+		baseIntMap.put('-', DNAUtils.GAP);
+		baseIntMap.put(' ', DNAUtils.GAP);
+		baseIntMap.put('?', DNAUtils.N);
+		baseIntMap.put('N', DNAUtils.N);
 		
-		intBaseMap.put(A, 'A');
-		intBaseMap.put(C, 'C');
-		intBaseMap.put(G, 'G');
-		intBaseMap.put(T, 'T');
-		intBaseMap.put(S, 'S');
-		intBaseMap.put(R, 'R');
-		intBaseMap.put(Y, 'Y');
-		intBaseMap.put(M, 'M');
-		intBaseMap.put(W, 'W');
-		intBaseMap.put(GAP, '-');
+		intBaseMap.put(DNAUtils.A, 'A');
+		intBaseMap.put(DNAUtils.C, 'C');
+		intBaseMap.put(DNAUtils.G, 'G');
+		intBaseMap.put(DNAUtils.T, 'T');
+//		intBaseMap.put(S, 'S');
+//		intBaseMap.put(R, 'R');
+//		intBaseMap.put(Y, 'Y');
+//		intBaseMap.put(M, 'M');
+//		intBaseMap.put(W, 'W');
+		intBaseMap.put(DNAUtils.GAP, '-');
+		intBaseMap.put(DNAUtils.N, 'N');
 		
 	}
 	

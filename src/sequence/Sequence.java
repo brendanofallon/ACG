@@ -59,6 +59,12 @@ public interface Sequence {
 	public int uniqueNumber();
 	
 	/**
+	 * Remove columns at given indices
+	 * @param columns
+	 */
+	public void removeCols(int[] columns);
+	
+	/**
 	 * Obtain an array of character bases representing the values from [start..end)
 	 * @param start
 	 * @param end

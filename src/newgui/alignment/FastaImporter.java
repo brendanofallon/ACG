@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import sequence.Alignment;
+import sequence.BasicSequenceAlignment;
 import sequence.Sequence;
 import sequence.SimpleSequence;
 
@@ -26,7 +27,7 @@ public class FastaImporter {
 	 * @throws UnrecognizedBaseException
 	 */
 	public static Alignment getAlignment(File inputFasta) throws FileParseException, IOException, UnrecognizedBaseException {
-		Alignment aln = new BasicAlignment();
+		Alignment aln = new BasicSequenceAlignment();
 		BufferedReader file = new BufferedReader(new FileReader(inputFasta));
 		int lineNumber = 0;
 

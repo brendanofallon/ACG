@@ -16,6 +16,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import sequence.Alignment;
+import sequence.BasicSequenceAlignment;
 import sequence.CompressedAlignment;
 
 import xml.XMLUtils;
@@ -28,7 +29,7 @@ import xml.XMLUtils;
  */
 public class AlignmentFile extends XMLDataFile {
 
-	private CompressedAlignment aln = null;
+	private Alignment aln = null;
 	
 	public AlignmentFile(Alignment aln) {
 		setAlignment(aln);
@@ -43,11 +44,17 @@ public class AlignmentFile extends XMLDataFile {
 		super(file);
 	}
 
+	/**
+	 * Obtain the Alignment contained in this file. The sourceFile attribute of the Alignment
+	 * is set to this AlignmentFile object
+	 * @return
+	 */
 	public Alignment getAlignment() {
 		try {
 			if (this.aln == null) {
 				this.aln = XMLConverter.readFromXML(doc.getDocumentElement());
 			}
+			aln.setSourceFile(this);
 			return aln;
 		} catch (XMLConversionError e) {
 			// TODO Auto-generated catch block
@@ -107,7 +114,7 @@ public class AlignmentFile extends XMLDataFile {
 		 * @return
 		 * @throws XMLConversionError
 		 */
-		public static CompressedAlignment readFromXML(Element el) throws XMLConversionError {
+		public static Alignment readFromXML(Element el) throws XMLConversionError {
 			Element alignmentEl = getChildByName(el, ALIGNMENT);
 			if (alignmentEl == null)
 				throw new XMLConversionError("Could not find alignment element in data file", el);
@@ -139,7 +146,8 @@ public class AlignmentFile extends XMLDataFile {
 			}
 			
 			CompressedAlignment compAln = new CompressedAlignment(allLabels, colMapping, columns);
-			return compAln;
+			BasicSequenceAlignment basicAln = new BasicSequenceAlignment(compAln);
+			return basicAln;
 		}
 		
 		private static List<int[]> parseColumns(Element colsEl) {

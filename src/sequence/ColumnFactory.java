@@ -2,9 +2,6 @@ package sequence;
 
 import java.util.List;
 
-import newgui.alignment.BasicAlignment;
-
-
 /**
  * A class for quickly creating the columns of an alignment
  * @author brendan
@@ -19,7 +16,7 @@ public class ColumnFactory {
 	}
 	
 	public ColumnFactory(List<Sequence> seqs) {
-		this.aln = new BasicAlignment(seqs);
+		this.aln = new BasicSequenceAlignment(seqs);
 	}
 	
 	public int getColumnCount() {

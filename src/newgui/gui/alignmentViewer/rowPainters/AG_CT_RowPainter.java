@@ -7,7 +7,9 @@ import java.awt.RenderingHints;
 import java.util.HashMap;
 import java.util.Map;
 
-import element.sequence.*;
+import sequence.Alignment;
+import sequence.DNAUtils;
+import sequence.Sequence;
 
 public class AG_CT_RowPainter extends AbstractRowPainter {
 
@@ -30,9 +32,9 @@ public class AG_CT_RowPainter extends AbstractRowPainter {
 	
 	private static Color unknownColor =  new Color(230, 227, 230); //Not anything else
 	
-	Map<Character, Color> baseColorMap;
+	Map<Integer, Color> baseColorMap;
 	
-	public AG_CT_RowPainter(SequenceGroup sg) {
+	public AG_CT_RowPainter(Alignment sg) {
 		super(sg);
 		fillBaseColors();
 	}
@@ -42,17 +44,13 @@ public class AG_CT_RowPainter extends AbstractRowPainter {
 	 * Create the base-color map 
 	 */
 	private void fillBaseColors() {
-		baseColorMap = new HashMap<Character, Color>();
-		baseColorMap.put('A', AColor);
-		baseColorMap.put('C', CColor);
-		baseColorMap.put('G', GColor);
-		baseColorMap.put('T', TColor);
-		baseColorMap.put('S', SColor);
-		baseColorMap.put('R', RColor);
-		baseColorMap.put('Y', YColor);
-		baseColorMap.put('M', MColor);
-		baseColorMap.put('W', WColor);
-		baseColorMap.put('-', gapColor);
+		baseColorMap = new HashMap<Integer, Color>();
+		baseColorMap.put(DNAUtils.A, AColor);
+		baseColorMap.put(DNAUtils.C, CColor);
+		baseColorMap.put(DNAUtils.G, GColor);
+		baseColorMap.put(DNAUtils.T, TColor);
+		baseColorMap.put(DNAUtils.N, unknownColor);
+		baseColorMap.put(DNAUtils.GAP, gapColor);
 	}
 	
 	public static String getIdentifier() {
@@ -81,6 +79,16 @@ public class AG_CT_RowPainter extends AbstractRowPainter {
 		}
 	}
 	
+	protected void drawBackground(Graphics2D g2d, int x, int y2, int colWidth, int rowHeight,
+			int row, int site, Sequence seq) {
+		Color bColor = baseColorMap.get(seq.baseAt(site));
+		if (bColor == null) {
+			bColor = unknownColor;
+		}
+		g2d.setColor(bColor);
+		g2d.fillRect(site*colWidth, rowHeight*row, colWidth, rowHeight);	
+	}
+	
 	public void paintRow(Graphics2D g2d, 
 						int row, 
 						int firstCol,
@@ -89,13 +97,13 @@ public class AG_CT_RowPainter extends AbstractRowPainter {
 						int y, 
 						int cellWidth,
 						int rowHeight) {
-		Sequence seq = currentSG.get(row);
+		Sequence seq = currentSG.getSequence(row);
 		
 		setCellSize(cellWidth, rowHeight);
 	
 		int firstDrawCol = firstCol - firstCol%hashBlockSize;
 		
-		for(int blockStart=firstDrawCol; blockStart<Math.min(lastCol, seq.length()); blockStart+=hashBlockSize) {			
+		for(int blockStart=firstDrawCol; blockStart<Math.min(lastCol, seq.getLength()); blockStart+=hashBlockSize) {			
 			drawBaseGroup(g2d, blockStart*cellWidth, y, cellWidth, rowHeight, row, blockStart, seq);	
 		}
 		
@@ -103,7 +111,7 @@ public class AG_CT_RowPainter extends AbstractRowPainter {
 
 	public static class Instantiator extends AbstractRowPainter.Instantiator {
 		
-		public AbstractRowPainter getNewRowPainter(SequenceGroup sg) {
+		public AbstractRowPainter getNewRowPainter(Alignment sg) {
 			return new AG_CT_RowPainter(sg);
 		}
 		

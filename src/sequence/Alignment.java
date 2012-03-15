@@ -2,6 +2,8 @@ package sequence;
 
 import java.util.List;
 
+import newgui.datafile.AlignmentFile;
+
 
 /**
  * A collection of Sequences where all sequences have the same length
@@ -37,6 +39,19 @@ public interface Alignment {
 	public Sequence getSequenceForLabel(String label);
 	
 	/**
+	 * Obtain the source alignmentFile associated with this file, may be null if no source 
+	 * has been set
+	 * @return
+	 */
+	public AlignmentFile getSourceFile();
+	
+	/**
+	 * Set the source file associated with this alignment file.
+	 * @param source
+	 */
+	public void setSourceFile(AlignmentFile source);
+	
+	/**
 	 * Obtain the sequence at the given index
 	 * @param index
 	 * @return
@@ -62,22 +77,52 @@ public interface Alignment {
 	 * @return
 	 */
 	public char[] getColumn(int column);
+
+	/**
+	 * True if there is a gap at the given column
+	 * @param i
+	 * @return
+	 */
+	public boolean hasGapOrUnknown(int i);
+
+	/**
+	 * Remove the given columns from this alignment
+	 * @param cols
+	 */
+	public void removeCols(int[] cols);
+
+	/**
+	 * Remove the given rows (sequences) from this alignment
+	 * @param cols
+	 */
+	public void removeRows(int[] rows);
 	
-//	/**
-//	 * Get the reference sequence for this alignment
-//	 * @return
-//	 */
-//	public Sequence getReference();
-//	
-//	/**
-//	 * Set the reference sequence for this alignment and add Sequences it contains
-//	 * @param ref
-//	 */
-//	public void setReference(Sequence ref);
-//	
-//	/**
-//	 * Obtain a sequence representing the consensus of all sequences 
-//	 * @return
-//	 */
-//	public Sequence getConsensus();
+	
+	/**
+	 * Create a new alignment with the same sequences/labels, but only the given columns
+	 * @param cols
+	 */
+	public Alignment newAlignmentFromColumns(int[] cols);
+	
+	/**
+	 * Obtain the AlignmentMask associated with this Alignment, may be null
+	 * if no mask has been set
+	 * @return
+	 */
+	public AlignmentMask getMask();
+	
+	/**
+	 * Clear the current AlignmentMask and set the mask to be the given
+	 * object
+	 * @param mask
+	 */
+	public void setAlignmentMask(AlignmentMask mask);
+	
+	
+	/**
+	 * Permanently convert sites in all currently masked columns to N's in all sequences 
+	 * in this alignment
+	 */
+	public void applyMask();
+	
 }
