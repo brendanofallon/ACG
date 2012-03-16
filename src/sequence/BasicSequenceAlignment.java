@@ -53,7 +53,7 @@ public class BasicSequenceAlignment implements Alignment {
 	protected List<Sequence> seqs = new ArrayList<Sequence>();
 	
 	//Object used to mask out (set to N) columns in a flexible manner
-	protected AlignmentMask mask = null;
+	protected AlignmentMask mask = new AlignmentMask();
 	
 	/**
 	 * XML-reading compatible constructor, assumes second arg is list of Sequences

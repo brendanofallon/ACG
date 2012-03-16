@@ -37,6 +37,7 @@ import newgui.gui.alignmentViewer.rowPainters.AbstractRowPainter;
 import newgui.gui.alignmentViewer.rowPainters.GC_AT_RowPainter;
 
 import sequence.Alignment;
+import sequence.AlignmentMask;
 import sequence.BasicSequenceAlignment;
 import sequence.Sequence;
 
@@ -305,7 +306,7 @@ public class SGContentPanel extends JPanel {
 			
 			if (this.getGraphicsConfiguration() != null) {
 				colHeader.drawColumnHeaderImage();
-				drawContentImage();
+				//drawContentImage();
 			}
 			
 			setToNaturalSize();
@@ -405,11 +406,25 @@ public class SGContentPanel extends JPanel {
 		if (rowPainter == null) {
 			return;
 		}
-		//System.out.println("Painting rows " + firstRow + " .. " + Math.min(seqs.size(), lastRow));
+		
 		for(int row=firstRow; row<Math.min(seqs.getSequenceCount(), lastRow); row++) {
 			rowPainter.paintRow(g2d, row, firstVisCol, lastVisCol, 0, row*rowHeight, columnWidth, rowHeight);
 		}
 		
+		//Paint masked columns directly over bases/colors, but under the selection region (if it exists)
+		AlignmentMask mask = seqs.getMask();
+		if (mask!= null) {
+			int firstMaskedCol = mask.getFirstMaskedColumn();
+			int lastMaskedCol = mask.getLastMaskedColumn();
+			if (firstMaskedCol<lastVisCol && lastMaskedCol>firstVisCol) {
+				Integer[] maskedCols = mask.getMaskedColumns();
+				g2d.setColor(Color.RED);
+				for(int i=0; i<maskedCols.length; i++) {
+					g2d.fillRect(columnWidth*maskedCols[i], 0, columnWidth, getHeight());
+				}
+			}
+				
+		}
 		
 		if (selectionMode == Selection.COLUMNS) {
 			int i = selection.nextSetBit(Math.max(0, firstVisCol-1));
@@ -599,9 +614,9 @@ public class SGContentPanel extends JPanel {
 	 * Draw the content image, creating a new contentImage BufferedImage and associated graphics
 	 * if necessary. 
 	 */
-	private void drawContentImage() {
-		//We now draw the image on the fly
-	}
+//	private void drawContentImage() {
+//		//We now draw the image on the fly
+//	}
 	
 	/**
 	 * Redraw the rowHeaderImage, columnHeaderImage, and contentImage. This happens when the
@@ -610,7 +625,7 @@ public class SGContentPanel extends JPanel {
 	public void drawAllImages() {
 		drawRowHeaderImage();
 		colHeader.drawColumnHeaderImage();
-		drawContentImage();
+		//drawContentImage();
 		redrawImages = false;
 	}
 	

@@ -41,6 +41,42 @@ public class AlignmentMask {
 	}
 	
 	/**
+	 * Obtain the list of masked columns - this is a reference to the actual data
+	 * so behavior is undefined if it gets modified in some way
+	 * @return
+	 */
+	public Integer[] getMaskedColumns() {
+		return (Integer[])(maskedColumns.toArray(new Integer[]{}));
+	}
+	
+	/**
+	 * Obtain the masked column with the lowest index - the leftmost or first
+	 * column that is masked, or -1 if there are no masked columns
+	 * @return
+	 */
+	public int getFirstMaskedColumn() {
+		if (maskedColumns.size()==0) {
+			return -1;
+		}
+		else {
+			return maskedColumns.get(0);
+		}
+	}
+	
+	/**
+	 * Obtain the index on the masked column with the highest index, or -1 if there
+	 * are no masked columns
+	 * @return
+	 */
+	public int getLastMaskedColumn() {
+		if (maskedColumns.size()==0)
+			return -1;
+		else {
+			return maskedColumns.get(maskedColumns.size()-1);
+		}
+	}
+	
+	/**
 	 * Returns true if the given column is masked
 	 * @param col
 	 * @return

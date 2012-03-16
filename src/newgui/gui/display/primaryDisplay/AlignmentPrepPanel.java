@@ -225,6 +225,22 @@ public class AlignmentPrepPanel extends JPanel {
 		
 		topPanel.add(saveAlnButton);
 		topPanel.add(Box.createHorizontalGlue());
+
+		BorderlessButton maskButton = new BorderlessButton("Mask");
+		topPanel.add(maskButton);
+		maskButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				maskSelectedColumns();
+			}
+		});
+
+		BorderlessButton clearMaskButton = new BorderlessButton("Clear Mask");
+		topPanel.add(clearMaskButton);
+		clearMaskButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				clearAlignmentMask();
+			}
+		});
 		
 		String[] colorSchemes = new String[]{GC_AT_RowPainter.getIdentifier(), AG_CT_RowPainter.getIdentifier(), FrequencyRowPainter.getIdentifier()};
 		colorSchemeBox = new JComboBox(colorSchemes);
@@ -238,6 +254,8 @@ public class AlignmentPrepPanel extends JPanel {
 		});
 		topPanel.add(colorSchemeBox);
 		topPanel.add(Box.createHorizontalGlue());
+		
+
 		
 		zoomSlider = new JSlider();
 		zoomSlider.addChangeListener(new ChangeListener() {
@@ -329,6 +347,24 @@ public class AlignmentPrepPanel extends JPanel {
 		this.add(splitPane, BorderLayout.CENTER);		
 	}
 	
+	/**
+	 * Mask (revesibly convert to N) the given columns
+	 */
+	protected void maskSelectedColumns() {
+		if (contentPanel.getNumSelectedColumns() > 0) {
+			contentPanel.getAlignment().getMask().addColumns(contentPanel.getSelectedColumns());
+			contentPanel.repaint();
+		}
+	}
+	
+	/**
+	 * Remove the alignment mask
+	 */
+	protected void clearAlignmentMask() {
+		contentPanel.getAlignment().getMask().clearMask();
+		contentPanel.repaint();
+	}
+
 	protected void saveAlignment() {
 		AlignmentFile source = contentPanel.getAlignment().getSourceFile();
 		String name = "(enter file name)";

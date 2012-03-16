@@ -735,7 +735,7 @@ public class ARG extends AbstractParameter<ARG> implements ParameterListener {
 			if (tip == null ) {
 				throw new IllegalArgumentException("Could not find tip with label : " + matrix.getSequenceLabel(j));
 			}
-			int[] stateVec = dataMatrix.getStateVector(matrix.getSequenceLabel(j), dna);
+			int[] stateVec = matrix.getStateVector(matrix.getSequenceLabel(j), dna);
 			if (stateVec == null) {
 				throw new IllegalArgumentException("Could not find state vector for tip #" + j + " with label: " + matrix.getSequenceLabel(j));
 			}
