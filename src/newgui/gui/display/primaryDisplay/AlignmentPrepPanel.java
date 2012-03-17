@@ -45,6 +45,7 @@ import newgui.alignment.AlignmentSummary;
 import newgui.analysisTemplate.AnalysisTemplate;
 import newgui.analysisTemplate.BasicAnalysis;
 import newgui.datafile.AlignmentFile;
+import newgui.gui.alignmentViewer.ColumnSelectionFrame;
 import newgui.gui.alignmentViewer.SGContentPanel;
 import newgui.gui.alignmentViewer.rowPainters.AG_CT_RowPainter;
 import newgui.gui.alignmentViewer.rowPainters.FrequencyRowPainter;
@@ -226,6 +227,14 @@ public class AlignmentPrepPanel extends JPanel {
 		topPanel.add(saveAlnButton);
 		topPanel.add(Box.createHorizontalGlue());
 
+		BorderlessButton selectColsButton = new BorderlessButton("Select Cols");
+		selectColsButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showColumnSelectionFrame();
+			}
+		});
+		topPanel.add(selectColsButton);
+		
 		BorderlessButton maskButton = new BorderlessButton("Mask");
 		topPanel.add(maskButton);
 		maskButton.addActionListener(new ActionListener() {
@@ -347,6 +356,14 @@ public class AlignmentPrepPanel extends JPanel {
 		this.add(splitPane, BorderLayout.CENTER);		
 	}
 	
+	/**
+	 * Open a dialog allowing the user to choose which columns to select
+	 */
+	protected void showColumnSelectionFrame() {
+		ColumnSelectionFrame columnSelectionFrame = new ColumnSelectionFrame(contentPanel);
+		columnSelectionFrame.setVisible(true);
+	}
+
 	/**
 	 * Mask (revesibly convert to N) the given columns
 	 */

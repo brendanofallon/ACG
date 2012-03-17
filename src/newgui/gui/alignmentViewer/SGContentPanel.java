@@ -1,5 +1,7 @@
 package newgui.gui.alignmentViewer;
 
+import gui.ErrorWindow;
+
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Cursor;
@@ -13,6 +15,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -32,14 +35,18 @@ import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.Timer;
 
+
 import newgui.UIConstants;
+import newgui.alignment.UnrecognizedBaseException;
 import newgui.gui.alignmentViewer.rowPainters.AbstractRowPainter;
 import newgui.gui.alignmentViewer.rowPainters.GC_AT_RowPainter;
+import newgui.gui.filepanel.InputFilesManager;
 
 import sequence.Alignment;
 import sequence.AlignmentMask;
 import sequence.BasicSequenceAlignment;
 import sequence.Sequence;
+import sequence.SimpleSequence;
 
 
 /**
@@ -133,6 +140,8 @@ public class SGContentPanel extends JPanel {
 		
 		seqs = new BasicSequenceAlignment();
 		
+		initializePopup();
+		
 		dragOffEdgeTimer = new Timer(30, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				updateViewportLocation();
@@ -141,6 +150,65 @@ public class SGContentPanel extends JPanel {
 	}
 	
 	
+	/**
+	 * Construct the popup menu for the main content area
+	 */
+	private void initializePopup() {
+	      /// Popup Menu ///
+
+		popup = new JPopupMenu();
+		popup.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY) );
+		
+		JMenuItem popupItemNew = new JMenuItem("New from selection");
+		popupItemNew.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newAlignmentFromSelection();
+            }
+        });
+		popup.add(popupItemNew);		
+		
+		
+		JMenuItem popupItemRemoveSelection = new JMenuItem("Remove Selection");
+		popupItemRemoveSelection.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeSelection();
+            }
+        });
+		popup.add(popupItemRemoveSelection);
+		popupItemRemoveSelection.setEnabled(false);
+		
+		PopupListener popupListener = new PopupListener(); 
+		addMouseListener(popupListener);
+	}
+	
+	
+	protected void newAlignmentFromSelection() {
+		if (getNumSelectedColumns()>0) {
+			System.out.println("Alignment class is : " + getAlignment().getClass());
+			Alignment aln = getAlignment().newAlignmentFromColumns(getSelectedColumns());
+			InputFilesManager.getManager().saveAlignment(aln, "(enter name)");
+			return;
+		}
+		
+		if (getNumSelectedRows()>0) {
+			Alignment aln = new BasicSequenceAlignment();
+			int[] rows = getSelectedRows();
+			for(int i=0; i<rows.length; i++) {
+				Sequence seq = getSequenceForRow(rows[i]);
+				try {
+					aln.addSequence( new SimpleSequence( seq.getLabel(), seq.getSequenceString()));
+				} catch (UnrecognizedBaseException e) {
+					//Should never happen..
+					ErrorWindow.showErrorWindow(e, "Error creating new sequence");
+					e.printStackTrace();
+				}
+			}
+			if (aln.getSequenceCount()>0)
+				InputFilesManager.getManager().saveAlignment(aln, "(enter name)");
+		}
+	}
+
+
 	/**
 	 * Called to associate a sequence group with this content panel. This initializes a handful
 	 * of default fields 
@@ -418,9 +486,15 @@ public class SGContentPanel extends JPanel {
 			int lastMaskedCol = mask.getLastMaskedColumn();
 			if (firstMaskedCol<lastVisCol && lastMaskedCol>firstVisCol) {
 				Integer[] maskedCols = mask.getMaskedColumns();
-				g2d.setColor(Color.RED);
+				
+				char[] nChars = new char[]{'N'};
 				for(int i=0; i<maskedCols.length; i++) {
+					g2d.setColor(Color.GRAY);
 					g2d.fillRect(columnWidth*maskedCols[i], 0, columnWidth, getHeight());
+					g2d.setColor(Color.DARK_GRAY);
+					for(int j=0; j<seqs.getSequenceCount(); j++) {
+						g2d.drawChars(nChars, 0, 1, columnWidth*maskedCols[i], rowHeight*j+16);
+					}
 				}
 			}
 				
@@ -885,6 +959,48 @@ public class SGContentPanel extends JPanel {
 		viewport.scrollRectToVisible(newRect);	
 		
 	}
+
+	/**
+	 * Cause the given colums to be selected 
+	 * @param ranges
+	 * @param posOne
+	 * @param posTwo
+	 * @param posThree
+	 */
+	public void selectColumns(ArrayList<ColumnSelectionFrame.IntegerRange> ranges, boolean posOne,
+			boolean posTwo, boolean posThree) {
+		
+		clearSelection(); //Using this clear selection clears it in both the table and the row header
+		int sum = 0;
+		for(ColumnSelectionFrame.IntegerRange range : ranges) {
+			if (posOne && posTwo && posThree) {
+				addColumnSelectionInterval(Math.max(0, range.start), Math.min(getColumnCount()-1, range.end));	
+			}
+			else {
+				if (posOne) {
+					for(int i=Math.max(0, range.start);  i<Math.min(getColumnCount(), range.end); i+=3) {
+						addColumnSelectionInterval(i, i);
+						sum++;
+					}
+				}
+				if (posTwo) {
+					for(int i=Math.max(0, range.start)+1;  i<Math.min(getColumnCount(), range.end); i+=3) {
+						addColumnSelectionInterval(i, i);
+						sum++;
+					}
+				}
+				if (posThree) {
+					for(int i=Math.max(0, range.start)+2;  i<Math.min(getColumnCount(), range.end); i+=3) {
+						addColumnSelectionInterval(i, i);
+						sum++;
+					}
+				}
+			}
+			
+		}
+		
+	}
+
 	
 	/**
 	 * A class to handle painting the row header, it needs to be a JComponent so it can 
@@ -1282,6 +1398,29 @@ public class SGContentPanel extends JPanel {
 		
 	}
 
+	/**
+	 * Small class to listen for the popup menu trigger and show it
+	 * @author brendan
+	 *
+	 */
+	private class PopupListener extends MouseAdapter {
+	    public void mousePressed(MouseEvent e) {
+	        maybeShowPopup(e);
+	    }
+
+	    public void mouseReleased(MouseEvent e) {
+	        maybeShowPopup(e);
+	    }
+
+	    private void maybeShowPopup(MouseEvent e) {
+	        if (e.isPopupTrigger()) {
+	        	
+	            popup.show(e.getComponent(),
+	                       e.getX(), e.getY());
+	        }
+	    }
+	}
+
 	
-	
+	private JPopupMenu popup;
 }

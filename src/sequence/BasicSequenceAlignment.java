@@ -593,8 +593,11 @@ public class BasicSequenceAlignment implements Alignment {
 
 	@Override
 	public Alignment newAlignmentFromColumns(int[] cols) {
-		// TODO Auto-generated method stub
-		return null;
+		Alignment newAln = new BasicSequenceAlignment();
+		for(Sequence seq : seqs) {
+			newAln.addSequence( seq.newFromColumns(cols));
+		}
+		return newAln;
 	}
 
 	@Override

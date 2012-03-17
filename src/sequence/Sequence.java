@@ -65,6 +65,14 @@ public interface Sequence {
 	public void removeCols(int[] columns);
 	
 	/**
+	 * Create a new Sequence that has the current sequence label but only those
+	 * bases present at the given columns
+	 * @param cols
+	 * @return
+	 */
+	public Sequence newFromColumns(int[] cols);  
+	
+	/**
 	 * Obtain an array of character bases representing the values from [start..end)
 	 * @param start
 	 * @param end

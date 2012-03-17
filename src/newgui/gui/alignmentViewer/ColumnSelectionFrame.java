@@ -13,10 +13,10 @@ import javax.swing.JPanel;
  */
 public class ColumnSelectionFrame extends javax.swing.JFrame {
 
-    SGContentPanelDisplay parentDisplay;
+    SGContentPanel parentDisplay;
 	
 	
-    public ColumnSelectionFrame(SGContentPanelDisplay display) {
+    public ColumnSelectionFrame(SGContentPanel display) {
     	super("Select columns");
     	
     	parentDisplay = display;
@@ -35,7 +35,7 @@ public class ColumnSelectionFrame extends javax.swing.JFrame {
         rangeField = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        startPosBox = new javax.swing.JComboBox();
+        //startPosBox = new javax.swing.JComboBox();
         cancelButton = new javax.swing.JButton();
         selectButton = new javax.swing.JButton();
         doneButton = new javax.swing.JButton();
@@ -63,7 +63,7 @@ public class ColumnSelectionFrame extends javax.swing.JFrame {
 
         jLabel4.setText("Starting from");
 
-        startPosBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "First column", "Zero marker" }));
+        //startPosBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "First column", "Zero marker" }));
 
         cancelButton.setText("Cancel");
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
@@ -113,7 +113,7 @@ public class ColumnSelectionFrame extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(startPosBox, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                //.addComponent(startPosBox, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(cancelButton)
@@ -139,9 +139,9 @@ public class ColumnSelectionFrame extends javax.swing.JFrame {
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(startPosBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jLabel4))
+         //           .addComponent(startPosBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+           //     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(doneButton)
@@ -204,6 +204,7 @@ public class ColumnSelectionFrame extends javax.swing.JFrame {
     	return range;
     }
     
+    
     private void selectButtonActionPerformed(java.awt.event.ActionEvent evt) {
     	//First parse the range field
     	String[] groups = rangeField.getText().split(",");
@@ -236,7 +237,7 @@ public class ColumnSelectionFrame extends javax.swing.JFrame {
     }
 
 
-    class IntegerRange {
+    public class IntegerRange {
     	int start;
     	int end;
     }
@@ -252,6 +253,6 @@ public class ColumnSelectionFrame extends javax.swing.JFrame {
     private javax.swing.JCheckBox positionTwo;
     private javax.swing.JTextField rangeField;
     private javax.swing.JButton selectButton;
-    private javax.swing.JComboBox startPosBox;
+    //private javax.swing.JComboBox startPosBox;
 
 }

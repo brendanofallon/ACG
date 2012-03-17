@@ -69,6 +69,15 @@ public class SimpleSequence implements Sequence {
 	}
 	
 	@Override
+	public Sequence newFromColumns(int[] cols) {
+		int[] newBases = new int[cols.length];
+		for(int i=0; i<cols.length; i++) {
+			newBases[i] = bases[cols[i]];
+		}
+		return new SimpleSequence(getLabel(), newBases);
+	}
+	
+	@Override
 	public String getLabel() {
 		return label;
 	}
