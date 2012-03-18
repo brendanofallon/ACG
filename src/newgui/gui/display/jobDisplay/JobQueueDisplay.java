@@ -52,12 +52,11 @@ public class JobQueueDisplay extends Display implements QueueListener {
 	 */
 	private void layoutJobViews() {
 		centerPanel.removeAll();
-		System.out.println("Laying out job views");
 		
 		for(ACGJob job : queue.getJobs()) {
 			JobView jView = viewForJob(job);
 			if (jView == null) {
-				jView = new JobView(job);
+				jView = new JobView(null, job);
 				jobViews.add(jView);
 			}
 			centerPanel.add(jView);

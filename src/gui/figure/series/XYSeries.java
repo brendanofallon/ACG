@@ -388,6 +388,14 @@ public class XYSeries extends AbstractSeries {
 		return null;
 	}
 	
+	public String toString() {
+		StringBuilder str = new StringBuilder();
+		String lineSep = System.getProperty("line.separator");
+		for(int i=0; i<pointList.size(); i++) {
+			str.append("" + pointList.get(i).getX() + ", " + pointList.get(i).getY() + lineSep);
+		}
+		return str.toString();
+	}
 	
 	private Comparator<Point2D> getXComparator() {
 		return new XComparator();

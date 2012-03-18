@@ -17,17 +17,16 @@ public class TMRCAViz extends AbstractLoggerViz {
 		meanSeries = new ConstSizeSeries("Mean height", rhLogger.getMeans(), rhLogger.getBinPositions() );
 		XYSeriesElement meanEl = new XYSeriesElement(meanSeries, fig.getAxes(), fig);
 		meanEl.setLineColor(Color.blue);
-		meanEl.setLineWidth((float) 1.25);
+		meanEl.setLineWidth((float) 1.5);
 		fig.addSeriesElement(meanEl);
 		
-		burninMessage = new TextElement("(Burnin period not exceeded)", fig);
+		burninMessage = new TextElement("Burnin period (" + logger.getBurnin() + ") not exceeded", fig);
 		burninMessage.setPosition(0.45, 0.5);
 		fig.addElement(burninMessage);
 	}
 
 	@Override
 	public void update() {
-		
 		
 		if (burninMessage != null && logger.getBurninExceeded()) {
 			fig.removeElement(burninMessage);

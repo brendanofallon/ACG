@@ -18,7 +18,6 @@ public class BPDensityViz extends AbstractLoggerViz {
 	@Override
 	public void update() {		
 		fig.repaint();
-		
 		if (burninMessage != null && logger.getBurninExceeded()) {
 			fig.removeElement(burninMessage);
 			burninMessage = null;
@@ -37,7 +36,7 @@ public class BPDensityViz extends AbstractLoggerViz {
 		histoEl.setLineWidth((float) 1.25);
 		fig.addSeriesElement(histoEl);
 		
-		burninMessage = new TextElement("(Burnin period not exceeded)", fig);
+		burninMessage = new TextElement("Burnin period (" + logger.getBurnin() + ") not exceeded", fig);
 		burninMessage.setPosition(0.45, 0.5);
 		fig.addElement(burninMessage);
 	}

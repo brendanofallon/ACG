@@ -78,8 +78,13 @@ public abstract class AbstractLoggerViz extends JPanel implements ActionListener
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if (! updating)
+		if (! updating) {
 			updateViz();
+			if (logger.isDoneCollecting()) {
+				timer.stop();
+			}
+			
+		}
 		else {
 			System.out.println("Aborting update attempt for logger : " + this.getClass().getCanonicalName());
 		}

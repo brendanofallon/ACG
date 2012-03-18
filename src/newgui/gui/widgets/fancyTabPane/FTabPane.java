@@ -40,7 +40,8 @@ public class FTabPane extends JPanel implements ChangeListener {
 	
 	public FTabPane() {
 		setLayout(new BorderLayout());
-		setBorder(BorderFactory.createEmptyBorder(0, 5, 4, 5));
+		setBorder(BorderFactory.createEmptyBorder(0, 5, 4, 4));
+		//setBorder(BorderFactory.createLineBorder(Color.red));
 		setBackground(UIConstants.lightBackground);
 		add(tabsPanel, BorderLayout.NORTH);
 		centerPanel = new JPanel();
@@ -183,8 +184,11 @@ public class FTabPane extends JPanel implements ChangeListener {
 			g2d.setColor(Color.LIGHT_GRAY);
 			g2d.drawRoundRect(3, tabsPanel.getHeight()-2, getWidth()-6, getHeight()-tabsPanel.getHeight(), 12, 12);
 		}
+		
 	}
 	
+
+
 	private JPanel centerPanel;
 }
 

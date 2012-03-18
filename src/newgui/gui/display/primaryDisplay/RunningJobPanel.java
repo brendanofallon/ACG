@@ -14,10 +14,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import newgui.UIConstants;
+import newgui.datafile.ResultsFile;
+import newgui.datafile.XMLConversionError;
 import newgui.gui.display.jobDisplay.JobView;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.BPDensityViz;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.ConsensusTreeViz;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.TMRCAViz;
+import newgui.gui.filepanel.ResultsFilesManager;
 import newgui.gui.widgets.sideTabPane.SideTabPane;
 
 import jobqueue.ExecutingChain;
@@ -37,6 +40,7 @@ import logging.RootHeightDensity;
 public class RunningJobPanel extends JPanel {
 
 	private PrimaryDisplay displayParent;
+	private ACGDocument acgDoc = null;
 	private ExecutingChain chain = null;
 	
 	public RunningJobPanel(PrimaryDisplay parentDisplay) {
@@ -45,10 +49,27 @@ public class RunningJobPanel extends JPanel {
 		initComponents();
 	}
 	
+	/**
+	 * Obtain the ExecutingChain that encapsulates the running MCMC chain
+	 * @return
+	 */
+	public ExecutingChain getChain() {
+		return chain;
+	}
+	
+	/**
+	 * Obtain the ACGDocument that was used to create the chain
+	 * @return
+	 */
+	public ACGDocument getACGDocument() {
+		return acgDoc;
+	}
+	
 	public void runJob(ACGDocument doc) {
 		if (chain != null)
 			throw new IllegalStateException("Only one chain per job panel");
 
+		this.acgDoc = doc;
 		
 		//Must go first, otherwise objects in document will not be loaded / instantiated
 		String jobTitle = displayParent.getTitle().replace(".xml", ""); 
@@ -64,7 +85,6 @@ public class RunningJobPanel extends JPanel {
 			try {
 				PropertyLogger logger = (PropertyLogger) doc.getObjectForLabel(label);
 				propLoggers.add(logger);
-				System.out.println("Adding logger : " + logger);
 				
 				if (logger instanceof BreakpointDensity) {
 					BPDensityViz bpDensityViz = new BPDensityViz();
@@ -97,13 +117,11 @@ public class RunningJobPanel extends JPanel {
 			} 
 			
 		}
-
 		
 		//Sneak in a new listener that will store data that we can quickly write to displays
 		chain.addListener(memLogger);
 		memLogger.setBurnin( chain.getTotalRunLength()/10 ); //Someday we'll probably want to be more flexible about this
 		
-		//XYSeries dlSeries = memLogger.getSeries( memLogger.getSeriesNames().get(0) );
 		seriesPanel.initializeLogger(memLogger);
 		seriesPanel.addDefaultSeriesPanel();
 		
@@ -111,12 +129,22 @@ public class RunningJobPanel extends JPanel {
 		chain.setJobTitle( jobTitle + "-analysis" );
 		JobQueue currentQueue = QueueManager.getCurrentQueue();
 		currentQueue.addJob(chain);
-		jobView = new JobView(chain);
+		jobView = new JobView(this, chain);
 		add(jobView, BorderLayout.NORTH);
 		revalidate();
 		repaint();
 	}
 	
+	public void saveResults() {
+		ResultsFile file = new ResultsFile();
+		try {
+			file.addAllResults(chain, getACGDocument());
+			ResultsFilesManager.getManager().saveResults(file, displayParent.getTitle());
+		} catch (XMLConversionError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	private void initComponents() {
 		setLayout(new BorderLayout());
@@ -125,7 +153,7 @@ public class RunningJobPanel extends JPanel {
 		ImageIcon icon = UIConstants.getIcon("gui/icons/openFile.png");
 		
 		seriesPanel = new MultiSeriesPanel();
-		sidePane.addTab("Parameters & Likelihoods", icon, seriesPanel);
+		sidePane.addTab("Model state", icon, seriesPanel);
 		
 
 		sidePane.selectTab(0);

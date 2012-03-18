@@ -71,8 +71,8 @@ public class ViewerWindow extends JFrame {
 		
 		initComponents();
 		
-		this.setSize(1000, 600);
-		this.setPreferredSize(new Dimension(1000,600));
+		this.setSize(1000, 700);
+		this.setPreferredSize(new Dimension(1000, 700));
 		pack();
 		setLocationRelativeTo(null);
 	}

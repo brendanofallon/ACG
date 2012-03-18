@@ -15,10 +15,10 @@ import newgui.UIConstants;
 
 public class SideTab extends JPanel {
 
-	boolean selected = false;
-	String text;
-	ImageIcon icon;
-	Font font = UIConstants.sansFont;
+	private boolean selected = false;
+	private String text;
+	private ImageIcon icon;
+	private Font font = UIConstants.sansFont;
 	
 	public SideTab(String label, ImageIcon icon) {
 		this.text = label;
@@ -50,14 +50,17 @@ public class SideTab extends JPanel {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 	
+   	 	 g.setColor(SideTabPane.sidePanelBackground);
+	     g.fillRect(0, 0, getWidth()+1, getHeight()+1);
+	     
+	     
 	     if (selected) {
 	    	 g.setColor(UIConstants.lightBackground);
-	     }
-	     else {
-	    	 g.setColor(SideTabPane.sidePanelBackground);
+	    	 g.fillRoundRect(0, 0, getWidth()+4, getHeight()-1, 14, 14);
+	    	 g.setColor(Color.LIGHT_GRAY);
+	    	 g.drawRoundRect(0, 0, getWidth()+4, getHeight()-1, 14, 14);
 	     }
 	     
-	     g.fillRect(0, 0, getWidth()+1, getHeight()+1);
 	     
 	     
 	     g.drawImage(icon.getImage(), Math.max(1, getWidth()/2 - icon.getIconWidth()/2), 2, null);
@@ -70,11 +73,11 @@ public class SideTab extends JPanel {
 	     g.setColor(Color.DARK_GRAY);
 	     g.drawString(text, Math.max(1, getWidth()/2 - strWidth/2), getHeight()-10);
 
-
-	     g.setColor(new Color(1f, 1f, 1f, 0.5f));
-	     g.drawLine(2, getHeight()-1, getWidth()-2, getHeight()-1);
-	     g.setColor(Color.LIGHT_GRAY);
-	     g.drawLine(2, getHeight()-2, getWidth()-2, getHeight()-2);
-	     
+	     if (! selected) {
+	    	 g.setColor(new Color(1f, 1f, 1f, 0.5f));
+	    	 g.drawLine(2, getHeight()-1, getWidth()-2, getHeight()-1);
+	    	 g.setColor(Color.LIGHT_GRAY);
+	    	 g.drawLine(2, getHeight()-2, getWidth()-2, getHeight()-2);
+	     }
 	}
 }

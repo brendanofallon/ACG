@@ -55,6 +55,7 @@ public abstract class PropertyLogger implements MCMCListener, Named {
 	//Don't collect info before this number of states
 	int burnin = 500000;
 	
+	protected boolean doneCollecting = false; //This gets set to true when the chain is finished
 	protected boolean writeTempData = true;
 	protected int writeTempFrequency = 100000; //Frequency to write in MCMC gens
 	
@@ -67,6 +68,14 @@ public abstract class PropertyLogger implements MCMCListener, Named {
 	SiteMap siteMap = null; //Used for mapping output to other coordinates
 
 	public PropertyLogger(Map<String, String> attrs) {
+		System.out.println("Constructing new property logger : " + toString());
+		try {
+			throw new IllegalArgumentException("hah");
+		}
+		catch (IllegalArgumentException ex) {
+			ex.printStackTrace();
+		}
+		
 		Integer burn = XMLUtils.getOptionalInteger(BURNIN, attrs);
 		if (burn == null) {
 			this.burnin = 1000000;
@@ -160,6 +169,13 @@ public abstract class PropertyLogger implements MCMCListener, Named {
 	 */
 	public abstract void addValue(int stateNumber);
 	
+	/**
+	 * Get the burnin value for this logger - the number of states before which data is collected
+	 * @return
+	 */
+	public int getBurnin() {
+		return burnin;
+	}
 	
 	public void newState(int stateNumber) {
 		if (stateNumber > 0 && stateNumber % collectionFrequency == 0 && stateNumber>=burnin) {
@@ -169,10 +185,11 @@ public abstract class PropertyLogger implements MCMCListener, Named {
 		if (writeTempData && stateNumber > 0 && stateNumber % writeTempFrequency == 0 && stateNumber>burnin) {
 			writeTempData();
 		}	
+		
 	}
 	
 	public void setOutputFile(File outputfile) throws IOException {
-		System.out.println("Attempting to create file : " + outputfile.getAbsolutePath());
+		//System.out.println("Attempting to create file : " + outputfile.getAbsolutePath());
 		if (outputfile == null || outputfile.isDirectory())  {
 			System.out.println("Output file is directory, ignoring and not writing data to file.");
 			outputStream = null;
@@ -219,12 +236,24 @@ public abstract class PropertyLogger implements MCMCListener, Named {
 		this.chain = chain;
 	}
 	
+	/**
+	 * Returns true if the chain is done (if chainIsFinished has been called)
+	 * false otherwise
+	 * @return
+	 */
+	public boolean isDoneCollecting() {
+		return doneCollecting;
+	}
+	
 	@Override
 	public void chainIsFinished() {
+		doneCollecting = true;
 		String str = getSummaryString();
 		if (outputStream != null) {
 			outputStream.println(str);
 			outputStream.close();
 		}
 	}
+
+	
 }

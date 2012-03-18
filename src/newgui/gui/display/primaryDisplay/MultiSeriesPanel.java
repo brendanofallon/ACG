@@ -4,6 +4,7 @@ import gui.figure.series.XYSeries;
 import gui.figure.series.XYSeriesElement;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -69,8 +70,10 @@ public class MultiSeriesPanel extends JPanel {
 	private void  initComponents() {
 		this.setOpaque(false);
 		this.setLayout(new BorderLayout());
+		this.setBackground(Color.white);
 		
 		multiPanel = new MultiFigurePanel();
+		multiPanel.setBackground(Color.white);
 		add(multiPanel, BorderLayout.CENTER);
 		
 		JPanel bottomPanel = new JPanel();

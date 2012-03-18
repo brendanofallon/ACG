@@ -184,6 +184,8 @@ public class AlignmentPrepPanel extends JPanel {
 		
 		contentPanel = new SGContentPanel();
 		sgScrollPane = new JScrollPane( contentPanel );
+		sgScrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
+		sgScrollPane.setBorder(BorderFactory.createEmptyBorder());
         JPanel corner1 = new JPanel();
         corner1.setBackground(Color.white);
         sgScrollPane.setCorner(JScrollPane.UPPER_RIGHT_CORNER, corner1);
@@ -352,6 +354,7 @@ public class AlignmentPrepPanel extends JPanel {
 	
 		
 		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, alnPanel, bottomHalf);
+		splitPane.setBorder(null);
 		splitPane.setEnabled(true);
 		this.add(splitPane, BorderLayout.CENTER);		
 	}
