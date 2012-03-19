@@ -77,10 +77,10 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 				resumeJob();
 			}
 		});
-		startButton.setPreferredSize(new Dimension(26, 24));
-		startButton.setMaximumSize(new Dimension(26, 24));
-		startButton.setXDif(-3);
-		startButton.setYDif(-2);
+		//startButton.setPreferredSize(new Dimension(26, 24));
+		//startButton.setMaximumSize(new Dimension(26, 24));
+//		startButton.setXDif(-3);
+//		startButton.setYDif(-2);
 		BorderlessButton pauseButton = new BorderlessButton(UIConstants.pauseButton);
 		pauseButton.setToolTipText("Pause this job");
 		pauseButton.addActionListener(new ActionListener() {
@@ -88,10 +88,10 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 				pauseJob();
 			}
 		});
-		pauseButton.setPreferredSize(new Dimension(28, 24));
-		pauseButton.setMaximumSize(new Dimension(28, 24));
-		pauseButton.setXDif(-3);
-		pauseButton.setYDif(-1);
+		//pauseButton.setPreferredSize(new Dimension(28, 24));
+		//pauseButton.setMaximumSize(new Dimension(28, 24));
+//		pauseButton.setXDif(-3);
+//		pauseButton.setYDif(-1);
 		
 		BorderlessButton stopButton = new BorderlessButton(UIConstants.stopButton);
 		stopButton.setToolTipText("Abort this job");
@@ -100,15 +100,15 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 				killJob();
 			}
 		});
-		stopButton.setPreferredSize(new Dimension(24, 24));
-		stopButton.setMaximumSize(new Dimension(24, 24));
-		stopButton.setXDif(0);
-		stopButton.setYDif(-1);
+		//stopButton.setPreferredSize(new Dimension(24, 24));
+		//stopButton.setMaximumSize(new Dimension(24, 24));
+//		stopButton.setXDif(0);
+//		stopButton.setYDif(-1);
 		
 		BorderlessButton saveResultsButton = new BorderlessButton(UIConstants.saveGrayButton);
 		saveResultsButton.setToolTipText("Save results");
-		saveResultsButton.setYDif(-2);
-		saveResultsButton.setXDif(-1);
+//		saveResultsButton.setYDif(-2);
+//		saveResultsButton.setXDif(-1);
 		saveResultsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				saveResults();
@@ -124,7 +124,7 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 		statusPanel.add(stopButton);
 		
 		statusPanel.add(Box.createHorizontalStrut(25));
-		statusPanel.setMaximumSize(new Dimension(1000, 26));
+		statusPanel.setMaximumSize(new Dimension(1000, 34));
 		
 		
 		centerPanel.add(statusPanel);

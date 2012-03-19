@@ -151,10 +151,10 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 		//remove.setAlignmentY(TOP_ALIGNMENT);
 		remove.setToolTipText("Remove " + getModel().getModelLabel() );
 		remove.setXDif(-1);
-		remove.setYDif(-1);
-		remove.setMinimumSize(new Dimension(24, 28));
-		remove.setPreferredSize(new Dimension(24, 28));
-		remove.setMaximumSize(new Dimension(24, 28));
+//		remove.setYDif(-1);
+//		remove.setMinimumSize(new Dimension(24, 28));
+//		remove.setPreferredSize(new Dimension(24, 28));
+//		remove.setMaximumSize(new Dimension(24, 28));
 		
 		remove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

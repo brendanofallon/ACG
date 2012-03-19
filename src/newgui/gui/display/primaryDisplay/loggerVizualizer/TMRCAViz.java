@@ -26,6 +26,12 @@ public class TMRCAViz extends AbstractLoggerViz {
 	}
 
 	@Override
+	public String getDataString() {
+		String data = logger.getSummaryString();
+		return data;
+	}	
+	
+	@Override
 	public void update() {
 		
 		if (burninMessage != null && logger.getBurninExceeded()) {

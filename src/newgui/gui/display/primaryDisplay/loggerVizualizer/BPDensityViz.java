@@ -42,7 +42,14 @@ public class BPDensityViz extends AbstractLoggerViz {
 	}
 
 
+	@Override
+	public String getDataString() {
+		String data = logger.getSummaryString();
+		return data;
+	}
+	
 	private BreakpointDensity bpLogger;
 	private TextElement burninMessage;
+
 	
 }

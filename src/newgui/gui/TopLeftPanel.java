@@ -48,10 +48,10 @@ public class TopLeftPanel extends JPanel {
 			}
 		});
 		importButton.setYDif(-1);
-		importButton.setXDif(-1);
+		//importButton.setXDif(-1);
 
 		
-		importButton.setPreferredSize(new Dimension(32, 28));
+		//importButton.setPreferredSize(new Dimension(32, 28));
 		this.add(importButton);
 	
 	}

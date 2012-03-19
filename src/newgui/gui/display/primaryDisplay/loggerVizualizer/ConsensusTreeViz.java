@@ -34,6 +34,12 @@ public class ConsensusTreeViz extends AbstractLoggerViz {
 	}
 	
 	@Override
+	public String getDataString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
 	public void update() {
 		if (burninMessage != null && logger.getBurninExceeded()) {
 			treeFig.removeElement(burninMessage);
@@ -41,6 +47,7 @@ public class ConsensusTreeViz extends AbstractLoggerViz {
 		}
 		if (logger.getBurninExceeded()) {
 			String consNewick = treeLogger.getSummaryString();
+			System.out.println("Consensus tree logger burnin exceeded, newick is:" + consNewick);
 			SquareTree drawableTree = new SquareTree(consNewick);
 			treeFig.removeAllTrees();
 			treeFig.addTree(drawableTree);
@@ -55,4 +62,5 @@ public class ConsensusTreeViz extends AbstractLoggerViz {
 	private ConsensusTreeLogger treeLogger;
 	private TreeElement treeElement;
 	private TreeFigure treeFig;
+
 }

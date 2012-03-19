@@ -68,14 +68,6 @@ public abstract class PropertyLogger implements MCMCListener, Named {
 	SiteMap siteMap = null; //Used for mapping output to other coordinates
 
 	public PropertyLogger(Map<String, String> attrs) {
-		System.out.println("Constructing new property logger : " + toString());
-		try {
-			throw new IllegalArgumentException("hah");
-		}
-		catch (IllegalArgumentException ex) {
-			ex.printStackTrace();
-		}
-		
 		Integer burn = XMLUtils.getOptionalInteger(BURNIN, attrs);
 		if (burn == null) {
 			this.burnin = 1000000;
