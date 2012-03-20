@@ -123,6 +123,10 @@ public class MC3 {
 		}
 
 		//loader.setVerbose(false); //Suppress output when we create additional objects
+		//Reverse-lookup all node IDs for the given listeners so we can add them back to the
+		//object map after creating the new chains
+		Map<String, Object> listenerIDMap = loader.findObjectLabelMapping(listeners);
+		
 		
 		//Construct all the listeners and add them to chain 0
 		if (listeners != null) {
@@ -152,8 +156,8 @@ public class MC3 {
 		}
 		
 		//Kind of clumsy, but there are a few things we must add BACK into the map after we've cleared it. Namely, 
-		//anything having to do with chain heating
-
+		//anything having to do with chain heating and all of the MCMCListeners that were added, so when 
+		//we grab listeners/ loggers subsequently we don't create new ones...
 		List<AbstractParameter<?>> chainHeatParams = heatModel.getGlobalParameters();
 		for(AbstractParameter<?> param : chainHeatParams) {
 			loader.addToObjectMap(param.getAttribute(XMLLoader.NODE_ID), param);
@@ -161,6 +165,11 @@ public class MC3 {
 				AbstractModifier<?> mod = (AbstractModifier<?>) param.getModifier(i);
 				loader.addToObjectMap(mod.getAttribute(XMLLoader.NODE_ID) , mod);
 			}
+		}
+		//Add all listener objects back to loader's object map so they aren't re-created with 
+		//subsequent calls to getObjectForLabel...
+		for(String key: listenerIDMap.keySet()) {
+			loader.addToObjectMap(key, listenerIDMap.get(key));
 		}
 		
 
@@ -173,6 +182,9 @@ public class MC3 {
 		
 	}
 	
+	
+
+
 	public MC3(int threads) {
 		this.numThreads = threads;
 		threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(numThreads);
@@ -349,9 +361,6 @@ public class MC3 {
 			stateNumber = chains[0].chain.getStatesProposed();
 		}
 		
-		//Required for writing of summary information
-		chains[0].chain.fireChainDone();
-		
 		
 		//Nicely shut down the thread pool
 		threadPool.shutdown();
@@ -360,6 +369,8 @@ public class MC3 {
 		} catch (InterruptedException e) {
 		}
 		
+		//Required for writing of summary information
+		chains[0].chain.fireChainDone();
 		
 		//Scan chains to see if any are using timers, if so emit their timing summary
 		for(int i=0; i<chains.length; i++) {

@@ -190,8 +190,9 @@ public class XMLDataFile extends DataFile {
 	}
 	
 	/**
-	 * Obtain the element that is an immediate descendant of the root element 
-	 * and has a node name equal to the given name
+	 * Obtain the first element that is an immediate descendant of the root element 
+	 * and has a node name equal to the given name. If there is no such node null is
+	 * returned. 
 	 * @param nodeName
 	 * @return
 	 */
@@ -204,6 +205,25 @@ public class XMLDataFile extends DataFile {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns a list containing all elements that are immediate descendants of the root (document)
+	 * element and who have a node name equal to the given name. If no nodes are found an empty
+	 * list is returned
+	 * @param nodeName
+	 * @return
+	 */
+	protected List<Element> getTopLevelElements(String nodeName) {
+		List<Element> elements = new ArrayList<Element>();
+		NodeList childs = doc.getDocumentElement().getChildNodes();
+		for(int i=0; i<childs.getLength(); i++) {
+			Node child = childs.item(i);
+			if (child.getNodeType() == Node.ELEMENT_NODE && child.getNodeName().equals(nodeName)) {
+				elements.add( (Element)child);
+			}
+		}
+		return elements;
 	}
 
 	/**
@@ -232,5 +252,23 @@ public class XMLDataFile extends DataFile {
 		return null;
 	}
 
+	/**
+	 * Return the text content contained in the child with the given node name
+	 * @param el
+	 * @param nodeName
+	 * @return
+	 */
+	public static String getTextFromChild(Element el, String nodeName) {
+		Element child = getChildByName(el, nodeName);
+		
+		NodeList childs = child.getChildNodes();
+		for(int i=0; i<childs.getLength(); i++) {
+			Node textChild = childs.item(i);
+			if (child.getNodeType() == Node.TEXT_NODE) {
+				return textChild.getNodeValue();
+			}
+		}
+		return null;
+	}
 
 }

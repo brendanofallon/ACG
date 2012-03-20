@@ -128,6 +128,9 @@ public class MCMC {
 	//If set to true will halt the running chain and call chainIsFinished
 	private boolean abort = false;
 	
+	//Is set to true when chain completes or is aborted
+	private boolean chainIsDone = false;
+	
 	//Stores attributes given to constructor so we can reference them later
 	private Map<String, String> attrs = new HashMap<String, String>();
 	
@@ -445,7 +448,8 @@ public class MCMC {
 	 * @param states
 	 */
 	public void run(int states) {
-		System.out.println("MCMC run is getting called...");
+		if (verbose)
+			System.out.println("MCMC run is getting called...");
 		if (RandomSource.getEngine() == null)
 			throw new IllegalStateException("Random number source not initialized");
 		
@@ -854,9 +858,18 @@ public class MCMC {
 	 * Notify all listeners that the chain has finished 
 	 */
 	public void fireChainDone() {
+		chainIsDone = true;
 		for(MCMCListener l : getListeners()) {
 			l.chainIsFinished();
 		}
+	}
+	
+	/**
+	 * Returns true is fireChainDone has been called for this chain, signifying completion or being aborted
+	 * @return
+	 */
+	public boolean getChainIsDone() {
+		return chainIsDone;
 	}
 	
 	/**

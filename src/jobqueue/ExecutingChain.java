@@ -21,6 +21,7 @@ package jobqueue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import gui.ErrorWindow;
@@ -48,7 +49,10 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 	protected MC3 mc3 = null;		//Will be null if user supplies MCMC object to constructor
 	protected MCMC coldChain = null; //Reference to cold chain, only non-null if we're in MC3 mode 
 	private boolean paused = false;
-	//private boolean done = false;
+	
+	//Keep track of start and end time for logging purposes
+	private Date startTime =  null;
+	private Date endTime = null;
 	
 	/**
 	 * Create a new ExecutingChain that can run the analysis described in the ACGDocument provided.
@@ -191,9 +195,27 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 	@Override
 	public void chainIsFinished() {
 		state.setState(State.COMPLETED);
+		endTime = new Date();
 		fireStatusUpdate();
 	}
 	
+	/**
+	 * Obtain a date object representing the time at which this job was executed.
+	 * This is null if the job has not been started
+	 * @return
+	 */
+	public Date getStartTime() {
+		return startTime;
+	}
+	
+	/**
+	 * Obtain date object representing the completion date of this chain (actually reflects
+	 * whenever chainIsFinished is called)
+	 * @return
+	 */
+	public Date getEndTime() {
+		return endTime;
+	}
 
 	@Override
 	public void setMCMC(MCMC chain) { 
@@ -212,6 +234,7 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 			else {
 				chain.run();
 			}
+			startTime = new Date();
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
@@ -278,10 +301,7 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 		}
 	}
 	
-	private String jobTitle = "Unknown job";
-	private JobState state = new JobState(this);
-	private List<JobListener> listeners = new ArrayList<JobListener>();
-
+	
 	@Override
 	public void pause() {
 		setPaused(true); 
@@ -303,6 +323,9 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 		}
 	}
 
-	
+	private String jobTitle = "Unknown job";
+	private JobState state = new JobState(this);
+	private List<JobListener> listeners = new ArrayList<JobListener>();
+
 	
 }

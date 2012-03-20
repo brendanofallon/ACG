@@ -113,17 +113,20 @@ public class LazyHistogram {
 	 */
 	private synchronized void makeHistoFromList() {
 		Collections.sort(vals);
-		double min = vals.get(0);
-		double max = vals.get(vals.size()-1);
-		
-		if (min > 0 && min < (max-min)/2.0) 
-			min = 0;
-		else {
-			min = Math.floor(min*0.5 * 10000) / 10000.0;
+		double min = 0;
+		double max = 1;
+		if (vals.size()>0) {
+			min = vals.get(0);
+			max = vals.get(vals.size()-1);
+
+			if (min > 0 && min < (max-min)/2.0) 
+				min = 0;
+			else {
+				min = Math.floor(min*0.5 * 10000) / 10000.0;
+			}
+
+			max = Math.floor(max*1.5 * 10000) / 10000.0;
 		}
-		
-		max = Math.floor(max*1.5 * 10000) / 10000.0;
-		
 		histo = new Histogram(min, max, bins);
 		
 		for(Double val : vals)

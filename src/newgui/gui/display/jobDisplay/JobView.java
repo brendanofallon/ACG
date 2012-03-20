@@ -15,6 +15,8 @@ import javax.swing.JProgressBar;
 import javax.swing.Timer;
 
 import newgui.UIConstants;
+import newgui.datafile.ResultsFile;
+import newgui.gui.display.primaryDisplay.RunningJobPanel;
 import newgui.gui.widgets.BorderlessButton;
 
 
@@ -33,9 +35,11 @@ import jobqueue.JobState.State;
 public class JobView extends JPanel implements JobListener, ActionListener {
 
 	private ACGJob job;
+	private RunningJobPanel jobPanel;
 	
-	public JobView(ACGJob job) {
+	public JobView(RunningJobPanel jobPanel, ACGJob job) {
 		this.job = job;
+		this.jobPanel = jobPanel;
 		job.addListener(this);
 		initComponents();
 		timer = new Timer(500, this);
@@ -73,10 +77,10 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 				resumeJob();
 			}
 		});
-		startButton.setPreferredSize(new Dimension(26, 24));
-		startButton.setMaximumSize(new Dimension(26, 24));
-		startButton.setXDif(-3);
-		startButton.setYDif(-2);
+		//startButton.setPreferredSize(new Dimension(26, 24));
+		//startButton.setMaximumSize(new Dimension(26, 24));
+//		startButton.setXDif(-3);
+//		startButton.setYDif(-2);
 		BorderlessButton pauseButton = new BorderlessButton(UIConstants.pauseButton);
 		pauseButton.setToolTipText("Pause this job");
 		pauseButton.addActionListener(new ActionListener() {
@@ -84,10 +88,10 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 				pauseJob();
 			}
 		});
-		pauseButton.setPreferredSize(new Dimension(28, 24));
-		pauseButton.setMaximumSize(new Dimension(28, 24));
-		pauseButton.setXDif(-3);
-		pauseButton.setYDif(-1);
+		//pauseButton.setPreferredSize(new Dimension(28, 24));
+		//pauseButton.setMaximumSize(new Dimension(28, 24));
+//		pauseButton.setXDif(-3);
+//		pauseButton.setYDif(-1);
 		
 		BorderlessButton stopButton = new BorderlessButton(UIConstants.stopButton);
 		stopButton.setToolTipText("Abort this job");
@@ -96,19 +100,31 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 				killJob();
 			}
 		});
-		stopButton.setPreferredSize(new Dimension(24, 24));
-		stopButton.setMaximumSize(new Dimension(24, 24));
-		stopButton.setXDif(0);
-		stopButton.setYDif(-1);
+		//stopButton.setPreferredSize(new Dimension(24, 24));
+		//stopButton.setMaximumSize(new Dimension(24, 24));
+//		stopButton.setXDif(0);
+//		stopButton.setYDif(-1);
+		
+		BorderlessButton saveResultsButton = new BorderlessButton(UIConstants.saveGrayButton);
+		saveResultsButton.setToolTipText("Save results");
+//		saveResultsButton.setYDif(-2);
+//		saveResultsButton.setXDif(-1);
+		saveResultsButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				saveResults();
+			}
+		});
 		
 		statusPanel.add(statusLabel);
 		statusPanel.add(Box.createHorizontalGlue());
+		if (jobPanel != null)
+			statusPanel.add(saveResultsButton);
 		statusPanel.add(startButton);
 		statusPanel.add(pauseButton);
 		statusPanel.add(stopButton);
 		
 		statusPanel.add(Box.createHorizontalStrut(25));
-		statusPanel.setMaximumSize(new Dimension(1000, 26));
+		statusPanel.setMaximumSize(new Dimension(1000, 34));
 		
 		
 		centerPanel.add(statusPanel);
@@ -120,6 +136,14 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 		this.add(centerPanel, BorderLayout.CENTER);
 	}
 	
+	/**
+	 * Called when user clicks the save results button. Causes the RunningJobPanel to create and save
+	 * a ResultsFile encapsulating the results of this run
+	 */
+	protected void saveResults() {
+		jobPanel.saveResults();
+	}
+
 	protected void pauseJob() {
 		if (job.getJobState().getState() == State.RUNNING) {
 			job.pause();

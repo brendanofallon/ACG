@@ -23,6 +23,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -74,6 +75,10 @@ public class AlignmentPrepPanel extends JPanel {
 	private PrimaryDisplay displayParent;
 	private JScrollPane sgScrollPane;
 	private JComboBox colorSchemeBox;
+	
+	public static final ImageIcon maskIcon = UIConstants.getIcon("gui/icons/oxygen/mask.png");
+	public static final ImageIcon clearMaskIcon = UIConstants.getIcon("gui/icons/oxygen/clearmask.png");
+	public static final ImageIcon addSelectionIcon = UIConstants.getIcon("gui/icons/oxygen/addselection.png");
 	
 	public AlignmentPrepPanel(PrimaryDisplay displayParent) {
 		this.displayParent = displayParent;
@@ -188,6 +193,8 @@ public class AlignmentPrepPanel extends JPanel {
 		
 		contentPanel = new SGContentPanel();
 		sgScrollPane = new JScrollPane( contentPanel );
+		sgScrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
+		sgScrollPane.setBorder(BorderFactory.createEmptyBorder());
         JPanel corner1 = new JPanel();
         corner1.setBackground(Color.white);
         sgScrollPane.setCorner(JScrollPane.UPPER_RIGHT_CORNER, corner1);
@@ -210,7 +217,8 @@ public class AlignmentPrepPanel extends JPanel {
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
 		alnPanel.add(topPanel, BorderLayout.NORTH);
 		
-		BorderlessButton addAlnButton = new BorderlessButton("Choose alignment");
+		BorderlessButton addAlnButton = new BorderlessButton(UIConstants.reload);
+		addAlnButton.setToolTipText("Replace alignment");
 		addAlnButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showAlignmentChoicePanel();
@@ -221,6 +229,7 @@ public class AlignmentPrepPanel extends JPanel {
 		topPanel.add(Box.createHorizontalStrut(10));
 		
 		BorderlessButton saveAlnButton = new BorderlessButton(UIConstants.saveGrayButton);
+		saveAlnButton.setToolTipText("Save alignment");
 		saveAlnButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				saveAlignment();
@@ -231,7 +240,8 @@ public class AlignmentPrepPanel extends JPanel {
 		topPanel.add(saveAlnButton);
 		topPanel.add(Box.createHorizontalGlue());
 
-		BorderlessButton selectColsButton = new BorderlessButton("Select Cols");
+		BorderlessButton selectColsButton = new BorderlessButton(addSelectionIcon);
+		selectColsButton.setToolTipText("Select columns");
 		selectColsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showColumnSelectionFrame();
@@ -239,7 +249,8 @@ public class AlignmentPrepPanel extends JPanel {
 		});
 		topPanel.add(selectColsButton);
 		
-		BorderlessButton maskButton = new BorderlessButton("Mask");
+		BorderlessButton maskButton = new BorderlessButton(maskIcon);
+		maskButton.setToolTipText("Mask columns");
 		topPanel.add(maskButton);
 		maskButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -247,7 +258,8 @@ public class AlignmentPrepPanel extends JPanel {
 			}
 		});
 
-		BorderlessButton clearMaskButton = new BorderlessButton("Clear Mask");
+		BorderlessButton clearMaskButton = new BorderlessButton(clearMaskIcon);
+		clearMaskButton.setToolTipText("Remove mask");
 		topPanel.add(clearMaskButton);
 		clearMaskButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -356,6 +368,7 @@ public class AlignmentPrepPanel extends JPanel {
 	
 		
 		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, alnPanel, bottomHalf);
+		splitPane.setBorder(null);
 		splitPane.setEnabled(true);
 		this.add(splitPane, BorderLayout.CENTER);		
 	}

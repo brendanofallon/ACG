@@ -484,6 +484,38 @@ public class XMLLoader {
 	}
 	
 	/**
+	 * Perform a reverse-lookup of an object label for a given object. This is only valid after
+	 * a call to instantiateAll()
+	 * @param obj
+	 * @return
+	 */
+	public String getLabelForObject(Object obj) {
+		for(String key : objMap.keySet()) {
+			Object valueObj = objMap.get(key);
+			if (valueObj == obj)
+				return key;
+		}
+		return null;
+	}
+	
+	/**
+	 * Given a list of objects, look up their IDs in the given XMLLoader 
+	 * and return them all in a map from id to object
+	 * @param objs List of objects whose IDs will be looked up
+	 * @return Map from node_id to object for all given objects
+	 */
+	public Map<String, Object> findObjectLabelMapping(List<Object> objs) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		for(Object obj : objs) {
+			String label = getLabelForObject(obj);
+			if (label == null)
+				throw new IllegalArgumentException("Object " + obj + " is not in the object map, cannot lookup id");
+			map.put(label, obj);
+		}
+		return map;
+	}
+	
+	/**
 	 * Recursive function that attempts to instantiate the class with the given label. If an object with
 	 * the given label has already been constructed, we simply return that (it should be in the objMap map).
 	 * If not, we look up the class associated with the given label along with the labels of any sub-

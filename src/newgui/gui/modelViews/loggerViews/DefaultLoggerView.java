@@ -151,10 +151,10 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 		//remove.setAlignmentY(TOP_ALIGNMENT);
 		remove.setToolTipText("Remove " + getModel().getModelLabel() );
 		remove.setXDif(-1);
-		remove.setYDif(-1);
-		remove.setMinimumSize(new Dimension(24, 28));
-		remove.setPreferredSize(new Dimension(24, 28));
-		remove.setMaximumSize(new Dimension(24, 28));
+//		remove.setYDif(-1);
+//		remove.setMinimumSize(new Dimension(24, 28));
+//		remove.setPreferredSize(new Dimension(24, 28));
+//		remove.setMaximumSize(new Dimension(24, 28));
 		
 		remove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -169,7 +169,7 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 		centerPanel.setOpaque(false);
 		centerPanel.setLayout(new MigLayout());
 		centerPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-		filenameField = new JTextField( model.getDefaultLabel() + ".log");
+		filenameField = new JTextField( model.getDefaultLabel() );
 		filenameField.setFont(getFont());
 		Dimension fieldSize = new Dimension(160, 30);
 		filenameField.setMinimumSize( fieldSize );
@@ -186,7 +186,7 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 			}
 		});
 		
-		JLabel filenameLabel = new JLabel("File name:");
+		JLabel filenameLabel = new JLabel("Logger name:");
 		centerPanel.add(filenameLabel);
 		centerPanel.add(filenameField, "wrap");
 		

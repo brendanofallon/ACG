@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
@@ -14,6 +15,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -36,7 +38,9 @@ public class SideTabPane extends JPanel {
 	private List<TabCompPair> compList = new ArrayList<TabCompPair>();
 	public static final Color sidePanelBackground = UIConstants.darkBackground;
 	
-	private int sidePanelWidth = 100;
+	private int sidePanelWidth = 120;
+	public static final int topPadding = 10; //Space between top of component and first SideTab
+	public static final int rightPadding = 4; //Space to right of main area of component, used for drawing a shadow
 	
 	public SideTabPane() {
 		initComponents();
@@ -87,6 +91,17 @@ public class SideTabPane extends JPanel {
 			}
 		}
 		repaint();
+	}
+	
+	/**
+	 * Get the index of the selected component, or -1 if there's somehow no component selected
+	 * @return
+	 */
+	public int getSelectedIndex() {
+		for(int i=0; i<compList.size(); i++)
+			if (compList.get(i).tab.isSelected())
+				return i;
+		return -1;
 	}
 	
 	/**
@@ -161,16 +176,27 @@ public class SideTabPane extends JPanel {
 		selectTab(tab);
 	}
 	
+	public SideTab getSelectedTab() {
+		for(TabCompPair pair : compList) {
+			if (pair.tab.isSelected()) {
+				return pair.tab;
+			}
+		}
+		
+		return null;
+	}
+	
 	private void initComponents() {
 		this.setLayout(new BorderLayout());
 		
-		sidePanel = new JPanel();
+		sidePanel = new SidePanel(this);
 		sidePanel.setBackground(sidePanelBackground);
 		sidePanel.setMaximumSize(new Dimension(sidePanelWidth, 32000));
 		sidePanel.setPreferredSize(new Dimension(sidePanelWidth, 400));
 		sidePanel.setMinimumSize(new Dimension(sidePanelWidth, 1));
+		//sidePanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, rightPadding));
 		sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.Y_AXIS));
-		sidePanel.add(Box.createVerticalStrut(10));
+		sidePanel.add(Box.createVerticalStrut(topPadding));
 		add(sidePanel, BorderLayout.WEST);
 		
 		centerPanel = new JPanel();
@@ -185,12 +211,29 @@ public class SideTabPane extends JPanel {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 	
-		g.setColor(Color.LIGHT_GRAY);
-		g.drawLine(sidePanelWidth, 0, sidePanelWidth, getHeight());
+		int topHalfBottom =0;
+		int bottomHalfTop = 0;
+		int height = topPadding;
+		for(int i=0; i<compList.size(); i++) {
+			SideTab tab = compList.get(i).tab;
+			if (tab.isSelected()) {
+				topHalfBottom = height;
+				bottomHalfTop = height + tab.getHeight();
+			}
+			height += tab.getHeight();
+		}
 		
-		g.setColor(new Color(1f, 1f, 1f, 0.5f));
-		g.drawLine(sidePanelWidth+1, 0, sidePanelWidth+1, getHeight());
-	
+		
+
+//		g.setColor(Color.LIGHT_GRAY);
+//		g.drawLine(sidePanelWidth-1, 0, sidePanelWidth-1, topHalfBottom);
+//		g.drawLine(sidePanelWidth, bottomHalfTop, sidePanelWidth, getHeight());
+//		
+//		
+//		g.setColor(new Color(1f, 1f, 1f, 0.5f));
+//		g.drawLine(sidePanelWidth+1, 0, sidePanelWidth+1, topHalfBottom);
+//		g.drawLine(sidePanelWidth+1, bottomHalfTop, sidePanelWidth+1, getHeight());
+		
 		
 	}
 	

@@ -75,6 +75,7 @@ public class AnalysisDetailsPanel extends JPanel {
 		coalView = new CoalModelView( analysis.getCoalescentModel() );
 		loggersView.setLoggerModels(analysis.getLoggerModels());
 		mcView = new MCModelView( analysis.getMCModelElement() );
+		substModelButton.fireActionEvent(null); //Cause subst model to be shown at first
 		repaint();
 	}
 	

@@ -67,8 +67,9 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 	private void initComponents() {
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(1, 10, 0, 0));
+		setBackground(Color.white);
 		//setBorder(BorderFactory.createLineBorder(Color.green));
-		setOpaque(false);
+		//setOpaque(false);
 		
 		fig = new XYSeriesFigure();
 		fig.setAllowMouseDragSelection(false);
