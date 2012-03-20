@@ -121,7 +121,8 @@ public class AlignmentPrepPanel extends JPanel {
 
 	/**
 	 * Called when chooseButton has been pressed. We grab the current analysisTemplate,
-	 * inject alignment data into it, and do.... something to be determined 
+	 * inject alignment data into it, and cause the PrimaryDisplay to show the analysis
+	 * details model with the selected analysis
 	 */
 	protected void chooseCurrentAnalysis() {
 		if (selectedTemplate != null) {
@@ -129,6 +130,9 @@ public class AlignmentPrepPanel extends JPanel {
 			
 			List<Sequence> seqs = new ArrayList<Sequence>();
 			Alignment aln = contentPanel.getAlignment();
+			
+			aln.applyMask();
+			
 			for(int i=0; i<aln.getSequenceCount(); i++) {
 				seqs.add( aln.getSequence(i) );
 			}

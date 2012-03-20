@@ -27,6 +27,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -42,7 +44,7 @@ public class MonitorHeader extends JPanel {
 	protected JLabel text;
 	protected JLabel label;
 	protected Font font = ViewerWindow.sansFont.deriveFont(11f); //new Font("Sans", Font.PLAIN, 11);
-	
+	final MonitorPanel owner;
 	
 	Color[] gradient = new Color[25];
 	Color bottomLight = new Color(0.98f, 0.98f, 0.98f, 0.7f);
@@ -50,7 +52,8 @@ public class MonitorHeader extends JPanel {
 	
 	ImageIcon saveIcon = ACGFrame.getIcon("icons/saveIcon3.png");
 	
-	public MonitorHeader() {
+	public MonitorHeader(final MonitorPanel owner) {
+		this.owner = owner;
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setMinimumSize(new Dimension(10, 24));
 		this.add(Box.createRigidArea(new Dimension(10, 20)));
@@ -67,6 +70,11 @@ public class MonitorHeader extends JPanel {
 		add(Box.createHorizontalGlue());
 		
 		BorderlessButton saveButton = new BorderlessButton(saveIcon);
+		saveButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				owner.saveImage();
+			}
+		});
 		add(saveButton);
 		
 		float fadeStart = 0.7f;
@@ -76,7 +84,7 @@ public class MonitorHeader extends JPanel {
 			gradient[i] = new Color(c, c, c, 0.6f);
 		}
 	}
-	
+
 	public void setText(String text) {
 		this.text.setText( text );
 		repaint();

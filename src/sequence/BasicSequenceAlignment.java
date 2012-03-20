@@ -230,8 +230,13 @@ public class BasicSequenceAlignment implements Alignment {
 	 * @return
 	 */
 	public DataMatrix getDataMatrix() {
-		if (dataMatrix == null)
+		if (dataMatrix == null) {
+			System.out.println("CREATING SEQUENCE DATA MATRIX");
 			dataMatrix = new DataMatrix(this);
+		}
+		else {
+			System.out.println("RETURNING ALREADY CREATED DATA MATRIX");
+		}
 		
 		return dataMatrix;
 	}
@@ -623,7 +628,16 @@ public class BasicSequenceAlignment implements Alignment {
 	public void applyMask() {
 		if (mask == null) 
 			return;
-			
-		throw new IllegalStateException("No implemented yet");
+		if (dataMatrix != null) {
+			System.err.println("WARNING: DataMatrix has already been created for alignment, but we're applying a mask now so info in matrix will out outdated!");
+		}
+		
+		System.out.println("APPLYING SEQUENCE MASK!");
+		for(Sequence seq : seqs) {
+			for(Integer col : mask.getMaskedColumns()) {
+				seq.mask(col);
+			}
+		}
+		
 	}
 }

@@ -362,7 +362,7 @@ public abstract class MonitorPanel extends FloatingPanel {
 		initializePopup();
 		traceFigure.setYLabel(null);
 		
-		topPanel = new MonitorHeader();
+		topPanel = new MonitorHeader(this);
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
 		topPanel.setBackground(Color.LIGHT_GRAY);
 		topPanel.add(Box.createHorizontalStrut(100));
