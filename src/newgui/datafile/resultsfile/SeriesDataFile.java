@@ -1,4 +1,4 @@
-package newgui.datafile;
+package newgui.datafile.resultsfile;
 
 import java.awt.geom.Point2D;
 import java.io.File;
@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import gui.figure.series.XYSeries;
+
+import newgui.datafile.XMLConversionError;
+import newgui.datafile.XMLDataFile;
 
 import org.w3c.dom.Element;
 

@@ -11,11 +11,14 @@ import gui.figure.series.XYSeries;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import mcmc.MCMC;
+import mcmc.MCMCListener;
 import newgui.UIConstants;
-import newgui.datafile.ResultsFile;
 import newgui.datafile.XMLConversionError;
+import newgui.datafile.resultsfile.ResultsFile;
 import newgui.gui.display.jobDisplay.JobView;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.BPDensityViz;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.ConsensusTreeViz;
@@ -37,7 +40,7 @@ import logging.RootHeightDensity;
  * @author brendano
  *
  */
-public class RunningJobPanel extends JPanel {
+public class RunningJobPanel extends JPanel implements MCMCListener {
 
 	private PrimaryDisplay displayParent;
 	private ACGDocument acgDoc = null;
@@ -129,8 +132,12 @@ public class RunningJobPanel extends JPanel {
 		chain.setJobTitle( jobTitle + "-analysis" );
 		JobQueue currentQueue = QueueManager.getCurrentQueue();
 		currentQueue.addJob(chain);
+		
 		jobView = new JobView(this, chain);
 		add(jobView, BorderLayout.NORTH);
+		
+		chain.addListener(this);
+		
 		revalidate();
 		repaint();
 	}
@@ -160,12 +167,50 @@ public class RunningJobPanel extends JPanel {
 		
 		add(sidePane, BorderLayout.CENTER);
 	}
+
 	
+	private void promptToSaveResults() {
+		Object[] options = {"Don't save",
+				"Save results"};
+		int n = JOptionPane.showOptionDialog(this.getRootPane(),
+				"Save these results?",
+						"Run '" + displayParent.getTitle() + "' has completed",
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE,
+						null,
+						options,
+						options[1]);
+		if (n==1) {
+			saveResults();
+		}
+	}
+
+	///////////// MCMCListener implementation /////////////////////
+	
+	@Override
+	public void setMCMC(MCMC chain) {
+		this.mcmc = chain;
+	}
+
+	@Override
+	public void newState(int stateNumber) {
+		//Dont do anything
+	}
+
+	@Override
+	public void chainIsFinished() {
+		promptToSaveResults();
+	}
+
+
 	MultiSeriesPanel seriesPanel;
 	MemoryStateLogger memLogger; //Listens to chains and logs parameter values / likelihoods
 	List<PropertyLogger> propLoggers = new ArrayList<PropertyLogger>();
 	SideTabPane sidePane;
 	JobView jobView;
+	MCMC mcmc = null;
+
+
 }
 
 

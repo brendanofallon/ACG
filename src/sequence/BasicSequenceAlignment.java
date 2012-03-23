@@ -585,7 +585,8 @@ public class BasicSequenceAlignment implements Alignment {
 	public void removeRows(int[] rows) {
 		Arrays.sort(rows);
 		for(int i=rows.length-1; i>=0; i--) {
-			seqs.remove(rows[i]);
+			if (seqs.size()>rows[i])
+				seqs.remove(rows[i]);
 		}
 	}
 	
