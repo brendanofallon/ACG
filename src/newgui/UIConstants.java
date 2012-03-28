@@ -30,7 +30,7 @@ public class UIConstants {
 	//Some oft-used icons
 	public static final ImageIcon note = getIcon("gui/icons/oxygen/note32.png");
 	public static final ImageIcon writeData = getIcon("gui/icons/oxygen/filetxt.png");
-	public static final ImageIcon reload = getIcon("gui/icons/oxygen/refresh.png");
+	public static final ImageIcon reload = getIcon("gui/icons/oxygen/refresh24.png");
 	public static final ImageIcon blueRightArrow = getIcon("gui/icons/oxygen/run_blue.png");
 	public static final ImageIcon grayRightArrow = getIcon("gui/icons/oxygen/run_blue.png");
 	
@@ -48,10 +48,10 @@ public class UIConstants {
 	
 	public static final ImageIcon addButton = getIcon("gui/icons/oxygen/addfile.png");
 	
-	public static final ImageIcon saveGrayButton = getIcon("gui/icons/oxygen/floppydisk.png");
-	public static final ImageIcon saveBlueButton = getIcon("gui/icons/oxygen/floppydisk.png");
+	public static final ImageIcon saveGrayButton = getIcon("gui/icons/oxygen/floppydisk24.png");
+	public static final ImageIcon saveBlueButton = getIcon("gui/icons/oxygen/floppydisk24.png");
 	
-	public static final ImageIcon clearButton = getIcon("gui/icons/oxygen/close_round.png");
+	public static final ImageIcon clearButton = getIcon("gui/icons/oxygen/close_round24.png");
 	
 	public static final ImageIcon grayHistogram = getIcon("gui/icons/grayHistogram.png");
 	public static final ImageIcon blueHistogram = getIcon("gui/icons/blueHistogram.png");

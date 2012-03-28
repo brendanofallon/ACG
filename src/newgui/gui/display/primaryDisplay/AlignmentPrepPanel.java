@@ -76,9 +76,9 @@ public class AlignmentPrepPanel extends JPanel {
 	private JScrollPane sgScrollPane;
 	private JComboBox colorSchemeBox;
 	
-	public static final ImageIcon maskIcon = UIConstants.getIcon("gui/icons/oxygen/mask.png");
-	public static final ImageIcon clearMaskIcon = UIConstants.getIcon("gui/icons/oxygen/clearmask.png");
-	public static final ImageIcon addSelectionIcon = UIConstants.getIcon("gui/icons/oxygen/addselection.png");
+	public static final ImageIcon maskIcon = UIConstants.getIcon("gui/icons/oxygen/mask24.png");
+	public static final ImageIcon clearMaskIcon = UIConstants.getIcon("gui/icons/oxygen/clearmask24.png");
+	public static final ImageIcon addSelectionIcon = UIConstants.getIcon("gui/icons/oxygen/addselection24.png");
 	
 	public AlignmentPrepPanel(PrimaryDisplay displayParent) {
 		this.displayParent = displayParent;
@@ -157,7 +157,7 @@ public class AlignmentPrepPanel extends JPanel {
 		contentPanel.setToNaturalSize();
 		sgScrollPane.getVerticalScrollBar().setUnitIncrement(contentPanel.getRowHeight());
 		sgScrollPane.getHorizontalScrollBar().setUnitIncrement(Math.max(5, contentPanel.getColumnWidth()));
-		sgScrollPane.setPreferredSize(new Dimension(100, 200));
+		sgScrollPane.setPreferredSize(new Dimension(100, 300));
 		sgScrollPane.setMinimumSize(new Dimension(100, 200));
 		revalidate();
 		repaint();

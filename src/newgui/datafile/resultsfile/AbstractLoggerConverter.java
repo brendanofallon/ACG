@@ -1,7 +1,9 @@
 package newgui.datafile.resultsfile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import gui.figure.series.XYSeries;
@@ -13,6 +15,7 @@ import newgui.datafile.XMLDataFile;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 public abstract class AbstractLoggerConverter implements ChartElementConverter {
@@ -38,8 +41,6 @@ public abstract class AbstractLoggerConverter implements ChartElementConverter {
 	public static final String HISTO_DATA = "histogram.data";
 	
 	public Histogram readHistogramFromElement(Element el) throws XMLConversionError {
-		Element seriesEl = XMLDataFile.getChildByName(el, XYSeriesElementReader.XML_SERIES);
-
 		Double moreThanMax = parseDoubleFromChild(el, HISTO_MORETHANMAX);
 		Double lessThanMin = parseDoubleFromChild(el, HISTO_LESSTHANMIN);
 		Double binWidth = parseDoubleFromChild(el, HISTO_BINWIDTH);
@@ -50,6 +51,23 @@ public abstract class AbstractLoggerConverter implements ChartElementConverter {
 		double[] counts = readDoubleArray(el, HISTO_DATA);
 		Histogram hist = new Histogram(counts, binWidth, histoMin, sum, count, moreThanMax, lessThanMin);
 		return hist;
+	}
+	
+	/**
+	 * Write all attributes of the given node into a new Map and return it
+	 * @param el
+	 * @return
+	 */
+	protected Map<String, String> readPropertyLoggerAttrs(Element el) {
+		Map<String, String> attrs = new HashMap<String, String>();
+		NamedNodeMap nodeMap = el.getAttributes();
+		for(int i=0; i<nodeMap.getLength(); i++) {
+			Node node = nodeMap.item(i);
+			String key = node.getNodeName();
+			String value = node.getNodeValue();
+			attrs.put(key, value);
+		}
+		return attrs;
 	}
 	
 	public Element createHistogramElement(Document doc, Histogram histo) {

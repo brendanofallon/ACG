@@ -150,4 +150,5 @@ public class BreakpointDensity extends HistogramCollector  {
 	public String getName() {
 		return "Recombinations along sequence";
 	}
+
 }

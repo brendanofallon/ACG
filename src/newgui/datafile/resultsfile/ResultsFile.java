@@ -13,6 +13,7 @@ import java.util.Map;
 
 import jobqueue.ExecutingChain;
 import jobqueue.JobState;
+import logging.BreakpointDensity;
 import logging.PropertyLogger;
 
 import newgui.datafile.PropertiesElementReader;
@@ -135,15 +136,29 @@ public class ResultsFile extends XMLDataFile {
 		setProperties(propsMap);
 	}
 	
-	private void addChartElement(PropertyLogger logger) {
+	protected void addChartElement(PropertyLogger logger) throws XMLConversionError {
 		// TODO Auto-generated method stub
 		//Not sure what to do here... would like to be able to save and read all chart data...
-		
+		if (logger instanceof BreakpointDensity) {
+			BPDensityConverter converter = new BPDensityConverter();
+			Element el = converter.convertLoggerToElement(logger, doc);
+			addChartElement(el);
+		}
+	}
+	
+	private void addChartElement(Element el) {
+		if (el.getNodeName().equals(AbstractLoggerConverter.LOGGER_ELEMENT)) {
+			charts.add(el);
+			doc.getDocumentElement().appendChild(el);
+		}
+		else {
+			throw new IllegalArgumentException("Element does not appear to be a logger");
+		}
 	}
 
-	private PropertyLogger readChartElement(Element el) {
-		
-	}
+//	private PropertyLogger readChartElement(Element el) {
+//		
+//	}
 	
 	public static void main(String[] args) {
 		Map<String, String> map = new HashMap<String, String>();

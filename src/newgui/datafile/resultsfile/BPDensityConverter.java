@@ -1,8 +1,11 @@
 package newgui.datafile.resultsfile;
 
+import java.util.Map;
+
 import gui.figure.series.XYSeries;
 import logging.BreakpointDensity;
 import logging.PropertyLogger;
+import math.Histogram;
 
 import newgui.datafile.XMLConversionError;
 import newgui.datafile.XMLDataFile;
@@ -26,13 +29,21 @@ public class BPDensityConverter extends AbstractLoggerConverter {
 		Element histogram = createHistogramElement(doc, bpDensity.getHistogram());
 		el.appendChild(histogram);
 		
-		return null;
+		return el;
 	}
 
 	@Override
-	public PropertyLogger convertElementToLogger(Element el) {
-		BreakpointDensity bpDensity = new BreakpointDensity( ); 
-		return null;
+	public PropertyLogger convertElementToLogger(Element el) throws XMLConversionError {
+		Map<String, String> attrs = readPropertyLoggerAttrs(el);
+		
+		BreakpointDensity bpDensity = new BreakpointDensity(attrs, null);
+
+		Element histoChild = XMLDataFile.getChildByName(el, HISTOGRAM);
+		Histogram histo = readHistogramFromElement(histoChild);
+		bpDensity.setHistogram(histo);
+		return bpDensity;
 	}
+
+
 
 }

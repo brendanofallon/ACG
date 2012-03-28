@@ -36,6 +36,7 @@ import newgui.gui.display.jobDisplay.JobQueueDisplay;
 import newgui.gui.filepanel.AnalysisFilesManager;
 import newgui.gui.filepanel.FileTree;
 import newgui.gui.filepanel.InputFilesManager;
+import newgui.gui.filepanel.ResultsFilesManager;
 import newgui.gui.widgets.BorderlessButton;
 import newgui.gui.widgets.RegionFader;
 import newgui.gui.widgets.panelPile.PPanel;
@@ -181,7 +182,9 @@ public class ViewerWindow extends JFrame {
 		analPanel.add(analysisTree);
 		
 		PPanel resultsPanel = new PPanel(pile, "Results");
-		
+		FileTree resultsTree = new FileTree(ResultsFilesManager.getManager().getRootDirectory());
+		ResultsFilesManager.getManager().addListener(resultsTree);
+		resultsPanel.add(resultsTree);
 		
 		pile.addPanel(inputsPanel);
 		pile.addPanel(analPanel);
