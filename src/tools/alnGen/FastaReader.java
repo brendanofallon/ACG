@@ -7,7 +7,8 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- * A class to read long, fasta-formatted sequences
+ * A class to read long, fasta-formatted sequences. Bases are meant to be read in order,
+ * but we can fast-forward to particular contigs / positions spots if need be
  * @author brendan
  *
  */
@@ -38,6 +39,14 @@ public class FastaReader {
 		advanceLine();
 	}
 	
+	/**
+	 * Obtain the single base at the given track (contig) and position. The first base in a sequence
+	 * has index 1, so it's illegal to give position = 0
+	 * @param track
+	 * @param pos
+	 * @return
+	 * @throws IOException
+	 */
 	public char getBaseAt(int track, int pos) throws IOException {
 		if (pos <= 0) {
 			throw new IllegalArgumentException("Remember, bases are ONE-INDEXED, so the first base is base #1, not 0, so please enter a pos > " + pos);

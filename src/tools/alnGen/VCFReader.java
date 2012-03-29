@@ -158,36 +158,6 @@ public class VCFReader {
 			e.printStackTrace();
 		}
 		
-		
-		
-//		try {
-//			FastaReader refReader = new FastaReader(reference);
-//			StringBuilder refSeq = new StringBuilder();
-//			for(int i=startPos; i<endPos; i++) {
-//				char base = refReader.getBaseAt(contig, i);
-//				refSeq.append(base);
-//			}
-//			System.out.println(refSeq);
-//			System.out.println();
-//			VCFReader vcfReader = new VCFReader(infile);
-//			SampleReader varReader = vcfReader.getReaderForSample("unknown", 0);
-//			varReader.advanceTo("" + contig, startPos);
-//			Variant var = varReader.getVariant();
-//				
-//			while(var.getContig().equals("" + contig) && var.getPos() < endPos) {
-//				System.out.println(var);
-//				varReader.advance();
-//				var = varReader.getVariant();
-//			}
-//			
-//			System.out.println("First outside variant: \n" + var);
-//			
-//			
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
 	}
 	
 	

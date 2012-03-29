@@ -5,7 +5,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * A class that takes as input a reference file and a few SampleReaders, and constructs full Sequences
+ * and alignments from the data. This is so we can take a reference and a vcf file 
+ * @author brendan
+ *
+ */
 public class AlignmentGenerator {
 
 	protected File referenceFile;
@@ -15,12 +20,18 @@ public class AlignmentGenerator {
 		this.referenceFile = referenceFile;
 	}
 	
+	/**
+	 * Associate an additional SampleReader that will provide a list of variants with this 
+	 * object. Each SampleReader will create an additional sequence when getAlignment is called
+	 * @param reader
+	 */
 	public void addSampleReader(SampleReader reader) {
 		this.sampleReaders.add(reader);
 	}
 	
 	/**
-	 * Obtain a list of proto-sequences that 
+	 * Obtain a list of proto-sequences that contain full sequence information for the given region
+	 * for each SampleReader
 	 * @param contig
 	 * @param startPos
 	 * @param endPos

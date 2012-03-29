@@ -16,12 +16,12 @@ import java.io.IOException;
  */
 public class SampleReader {
 
-	private VCFReader vcfReader;
-	private BufferedReader reader;
-	private String sampleName;
-	private int phase;
-	private int column;
-	private String currentLine = null;
+	private VCFReader vcfReader; //Stores file info about file the data is being read frp,
+	private BufferedReader reader; //Used to read lines of text from source file
+	private String sampleName; //Name of the sample we're reading variants for
+	private int phase; //either 0 or 1, describes which chromosome were reading
+	private int column; //Column in VCF file that this sample's info resides in
+	private String currentLine = null; //Last line of text read
 	
 	public SampleReader(VCFReader vcfReader, String sampleName, int phase) throws IOException {
 		this.vcfReader = vcfReader;
@@ -35,6 +35,10 @@ public class SampleReader {
 		advanceToFirstVariant();
 	}
 	
+	/**
+	 * Return the phase that was assigned to this reader
+	 * @return
+	 */
 	public int getPhase() {
 		return phase;
 	}
@@ -92,6 +96,10 @@ public class SampleReader {
 		
 	}
 	
+	/**
+	 * Obtain a Variant object that summarizes the variant information on the current line
+	 * @return
+	 */
 	public Variant getVariant() {
 		if (currentLine == null) 
 			return null;

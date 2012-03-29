@@ -33,6 +33,10 @@ public class ProtoSequence {
 		refMap.add(first);
 	}
 	
+	/**
+	 * Associate an arbitrary sample name with this proto sequence
+	 * @param name
+	 */
 	public void setSampleName(String name) {
 		this.sampleName = name;
 	}
@@ -64,6 +68,13 @@ public class ProtoSequence {
 		return seq.charAt( seqIndexForRefPos(refPos) );
 	}
 	
+	/**
+	 * Cause the variation described in the variant object to be applied to this sequence. 
+	 * Currently, insertions are not supported, and deletions cause the affected sites to be replaced 
+	 * with gaps
+	 * @param var
+	 * @param phase
+	 */
 	public void applyVariant(Variant var, int phase) {
 		String alt = null;
 		if (phase==0) {
