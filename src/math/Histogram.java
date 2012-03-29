@@ -70,6 +70,27 @@ public class Histogram {
 	}
 	
 	/**
+	 * Create a new histogram with the given data provided
+	 * @param hist 
+	 * @param binWidth
+	 * @param histoMin
+	 * @param sum
+	 * @param count
+	 * @param moreThanMax
+	 * @param lessThanMin
+	 */
+	public Histogram(double[] hist, double binWidth, double histoMin, double sum, double count, double moreThanMax, double lessThanMin) {
+		this.hist = hist;
+		this.binSpacing = binWidth;
+		this.minValue = histoMin;
+		this.currentSum = sum;
+		this.count = (int)count;
+		this.moreThanMax = moreThanMax;
+		this.lessThanMin = lessThanMin;
+		this.maxValue = hist.length * binWidth;
+	}
+	
+	/**
 	 * Return the number of bins in this histogram
 	 * @return
 	 */
@@ -91,6 +112,39 @@ public class Histogram {
 	
 	public double getMax() {
 		return maxValue;
+	}
+	
+	/**
+	 * Return the number of values added that were greater than the maximum value
+	 * @return
+	 */
+	public double getMoreThanMax() {
+		return moreThanMax;
+	}
+	
+	/**
+	 * Return the number of values added that were less than the minimum value
+	 * @return
+	 */
+	public double getLessThanMin() {
+		return lessThanMin;
+	}
+	
+	/**
+	 * Returns a reference to the raw count data of this histogram. Altering the contents
+	 * will invalidate this histogram
+	 * @return
+	 */
+	public double[] getData() {
+		return hist;
+	}
+	
+	/**
+	 * Get the sum of all of the values that have been added
+	 * @return
+	 */
+	public double getSum() {
+		return currentSum;
 	}
 	
 	/**

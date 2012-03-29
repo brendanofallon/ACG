@@ -1,4 +1,4 @@
-package newgui.datafile;
+package newgui.datafile.resultsfile;
 
 import gui.document.ACGDocument;
 
@@ -14,6 +14,10 @@ import java.util.Map;
 import jobqueue.ExecutingChain;
 import jobqueue.JobState;
 import logging.PropertyLogger;
+
+import newgui.datafile.PropertiesElementReader;
+import newgui.datafile.XMLConversionError;
+import newgui.datafile.XMLDataFile;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -93,14 +97,22 @@ public class ResultsFile extends XMLDataFile {
 			propertiesElement.removeChild(children.item(i));
 	}
 	
+	/**
+	 * Add all of the results from the given chain and document to this ResultsFile, this destroys
+	 * all data current stored in this file
+	 * @param chain
+	 * @param acgDoc
+	 * @throws XMLConversionError
+	 */
 	public void addAllResults(ExecutingChain chain, ACGDocument acgDoc) throws XMLConversionError {
-		
-		
 		Map<String, String> propsMap = new HashMap<String, String>();
 		propsMap.put("run.length", "" + chain.getTotalRunLength());
 		
 		Date startTime = chain.getStartTime();
-		propsMap.put("start.time", startTime.toString());
+		if (startTime != null)
+			propsMap.put("start.time", startTime.toString());
+		else 
+			propsMap.put("start.time", "unknown");
 		
 		
 		//Add all loggers 
@@ -129,6 +141,10 @@ public class ResultsFile extends XMLDataFile {
 		
 	}
 
+	private PropertyLogger readChartElement(Element el) {
+		
+	}
+	
 	public static void main(String[] args) {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("akey", "somevalue");

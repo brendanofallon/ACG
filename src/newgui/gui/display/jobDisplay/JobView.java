@@ -15,7 +15,7 @@ import javax.swing.JProgressBar;
 import javax.swing.Timer;
 
 import newgui.UIConstants;
-import newgui.datafile.ResultsFile;
+import newgui.datafile.resultsfile.ResultsFile;
 import newgui.gui.display.primaryDisplay.RunningJobPanel;
 import newgui.gui.widgets.BorderlessButton;
 

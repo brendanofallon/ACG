@@ -10,7 +10,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import newgui.datafile.AlignmentFile;
-import newgui.datafile.ResultsFile;
+import newgui.datafile.resultsfile.ResultsFile;
 import newgui.gui.ViewerWindow;
 import sequence.Alignment;
 
