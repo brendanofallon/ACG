@@ -19,6 +19,9 @@ import logging.PropertyLogger;
 import newgui.datafile.PropertiesElementReader;
 import newgui.datafile.XMLConversionError;
 import newgui.datafile.XMLDataFile;
+import newgui.gui.display.Display;
+import newgui.gui.display.primaryDisplay.PrimaryDisplay;
+import newgui.gui.display.resultsDisplay.ResultsDisplay;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -76,6 +79,17 @@ public class ResultsFile extends XMLDataFile {
 		return PropertiesElementReader.readProperties(propertiesElement);
 	}
 	
+	
+	@Override
+	public Display getDisplay() {
+		String title = getSourceFile().getName().replace(".xml", "");
+		if (source != null) 
+			title = source.getName();
+		ResultsDisplay display = new ResultsDisplay();
+		display.setTitle(title);
+		//ResultsDisplay.addAlignment(getAlignment(), title);
+		return display;
+	}
 	
 	/**
 	 * Clear all current properties and then assign all properties in the given map

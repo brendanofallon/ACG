@@ -137,7 +137,7 @@ public class ViewerWindow extends JFrame {
 		contentPane.setLayout(new BorderLayout());
 		contentPane.setBackground(Color.white);
 
-		mainPanel = new ViewerBackground();
+		mainPanel = new JPanel();
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
@@ -153,7 +153,11 @@ public class ViewerWindow extends JFrame {
 		mainPanel.add(leftPanel);
 		displayPane = new DisplayPane();
 		
-		mainPanel.add(displayPane);		
+		JPanel displayBackground = new ViewerBackground();
+		displayBackground.setLayout(new BorderLayout());
+		displayBackground.add(displayPane, BorderLayout.CENTER);
+		displayPane.setOpaque(false);
+		mainPanel.add(displayBackground);		
 		
 		JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BorderLayout());
