@@ -149,7 +149,6 @@ public class BasicSequenceAlignment implements Alignment {
 	 * sure it's valid before adding
 	 */
 	public void addSequence(Sequence seqToAdd) {
-		//checkSequenceValidity( seqToAdd );
 		
 		if (seqs.size()==0) {
 			//seqToAdd.checkValidity();

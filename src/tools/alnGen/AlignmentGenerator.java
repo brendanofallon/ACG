@@ -15,6 +15,7 @@ public class AlignmentGenerator {
 
 	protected File referenceFile;
 	List<SampleReader> sampleReaders = new ArrayList<SampleReader>();
+	private final int maxErrors = 10; //Number of variant-reading errors to tolerate
 	
 	public AlignmentGenerator(File referenceFile) {
 		this.referenceFile = referenceFile;
@@ -54,20 +55,28 @@ public class AlignmentGenerator {
 		System.out.println(">reference");
 		System.out.println(refSeq.toString());
 		
+		int errorCount = 0;
+		
 		for(SampleReader reader : sampleReaders) {
 			ProtoSequence seq = new ProtoSequence(refSeq.toString(), startPos);
-			seq.setSampleName(reader.getSampleName());
+			seq.setSampleName(reader.getSampleName() + "_" + reader.getPhase());
 			reader.advanceTo(contig, startPos);
 			Variant var = reader.getVariant();
-			while(var.getContig().equals("" + contig) && var.getPos() < endPos) {
+			while(errorCount < maxErrors && var.getContig().equals("" + contig) && var.getPos() < endPos) {
 				System.out.println(var);
 				seq.applyVariant(var, reader.getPhase());
 				reader.advance();
 				var = reader.getVariant();
+				//Skip over errors (null variants), but only until max errors is reached
+				while (errorCount < maxErrors && var == null) {
+						errorCount++;
+						var = reader.getVariant();
+				}
+				
 			}
 			seqs.add(seq);
 			
-			System.out.println(seq.toString());
+			//System.out.println(seq.toString());
 		}
 
 		return seqs;

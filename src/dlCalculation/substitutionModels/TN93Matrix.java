@@ -216,11 +216,7 @@ public class TN93Matrix<Void> extends MutationModel<Void> {
 	}
 	
 	/**
-<<<<<<< TREE
-	 * A non-optimized but known to be working version. Or is it?
-=======
 	 * A non-optimized but probably working version
->>>>>>> MERGE-SOURCE
 	 * @throws ModificationImpossibleException 
 	 */
 	public void setBranchLength(double t)  {

@@ -109,68 +109,73 @@ public class SampleReader {
 			throw new IllegalArgumentException("Fewer than 8 columns, this file does not seem to be formatted correctly");
 		if (toks.length < column)
 			throw new IllegalArgumentException("Not enough columns at this line, only " + toks.length);
-		
-		String contig = toks[0].trim();
-		Integer pos = Integer.parseInt( toks[1].trim() );
-		String ref = toks[3];
-		String altStr = toks[4];
-		Double quality = Double.parseDouble(toks[5]);
-		String[] altAlleles = altStr.split(",");
-		
-		String formatVals = toks[column];
-		String[] formatToks = formatVals.split(":");
-		
-		String GTStr = formatToks[ vcfReader.getFormatCol("GT")];
-		char gt0 = GTStr.charAt(0);
-		char gt1 = GTStr.charAt(2);
-		String alt0;
-		String alt1;
-		Integer gt0Col = Integer.parseInt(gt0 + "");
-		Integer gt1Col = Integer.parseInt(gt1 + "");
-		
-		String primaryAlt = altAlleles[0];
-		if (primaryAlt.length() != ref.length()) {
-			//Remove initial characters if they are equal and add one to start position
-			if (primaryAlt.charAt(0) == ref.charAt(0)) {
-				primaryAlt = primaryAlt.substring(1);
-				ref = ref.substring(1);
-				if (primaryAlt.length()==0)
-					primaryAlt = ProtoSequence.GAP;
-				altAlleles[0] = primaryAlt;
-				if (ref.length()==0)
-					ref = ProtoSequence.GAP;
-				pos++;
+		try {
+			String contig = toks[0].trim();
+			Integer pos = Integer.parseInt( toks[1].trim() );
+			String ref = toks[3];
+			String altStr = toks[4];
+			Double quality = Double.parseDouble(toks[5]);
+			String[] altAlleles = altStr.split(",");
+
+			String formatVals = toks[column];
+			String[] formatToks = formatVals.split(":");
+
+			String GTStr = formatToks[ vcfReader.getFormatCol("GT")];
+			char gt0 = GTStr.charAt(0);
+			char gt1 = GTStr.charAt(2);
+			String alt0;
+			String alt1;
+			Integer gt0Col = Integer.parseInt(gt0 + "");
+			Integer gt1Col = Integer.parseInt(gt1 + "");
+
+			String primaryAlt = altAlleles[0];
+			if (primaryAlt.length() != ref.length()) {
+				//Remove initial characters if they are equal and add one to start position
+				if (primaryAlt.charAt(0) == ref.charAt(0)) {
+					primaryAlt = primaryAlt.substring(1);
+					ref = ref.substring(1);
+					if (primaryAlt.length()==0)
+						primaryAlt = ProtoSequence.GAP;
+					altAlleles[0] = primaryAlt;
+					if (ref.length()==0)
+						ref = ProtoSequence.GAP;
+					pos++;
+				}
+				if (altAlleles.length > 1) {
+					throw new IllegalArgumentException("OK, so there are multiple alts at this site, and one of them needs a reassigned position because it's in GaTK-style indel annotation. We can't handle this currently because there are really multiple variants at this position");
+				}
 			}
-			if (altAlleles.length > 1) {
-				throw new IllegalArgumentException("OK, so there are multiple alts at this site, and one of them needs a reassigned position because it's in GaTK-style indel annotation. We can't handle this currently because there are really multiple variants at this position");
+
+			if (gt0Col == 0)
+				alt0 = ref;
+			else
+				alt0 = altAlleles[gt0Col-1];
+			if (gt1Col == 0)
+				alt1 = ref;
+			else
+				alt1 = altAlleles[gt1Col-1];
+
+
+			String depthStr = null;
+			Integer depthCol = vcfReader.getFormatCol("AD");
+			Integer depth = 1;
+			if (depthCol != null) { 
+				depthStr = formatToks[ depthCol ];
+				String[] depthVals = depthStr.split(",");
+				int totDepth = 0;
+				for(int i=0; i<depthVals.length; i++) {
+					totDepth += Integer.parseInt( depthVals[i] );
+				}
+				depth = totDepth;
 			}
+
+			Variant var = new Variant(contig, pos, ref, alt0, alt1, quality, depth);
+			return var;
 		}
-		
-		if (gt0Col == 0)
-			alt0 = ref;
-		else
-			alt0 = altAlleles[gt0Col-1];
-		if (gt1Col == 0)
-			alt1 = ref;
-		else
-			alt1 = altAlleles[gt1Col-1];
-		
-		
-		String depthStr = null;
-		Integer depthCol = vcfReader.getFormatCol("AD");
-		Integer depth = 1;
-		if (depthCol != null) { 
-			depthStr = formatToks[ depthCol ];
-			String[] depthVals = depthStr.split(",");
-			int totDepth = 0;
-			for(int i=0; i<depthVals.length; i++) {
-				totDepth += Integer.parseInt( depthVals[i] );
-			}
-			depth = totDepth;
+		catch (NumberFormatException nfe) {
+			//System.err.println("Error parsing values for the line:" + currentLine);
+			return null;
 		}
-		
-		Variant var = new Variant(contig, pos, ref, alt0, alt1, quality, depth);
-		return var;
 	}
 	
 	/**

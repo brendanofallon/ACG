@@ -1,9 +1,11 @@
 package tools.alnGen;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -120,39 +122,87 @@ public class VCFReader {
 	
 	
 	public static void main(String[] args) {
-		File hht15 = new File("/media/MORE_DATA/detect_fp/rawvcfs/HHT15_all_variants.vcf");
-		File hht16 = new File("/media/MORE_DATA/detect_fp/rawvcfs/HHT16_all_variants.vcf");
-		File hht3 = new File("/media/MORE_DATA/detect_fp/rawvcfs/HHT3_all_variants.vcf");
-		File hht4 = new File("/media/MORE_DATA/detect_fp/rawvcfs/HHT4_all_variants.vcf");
+//		File hht15 = new File("/media/MORE_DATA/detect_fp/rawvcfs/HHT15_all_variants.vcf");
+//		File hht16 = new File("/media/MORE_DATA/detect_fp/rawvcfs/HHT16_all_variants.vcf");
+//		File hht3 = new File("/media/MORE_DATA/detect_fp/rawvcfs/HHT3_all_variants.vcf");
+//		File hht4 = new File("/media/MORE_DATA/detect_fp/rawvcfs/HHT4_all_variants.vcf");
+		File genomesVCF = new File("/home/brendan/1000genomes/ALL.chr22.phase1_release_v3.20101123.snps_indels_svs.genotypes.vcf");
 		File reference = new File("/home/brendan/resources/human_g1k_v37.fasta");
 				
-		Integer contig = 17;
-		int startPos = 41249350;
-		int endPos =   41249400;
+		Integer contig = 22;
+		int startPos = 25000000;
+		int endPos =   25050000;
 		
 		AlignmentGenerator alnGen = new AlignmentGenerator(reference);
 		VCFReader vcfReader;
 		try {
-			vcfReader = new VCFReader(hht15);
-			SampleReader varReader = vcfReader.getReaderForSample("unknown", 1);
+			vcfReader = new VCFReader(genomesVCF);
+			
+			SampleReader varReader = vcfReader.getReaderForSample("HG00097", 0);
 			alnGen.addSampleReader(varReader);
 			
-			vcfReader = new VCFReader(hht16);
-			varReader = vcfReader.getReaderForSample("unknown", 0);
+			varReader = vcfReader.getReaderForSample("HG00097", 1);
 			alnGen.addSampleReader(varReader);
 			
-			vcfReader = new VCFReader(hht3);
-			varReader = vcfReader.getReaderForSample("unknown", 0);
+			varReader = vcfReader.getReaderForSample("HG00099", 0);
 			alnGen.addSampleReader(varReader);
 			
-			vcfReader = new VCFReader(hht4);
-			varReader = vcfReader.getReaderForSample("unknown", 0);
+			varReader = vcfReader.getReaderForSample("HG00099", 1);
+			alnGen.addSampleReader(varReader);
+			
+			varReader = vcfReader.getReaderForSample("HG01075", 0);
+			alnGen.addSampleReader(varReader);
+			
+			varReader = vcfReader.getReaderForSample("HG01075", 1);
+			alnGen.addSampleReader(varReader);
+			
+			varReader = vcfReader.getReaderForSample("HG01171", 0);
+			alnGen.addSampleReader(varReader);
+			
+			varReader = vcfReader.getReaderForSample("HG01171", 1);
+			alnGen.addSampleReader(varReader);
+			
+			varReader = vcfReader.getReaderForSample("HG01389", 0);
+			alnGen.addSampleReader(varReader);
+			
+			varReader = vcfReader.getReaderForSample("HG01389", 1);
+			alnGen.addSampleReader(varReader);
+			
+			varReader = vcfReader.getReaderForSample("HG00100", 0);
+			alnGen.addSampleReader(varReader);
+			
+			varReader = vcfReader.getReaderForSample("HG00100", 1);
+			alnGen.addSampleReader(varReader);
+			
+			varReader = vcfReader.getReaderForSample("NA12873", 0);
+			alnGen.addSampleReader(varReader);
+			
+			varReader = vcfReader.getReaderForSample("NA18566", 0);
+			alnGen.addSampleReader(varReader);
+			
+			varReader = vcfReader.getReaderForSample("NA18566", 1);
+			alnGen.addSampleReader(varReader);
+			
+			varReader = vcfReader.getReaderForSample("HG01108", 0);
+			alnGen.addSampleReader(varReader);
+			
+			varReader = vcfReader.getReaderForSample("HG01108", 1);
+			alnGen.addSampleReader(varReader);
+			
+			varReader = vcfReader.getReaderForSample("NA18532", 0);
+			alnGen.addSampleReader(varReader);
+			
+			varReader = vcfReader.getReaderForSample("NA18532", 1);
 			alnGen.addSampleReader(varReader);
 			
 			List<ProtoSequence> seqs = alnGen.getAlignment("" + contig, startPos, endPos);
 			
-			
-			
+			BufferedWriter writer = new BufferedWriter(new FileWriter("vcfreader_out.fasta"));
+			for(ProtoSequence seq : seqs) {
+				writer.write(seq.toString() + "\n");
+			}
+			writer.close();
+			System.out.println("Wrote " + seqs.size() + " sequences of length " + (endPos - startPos));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

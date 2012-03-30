@@ -3,6 +3,12 @@ package tools.alnGen;
 import java.util.ArrayList;
 import java.util.List;
 
+import newgui.alignment.UnrecognizedBaseException;
+
+import sequence.DNAUtils;
+import sequence.Sequence;
+import sequence.SimpleSequence;
+
 
 /**
  * A mutable sequence that is used to temporarily store sequence data for use
@@ -68,6 +74,10 @@ public class ProtoSequence {
 		return seq.charAt( seqIndexForRefPos(refPos) );
 	}
 	
+	public void applyVariant(Variant var, int phase) {
+		applyVariant(var, phase, emptyFilterList);
+	}
+	
 	/**
 	 * Cause the variation described in the variant object to be applied to this sequence. 
 	 * Currently, insertions are not supported, and deletions cause the affected sites to be replaced 
@@ -75,7 +85,7 @@ public class ProtoSequence {
 	 * @param var
 	 * @param phase
 	 */
-	public void applyVariant(Variant var, int phase) {
+	public void applyVariant(Variant var, int phase, List<VariantFilter> filters) {
 		String alt = null;
 		if (phase==0) {
 			alt = var.getAlt0();
@@ -83,14 +93,26 @@ public class ProtoSequence {
 		if (phase==1)
 			alt = var.getAlt1();
 		if (alt.equals( var.getRef() )) {
-			System.out.println("Alt equals ref at this site, ignoring (alt:" + alt  + " ref:" + var.getRef() +")");
+			//System.out.println("Alt equals ref at this site, ignoring (alt:" + alt  + " ref:" + var.getRef() +")");
 			return; //no variant, do nothing
+		}
+		
+		boolean maskVariant = false;
+		for(VariantFilter filter : filters) {
+			if (! filter.variantPasses(var)) {
+				maskVariant = true;
+				break;
+			}
 		}
 		
 		//Altering wont change mapping
 		if (alt.length()==1) {
 			int refPos = var.getPos(); //This number is in reference coords
 			int seqPos = seqIndexForRefPos(refPos); //Ref coords converted to indices for string
+			
+			if (maskVariant)
+				alt = "N";
+			
 			System.out.println("Replacing base at site " + seqPos + " with " + alt);
 			seq.replace(seqPos, seqPos+1, alt);
 		}
@@ -104,6 +126,20 @@ public class ProtoSequence {
 		return ">" + sampleName + "\n" + seq.toString();
 	}
 	
+	/**
+	 * Obtain a for-real sequence object with the sample name and sequence in this proto-sequence
+	 * @return
+	 */
+	public Sequence toSimpleSequence() {
+		try {
+			return new SimpleSequence(sampleName, seq.toString());
+		} catch (UnrecognizedBaseException e) {
+			//It would be very strange if this happened
+			e.printStackTrace();
+		}
+		//
+		return null;
+	}
 	
 	class Pair {
 		int refPos;
@@ -114,4 +150,7 @@ public class ProtoSequence {
 			this.actualIndex = actual;
 		}
 	}
+	
+	//Placeholder list of variant filters for when none are added
+	private List<VariantFilter> emptyFilterList = new ArrayList<VariantFilter>();
 }

@@ -36,6 +36,8 @@ public class SimpleSequence implements Sequence {
 		bases = new int[seqStr.length()];
 		for(int i=0; i<seqStr.length(); i++) {
 			bases[i] = DNAUtils.intForBase(seqStr.charAt(i));
+			if (bases[i] == DNAUtils.GAP)
+				System.out.println("Found gap in sequence " + label + " at column : " + i);
 		}
 		sequenceCount++;
 	}
@@ -52,6 +54,8 @@ public class SimpleSequence implements Sequence {
 		bases = new int[seq.length()];
 		for(int i=0; i<seq.length(); i++) {
 			bases[i] = DNAUtils.intForBase(seq.charAt(i));
+			if (bases[i] == DNAUtils.GAP)
+				System.out.println("Found gap in sequence " + label + " at column : " + i);
 		}
 		sequenceCount++;
 	}
