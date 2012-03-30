@@ -21,13 +21,15 @@ package sequence;
 
 public class DNAUtils implements Alphabet {
 
-	//Define these in alphabetical order
+	//Define these in alphabetical order. Values are NOT ARBITRARY!
+	//NOTE: It's CRITICAL that GAP=4 ! These values are used as indices into matrices in ComputeCores, so
+	//and 4 is specially defined for gaps. So don't change this unless you know what you're doing. 
 	public static final int T = 3;
 	public static final int C = 1;
 	public static final int A = 0;
 	public static final int G = 2;
-	public static final int N = 4;
-	public static final int GAP = 5;
+	public static final int GAP = 4; 
+	public static final int N = 5;
 	
 	public static int intForBase(char base) {
 		switch(base) {
