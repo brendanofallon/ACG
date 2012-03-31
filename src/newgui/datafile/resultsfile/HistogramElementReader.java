@@ -18,14 +18,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-public abstract class AbstractLoggerConverter implements ChartElementConverter {
-	
-	//Identifies elements that can be parsed to a PropertyLogger 
-	public static final String LOGGER_ELEMENT = "logger.element";
-	
-		
-	//Attribute containing class of PropertyLogger
-	public static final String LOGGER_CLASS = "logger.class";
+/**
+ * Houses a few static utilities for reading and writing Histograms to/from XML
+ * @author brendano
+ *
+ */
+public abstract class HistogramElementReader implements ChartElementConverter {
 	
 	//Signifies element containing main data series
 	public static final String PRIMARY_DATA = "primary.data";
@@ -40,7 +38,7 @@ public abstract class AbstractLoggerConverter implements ChartElementConverter {
 	public static final String HISTO_SUM = "histogram.sum";
 	public static final String HISTO_DATA = "histogram.data";
 	
-	public Histogram readHistogramFromElement(Element el) throws XMLConversionError {
+	public static Histogram readHistogramFromElement(Element el) throws XMLConversionError {
 		Double moreThanMax = parseDoubleFromChild(el, HISTO_MORETHANMAX);
 		Double lessThanMin = parseDoubleFromChild(el, HISTO_LESSTHANMIN);
 		Double binWidth = parseDoubleFromChild(el, HISTO_BINWIDTH);
@@ -58,7 +56,7 @@ public abstract class AbstractLoggerConverter implements ChartElementConverter {
 	 * @param el
 	 * @return
 	 */
-	protected Map<String, String> readPropertyLoggerAttrs(Element el) {
+	protected static Map<String, String> readPropertyLoggerAttrs(Element el) {
 		Map<String, String> attrs = new HashMap<String, String>();
 		NamedNodeMap nodeMap = el.getAttributes();
 		for(int i=0; i<nodeMap.getLength(); i++) {
@@ -70,7 +68,7 @@ public abstract class AbstractLoggerConverter implements ChartElementConverter {
 		return attrs;
 	}
 	
-	public Element createHistogramElement(Document doc, Histogram histo) {
+	public static Element createHistogramElement(Document doc, Histogram histo) {
 		Element el = doc.createElement(HISTOGRAM);
 		el.appendChild( createTextNode(doc, HISTO_MORETHANMAX, "" + histo.getMoreThanMax()));
 		el.appendChild( createTextNode(doc, HISTO_LESSTHANMIN, "" + histo.getLessThanMin())); 
@@ -89,7 +87,7 @@ public abstract class AbstractLoggerConverter implements ChartElementConverter {
 	 * @param text
 	 * @return
 	 */
-	public Element createTextNode(Document doc, String childName, String text) {
+	public static Element createTextNode(Document doc, String childName, String text) {
 		Element child = doc.createElement(childName);
 		Node textNode = doc.createTextNode(text);
 		child.appendChild(textNode);
@@ -104,7 +102,7 @@ public abstract class AbstractLoggerConverter implements ChartElementConverter {
 	 * @return
 	 * @throws XMLConversionError
 	 */
-	public Double parseDoubleFromChild(Element el, String childName) throws XMLConversionError {
+	public static Double parseDoubleFromChild(Element el, String childName) throws XMLConversionError {
 		String valStr = XMLDataFile.getTextFromChild(el, childName);
 		if (valStr == null)
 			throw new XMLConversionError("No node with name " + childName, el);
@@ -122,7 +120,7 @@ public abstract class AbstractLoggerConverter implements ChartElementConverter {
 	 * @return
 	 * @throws XMLConversionError
 	 */
-	public double[] readDoubleArray(Element el, String childName) throws XMLConversionError {
+	public static double[] readDoubleArray(Element el, String childName) throws XMLConversionError {
 		String list = XMLDataFile.getTextFromChild(el, childName);
 		StringTokenizer xToks = new StringTokenizer(list, ",");
 		List<Double> vals = new ArrayList<Double>();
@@ -147,7 +145,7 @@ public abstract class AbstractLoggerConverter implements ChartElementConverter {
 	 * @param list
 	 * @return
 	 */
-	public Element createArrayChild(Document doc, String childName, double[] list) {
+	public static Element createArrayChild(Document doc, String childName, double[] list) {
 		StringBuilder str = new StringBuilder();
 		for(int i=0; i<list.length; i++) {
 			str.append(list[i] + ",");

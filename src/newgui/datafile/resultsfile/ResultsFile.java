@@ -14,7 +14,9 @@ import java.util.Map;
 import jobqueue.ExecutingChain;
 import jobqueue.JobState;
 import logging.BreakpointDensity;
+import logging.HistogramCollector;
 import logging.PropertyLogger;
+import math.Histogram;
 
 import newgui.datafile.PropertiesElementReader;
 import newgui.datafile.XMLConversionError;
@@ -24,6 +26,7 @@ import newgui.gui.display.primaryDisplay.PrimaryDisplay;
 import newgui.gui.display.resultsDisplay.ResultsDisplay;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -35,10 +38,16 @@ import org.w3c.dom.NodeList;
  */
 public class ResultsFile extends XMLDataFile {
 
-	public static final String XML_CHART = "chart";
+	//Identifies elements that can be parsed to a PropertyLogger 
+	public static final String LOGGER_ELEMENT = "logger.element";
+		
+	//Attribute containing class of PropertyLogger
+	public static final String LOGGER_CLASS = "logger.class";
+	//Arbitrary label for logger element
+	public static final String LOGGER_LABEL = "logger.label";
+	
 	
 	Element propertiesElement;
-	List<Element> charts = new ArrayList<Element>();
 	
 	/**
 	 * Create a new results file that attempts to read results from the given file
@@ -47,7 +56,6 @@ public class ResultsFile extends XMLDataFile {
 	public ResultsFile(File file) {
 		super(file);
 		propertiesElement = getTopLevelElement(PropertiesElementReader.XML_PROPERTIES);
-		charts = getTopLevelElements(XML_CHART);
 	}
 
 	/**
@@ -87,7 +95,7 @@ public class ResultsFile extends XMLDataFile {
 			title = source.getName();
 		ResultsDisplay display = new ResultsDisplay();
 		display.setTitle(title);
-		//ResultsDisplay.addAlignment(getAlignment(), title);
+		display.showResultsFile(this);
 		return display;
 	}
 	
@@ -131,10 +139,13 @@ public class ResultsFile extends XMLDataFile {
 		
 		
 		//Add all loggers 
-		for(String label : acgDoc.getLabelForClass(PropertyLogger.class)) {
+		for(String loggerLabel : acgDoc.getLabelForClass(PropertyLogger.class)) {
 				try {
-					PropertyLogger logger = (PropertyLogger) acgDoc.getObjectForLabel(label);
-					addChartElement(logger);
+					PropertyLogger logger = (PropertyLogger) acgDoc.getObjectForLabel(loggerLabel);
+					String label = logger.getName();
+					if (label == null)
+						label = loggerLabel.replace(".class", "");
+					addChartElement(logger, label);
 				} catch (InstantiationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -150,51 +161,82 @@ public class ResultsFile extends XMLDataFile {
 		setProperties(propsMap);
 	}
 	
-	public List<PropertyLogger> getPropertyLoggers() throws XMLConversionError {
-		List<Element> propLogEls = this.getTopLevelElements(AbstractLoggerConverter.LOGGER_ELEMENT);
-		List<PropertyLogger> loggers = new ArrayList<PropertyLogger>();
-		for(Element loggerElement : propLogEls) {
-			String className = loggerElement.getAttribute(AbstractLoggerConverter.LOGGER_CLASS);
-			if (className == null)
-				throw new XMLConversionError("Could not convert element to PropertyLogger", loggerElement);
-			AbstractLoggerConverter converter = getConverterForClass(className);
-			loggers.add(converter.convertElementToLogger(loggerElement));
-		}
-		return loggers;
-	}
-	
-	private AbstractLoggerConverter getConverterForClass(String className) {
-		if (className.equals(BreakpointDensity.class.getCanonicalName())) {
-			return new BPDensityConverter();
-		}
-		
-		
-		return null;
-	}
-	
-	protected void addChartElement(PropertyLogger logger) throws XMLConversionError {
+	/**
+	 * Create a new XML element reflecting the information in the given logger
+	 * @param logger
+	 * @throws XMLConversionError
+	 */
+	protected void addChartElement(PropertyLogger logger, String label) throws XMLConversionError {
+		Element loggerEl = doc.createElement(LOGGER_ELEMENT);
+		loggerEl.setAttribute(LOGGER_CLASS, logger.getClass().getCanonicalName());
+		loggerEl.setAttribute(LOGGER_LABEL, label);
 		
 		if (logger instanceof BreakpointDensity) {
-			BPDensityConverter converter = new BPDensityConverter();
-			Element el = converter.convertLoggerToElement(logger, doc);
-			addChartElement(el);
+			BreakpointDensity bpDensity = (BreakpointDensity)logger;
+			Histogram histo = bpDensity.getHistogram();
+			Element histoEl = HistogramElementReader.createHistogramElement(doc, histo);
+			loggerEl.appendChild(histoEl);
 		}
 		
+		
+		addChartElement(loggerEl);
 	}
 	
 	private void addChartElement(Element el) {
-		if (el.getNodeName().equals(AbstractLoggerConverter.LOGGER_ELEMENT)) {
-			charts.add(el);
+		if (el.getNodeName().equals(LOGGER_ELEMENT)) {
 			doc.getDocumentElement().appendChild(el);
 		}
 		else {
 			throw new IllegalArgumentException("Element does not appear to be a logger");
 		}
 	}
+	
+	public List<String> getChartLabels() throws XMLConversionError {
+		List<Element> propLogEls = this.getTopLevelElements();
+		List<String> loggers = new ArrayList<String>();
+		for(Element loggerElement : propLogEls) {
+			String className = loggerElement.getAttribute(LOGGER_CLASS);
+			if (className != null)
+				loggers.add( loggerElement.getAttribute(LOGGER_LABEL) );
+		}
+		return loggers;
+	}
+	
+	
+	public List<XYSeriesInfo> getFigElementsForChartLabel(String label) throws XMLConversionError {
+		List<Element> propLogEls = this.getTopLevelElements();
+		for(Element loggerElement : propLogEls) {
+			String loggerLabel = loggerElement.getAttribute(LOGGER_LABEL);
+			if (loggerLabel != null && loggerLabel.equals(label)) {
+				return parseFigElements(loggerElement);				
+			}
+		}
+		
+		throw new XMLConversionError("No element found with class equal to " + label, null);
+	}
+	
+	/**
+	 * Return a collection of plottable FigureElements from the given element
+	 * @param el
+	 * @return
+	 */
+	private List<XYSeriesInfo> parseFigElements(Element el) throws XMLConversionError {
+		NodeList children = el.getChildNodes();
+		List<XYSeriesInfo> series = new ArrayList<XYSeriesInfo>();
+		for(int i=0; i<children.getLength(); i++) {
+			Node node = children.item(i);
+			if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals(XYSeriesElementReader.XML_SERIES)) {
+				XYSeriesInfo seriesInfo = XYSeriesElementReader.readFromElement( (Element)node);
+				series.add(seriesInfo);
+				
+			}
+		}
+		
+		return series;
+	}
+	
 
-//	private PropertyLogger readChartElement(Element el) {
-//		
-//	}
+
 	
 	public static void main(String[] args) {
 		Map<String, String> map = new HashMap<String, String>();

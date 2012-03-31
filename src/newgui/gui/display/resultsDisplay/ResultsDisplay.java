@@ -70,6 +70,7 @@ public class ResultsDisplay extends Display {
 		if (logger instanceof BreakpointDensity) {
 			view = new BPDensityViz();
 			tabName = "Breakpoints";
+			System.out.println("Creating new BPDensity view...");
 		}
 		if (logger instanceof ConsensusTreeLogger) {
 			view = new ConsensusTreeViz();
@@ -80,7 +81,10 @@ public class ResultsDisplay extends Display {
 			tabName = "TMRCA";
 		}
 		view.initialize(logger, false);
+		view.actionPerformed(null);
+		view.repaint();
 		tabPane.addTab(tabName, UIConstants.grayRightArrow, view);
+		tabPane.selectTab(0);
 		repaint();
 	}
 

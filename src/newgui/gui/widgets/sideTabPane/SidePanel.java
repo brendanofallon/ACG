@@ -34,13 +34,13 @@ public class SidePanel extends JPanel {
                 RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		SideTab tab = ownerPane.getSelectedTab();
-		
-		GradientPaint gp = new GradientPaint(getWidth()-rightPadding, 0, shadowColor, getWidth(), 0, lightShadowColor);
-		g2d.setPaint(gp);
-		
-		g2d.fillRect(getWidth()-rightPadding, 0, getWidth(), tab.getY());
-		g2d.fillRect(getWidth()-rightPadding, tab.getY() + tab.getHeight(), getWidth(), getHeight());
+		if (tab != null) {
+			GradientPaint gp = new GradientPaint(getWidth()-rightPadding, 0, shadowColor, getWidth(), 0, lightShadowColor);
+			g2d.setPaint(gp);
 
+			g2d.fillRect(getWidth()-rightPadding, 0, getWidth(), tab.getY());
+			g2d.fillRect(getWidth()-rightPadding, tab.getY() + tab.getHeight(), getWidth(), getHeight());
+		}
 		//g2d.fillRect(0, bottomHalfTop, rightPadding, getHeight()-bottomHalfTop);
 		
 	}
