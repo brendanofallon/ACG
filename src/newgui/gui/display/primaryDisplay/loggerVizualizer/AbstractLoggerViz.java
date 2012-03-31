@@ -64,8 +64,13 @@ public abstract class AbstractLoggerViz extends JPanel implements ActionListener
 	 * @param logger
 	 */
 	public void initialize(PropertyLogger logger) {
+		initialize(logger, true);
+	}
+	
+	public void initialize(PropertyLogger logger, boolean startTimer) {
 		this.logger = logger;
-		timer.start();
+		if (startTimer)
+			timer.start();
 		initialize();
 	}
 	
