@@ -38,19 +38,19 @@ public class ComputeNode {
 		// a) Throw in an if/else to do something special at those sites. or
 		// b) Change the transition matrix so that it handles that case appropriately. 
 		// Right now we're choosing b, and we fill the 5th column of all transition matrices with ones
-//		for(int j=0; j<rateCategories; j++) {
-//			for(int i=0; i<(dimension+1); i++) {
-//				currentState.lMatrices[j][i][dimension] = 1.0;
-//				currentState.lMatrices[j][i][dimension] = 1.0;
-//				currentState.rMatrices[j][dimension][i] = 1.0;
-//				currentState.rMatrices[j][dimension][i] = 1.0;
-//				
-//				proposedState.lMatrices[j][i][dimension] = 1.0;
-//				proposedState.lMatrices[j][i][dimension] = 1.0;
-//				proposedState.rMatrices[j][dimension][i] = 1.0;
-//				proposedState.rMatrices[j][dimension][i] = 1.0;
-//			}
-//		}
+		for(int j=0; j<rateCategories; j++) {
+			for(int i=0; i<(dimension+1); i++) {
+				currentState.lMatrices[j][i][dimension] = 1.0;
+				currentState.lMatrices[j][i][dimension] = 1.0;
+				currentState.rMatrices[j][dimension][i] = 1.0;
+				currentState.rMatrices[j][dimension][i] = 1.0;
+				
+				proposedState.lMatrices[j][i][dimension] = 1.0;
+				proposedState.lMatrices[j][i][dimension] = 1.0;
+				proposedState.rMatrices[j][dimension][i] = 1.0;
+				proposedState.rMatrices[j][dimension][i] = 1.0;
+			}
+		}
 		currentState.invariantPartials = new double[rateCategories][4][4];
 		proposedState.invariantPartials = new double[rateCategories][4][4];
 		

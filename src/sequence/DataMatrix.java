@@ -194,6 +194,11 @@ public class DataMatrix {
 			char state = col.getSymbol(row);
 			//System.out.println("Seq. label: " + seqLabel + " site: " + site + " symbol: "+ state);
 			states[site] = dna.symbolToInt(state);
+			
+			//SPECIAL CASE WARNING: Right now, we treat gaps and Ns the same (as unobserved states)
+			//so they get the same value
+			if (states[site] == DNAUtils.N)
+				states[site] = DNAUtils.GAP;
 		}
 		
 		return states;

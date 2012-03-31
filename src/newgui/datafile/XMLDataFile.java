@@ -188,6 +188,22 @@ public class XMLDataFile extends DataFile {
 		String xmlString = sw.toString();
 		return xmlString;
 	}
+
+	/**
+	 * Obtain all elements that are the immediate descendants of the Document element
+	 * @return A (possibly empty) list of elements 
+	 */
+	protected List<Element> getTopLevelElements() {
+		List<Element> elements = new ArrayList<Element>();
+		NodeList childs = doc.getDocumentElement().getChildNodes();
+		for(int i=0; i<childs.getLength(); i++) {
+			Node child = childs.item(i);
+			if (child.getNodeType() == Node.ELEMENT_NODE) {
+				elements.add( (Element)child );
+			}
+		}
+		return elements;
+	}
 	
 	/**
 	 * Obtain the first element that is an immediate descendant of the root element 

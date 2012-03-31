@@ -45,12 +45,12 @@ public class LinearPopModel extends CompoundParameter<Void> implements Demograph
 	 * @param baseSize
 	 * @param growthRate
 	 */
-	public LinearPopModel(Map<String, String> attrs, DoubleParameter baseSize, 
-			               DoubleParameter growthRate) {	
+	public LinearPopModel(Map<String, String> attrs, DoubleParameter newBaseSize, 
+			              DoubleParameter newGrowthRate) {	
 		super(attrs);
-		this.baseSize = baseSize;
-		addParameter(baseSize);
-		this.growthRate = growthRate;
+		baseSize = newBaseSize;
+		addParameter(newBaseSize);
+		growthRate = newGrowthRate;
 		addParameter(growthRate);
 		baseSize.acceptValue();
 		growthRate.acceptValue();
@@ -59,14 +59,22 @@ public class LinearPopModel extends CompoundParameter<Void> implements Demograph
 	/**
 	 * ELB, 2012/01/18
 	 * Analytic calculation of the integral of the population size.
-	 * Simply the area of the equivalent triangle divided by 2
+	 * Simply the area of the equivalent rectangle divided by 2.
+	 * 
+	 * TODO: throw exception for t1 < t0?
 	 */
 	@Override
 	public double getIntegral(double t0, double t1) {
 		double size0 = getPopSize(t0);
 		double size1 = getPopSize(t1);
-		return (1.0/2)*(size1 - size0)/(t1 - t0);
+//		double integral = (t1-t0)/(size1 - size0)*2;
+		double integral = (t1-t0)/size1;
+		if (integral < 1.e-10) { 
+			return 1.e-10;
+		}
+		return integral;
 	}
+	
 	/**
 	 * ELB, 2012/01/18
 	 * Returns the linear function of the population size at a 
@@ -87,5 +95,10 @@ public class LinearPopModel extends CompoundParameter<Void> implements Demograph
 			if (baseSize.isProposed())
 				baseSize.revertValue();
 		}
+	}
+	
+	@Override
+	public String getName() {
+		return "linear.growth";
 	}
 }

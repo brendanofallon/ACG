@@ -52,7 +52,6 @@ import testing.Timer;
 import xml.XMLLoader;
 
 import component.LikelihoodComponent;
-import dlCalculation.computeCore.CompressionCore2;
 import dlCalculation.computeCore.ComputeCore;
 import dlCalculation.computeCore.MultiRateCore;
 import dlCalculation.siteRateModels.ConstantSiteRates;

@@ -118,4 +118,9 @@ public class HistogramCollector extends PropertyLogger {
 	}
 	
 
+	public void setHistogram(Histogram histo) {
+		this.histo = histo;
+	}
+	
+
 }

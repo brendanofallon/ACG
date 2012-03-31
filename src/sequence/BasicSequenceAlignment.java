@@ -149,7 +149,6 @@ public class BasicSequenceAlignment implements Alignment {
 	 * sure it's valid before adding
 	 */
 	public void addSequence(Sequence seqToAdd) {
-		//checkSequenceValidity( seqToAdd );
 		
 		if (seqs.size()==0) {
 			//seqToAdd.checkValidity();
@@ -590,7 +589,8 @@ public class BasicSequenceAlignment implements Alignment {
 	public void removeRows(int[] rows) {
 		Arrays.sort(rows);
 		for(int i=rows.length-1; i>=0; i--) {
-			seqs.remove(rows[i]);
+			if (seqs.size()>rows[i])
+				seqs.remove(rows[i]);
 		}
 	}
 	

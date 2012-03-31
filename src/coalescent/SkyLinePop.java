@@ -25,6 +25,9 @@ import modifier.SimpleModifier;
 import java.lang.Double;
 
 import parameter.DoubleParameter;
+import parameter.CompoundParameter;
+import parameter.Parameter;
+import modifier.ModificationImpossibleException;
 
 /**
  * Class representing the "Skyline" model for popluation dynamics.  This 
@@ -33,23 +36,74 @@ import parameter.DoubleParameter;
  * @author elliottb
  *
  */
-public class SkyLinePop extends DoubleParameter implements DemographicParameter  {
-	public SkyLinePop(Double size) {
-		super(size, "pop.size", "Population size", 0, Double.MAX_VALUE);
-		proposedValue = size;
-		lowerBound = 0.0;
+public class SkyLinePop extends CompoundParameter<Void> implements DemographicParameter {
+	DoubleParameter crashSize; // population size at t==0 and the size it reaches at a crash
+	DoubleParameter growthRate; // the rate that a population grows at (should be positive?)
+	DoubleParameter crashTime; // time when population crashes
+	
+	public SkyLinePop(Map<String, String> attrs, DoubleParameter newCrashSize, 
+			          DoubleParameter newGrowthRate, DoubleParameter newCrashPoint) {	
+		super(attrs);
+		this.crashSize = newCrashSize;
+		addParameter(crashSize);
+		this.growthRate = newGrowthRate;
+		addParameter(growthRate);
+		this.crashTime = newCrashPoint;
+		addParameter(crashTime);
+		
+		crashSize.acceptValue();
+		growthRate.acceptValue();
+		crashTime.acceptValue();
 	}
 	
 	public SkyLinePop(Map<String, String> attrs) {
 		super(attrs);
 	}
 	
-	public double getIntegral(double t0, double t1) {
-		double size = getValue();
-		return (t1-t0)/size;
+	@Override
+	protected void proposeNewValue(Parameter<?> source) {
+		try {
+			fireParameterChange();
+		} catch (ModificationImpossibleException e) {
+			if (crashSize.isProposed()) {
+				crashSize.revertValue();
+			}
+			if (growthRate.isProposed()) {
+				growthRate.revertValue();
+			}
+			if (crashTime.isProposed()) {
+				crashTime.revertValue();
+			}
+		}
 	}
-
+	
+	@Override
+	public double getIntegral(double t0, double t1) {
+		// In this case t0 -> t1 does not cross the crashpoint
+		double ct = crashTime.getValue();
+ 
+		double size0 = getPopSize(t0);
+		double size1 = getPopSize(t1);		
+		if ((t0 < ct && t1 < ct) ||
+		    (t0 > ct && t1 > ct)) {
+			double integral = (size1 - size0)*(t1-t0)/2;
+			return integral;
+		}
+		double sizeBeforeCrash = getPopSize(ct); 
+		double baseSize = crashSize.getValue();		
+		double integral = (baseSize - sizeBeforeCrash)*ct/2;
+		integral += (getPopSize(t1) - baseSize)*t1/2;
+		return integral;
+	}
+	/**
+	 * Calculates the population size at any point t.
+	 * TODO: This function assumes that t is always positive.  This should have
+	 * some checking on this and probably should throw an exception otherwise
+	 */
 	public double getPopSize(double t) {
-		return getValue();
+		if (t <= crashTime.getValue()) {
+			return crashSize.getValue() + growthRate.getValue()*t;
+		}
+		return crashSize.getValue() + growthRate.getValue()*(t-crashTime.getValue());
 	}
 }

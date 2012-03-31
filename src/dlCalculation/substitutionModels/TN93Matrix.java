@@ -60,7 +60,7 @@ public class TN93Matrix<Void> extends MutationModel<Void> {
 	protected boolean recalcIntermediates = true;
 	
 	public TN93Matrix(Map<String, String> attrs, BaseFrequencies stationaries) {
-		super(4, stationaries); //Dummy args that get overwritten immediately
+		super(6, stationaries); //Dummy args that get overwritten immediately
 		
 		double[] freqs = stationaries.getStationaries();
 		double sum = freqs[A] + freqs[C] + freqs[T] + freqs[G];
@@ -216,11 +216,7 @@ public class TN93Matrix<Void> extends MutationModel<Void> {
 	}
 	
 	/**
-<<<<<<< TREE
-	 * A non-optimized but known to be working version. Or is it?
-=======
 	 * A non-optimized but probably working version
->>>>>>> MERGE-SOURCE
 	 * @throws ModificationImpossibleException 
 	 */
 	public void setBranchLength(double t)  {

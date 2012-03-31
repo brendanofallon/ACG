@@ -8,7 +8,10 @@ import java.awt.MultipleGradientPaint.CycleMethod;
 import java.awt.RadialGradientPaint;
 import java.awt.geom.Point2D;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+
+import newgui.UIConstants;
 
 public class ViewerBackground extends JPanel {
 
@@ -18,16 +21,15 @@ public class ViewerBackground extends JPanel {
     private final float[] dist = {0.0f, 1.0f};
     private final Color[] colors = {darkColor, lightColor};
 	
+    ImageIcon backgroundImage = UIConstants.getIcon("gui/icons/mainBackground.png");
+    
+    public ViewerBackground() {
+    }
+    
 	public void paintComponent(Graphics g) {
-		Graphics2D g2d = (Graphics2D)g;
-		
-		//GradientPaint gp = new GradientPaint(1f, 1f, new Color(0.9f, 0.9f, 0.9f), 1f, getHeight(), Color.white);
-		
-	     Point2D center = new Point2D.Float(Math.max(0, getWidth()-80), getHeight());
-	     RadialGradientPaint gp =
-	         new RadialGradientPaint(center, radius, dist, colors, CycleMethod.NO_CYCLE);
-	     
-		g2d.setPaint(gp);
-		g2d.fillRect(0, 0, getWidth(), getHeight());
+		g.setColor(Color.white);
+		g.fillRect(0, 0, getWidth(), getHeight());
+		g.drawImage(backgroundImage.getImage(), getWidth()-backgroundImage.getIconWidth(), getHeight()-backgroundImage.getIconHeight(), null);
+		//super.paintComponent(g);
 	}
 }

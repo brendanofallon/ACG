@@ -2,6 +2,7 @@ package newgui.gui.display;
 
 
 import java.awt.BorderLayout;
+import java.awt.Graphics;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -20,12 +21,16 @@ public class DisplayPane extends JPanel {
 	public DisplayPane() {
 		setOpaque(false);
 		setLayout(new BorderLayout());
-		add(tabPane, BorderLayout.CENTER);
+		
+		tabPane.setOpaque(false);
 	}
 	
 	
 	public void addDisplay(Display display) {
+		add(tabPane, BorderLayout.CENTER);
 		tabPane.addComponent(display.getTitle(), display);
+		revalidate();
+		repaint();
 	}
 	
 	public Display getDisplayForClass(Class displayClass) {
@@ -53,5 +58,12 @@ public class DisplayPane extends JPanel {
 	
 	public void removeDisplay(Display display) {
 		tabPane.removeComponent(display);
+		if (tabPane.getTabCount()==0) {
+			this.remove(tabPane);
+			revalidate();
+			repaint();
+		}
 	}
+	
+
 }

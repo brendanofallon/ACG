@@ -33,23 +33,27 @@ import newgui.UIConstants;
 public class FTabPane extends JPanel implements ChangeListener {
 	
 	private Map<FancyTab, JComponent> tabMap = new HashMap<FancyTab, JComponent>();
-	private FancyTabsPanel tabsPanel = new FancyTabsPanel(this);
+	private FancyTabsPanel tabsPanel = null;
 	
 	//If true, show a tab even if there's only one panel attached. If false, don't
 	private boolean showTabIfOne = true;
 	
 	public FTabPane() {
 		setLayout(new BorderLayout());
+		setOpaque(false);
 		setBorder(BorderFactory.createEmptyBorder(0, 5, 4, 4));
-		//setBorder(BorderFactory.createLineBorder(Color.red));
-		setBackground(UIConstants.lightBackground);
+		tabsPanel = new FancyTabsPanel(this);
 		add(tabsPanel, BorderLayout.NORTH);
 		centerPanel = new JPanel();
 		centerPanel.setBackground(getBackground());
 		centerPanel.setLayout(new BorderLayout());
+		centerPanel.setOpaque(false);
 		add(centerPanel, BorderLayout.CENTER);
+		revalidate();
+		repaint();
 	}
 
+	
 	/**
 	 * Add a new component with the given label to this panel
 	 * @param label
@@ -173,8 +177,6 @@ public class FTabPane extends JPanel implements ChangeListener {
 	}
 
 	public void paintComponent(Graphics g) {
-		g.setColor(getBackground());
-		g.fillRect(1, 1, getWidth(), getHeight());
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D)g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,

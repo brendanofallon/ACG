@@ -36,6 +36,7 @@ import newgui.gui.display.jobDisplay.JobQueueDisplay;
 import newgui.gui.filepanel.AnalysisFilesManager;
 import newgui.gui.filepanel.FileTree;
 import newgui.gui.filepanel.InputFilesManager;
+import newgui.gui.filepanel.ResultsFilesManager;
 import newgui.gui.widgets.BorderlessButton;
 import newgui.gui.widgets.RegionFader;
 import newgui.gui.widgets.panelPile.PPanel;
@@ -136,7 +137,7 @@ public class ViewerWindow extends JFrame {
 		contentPane.setLayout(new BorderLayout());
 		contentPane.setBackground(Color.white);
 
-		mainPanel = new ViewerBackground();
+		mainPanel = new JPanel();
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
@@ -152,7 +153,11 @@ public class ViewerWindow extends JFrame {
 		mainPanel.add(leftPanel);
 		displayPane = new DisplayPane();
 		
-		mainPanel.add(displayPane);		
+		JPanel displayBackground = new ViewerBackground();
+		displayBackground.setLayout(new BorderLayout());
+		displayBackground.add(displayPane, BorderLayout.CENTER);
+		displayPane.setOpaque(false);
+		mainPanel.add(displayBackground);		
 		
 		JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BorderLayout());
@@ -181,7 +186,9 @@ public class ViewerWindow extends JFrame {
 		analPanel.add(analysisTree);
 		
 		PPanel resultsPanel = new PPanel(pile, "Results");
-		
+		FileTree resultsTree = new FileTree(ResultsFilesManager.getManager().getRootDirectory());
+		ResultsFilesManager.getManager().addListener(resultsTree);
+		resultsPanel.add(resultsTree);
 		
 		pile.addPanel(inputsPanel);
 		pile.addPanel(analPanel);
