@@ -17,6 +17,7 @@ import logging.BreakpointDensity;
 import logging.HistogramCollector;
 import logging.PropertyLogger;
 import math.Histogram;
+import mcmc.MCMC;
 
 import newgui.datafile.PropertiesElementReader;
 import newgui.datafile.XMLConversionError;
@@ -46,6 +47,13 @@ public class ResultsFile extends XMLDataFile {
 	//Arbitrary label for logger element
 	public static final String LOGGER_LABEL = "logger.label";
 	
+	public static final String MCMC_RUNLENGTH = "run.length";
+	public static final String MCMC_PROPOSED = "states.proposed";
+	public static final String MCMC_ACCEPTED = "states.proposed";
+	public static final String MCMC_STARTTIME = "start.time";
+	public static final String MCMC_ENDTIME = "end.time";
+	public static final String MCMC_CHAINCOUNT = "chain.count";
+	public static final String MCMC_THREADCOUNT = "thread.count";
 	
 	Element propertiesElement;
 	
@@ -129,14 +137,38 @@ public class ResultsFile extends XMLDataFile {
 	 */
 	public void addAllResults(ExecutingChain chain, ACGDocument acgDoc) throws XMLConversionError {
 		Map<String, String> propsMap = new HashMap<String, String>();
-		propsMap.put("run.length", "" + chain.getTotalRunLength());
+		propsMap.put(MCMC_RUNLENGTH, "" + chain.getTotalRunLength());
+		
+		List<String> mcLabels = acgDoc.getLabelForClass(MCMC.class);
+		if (mcLabels.size()>0) {
+			try {
+				MCMC mc = (MCMC) acgDoc.getObjectForLabel(mcLabels.get(0));
+				propsMap.put(MCMC_PROPOSED, "" + mc.getStatesProposed());
+				propsMap.put(MCMC_ACCEPTED, "" + mc.getStatesAccepted());
+				propsMap.put(MCMC_CHAINCOUNT, "" + chain.getChainCount());
+				propsMap.put(MCMC_THREADCOUNT, "" + chain.getThreadCount());
+				
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+		}
 		
 		Date startTime = chain.getStartTime();
 		if (startTime != null)
-			propsMap.put("start.time", startTime.toString());
+			propsMap.put(MCMC_STARTTIME, startTime.toString());
 		else 
-			propsMap.put("start.time", "unknown");
+			propsMap.put(MCMC_STARTTIME, "unknown");
 		
+		
+		Date endTime = chain.getEndTime();
+		if (endTime != null)
+			propsMap.put(MCMC_ENDTIME, endTime.toString());
+		else
+			propsMap.put(MCMC_ENDTIME, "unknown");
 		
 		//Add all loggers 
 		for(String loggerLabel : acgDoc.getLabelForClass(PropertyLogger.class)) {

@@ -103,17 +103,52 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 		}
 	}
 	
-	public ExecutingChain(MCMC chain) {
-		this.chain = chain;
-		chain.addListener(this);
+//	public ExecutingChain(MCMC chain) {
+//		this.chain = chain;
+//		chain.addListener(this);
+//	}
+//	
+//	
+//	public ExecutingChain(MC3 mc3) {
+//		this.mc3 = mc3;
+//		this.coldChain = mc3.getColdChain();
+//		coldChain.addListener(this);
+//	}
+
+	/**
+	 * Returns true if we're using an MC3 (Metropolis-coupled) model 
+	 * with multiple chains
+	 */
+	public boolean isMC3() {
+		return mc3 != null;
 	}
 	
-	
-	public ExecutingChain(MC3 mc3) {
-		this.mc3 = mc3;
-		this.coldChain = mc3.getColdChain();
-		coldChain.addListener(this);
+	/**
+	 * Get the total number of MCMC chains running, this is always one
+	 * unless we're using MC3
+	 * @return
+	 */
+	public int getChainCount() {
+		if (mc3 == null)
+			return 1;
+		else {
+			return mc3.getChainCount();
+		}
 	}
+	
+	/**
+	 * Return the number of threads employed in the MC3 run, or 1 if there's 
+	 * no MC3 model 
+	 * @return
+	 */
+	public int getThreadCount() {
+		if (mc3 == null)
+			return 1;
+		else {
+			return mc3.getThreadCount();
+		}
+	}
+	
 	
 	/**
 	 * Begin execution of MCMC / MC3

@@ -513,6 +513,14 @@ public class MC3 {
 		}
 		
 	}
+
+	/**
+	 * Returns the number of threads used in the threadpool
+	 * @return
+	 */
+	public int getThreadCount() {
+		return numThreads;
+	}
 	
 //	public static MCMC makeChain() {
 //		//String homeDir = "/home/brendan/workspace/ACG/";
