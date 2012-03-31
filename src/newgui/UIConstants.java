@@ -28,7 +28,7 @@ public class UIConstants {
 	public static final Color darkBackground = new Color(0.90f, 0.90f, 0.92f);
 
 	//Some oft-used icons
-	public static final ImageIcon note = getIcon("gui/icons/oxygen/note32.png");
+	//public static final ImageIcon note = getIcon("gui/icons/oxygen/note32.png");
 	public static final ImageIcon writeData = getIcon("gui/icons/oxygen/filetxt.png");
 	public static final ImageIcon reload = getIcon("gui/icons/oxygen/refresh24.png");
 	public static final ImageIcon blueRightArrow = getIcon("gui/icons/grayRightArrow.png");

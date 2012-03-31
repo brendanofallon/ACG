@@ -17,6 +17,7 @@ import logging.RootHeightDensity;
 
 import newgui.UIConstants;
 import newgui.datafile.XMLConversionError;
+import newgui.datafile.resultsfile.LoggerFigInfo;
 import newgui.datafile.resultsfile.ResultsFile;
 import newgui.gui.display.Display;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.AbstractLoggerViz;
@@ -50,41 +51,31 @@ public class ResultsDisplay extends Display {
 			setTitle(title);
 		}
 		
-		List<PropertyLogger> loggers;
+		List<String> chartLabels = null;
 		try {
-			loggers = resFile.getPropertyLoggers();
-			for(PropertyLogger logger : loggers ) {
-				addLogger(logger);
+			chartLabels = resFile.getChartLabels();
+		} catch (XMLConversionError e) {
+			ErrorWindow.showErrorWindow(e, "Could not read chart labels for results file");
+			e.printStackTrace();
+		}
+		
+		try {
+			for(String chartLabel : chartLabels) {
+				LoggerFigInfo figInfo = resFile.getFigElementsForChartLabel(chartLabel);
+				addLoggerFigure(figInfo);
 			}
 		} catch (XMLConversionError e) {
-			ErrorWindow.showErrorWindow(e);
+			ErrorWindow.showErrorWindow(e, "Error reading chart information from file");
 			e.printStackTrace();
 		}
 
 		
 	}
 	
-	private void addLogger(PropertyLogger logger) {
-		AbstractLoggerViz view = null;
-		String tabName = "?";
-		if (logger instanceof BreakpointDensity) {
-			view = new BPDensityViz();
-			tabName = "Breakpoints";
-			System.out.println("Creating new BPDensity view...");
-		}
-		if (logger instanceof ConsensusTreeLogger) {
-			view = new ConsensusTreeViz();
-			tabName = "Consensus tree";
-		}
-		if (logger instanceof RootHeightDensity) {
-			view = new TMRCAViz();
-			tabName = "TMRCA";
-		}
-		view.initialize(logger, false);
-		view.actionPerformed(null);
-		view.repaint();
-		tabPane.addTab(tabName, UIConstants.grayRightArrow, view);
-		tabPane.selectTab(0);
+	private void addLoggerFigure(LoggerFigInfo info) {
+		LoggerResultDisplay loggerFig = new LoggerResultDisplay();
+		loggerFig.initialize(info);
+		tabPane.addTab(info.getTitle(), UIConstants.grayRightArrow, loggerFig);
 		repaint();
 	}
 

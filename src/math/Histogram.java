@@ -88,6 +88,23 @@ public class Histogram {
 		this.moreThanMax = moreThanMax;
 		this.lessThanMin = lessThanMin;
 		this.maxValue = hist.length * binWidth;
+		this.minValueAdded = minValue;
+		this.maxValueAdded = maxValue;
+		findMaxCountBin();
+	}
+	
+	/**
+	 * Set the value of maxCountBin to the correct bin by searching all bins for the
+	 * one with the highest count
+	 */
+	private void findMaxCountBin() {
+		double max = 0;
+		for(int i=0; i<hist.length; i++) {
+			if (hist[i] > max) {
+				maxCountBin = i;
+				max = hist[i];
+			}
+		}
 	}
 	
 	/**

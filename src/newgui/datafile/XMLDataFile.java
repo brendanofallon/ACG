@@ -276,11 +276,12 @@ public class XMLDataFile extends DataFile {
 	 */
 	public static String getTextFromChild(Element el, String nodeName) {
 		Element child = getChildByName(el, nodeName);
-		
+		if (child == null)
+			throw new IllegalArgumentException("No child with name: " + nodeName);
 		NodeList childs = child.getChildNodes();
 		for(int i=0; i<childs.getLength(); i++) {
 			Node textChild = childs.item(i);
-			if (child.getNodeType() == Node.TEXT_NODE) {
+			if (textChild.getNodeType() == Node.TEXT_NODE) {
 				return textChild.getNodeValue();
 			}
 		}

@@ -72,7 +72,8 @@ public abstract class HistogramElementReader implements ChartElementConverter {
 		Element el = doc.createElement(HISTOGRAM);
 		el.appendChild( createTextNode(doc, HISTO_MORETHANMAX, "" + histo.getMoreThanMax()));
 		el.appendChild( createTextNode(doc, HISTO_LESSTHANMIN, "" + histo.getLessThanMin())); 
-		el.appendChild( createTextNode(doc, HISTO_SUM, "" + histo.getSum())); 
+		el.appendChild( createTextNode(doc, HISTO_SUM, "" + histo.getSum()));
+		el.appendChild( createTextNode(doc, HISTO_BINWIDTH, "" + histo.getBinWidth())); 
 		el.appendChild( createTextNode(doc, HISTO_COUNT, "" + histo.getCount())); 
 		el.appendChild( createTextNode(doc, HISTO_MIN, "" + histo.getMin())); 
 		el.appendChild( createArrayChild(doc, HISTO_DATA, histo.getData()));

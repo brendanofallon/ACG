@@ -133,6 +133,7 @@ public class ResultsFilesManager {
 	
 		try {
 			file.saveToFile(new File(getRootDirectory().getAbsolutePath() + fileSep + name));
+			fireDirectoryChange(getRootDirectory());
 			return true;
 		} catch (IOException e) {
 			ErrorWindow.showErrorWindow(e, "Error saving results file");

@@ -725,7 +725,7 @@ public class SGContentPanel extends JPanel {
 				if (i>seqs.getSequenceCount()) {
 					//throw new IllegalStateException("A row was selected whose index is greater than the number of sequences...probably selection didn't get cleared after a mode switch");
 					System.err.println("A row was selected whose index is greater than the number of sequences...probably selection didn't get cleared after a mode switch");
-					continue;
+					break;
 				}
 				count++;
 				i = selection.nextSetBit(i+1);

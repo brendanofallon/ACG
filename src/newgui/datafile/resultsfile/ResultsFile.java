@@ -203,12 +203,14 @@ public class ResultsFile extends XMLDataFile {
 	}
 	
 	
-	public List<XYSeriesInfo> getFigElementsForChartLabel(String label) throws XMLConversionError {
+	public LoggerFigInfo getFigElementsForChartLabel(String label) throws XMLConversionError {
 		List<Element> propLogEls = this.getTopLevelElements();
 		for(Element loggerElement : propLogEls) {
 			String loggerLabel = loggerElement.getAttribute(LOGGER_LABEL);
 			if (loggerLabel != null && loggerLabel.equals(label)) {
-				return parseFigElements(loggerElement);				
+				LoggerFigInfo info = parseFigElements(loggerElement);
+				info.setTitle(loggerLabel);
+				return info;
 			}
 		}
 		
@@ -220,19 +222,21 @@ public class ResultsFile extends XMLDataFile {
 	 * @param el
 	 * @return
 	 */
-	private List<XYSeriesInfo> parseFigElements(Element el) throws XMLConversionError {
+	private LoggerFigInfo parseFigElements(Element el) throws XMLConversionError {
 		NodeList children = el.getChildNodes();
-		List<XYSeriesInfo> series = new ArrayList<XYSeriesInfo>();
+		LoggerFigInfo figInfo = new LoggerFigInfo();
 		for(int i=0; i<children.getLength(); i++) {
 			Node node = children.item(i);
 			if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals(XYSeriesElementReader.XML_SERIES)) {
 				XYSeriesInfo seriesInfo = XYSeriesElementReader.readFromElement( (Element)node);
-				series.add(seriesInfo);
-				
+				figInfo.seriesInfo.add(seriesInfo);
+			}
+			if (node.getNodeType()==Node.ELEMENT_NODE && node.getNodeName().equals(HistogramElementReader.HISTOGRAM)) {
+				figInfo.histo = HistogramElementReader.readHistogramFromElement((Element)node);
 			}
 		}
 		
-		return series;
+		return figInfo;
 	}
 	
 
