@@ -150,14 +150,36 @@ public class ResultsFile extends XMLDataFile {
 		setProperties(propsMap);
 	}
 	
+	public List<PropertyLogger> getPropertyLoggers() throws XMLConversionError {
+		List<Element> propLogEls = this.getTopLevelElements(AbstractLoggerConverter.LOGGER_ELEMENT);
+		List<PropertyLogger> loggers = new ArrayList<PropertyLogger>();
+		for(Element loggerElement : propLogEls) {
+			String className = loggerElement.getAttribute(AbstractLoggerConverter.LOGGER_CLASS);
+			if (className == null)
+				throw new XMLConversionError("Could not convert element to PropertyLogger", loggerElement);
+			AbstractLoggerConverter converter = getConverterForClass(className);
+			loggers.add(converter.convertElementToLogger(loggerElement));
+		}
+		return loggers;
+	}
+	
+	private AbstractLoggerConverter getConverterForClass(String className) {
+		if (className.equals(BreakpointDensity.class.getCanonicalName())) {
+			return new BPDensityConverter();
+		}
+		
+		
+		return null;
+	}
+	
 	protected void addChartElement(PropertyLogger logger) throws XMLConversionError {
-		// TODO Auto-generated method stub
-		//Not sure what to do here... would like to be able to save and read all chart data...
+		
 		if (logger instanceof BreakpointDensity) {
 			BPDensityConverter converter = new BPDensityConverter();
 			Element el = converter.convertLoggerToElement(logger, doc);
 			addChartElement(el);
 		}
+		
 	}
 	
 	private void addChartElement(Element el) {

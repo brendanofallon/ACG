@@ -6,6 +6,7 @@ import java.io.IOException;
 import newgui.alignment.FastaImporter;
 import newgui.alignment.FileParseException;
 import newgui.alignment.UnrecognizedBaseException;
+import newgui.datafile.resultsfile.AbstractLoggerConverter;
 import newgui.datafile.resultsfile.ResultsFile;
 
 
@@ -47,7 +48,7 @@ public class DataFileFactory {
 				return new AnalysisDataFile(file);
 			}
 			
-			if (testFile.containsElementByName(ResultsFile.XML_CHART)) {
+			if (testFile.containsElementByName(AbstractLoggerConverter.LOGGER_ELEMENT)) {
 				return new ResultsFile(file);
 			}
 		}
