@@ -49,11 +49,12 @@ public class ResultsFile extends XMLDataFile {
 	
 	public static final String MCMC_RUNLENGTH = "run.length";
 	public static final String MCMC_PROPOSED = "states.proposed";
-	public static final String MCMC_ACCEPTED = "states.proposed";
+	public static final String MCMC_ACCEPTED = "states.accepted";
 	public static final String MCMC_STARTTIME = "start.time";
 	public static final String MCMC_ENDTIME = "end.time";
 	public static final String MCMC_CHAINCOUNT = "chain.count";
 	public static final String MCMC_THREADCOUNT = "thread.count";
+	public static final String MCMC_RUNTIMEMS = "run.time.ms";
 	
 	Element propertiesElement;
 	
@@ -169,6 +170,11 @@ public class ResultsFile extends XMLDataFile {
 			propsMap.put(MCMC_ENDTIME, endTime.toString());
 		else
 			propsMap.put(MCMC_ENDTIME, "unknown");
+		
+		
+		long elapsedMillis = endTime.getTime() - startTime.getTime();
+		propsMap.put(MCMC_RUNTIMEMS, "" + elapsedMillis);
+		
 		
 		//Add all loggers 
 		for(String loggerLabel : acgDoc.getLabelForClass(PropertyLogger.class)) {

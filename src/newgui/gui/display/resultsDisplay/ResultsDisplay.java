@@ -51,6 +51,10 @@ public class ResultsDisplay extends Display {
 			setTitle(title);
 		}
 		
+		RunSummaryPanel summaryPanel = new RunSummaryPanel();
+		tabPane.addTab("Run Summary", UIConstants.reload, summaryPanel);
+		summaryPanel.initialize(resFile);
+		
 		List<String> chartLabels = null;
 		try {
 			chartLabels = resFile.getChartLabels();
