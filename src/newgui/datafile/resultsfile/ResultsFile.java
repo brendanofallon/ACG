@@ -50,6 +50,7 @@ public class ResultsFile extends XMLDataFile {
 	public static final String MCMC_RUNLENGTH = "run.length";
 	public static final String MCMC_PROPOSED = "states.proposed";
 	public static final String MCMC_ACCEPTED = "states.accepted";
+	public static final String MCMC_ACCEPTEDRATIO = "acceptance.ratio";
 	public static final String MCMC_STARTTIME = "start.time";
 	public static final String MCMC_ENDTIME = "end.time";
 	public static final String MCMC_CHAINCOUNT = "chain.count";
@@ -148,6 +149,7 @@ public class ResultsFile extends XMLDataFile {
 				propsMap.put(MCMC_ACCEPTED, "" + mc.getStatesAccepted());
 				propsMap.put(MCMC_CHAINCOUNT, "" + chain.getChainCount());
 				propsMap.put(MCMC_THREADCOUNT, "" + chain.getThreadCount());
+				propsMap.put(MCMC_ACCEPTEDRATIO, "" + (100.0*mc.getStatesAccepted() / mc.getStatesProposed()));
 				
 			} catch (InstantiationException e) {
 				e.printStackTrace();

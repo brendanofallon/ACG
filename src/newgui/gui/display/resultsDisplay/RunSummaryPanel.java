@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
@@ -42,28 +43,33 @@ public class RunSummaryPanel extends JPanel {
 			data.addRow("Start time", resProps.get(ResultsFile.MCMC_STARTTIME));
 			data.addRow("End time", resProps.get(ResultsFile.MCMC_ENDTIME));
 			data.addRow("Run length", resProps.get(ResultsFile.MCMC_RUNLENGTH));
-			data.addRow("Duration", parseDurationString(resProps.get(ResultsFile.MCMC_RUNTIMEMS)));
+			String durStr = parseDurationString(resProps.get(ResultsFile.MCMC_RUNTIMEMS));
+			data.addRow("Duration", durStr);
 			
-			
-			data.addRow("States Accepted", resProps.get(ResultsFile.MCMC_ACCEPTED));
+			DecimalFormat formatter = new DecimalFormat("#0.00");
+			String ratioStr = formatter.format( Double.parseDouble(resProps.get(ResultsFile.MCMC_ACCEPTEDRATIO)));
+			data.addRow("States Accepted", resProps.get(ResultsFile.MCMC_ACCEPTED) + " (" + ratioStr + "%)");
 			
 
 		} catch (XMLConversionError e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		table.setModel(data);
+		//table.setModel(data);
 		table.repaint();
 	}
 	
 	private static String parseDurationString(String timeStr) {
 		long ms = Long.parseLong(timeStr);
+		int hours = 0;
+		int minutes = 0;
+		int seconds = 0;
 		
-		int hours = (int)Math.round(ms / (1000.0 * 60.0 * 60.0));
-		ms /= hours * 1000.0 * 60.0 * 60.0;
-		int minutes = (int)Math.round(ms / 1000.0 * 60.0);
-		ms /= minutes*1000.0 * 60.0;
-		int seconds = (int)Math.round(ms / 1000.0);
+		hours = (int)Math.round(ms / (1000.0 * 60.0 * 60.0));
+		
+		minutes = (int)Math.round(ms / (1000.0 * 60.0 ))   % 60;
+			
+		seconds = (int)Math.round(ms / 1000.0 ) % 60;
 		if (hours > 0) {
 			return hours + " hours, " + minutes + " minutes and " + seconds + " seconds";
 		}
@@ -93,9 +99,12 @@ public class RunSummaryPanel extends JPanel {
 		//table.setIntercellSpacing(new Dimension(6, 10));
 		TableColumn firstCol = table.getColumnModel().getColumn(0);
 		firstCol.setPreferredWidth(100);
+		firstCol.setMaxWidth(300);
 		CellRenderer renderer = new CellRenderer();
 		renderer.setFont(ViewerWindow.sansFont.deriveFont(14f));
 		firstCol.setCellRenderer(renderer);
+		
+		
 		
 		this.add(tableSP, BorderLayout.CENTER);
 		
