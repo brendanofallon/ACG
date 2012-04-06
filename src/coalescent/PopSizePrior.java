@@ -30,6 +30,7 @@ import java.util.Map;
 
 import priors.AbstractPrior;
 
+import logging.PopSizeLogger;
 import logging.StateLogger;
 import math.RandomSource;
 import mcmc.MCMC;

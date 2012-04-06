@@ -34,6 +34,7 @@ import logging.BreakpointDensity;
 import logging.HistogramCollector;
 import logging.MarginalRootHeightLogger;
 import logging.MarginalTreeLogger;
+import logging.PopSizeLogger;
 import logging.RootHeightDensity;
 import logging.StateLogger;
 import math.Histogram;
@@ -59,7 +60,6 @@ import coalescent.CoalescentLikelihood;
 import coalescent.ConstantPopSize;
 import coalescent.ConstantRecombination;
 import coalescent.PiecewiseLinearPopSize;
-import coalescent.PopSizeLogger;
 import coalescent.PopSizePrior;
 
 import arg.ARG;

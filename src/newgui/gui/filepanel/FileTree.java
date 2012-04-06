@@ -222,6 +222,8 @@ public class FileTree extends JPanel implements DirectoryListener {
 	 */
 	protected void openSelectedFile() {
 		File file = getSelectedFile();
+		if (file == null)
+			return;
 		XMLDataFile dataFile;
 		try {
 			dataFile = DataFileFactory.createDataFile(file);

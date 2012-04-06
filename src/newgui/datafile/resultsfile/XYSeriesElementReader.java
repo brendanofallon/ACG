@@ -17,7 +17,7 @@ import org.w3c.dom.NodeList;
 import gui.figure.series.XYSeries;
 
 /**
- * Small utility class to convert XYSeries into a DOM (xml) element 
+ * Small utility class to convert XYSeries into a DOM (xml) Element and back 
  * @author brendano
  *
  */

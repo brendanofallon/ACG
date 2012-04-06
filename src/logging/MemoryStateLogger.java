@@ -20,7 +20,7 @@ import mcmc.MCMCListener;
 /**
  * This is a special type of logger that stores much the same information as a state logger, but keeps 
  * it all in memory. This logger is surreptitiously added when jobs are run from a PrimaryDisplay (newgui)
- * object and the data is used to produce the charts and graphs shown in a PrimaryDisplay 
+ * object and the data is used to produce the charts and graphs shown in a PrimaryDisplay's RunningJobPanel
  * @author brendano
  *
  */

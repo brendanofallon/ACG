@@ -18,7 +18,10 @@ import java.util.Map;
 import jobqueue.ExecutingChain;
 import jobqueue.JobState;
 import logging.BreakpointDensity;
+import logging.ConsensusTreeLogger;
 import logging.HistogramCollector;
+import logging.MarginalTreeLogger;
+import logging.MemoryStateLogger;
 import logging.PropertyLogger;
 import logging.RootHeightDensity;
 import math.Histogram;
@@ -49,6 +52,7 @@ public class ResultsFile extends XMLDataFile {
 
 	//Identifies elements that can be parsed to a PropertyLogger 
 	public static final String LOGGER_ELEMENT = "logger.element";
+	public static final String TREE_ELEMENT = "tree.element";
 		
 	//Attribute containing class of PropertyLogger
 	public static final String LOGGER_CLASS = "logger.class";
@@ -77,6 +81,9 @@ public class ResultsFile extends XMLDataFile {
 	public static final String TMRCA_UPPER95 = "upper95";
 	public static final String TMRCA_MEAN = "mean";
 	public static final String TMRCA_LOWER95 = "lower95";
+	
+	public static final String TREE = "consensus.tree";
+	public static final String TREES_COUNTED = "trees.counted";
 	
 	Element propertiesElement;
 	
@@ -158,9 +165,13 @@ public class ResultsFile extends XMLDataFile {
 	 * @param acgDoc
 	 * @throws XMLConversionError
 	 */
-	public void addAllResults(ExecutingChain chain, ACGDocument acgDoc) throws XMLConversionError {
+	public void addAllResults(ExecutingChain chain, ACGDocument acgDoc, MemoryStateLogger memLogger) throws XMLConversionError {
 		Map<String, String> propsMap = new HashMap<String, String>();
 		propsMap.put(MCMC_RUNLENGTH, StringUtilities.formatWithCommas( chain.getTotalRunLength()));
+		
+		
+		Element memLoggerEl = StateElementConverter.createElement(memLogger, doc);
+		doc.getDocumentElement().appendChild(memLoggerEl);
 		
 		DecimalFormat smallFormatter = new DecimalFormat("00.00");
 		List<String> mcLabels = acgDoc.getLabelForClass(MCMC.class);
@@ -207,7 +218,13 @@ public class ResultsFile extends XMLDataFile {
 					String label = logger.getName();
 					if (label == null)
 						label = loggerLabel.replace(".class", "");
-					addChartElement(logger, label);
+					
+					if (logger instanceof ConsensusTreeLogger) {
+						addTreeElement( (ConsensusTreeLogger)logger, label);
+					}
+					else {
+						addChartElement(logger, label);
+					}
 				} catch (InstantiationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -246,6 +263,13 @@ public class ResultsFile extends XMLDataFile {
 		setProperties(propsMap);
 	}
 	
+	/**
+	 * Creates a new element that stores some information about the given modifier, and attaches
+	 * it to the parent element provided
+	 * @param mod
+	 * @param label
+	 * @param parent
+	 */
 	private void attachModifierInfo(AbstractModifier mod, String label, Element parent) {
 		Element modInfoEl = doc.createElement(MODIFIER_INFO);
 
@@ -254,6 +278,35 @@ public class ResultsFile extends XMLDataFile {
 		modInfoEl.setAttribute(MODIFIER_CALLS, StringUtilities.formatWithCommas(mod.getTotalCalls()));
 		modInfoEl.setAttribute(MODIFIER_RATE, "" + mod.getTotalAcceptanceRatio());
 		parent.appendChild(modInfoEl);
+	}
+	
+	/**
+	 * Obtain a list of all the series names that were recorded from the mem logger
+	 * @return
+	 */
+	public List<String> getStateSeriesNames() {
+		//Find the state logger element
+		Element el = this.getTopLevelElement(StateElementConverter.XML_STATELOGGER);
+		if (el == null)
+			return null;
+		else
+			return StateElementConverter.getSeriesNames(el);
+	}
+	
+	/**
+	 * Obtain an XYSeriesInfo that describes the data series associated with the given series name
+	 * @param seriesName
+	 * @return
+	 * @throws XMLConversionError
+	 */
+	public XYSeriesInfo getStateSeries(String seriesName) throws XMLConversionError {
+		Element el = this.getTopLevelElement(StateElementConverter.XML_STATELOGGER);
+		if (el == null)
+			return null;
+		else {
+			XYSeriesInfo seriesInfo = StateElementConverter.getSeriesForName(el, seriesName);
+			return seriesInfo;
+		}
 	}
 	
 	/**
@@ -338,30 +391,77 @@ public class ResultsFile extends XMLDataFile {
 			loggerEl.appendChild(lowerEl);
 		}
 		
+		addChartElement(loggerEl);
+	}
+	
+	/**
+	 * Creates a new top-level element that stores the information in the 
+	 * consensustreelogger
+	 * @param logger
+	 * @param label
+	 */
+	private void addTreeElement(ConsensusTreeLogger logger, String label) {
+		Element loggerEl = doc.createElement(TREE_ELEMENT);
+		loggerEl.setAttribute(LOGGER_CLASS, logger.getClass().getCanonicalName());
+		loggerEl.setAttribute(LOGGER_LABEL, label);
+		
+		ConsensusTreeLogger treeLogger = (ConsensusTreeLogger)logger;
+		String tree = treeLogger.getSummaryString();
+		
+		Element treeEl = doc.createElement(TREE);
+		Node treeText = doc.createTextNode(tree);
+		treeEl.appendChild(treeText);
+		loggerEl.appendChild(treeEl);
 		
 		addChartElement(loggerEl);
 	}
 	
+	/**
+	 * Append the given element to the top level of elements contained in the DOM document
+	 * @param el
+	 */
 	private void addChartElement(Element el) {
-		if (el.getNodeName().equals(LOGGER_ELEMENT)) {
-			doc.getDocumentElement().appendChild(el);
-		}
-		else {
-			throw new IllegalArgumentException("Element does not appear to be a logger");
-		}
+		doc.getDocumentElement().appendChild(el);
 	}
 	
 	public List<String> getChartLabels() throws XMLConversionError {
 		List<Element> propLogEls = this.getTopLevelElements();
 		List<String> loggers = new ArrayList<String>();
 		for(Element loggerElement : propLogEls) {
-			String className = loggerElement.getAttribute(LOGGER_CLASS);
-			if (className != null)
-				loggers.add( loggerElement.getAttribute(LOGGER_LABEL) );
+			if (loggerElement.getNodeName().equals(LOGGER_ELEMENT))
+				loggers.add(loggerElement.getAttribute(LOGGER_LABEL));
 		}
 		return loggers;
 	}
 	
+	public List<String> getTreeLabels() throws XMLConversionError {
+		List<Element> propLogEls = this.getTopLevelElements();
+		List<String> treeLoggers = new ArrayList<String>();
+		for(Element loggerElement : propLogEls) {
+			if (loggerElement.getNodeName().equals(TREE_ELEMENT))
+				treeLoggers.add(loggerElement.getAttribute(LOGGER_LABEL));
+		}
+		return treeLoggers;
+	}
+	
+	/**
+	 * Obtain the newick string for the tree element with the given label
+	 * @param label
+	 * @return
+	 * @throws XMLConversionError
+	 */
+	public String getNewickForTreeElement(String label) throws XMLConversionError {
+		List<Element> topEls = this.getTopLevelElements();
+		for(Element loggerElement : topEls) {
+			String loggerLabel = loggerElement.getAttribute(LOGGER_LABEL);
+			if (loggerLabel != null && loggerLabel.equals(label)) {
+				String newick = XMLDataFile.getTextFromChild(loggerElement, TREE);
+				return newick;
+			}
+		}
+		
+		throw new XMLConversionError("No tree element found with label " + label, null);
+	}
 	
 	public LoggerFigInfo getFigElementsForChartLabel(String label) throws XMLConversionError {
 		List<Element> propLogEls = this.getTopLevelElements();

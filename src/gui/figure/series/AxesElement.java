@@ -71,7 +71,7 @@ public class AxesElement extends FigureElement {
 	boolean hasUserYTickNum = false;	//True if user has set y tick number
 	double xTickWidth = 0.02;
 	double yTickWidth = 0.01;
-	int fontSize = 11;
+	int fontSize = 13;
 	
 	//These indicate if the user has set values for the x or y axis, and they we should not auto-set them
 	boolean hasUserX = false;
@@ -878,7 +878,7 @@ public class AxesElement extends FigureElement {
 				tickX = graphAreaLeft;
 			}
 			
-			while(tickStep > 0 && tickX<=round(graphAreaLeft+graphAreaWidth) && (drawTicks)) {
+			while(tickStep > 0 && tickX<(graphAreaLeft+graphAreaWidth) && (drawTicks)) {
 				int iTickX = round(tickX);
 				g.drawLine(iTickX, round(xAxisPos), iTickX, Math.max(round(xAxisPos+2),round(xAxisPos+xTickWidth*yFactor)));
 				if (drawXGrid && tickX>(graphAreaLeft+1)) {
@@ -886,8 +886,6 @@ public class AxesElement extends FigureElement {
 					g.drawLine(iTickX, round(graphAreaTop), iTickX, round(graphAreaBottom));
 				}
 			
-//				g.setStroke(origStroke);
-//				g.setColor(origColor);
 				//Minor tick
 				if (drawMinorXTicks &&  (tickX-minorTickOffset) > graphAreaLeft) {
 					g.drawLine(round(tickX-minorTickOffset), round(xAxisPos), round(tickX-minorTickOffset), Math.max(round(xAxisPos+2),round(xAxisPos+xTickWidth*yFactor/2.0)));
@@ -910,6 +908,22 @@ public class AxesElement extends FigureElement {
 				tickX += tickStep;
 			}
 			
+			//Paint rightmost label, rounding errors cause it to not be painted consistently in 
+			//loop above
+			int iTickX = round(graphAreaLeft+graphAreaWidth);
+			g.drawLine(iTickX, round(xAxisPos), iTickX, Math.max(round(xAxisPos+2),round(xAxisPos+xTickWidth*yFactor)));
+			if (xLabelList!=null) {	
+				paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), i*xLabelStep);
+			}
+			else {
+				double val;
+				if (tickX==yAxisZero)
+					val = 0;
+				else
+					val = figureXtoDataX(tickX);
+				paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), val);
+			}
+			
 			if (minXVal<0) {
 				if (maxXVal>0) //represses drawing two zeros which may not overlap completely
 					i=1;
@@ -917,7 +931,7 @@ public class AxesElement extends FigureElement {
 					i=0;
 				tickX = yAxisZero-i*tickStep;
 				while(tickX>=graphAreaLeft) {
-					int iTickX = round(tickX);
+					iTickX = round(tickX);
 					g.drawLine(iTickX, round(xAxisPos), iTickX, Math.max(round(xAxisPos+2),round(xAxisPos+xTickWidth*yFactor)));
 					
 					//Minor tick

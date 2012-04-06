@@ -76,7 +76,7 @@ public class LazyHistogram {
 		return lowerHPD(0.4999);
 	}
 	
-	public double getMean() {
+	public synchronized double getMean() {
 		if (vals.size()>0) {
 			double sum = 0;
 			for(Double val : vals)
@@ -147,7 +147,8 @@ public class LazyHistogram {
 	/**
 	 * Returns the x-value of the first bin for which the sum of the frequencies in all bins with 
 	 * lower indices is greater than the given argument. If the hpd is 0.05, for instance, this
-	 * returns the lower 95% confidence boundary
+	 * returns the lower 95% confidence boundary. 
+	 * FORCES A CALL TO MAKE HISTO FROM LIST
 	 * @param hpd
 	 * @return
 	 */
@@ -157,7 +158,15 @@ public class LazyHistogram {
 		
 		return histo.lowerHPD(hpd);
 	}
-	
+
+	/**
+	 * Returns the x-value of the highest bin for which the sum of the frequencies in all bins with 
+	 * higher indices is greater than the given argument. If the hpd is 0.05, for instance, this
+	 * returns the lower 95% confidence boundary. 
+	 * FORCES A CALL TO MAKE HISTO FROM LIST
+	 * @param hpd
+	 * @return
+	 */
 	public double upperHPD(double hpd) {
 		if (histo == null)
 			makeHistoFromList();

@@ -131,6 +131,14 @@ public class ConsensusTreeBuilder {
 	}
 	
 	/**
+	 * Obtain the number of trees so far added to the builder
+	 * @return
+	 */
+	public int getNumTreesAdded() {
+		return numInputTrees;
+	}
+	
+	/**
 	 * This recursive function is responsible for adding all of the nodes in a tree to the 'clades' field,
 	 * which is then used as input to .buildMajorityCladeList()
 	 * @param root

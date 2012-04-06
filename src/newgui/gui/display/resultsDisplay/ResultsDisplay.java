@@ -1,6 +1,9 @@
 package newgui.gui.display.resultsDisplay;
 
 import gui.ErrorWindow;
+import gui.figure.treeFigure.DrawableTree;
+import gui.figure.treeFigure.SquareTree;
+import gui.figure.treeFigure.TreeFigure;
 
 import java.awt.BorderLayout;
 import java.io.File;
@@ -55,6 +58,11 @@ public class ResultsDisplay extends Display {
 		tabPane.addTab("Run Summary", UIConstants.reload, summaryPanel);
 		summaryPanel.initialize(resFile);
 		
+		
+		StateLoggerPanel stateLoggerPanel = new StateLoggerPanel();
+		stateLoggerPanel.initialize(resFile);
+		tabPane.addTab("State", UIConstants.writeData, stateLoggerPanel);
+		
 		List<String> chartLabels = null;
 		try {
 			chartLabels = resFile.getChartLabels();
@@ -74,6 +82,31 @@ public class ResultsDisplay extends Display {
 		}
 
 		
+		try {
+			List<String> treeLabels = resFile.getTreeLabels();
+			for(String treeLabel : treeLabels) {
+				String newickTree = resFile.getNewickForTreeElement(treeLabel);
+				addTreeFigure(newickTree, treeLabel);
+			}
+		} catch (XMLConversionError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	private void addTreeFigure(String newick, String label) {
+		TreeFigure treeFig = new TreeFigure();
+		SquareTree drawableTree = new SquareTree(newick);
+		treeFig.removeAllTrees();
+		treeFig.addTree(drawableTree);
+		if (treeFig.getScaleType()==DrawableTree.NO_SCALE_BAR)
+			treeFig.setScaleType(DrawableTree.SCALE_AXIS);
+		treeFig.repaint();
+		
+		tabPane.addTab(label, UIConstants.grayRightArrow, treeFig);
+		repaint();
 	}
 	
 	private void addLoggerFigure(LoggerFigInfo info) {

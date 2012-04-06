@@ -145,7 +145,7 @@ public class RunningJobPanel extends JPanel implements MCMCListener {
 	public void saveResults() {
 		ResultsFile file = new ResultsFile();
 		try {
-			file.addAllResults(chain, getACGDocument());
+			file.addAllResults(chain, getACGDocument(), memLogger);
 			ResultsFilesManager.getManager().saveResults(file, displayParent.getTitle());
 		} catch (XMLConversionError e) {
 			// TODO Auto-generated catch block

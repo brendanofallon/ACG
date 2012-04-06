@@ -17,18 +17,18 @@
 ***********************************************************************/
 
 
-package coalescent;
+package logging;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import coalescent.DemographicParameter;
+
 import parameter.AbstractParameter;
 
 import arg.ARG;
 import arg.CoalNode;
-import logging.PropertyLogger;
-import logging.StringUtils;
 import math.LazyHistogram;
 import mcmc.MCMC;
 
@@ -42,11 +42,16 @@ import mcmc.MCMC;
  */
 public class PopSizeLogger extends PropertyLogger {
 
-	ARG arg;
-	DemographicParameter popSize;
+	protected ARG arg;
+	protected DemographicParameter popSize;
 	
-	int bins = 100;
-	LazyHistogram[] sizeHistos;
+	protected final int bins = 100; //Number of bins over time 
+	protected LazyHistogram[] sizeHistos;
+	//Quick storage  for means and confidence boundaries
+	protected double[] means = new double[bins];
+	protected double[] upper95s = new double[bins];
+	protected double[] lower95s = new double[bins];
+	
 	
 	Double maxTreeHeight = null; 
 
@@ -55,43 +60,6 @@ public class PopSizeLogger extends PropertyLogger {
 		this.arg = arg;
 		this.popSize = demoParam;
 	}
-	
-	
-//	public PopSizeLogger(int burnin, int collectionFrequency, ARG arg, DemographicParameter demoParam, PrintStream outputStream) {
-//		this(burnin, collectionFrequency, arg, demoParam);
-//		this.outStream = outputStream;
-//	}
-	
-
-	/**
-	 * Example xml-friendly constructor. We need a reference to both the ARG (so we can find it's
-	 * height, so we now how deep to make the historgram) and the DemographicParameter, which
-	 * stores what the population size function actually looks like.
-	 * 
-	 * @param attrs
-	 * @param arg
-	 * @param demoParam
-	 */
-//	public PopSizeLogger(Map<String, String> attrs, ARG arg, DemographicParameter demoParam) {
-//		super(attrs);
-//		this.arg = arg;
-//		this.popSize = demoParam;
-//	}
-	
-//	public PopSizeLogger(int burnin, int collectionFrequency, ARG arg, DemographicParameter demoParam, PrintStream outputStream) {
-//		this(burnin, collectionFrequency, arg, demoParam);
-//		this.outStream = outputStream;
-//	}
-	
-	
-//	public PopSizeLogger(int burnin, int collectionFrequency, ARG arg, DemographicParameter demoParam) {
-//		this.burnin = burnin;
-//		this.collectionFrequency = collectionFrequency;
-//		this.arg = arg;
-//		this.popSize = demoParam;
-//		sizeHistos = new LazyHistogram[100];
-//	}
-	
 
 	public void addValue(int stateNumber) {
 		//If it's the first call, figure out how tall the tree is and use that for the 
@@ -132,6 +100,10 @@ public class PopSizeLogger extends PropertyLogger {
 		}
 	}
 
+	public double[] getMeans() {
+		
+	}
+	
 	@Override
 	public String getSummaryString() {
 		StringBuilder str = new StringBuilder();

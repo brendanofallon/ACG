@@ -29,31 +29,28 @@ import newgui.gui.filepanel.InputFilesManager;
 import newgui.gui.widgets.HighlightButton;
 
 /**
- * Panel that holds a couple of buttons and the search text field
+ * Panel that holds a couple of buttons and the search text field, typically at upper left of
+ * main window
  * @author brendan
  *
  */
 public class TopLeftPanel extends JPanel {
 	
-	HighlightButton importButton;
+	BorderlessButton importButton;
 	
 	public TopLeftPanel() {
 		this.setBackground(UIConstants.lightBackground);
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
 		this.setPreferredSize(new Dimension(200, 50));
-		importButton = new HighlightButton(UIConstants.grayRightArrow, UIConstants.blueRightArrow);
+		importButton = new BorderlessButton(UIConstants.addButton);
+		importButton.setXDif(-2);
 		importButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				openImportDialog();
 			}
 		});
-		importButton.setYDif(-1);
-		//importButton.setXDif(-1);
 
-		
-		//importButton.setPreferredSize(new Dimension(32, 28));
-		this.add(importButton);
-	
+		this.add(importButton);	
 	}
 
 	protected void openImportDialog() {
