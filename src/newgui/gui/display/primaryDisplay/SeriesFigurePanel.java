@@ -119,28 +119,6 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 		bottomPanel.add(chooseBox);
 		bottomPanel.add(Box.createHorizontalGlue());
 		
-//		bottomPanel.add(Box.createHorizontalStrut(10));
-//		bottomPanel.add(Box.createHorizontalGlue());
-//		clearButton = new BorderlessButton(UIConstants.clearButton);
-//		clearButton.setXDif(-1);
-//		clearButton.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				fig.removeAllSeries();
-//				fig.repaint();
-//			}
-//		});
-//		clearButton.setToolTipText("Remove all series");
-//		bottomPanel.add(clearButton);
-//		
-//		
-//		addButton = new BorderlessButton(UIConstants.addButton);
-//		addButton.setToolTipText("Add new series");
-//		addButton.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent arg0) {
-//				addSelectedSeries();
-//			}
-//		});
-//		bottomPanel.add(addButton);
 		
 		HighlightButton saveButton = new HighlightButton(UIConstants.saveGrayButton, UIConstants.saveBlueButton);
 		saveButton.setToolTipText("Save image");

@@ -387,7 +387,7 @@ public class ResultsFile extends XMLDataFile {
 			}
 			XYSeries lowerSeries = new XYSeries(lowerList, "Lower 95%");
 			Element lowerEl = XYSeriesElementReader.createElement(doc, lowerSeries, Color.blue, 0.75f);
-			meanEl.setAttribute(TMRCA_LABEL, TMRCA_LOWER95);
+			lowerEl.setAttribute(TMRCA_LABEL, TMRCA_LOWER95);
 			loggerEl.appendChild(lowerEl);
 		}
 		
@@ -490,9 +490,13 @@ public class ResultsFile extends XMLDataFile {
 			if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals(XYSeriesElementReader.XML_SERIES)) {
 				XYSeriesInfo seriesInfo = XYSeriesElementReader.readFromElement( (Element)node);
 				figInfo.seriesInfo.add(seriesInfo);
+				figInfo.xAxisTitle = "Sequence position";
+				figInfo.yAxisTitle = "Value";
 			}
 			if (node.getNodeType()==Node.ELEMENT_NODE && node.getNodeName().equals(HistogramElementReader.HISTOGRAM)) {
 				figInfo.histo = HistogramElementReader.readHistogramFromElement((Element)node);
+				figInfo.xAxisTitle = "Density";
+				figInfo.xAxisTitle = "Sequence position";
 			}
 		}
 		

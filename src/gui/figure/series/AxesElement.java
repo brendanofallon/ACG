@@ -943,7 +943,6 @@ public class AxesElement extends FigureElement {
 					}
 					else {
 						paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), figureXtoDataX(tickX));
-
 					}
 
 					i++;
