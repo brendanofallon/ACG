@@ -12,6 +12,7 @@ import java.util.List;
 
 import gui.ErrorWindow;
 import gui.figure.series.AbstractSeries;
+import gui.figure.series.UnifiedConfigFrame;
 import gui.figure.series.XYSeries;
 import gui.figure.series.XYSeriesElement;
 import gui.figure.series.XYSeriesFigure;
@@ -133,6 +134,15 @@ public abstract class AbstractSeriesPanel extends JPanel {
 			}
     	}		
 	}
+	
+	
+	protected void showConfigFrame() {
+		if (configFrame == null)
+			configFrame = new UnifiedConfigFrame(fig);
+		
+		configFrame.readSettingsFromFigure();
+		configFrame.setVisible(true);
+	}
 
 	private void initComponents() {
 		this.setLayout(new BorderLayout());
@@ -147,8 +157,18 @@ public abstract class AbstractSeriesPanel extends JPanel {
 		optionsPanel = new JPanel();
 		this.add(optionsPanel, BorderLayout.NORTH);
 		
+		BorderlessButton showConfigButton = new BorderlessButton(UIConstants.settings);
+		showConfigButton.setToolTipText("Select figure options");
+		showConfigButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				showConfigFrame();
+			}
+		});
+		optionsPanel.add(showConfigButton);
+		
 		
 		BorderlessButton exportDataButton = new BorderlessButton(UIConstants.writeData);
+		exportDataButton.setToolTipText("Export raw data");
 		exportDataButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				exportData();
@@ -157,6 +177,7 @@ public abstract class AbstractSeriesPanel extends JPanel {
 		optionsPanel.add(exportDataButton);
 		
 		BorderlessButton saveButton = new BorderlessButton(UIConstants.saveGrayButton);
+		saveButton.setToolTipText("Save figure image");
 		saveButton.setToolTipText("Save image");
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -167,6 +188,9 @@ public abstract class AbstractSeriesPanel extends JPanel {
 	}
 	
 	
+
+
+	protected UnifiedConfigFrame configFrame = null;
 	private JPanel optionsPanel;
 
 }

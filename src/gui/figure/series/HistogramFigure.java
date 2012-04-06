@@ -77,7 +77,7 @@ public class HistogramFigure extends XYSeriesFigure {
 	 */
 	protected void recalculateBins() {
 		histoSeries.replace(values.pointList, bins, valueMin, valueMax);
-		this.inferBoundsPolitely();
+		this.inferBoundsFromCurrentSeries();
 		repaint();
 	}
 }

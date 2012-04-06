@@ -24,6 +24,7 @@ import gui.figure.ColorSwatchButton;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -44,6 +45,7 @@ public class SeriesConfigFrame extends javax.swing.JFrame {
 		SeriesOptions initialOptions = null;
 		
 	    public SeriesConfigFrame(XYSeriesElement ser, XYSeriesFigure parent) {
+	    	this.setTitle("Configure series");
 	        this.seriesOwner = ser;
 	        
 	        this.parent = parent;
@@ -71,6 +73,7 @@ public class SeriesConfigFrame extends javax.swing.JFrame {
 	    }
 
 	    private void initComponents() {
+	    	this.getRootPane().setBorder(BorderFactory.createEmptyBorder(10, 10, 6, 10));
 	        jLabel1 = new javax.swing.JLabel();
 	        jLabel2 = new javax.swing.JLabel();
 	        nameField = new javax.swing.JTextField();
@@ -229,7 +232,7 @@ public class SeriesConfigFrame extends javax.swing.JFrame {
 	    
 	    protected void removeButtonActionPerformed(ActionEvent evt) {
 			parent.removeSeries(seriesOwner.getSeries());
-			parent.inferBoundsPolitely();
+			parent.inferBoundsFromCurrentSeries();
 			doneButtonActionPerformed(null);
 			repaint();
 		}

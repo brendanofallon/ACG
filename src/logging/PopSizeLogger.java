@@ -100,9 +100,9 @@ public class PopSizeLogger extends PropertyLogger {
 		}
 	}
 
-	public double[] getMeans() {
-		
-	}
+//	public double[] getMeans() {
+//		
+//	}
 	
 	@Override
 	public String getSummaryString() {

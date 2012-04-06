@@ -247,7 +247,7 @@ public class LegendConfigFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				removePanel(panel);
 				figParent.removeSeries(series.getSeries());
-				figParent.inferBoundsPolitely();
+				figParent.inferBoundsFromCurrentSeries();
 				figParent.repaint();
 			}	
 		});

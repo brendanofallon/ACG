@@ -321,7 +321,7 @@ public class SeriesFigurePanel extends FloatingPanel implements ActionListener {
 			fig.removeElement(burninMessage);
 			burninMessage = null;
 		}
-		fig.inferBoundsPolitely();
+		fig.inferBoundsFromCurrentSeries();
 		fig.repaint();
 	}
 	

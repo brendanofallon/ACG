@@ -110,19 +110,6 @@ public class XYSeriesFigure extends SeriesFigure {
 		inferXBoundsFromSeries();
 		inferYBoundsFromSeries();
 	}
-	
-	/**
-	 * Set boundaries to match the current series, but if the user has already set anything for the x or y axes then
-	 * don't change it
-	 */
-	public void inferBoundsPolitely() {
-		if (! axes.hasUserX) {
-			inferXBoundsFromSeries();
-		}
-		if (! axes.hasUserY) {
-			inferYBoundsFromSeries();
-		}
-	}
 
 	/**
 	 * Attempt to infer what sensible y-boundaries are given the data in the series
@@ -137,8 +124,6 @@ public class XYSeriesFigure extends SeriesFigure {
 			if (ymin > 0)
 				ymin = 0;
 			double ymax = seriesElements.get(0).getMaxY();
-
-			//System.out.println("raw max y is : " + ymax);
 			
 			for(int i=1; i<seriesElements.size(); i++) {	
 				double serMaxY = seriesElements.get(i).getMaxY(); 
@@ -166,8 +151,9 @@ public class XYSeriesFigure extends SeriesFigure {
 				}
 			}
 			
+			
 			//System.out.println("Upperval max y is : " + ymax);
-			axes.setDataBounds(axes.getXMin(), axes.getXMax(), ymin, ymax);
+			axes.setDataBounds(axes.getXMin(), axes.getXMax(), axes.isAutoYMin() ? ymin : axes.getYMin(), axes.isAutoYMax() ? ymax : axes.getYMax());
 			axes.setRationalTicks();
 		}
 	}
@@ -216,7 +202,7 @@ public class XYSeriesFigure extends SeriesFigure {
 				}
 			}
 			
-			axes.setDataBounds(xmin, xmax, axes.getYMin(), axes.getYMax());
+			axes.setDataBounds(axes.isAutoXMin() ? xmin : axes.getXMin(), axes.isAutoXMax() ? xmax : axes.getXMax(), axes.getYMin(), axes.getYMax());
 			axes.setRationalTicks();
 		}
 	}

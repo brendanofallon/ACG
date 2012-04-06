@@ -43,6 +43,7 @@ public class TopLeftPanel extends JPanel {
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
 		this.setPreferredSize(new Dimension(200, 50));
 		importButton = new BorderlessButton(UIConstants.addButton);
+		importButton.setToolTipText("Import a new alignment");
 		importButton.setXDif(-2);
 		importButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
