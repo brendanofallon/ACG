@@ -39,13 +39,7 @@ public class UIConstants {
 	public static final ImageIcon redCloseButton = getIcon("gui/icons/oxygen/close_round.png");
 	public static final ImageIcon grayCloseButton = getIcon("gui/icons/oxygen/close_round.png");
 
-	
-	public static final ImageIcon startButton = getIcon("gui/icons/oxygen/run_blackcircle.png");
-	
-	public static final ImageIcon pauseButton = getIcon("gui/icons/oxygen/pause_blackcircle.png");
-	
-	public static final ImageIcon stopButton = getIcon("gui/icons/oxygen/stop_blackcircle.png");
-	
+		
 	public static final ImageIcon addButton = getIcon("gui/icons/oxygen/addfile.png");
 	
 	public static final ImageIcon saveGrayButton = getIcon("gui/icons/oxygen/floppydisk24.png");
@@ -55,6 +49,12 @@ public class UIConstants {
 	
 	public static final ImageIcon grayHistogram = getIcon("gui/icons/grayHistogram.png");
 	public static final ImageIcon blueHistogram = getIcon("gui/icons/blueHistogram.png");
+
+	public static final ImageIcon startButton = getIcon("gui/icons/startArrow.png");
+	
+	public static final ImageIcon pauseButton = getIcon("gui/icons/pauseButton.png");
+	
+	public static final ImageIcon stopButton = getIcon("gui/icons/stopButton.png");
 	
 //	public static final ImageIcon blueRightArrow = getIcon("gui/icons/blueRightArrow.png");
 //	public static final ImageIcon grayRightArrow = getIcon("gui/icons/grayRightArrow.png");
@@ -65,11 +65,7 @@ public class UIConstants {
 //	public static final ImageIcon grayCloseButton = getIcon("gui/icons/grayClose.png");
 //
 //	
-//	public static final ImageIcon startButton = getIcon("gui/icons/startArrow.png");
-//	
-//	public static final ImageIcon pauseButton = getIcon("gui/icons/pauseButton.png");
-//	
-//	public static final ImageIcon stopButton = getIcon("gui/icons/stopButton.png");
+
 //	
 //	public static final ImageIcon addButton = getIcon("gui/icons/addButton.png");
 //	

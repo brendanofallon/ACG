@@ -28,6 +28,7 @@ public class XYSeriesElementReader {
 	public static final String XML_YDATA = "y.data";
 	public static final String XML_COLOR = "color";
 	public static final String XML_WIDTH = "width";
+	public static final String XML_LABEL = "label";
 	
 	/**
 	 * Construct a new XYSeries from the data in the given element
@@ -76,8 +77,10 @@ public class XYSeriesElementReader {
 		String widthStr = xySeriesElement.getAttribute(XML_WIDTH);
 		Float width = Float.parseFloat(widthStr);
 		
+		String label = xySeriesElement.getAttribute(XML_LABEL);
 		
-		XYSeries series = new XYSeries(points);
+		
+		XYSeries series = new XYSeries(points, label);
 		
 		XYSeriesInfo seriesInfo = new XYSeriesInfo();
 		seriesInfo.series = series;
@@ -110,6 +113,7 @@ public class XYSeriesElementReader {
 		
 		xySeriesElement.setAttribute(XML_COLOR, colorToString(color));
 		xySeriesElement.setAttribute(XML_WIDTH, "" + width);
+		xySeriesElement.setAttribute(XML_LABEL, "" + series.getName());
 		
 		return xySeriesElement;
 	}

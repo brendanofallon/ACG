@@ -190,7 +190,8 @@ public class ConsensusTreeBuilder {
 	public void buildMajorityCladeList() {
 		majorityClades = new ArrayList<TreeItem>();
 		if (numInputTrees == 0) {
-			throw new IllegalArgumentException("No input trees");
+			return;
+			//throw new IllegalArgumentException("No input trees");
 		}
 		
 		for(String key : clades.keySet()) {

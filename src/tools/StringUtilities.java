@@ -55,4 +55,13 @@ public class StringUtilities {
 		return formatter.format(val);
 	}
 	
+	public static String formatWithCommas(int val) {
+		StringBuilder str = new StringBuilder("" + val);
+		for(int i=str.length()-3; i>0; i-=3) 
+			str.insert(i, ",");
+		
+		System.out.println("input int:" + val + " formatted:" + str);
+		
+		return str.toString();
+	}
 }
