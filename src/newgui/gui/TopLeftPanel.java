@@ -25,6 +25,7 @@ import newgui.UIConstants;
 import newgui.alignment.FastaImporter;
 import newgui.alignment.FileParseException;
 import newgui.alignment.UnrecognizedBaseException;
+import newgui.gui.alnGen.AlnGenFrame;
 import newgui.gui.filepanel.InputFilesManager;
 import newgui.gui.widgets.HighlightButton;
 
@@ -37,13 +38,15 @@ import newgui.gui.widgets.HighlightButton;
 public class TopLeftPanel extends JPanel {
 	
 	BorderlessButton importButton;
+	ImageIcon addFastaIcon = UIConstants.getIcon("gui/icons/addFASFile.png");
+	ImageIcon addVCFIcon = UIConstants.getIcon("gui/icons/addVCFFile.png");
 	
 	public TopLeftPanel() {
 		this.setBackground(UIConstants.lightBackground);
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
 		this.setPreferredSize(new Dimension(200, 50));
-		importButton = new BorderlessButton(UIConstants.addButton);
-		importButton.setToolTipText("Import a new alignment");
+		importButton = new BorderlessButton(addFastaIcon);
+		importButton.setToolTipText("Import an alignment");
 		importButton.setXDif(-2);
 		importButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -51,7 +54,23 @@ public class TopLeftPanel extends JPanel {
 			}
 		});
 
+		
+		BorderlessButton buildFromVCFButton= new BorderlessButton(addVCFIcon);
+		buildFromVCFButton.setToolTipText("Build an alignment from a VCF file");
+		buildFromVCFButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				showAlnGenFrame();
+			}
+		});
+		
 		this.add(importButton);	
+		this.add(buildFromVCFButton);
+	}
+
+	protected void showAlnGenFrame() {
+		AlnGenFrame alnGenFrame = new AlnGenFrame();
+		alnGenFrame.setVisible(true);
+		
 	}
 
 	protected void openImportDialog() {
@@ -70,7 +89,7 @@ public class TopLeftPanel extends JPanel {
 				} 
 			}
 			else {
-				JOptionPane.showMessageDialog(this, "Currently, we can only import fasta-formatted files");
+				JOptionPane.showMessageDialog(this, "Currently, only fasta-formatted files can be imported");
 			}
 		}
 	}
