@@ -41,6 +41,14 @@ public class HistogramSeries extends XYSeries {
 		pointList = null;
 	}
 
+	public HistogramSeries(String name, int bins, double min, double max, List<Point2D> values) {
+		super(name);
+		histo = new Histogram(min, max, bins);
+		for(Point2D p : values) {
+			histo.addValue(p.getY());
+		}
+		pointList = null;
+	}
 	
 	public HistogramSeries(String name, List<Point2D> points, int bins, double min, double max) {
 		super(name);

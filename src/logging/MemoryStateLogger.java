@@ -33,6 +33,7 @@ public class MemoryStateLogger implements MCMCListener {
 	private int ignorePeriod = 10000; //Totally ignore the first few values
 	private int burnin = 0;
 	private boolean burninExceeded = false; //Turns to true when we're beyond the burnin period
+	private boolean isChainDone = false;
 	
 	
 	//Storage for all series that store likelihoods
@@ -49,6 +50,14 @@ public class MemoryStateLogger implements MCMCListener {
 	
 	public boolean getBurninExceeded() {
 		return burninExceeded;
+	}
+	
+	/**
+	 * Returns true if chainIsFinished has been called
+	 * @return
+	 */
+	public boolean getChainIsDone() {
+		return isChainDone;
 	}
 	
 	/**
@@ -286,7 +295,7 @@ public class MemoryStateLogger implements MCMCListener {
 
 	@Override
 	public void chainIsFinished() {
-		//Nothing to do
+		isChainDone = true;
 	}
 	
 	/**

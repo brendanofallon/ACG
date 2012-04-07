@@ -125,8 +125,7 @@ public class RunningJobPanel extends JPanel implements MCMCListener {
 		chain.addListener(memLogger);
 		memLogger.setBurnin( chain.getTotalRunLength()/10 ); //Someday we'll probably want to be more flexible about this
 		
-		seriesPanel.initializeLogger(memLogger);
-		seriesPanel.addDefaultSeriesPanel();
+		seriesPanel.setMemoryLogger(memLogger);
 		
 		//The job is actually run by submitting it to a global "JobQueue" that manages all running jobs
 		chain.setJobTitle( jobTitle + "-analysis" );
@@ -159,7 +158,7 @@ public class RunningJobPanel extends JPanel implements MCMCListener {
 		sidePane = new SideTabPane();
 		ImageIcon icon = UIConstants.getIcon("gui/icons/openFile.png");
 		
-		seriesPanel = new MultiSeriesPanel();
+		seriesPanel = new SeriesFigurePanel();
 		sidePane.addTab("Model state", icon, seriesPanel);
 		
 
@@ -203,7 +202,7 @@ public class RunningJobPanel extends JPanel implements MCMCListener {
 	}
 
 
-	MultiSeriesPanel seriesPanel;
+	SeriesFigurePanel seriesPanel;
 	MemoryStateLogger memLogger; //Listens to chains and logs parameter values / likelihoods
 	List<PropertyLogger> propLoggers = new ArrayList<PropertyLogger>();
 	SideTabPane sidePane;

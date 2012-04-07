@@ -1,6 +1,7 @@
 package newgui.gui.widgets;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -81,6 +82,34 @@ public abstract class AbstractSeriesPanel extends JPanel {
 		repaint();
 		return el;
 	}
+	
+	/**
+	 * Add the given series to the figure and set its color to the given color
+	 * @param series
+	 * @param col
+	 * @return
+	 */
+	public XYSeriesElement addSeries(XYSeries series, Color col) {
+		XYSeriesElement el = fig.addDataSeries(series);
+		el.setLineColor(col);
+		repaint();
+		return el;
+	}
+	
+	/**
+	 * Add the given series to the figure and set its color and width to the given params
+	 * @param series
+	 * @param col
+	 * @return
+	 */
+	public XYSeriesElement addSeries(XYSeries series, Color col, float width) {
+		XYSeriesElement el = fig.addDataSeries(series);
+		el.setLineColor(col);
+		el.setLineWidth(width);
+		repaint();
+		return el;
+	}
+	
 	
 	/**
 	 * Add the given component to the options panel (really a toolbar for this figure)

@@ -57,6 +57,9 @@ public class UIConstants {
 	
 	public static final ImageIcon stopButton = getIcon("gui/icons/stopButton.png");
 	
+	public static final ImageIcon lineChart = getIcon("gui/icons/lineChart.png");
+	public static final ImageIcon barChart = getIcon("gui/icons/barChart.png");
+	
 //	public static final ImageIcon blueRightArrow = getIcon("gui/icons/blueRightArrow.png");
 //	public static final ImageIcon grayRightArrow = getIcon("gui/icons/grayRightArrow.png");
 //	
