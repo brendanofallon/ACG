@@ -65,7 +65,7 @@ public class DataPosElement extends FigureElement {
 		if (axes.getBounds().contains(pos)) {
 			dataX = axes.boundsXtoDataX(pos.getX());
 			dataY = axes.boundsYtoDataY(pos.getY());
-			if (dataX>= axes.minXVal && dataX <= axes.maxXVal && dataY >= axes.minYVal && dataY <= axes.maxYVal) {
+			if (dataX>= axes.getXMin() && dataX <= axes.getXMax() && dataY >= axes.getYMin() && dataY <= axes.getYMax()) {
 				draw = true;
 			}
 			else {

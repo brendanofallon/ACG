@@ -2,6 +2,7 @@ package gui.figure.series;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,8 +14,10 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 
 public class UnifiedConfigFrame extends JFrame {
 
@@ -25,6 +28,9 @@ public class UnifiedConfigFrame extends JFrame {
 	AutoFieldPanel yMinPanel = new AutoFieldPanel("Min Y:", 0.0);
 	AutoFieldPanel xTicksPanel = new AutoFieldPanel("X tick spacing:", 0.2);
 	AutoFieldPanel yTicksPanel = new AutoFieldPanel("Y tick spacing:", 0.2);
+	JSpinner fontSizeSpinner;
+	JCheckBox showXGridBox;
+	JCheckBox showYGridBox;
 	
 	public UnifiedConfigFrame(XYSeriesFigure fig) {
 		this.fig = fig; 
@@ -32,6 +38,7 @@ public class UnifiedConfigFrame extends JFrame {
 		readSettingsFromFigure();
 		pack();
 		setLocationRelativeTo(fig);
+		this.getRootPane().setDefaultButton(doneButton);
 		this.setVisible(true);
 	}
 	
@@ -48,9 +55,31 @@ public class UnifiedConfigFrame extends JFrame {
 		
 		xTicksPanel.setFieldValue(fig.getAxes().getXTickSpacing() );
 		yTicksPanel.setFieldValue(fig.getAxes().getYTickSpacing() );
+		
+		if (fig.getAxes().showXGrid())
+			showXGridBox.setSelected(true);
+		
+
+		if (fig.getAxes().showYGrid())
+			showYGridBox.setSelected(true);
+		
+		int fontSize = fig.getAxes().getFontSize();
+		fontSizeSpinner.setValue(fontSize);
+		
 	}
 	
 	protected void writeSettingsToFigure() {
+		if (showXGridBox.isSelected())
+			fig.getAxes().setDrawXGrid(true);
+		else
+			fig.getAxes().setDrawXGrid(false);
+
+		if (showYGridBox.isSelected())
+			fig.getAxes().setDrawYGrid(true);
+		else
+			fig.getAxes().setDrawYGrid(false);
+
+		
 		if (! xMaxPanel.isAutoOn()) {
 			fig.getAxes().setXMax( xMaxPanel.getFieldValue() );
 			fig.getAxes().setAutoXMax(false);
@@ -121,10 +150,41 @@ public class UnifiedConfigFrame extends JFrame {
 		axesPanel.add(xTicksPanel);
 		axesPanel.add(yTicksPanel);
 		
+		
+		
+		//Panel for font size, color, and grid lines..
+		
+		JPanel colorsPanel = new JPanel();
+		colorsPanel.setLayout(new BoxLayout(colorsPanel, BoxLayout.Y_AXIS));
+		colorsPanel.setBorder(BorderFactory.createEmptyBorder(0, 25, 20, 25));
+		colorsPanel.add(Box.createVerticalStrut(20));
+		tabPane.addTab("Fonts & Colors", colorsPanel);
+		
+		
+		SpinnerNumberModel spinnerModel = new SpinnerNumberModel(12, 1, 72, 1);		
+		fontSizeSpinner = new JSpinner(spinnerModel);
+		JPanel sizePanel = new JPanel();
+		sizePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		sizePanel.add(new JLabel("Font size:"));
+		sizePanel.add(fontSizeSpinner);
+		sizePanel.setAlignmentX(LEFT_ALIGNMENT);
+		colorsPanel.add(sizePanel);
+		
+		showXGridBox = new JCheckBox("Show X grid");
+		colorsPanel.add(showXGridBox);
+		showXGridBox.setAlignmentX(LEFT_ALIGNMENT);
+		
+		showYGridBox = new JCheckBox("Show Y grid");
+		colorsPanel.add(showYGridBox);
+		showYGridBox.setAlignmentX(LEFT_ALIGNMENT);
+		colorsPanel.add(Box.createVerticalGlue());
+		
+		
+		
 		JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
 		bottomPanel.setBorder(BorderFactory.createEmptyBorder(4, 0, 4, 0));
-		JButton doneButton = new JButton("Done");
+		doneButton = new JButton("Done");
 		doneButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				done();
@@ -212,4 +272,5 @@ public class UnifiedConfigFrame extends JFrame {
 		}
 	}
 	
+	private JButton doneButton;
 }

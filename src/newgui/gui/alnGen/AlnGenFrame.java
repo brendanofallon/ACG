@@ -22,6 +22,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -36,6 +37,7 @@ import sequence.Alignment;
 import sequence.BasicSequenceAlignment;
 import sequence.Sequence;
 import tools.alnGen.AlignmentGenerator;
+import tools.alnGen.ContigNotFoundException;
 import tools.alnGen.ProtoSequence;
 import tools.alnGen.SampleReader;
 import tools.alnGen.VCFReader;
@@ -56,16 +58,164 @@ public class AlnGenFrame extends JFrame {
 		pack();
 	}
 	
+	/**
+	 * Use the current reference, contig, positions, and samples to create an actual alignment. The user
+	 * is prompted to save the new alignment on successful creation
+	 */
+	protected void buildAlignment() {		
+		for(SampleReader reader : sampleReaders) {
+			reader.reset();
+			alnGen.addSampleReader(reader);
+		}
+		
+		String contig = contigField.getText();
+		if (contig == null || contig.trim().length()==0) {
+			JOptionPane.showMessageDialog(this, "Please enter a chromosome");
+			return;
+		}
+		contig = contig.replace("chr", "");
+		if (startPosField.getText() == null || startPosField.getText().trim().length()==0) {
+			JOptionPane.showMessageDialog(this, "Please enter a valid starting position");
+			return;
+		}
+		if (startPosField.getText() == null || startPosField.getText().trim().length()==0) {
+			JOptionPane.showMessageDialog(this, "Please enter a valid end position");
+			return;
+		}
+		
+		Integer startPos = Integer.parseInt(startPosField.getText());
+		Integer endPos = Integer.parseInt(endPosField.getText());
+		
+		if (endPos <= startPos) {
+			JOptionPane.showMessageDialog(this, "Please choose a start position before the end position");
+			return;		
+		}
+		
+		try {
+			List<ProtoSequence> protoSeqs = alnGen.getAlignment(contig, startPos, endPos);
+			BasicSequenceAlignment aln = new BasicSequenceAlignment();
+			for(ProtoSequence pSeq : protoSeqs) {
+				aln.addSequence( pSeq.toSimpleSequence() );
+			}
+
+			InputFilesManager.getManager().saveAlignment(aln, "new_alignment");
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			ErrorWindow.showErrorWindow(e, "Could not create alignment");
+		} catch (ContigNotFoundException e) {
+			
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Could not find chromomsome " + contigField.getText());
+		}
+		
+		
+	}
+
+
+	/**
+	 * Close this JFrame
+	 */
+	protected void cancel() {
+		this.setVisible(false);
+		this.dispose();
+	}
+
+
+	
+	/**
+	 * Remove all samples from added samples list
+	 */
+	protected void clearAddedSamples() {
+		sampleReaders.clear();
+		DefaultListModel newModel = new DefaultListModel();
+		addedSamplesList.setModel(newModel);
+		addedSamplesList.repaint();
+		addedSamplesHeader.setText("No samples added");
+		addedSamplesHeader.revalidate();
+		buildButton.setEnabled(false);
+	}
+
+
+
+	protected void addSelectedSamples(int phase) {
+		Object[] samples = vcfSampleList.getSelectedValues();
+		for(int i=0; i<samples.length; i++) {
+			String sampleName = samples[i].toString();
+			SampleReader reader = vcfReader.getReaderForSample(sampleName, phase);
+			sampleReaders.add(reader);
+			((DefaultListModel)addedSamplesList.getModel()).addElement(sampleName + " (" + phase + ")");
+		}
+		addedSamplesHeader.setText(sampleReaders.size() + " samples added");
+		if (referenceFile != null)
+			buildButton.setEnabled(true);
+		addedSamplesHeader.revalidate();
+	}
+
+
+
+	protected void browseForVCFFile() {
+		int n = fileChooser.showOpenDialog(this);
+		if (n == JFileChooser.APPROVE_OPTION) {
+			vcfFile = fileChooser.getSelectedFile();
+			vcfFileField.setText(vcfFile.getName());
+			try {
+				vcfReader = new VCFReader(vcfFile);
+				updateSampleListFromVCF();
+			} catch (IOException e) {
+				e.printStackTrace();
+				ErrorWindow.showErrorWindow(e, "Could not open vcf file " + vcfFile.getName());
+			}
+		}
+	}
+
+
+	/**
+	 * Remove current contents of samples list and fill it with samples read from 
+	 * the currently selected vcf file
+	 */
+	private void updateSampleListFromVCF() {
+		if (vcfReader == null)
+			throw new IllegalStateException("VCF Reader not initialized");
+		
+		DefaultListModel model = new DefaultListModel();
+		for(String name : vcfReader.getSampleNames()) {
+			model.addElement(name);
+		}
+		sampleListHeader.setText(vcfReader.getSourceFile().getName() + ": " + vcfReader.getSampleCount() + " samples found");
+		sampleListHeader.revalidate();
+		vcfSampleList.setModel(model);
+		vcfSampleList.repaint();
+	}
+
+
+
+	/**
+	 * Open the file chooser and let user pick a reference file. 
+	 */
+	protected void browseForReferenceFile() {
+		int n = fileChooser.showOpenDialog(this);
+		if (n == JFileChooser.APPROVE_OPTION) {
+			referenceFile = fileChooser.getSelectedFile();
+			referenceFileField.setText(referenceFile.getName());
+			alnGen = new AlignmentGenerator(referenceFile);
+			if (sampleReaders.size()>0)
+				buildButton.setEnabled(true);
+		}
+	}
+
+	
+	
 	
 	
 	private void initComponents() {
-		this.setPreferredSize(new Dimension(500, 500));
+		this.setPreferredSize(new Dimension(550, 550));
 		this.getRootPane().setLayout(new BorderLayout());
 		
 		JPanel topInfoPanel = new JPanel();
 		topInfoPanel.setLayout(new BorderLayout());
 		topInfoPanel.setBorder(BorderFactory.createEmptyBorder(8, 10, 4, 10));
-		topInfoPanel.setPreferredSize(new Dimension(500, 60));
+		topInfoPanel.setPreferredSize(new Dimension(550, 60));
 		JTextArea info = new JTextArea();
 		topInfoPanel.setBackground(info.getBackground());
 		info.setText(infoText);
@@ -106,7 +256,7 @@ public class AlnGenFrame extends JFrame {
 		JPanel regionPanel = new JPanel();
 		regionPanel.setAlignmentX(LEFT_ALIGNMENT);
 		regionPanel.setLayout(new BoxLayout(regionPanel, BoxLayout.X_AXIS));
-		regionPanel.add(new JLabel("Contig:"));
+		regionPanel.add(new JLabel("Chromosome:"));
 		contigField = new JTextField("");
 		contigField.setPreferredSize(new Dimension(50, 32));
 		contigField.setMaximumSize(new Dimension(50, 50));
@@ -132,22 +282,24 @@ public class AlnGenFrame extends JFrame {
 		//Contains vcf & sample selection panels on left and produced sequences on right 
 		JPanel lowerPanel = new JPanel();
 		mainPanel.add(lowerPanel, BorderLayout.CENTER);
-		lowerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		lowerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		
 		JPanel lowerLeftPanel = new JPanel();
 		lowerLeftPanel.setLayout(new BoxLayout(lowerLeftPanel, BoxLayout.Y_AXIS));
+		lowerLeftPanel.setPreferredSize(new Dimension(250, 300));
 		lowerPanel.add(lowerLeftPanel);
 		
 		JPanel lowerRightPanel = new JPanel();
 		lowerRightPanel.setLayout(new BoxLayout(lowerRightPanel, BoxLayout.Y_AXIS));
+		lowerRightPanel.setPreferredSize(new Dimension(250, 300));
 		lowerPanel.add(lowerRightPanel);
 		
 		JPanel pickVCFPanel = new JPanel();
 		pickVCFPanel.setLayout(new BoxLayout(pickVCFPanel, BoxLayout.X_AXIS));
 		pickVCFPanel.add(new JLabel("VCF file:"));
 		vcfFileField = new JTextField("choose");
-		vcfFileField.setPreferredSize(new Dimension(120, 32));
-		vcfFileField.setMaximumSize(new Dimension(120, 32));
+		vcfFileField.setPreferredSize(new Dimension(160, 32));
+		vcfFileField.setMaximumSize(new Dimension(160, 32));
 		pickVCFPanel.add(vcfFileField);
 		JButton chooseVCFButton = new JButton("Choose");
 		chooseVCFButton.setToolTipText("Browse for vcf file");
@@ -161,37 +313,58 @@ public class AlnGenFrame extends JFrame {
 		pickVCFPanel.add(chooseVCFButton);
 		lowerLeftPanel.add(pickVCFPanel);
 		
+		sampleListHeader = new JLabel("No samples loaded");
+		lowerLeftPanel.add(sampleListHeader);
+		
 		vcfSampleList = new JList();
 		JScrollPane sampleScrollPane = new JScrollPane(vcfSampleList);
-		vcfSampleList.setPreferredSize(new Dimension(100, 200));
-		sampleScrollPane.setPreferredSize(new Dimension(100, 200));
+		//sampleScrollPane.setMaximumSize(new Dimension(200, 200));
 		lowerLeftPanel.add(sampleScrollPane);
 		
-		final JButton addSampleButton = new JButton("Add sample");
-		addSampleButton.setToolTipText("Add the sample to new alignment");
-		addSampleButton.setEnabled(false);
-		addSampleButton.addActionListener(new ActionListener() {
+		final JButton addSampleP0Button = new JButton("Add samples (phase 0)");
+		addSampleP0Button.setToolTipText("Add the phase 0 variants from the selected samples");
+		addSampleP0Button.setEnabled(false);
+		addSampleP0Button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				addSelectedSamples();
+				addSelectedSamples(0);
 			}
 		});
+		
+		final JButton addSampleP1Button = new JButton("Add samples (phase 1)");
+		addSampleP1Button.setToolTipText("Add the phase 0 variants from the selected samples");
+		addSampleP1Button.setEnabled(false);
+		addSampleP1Button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				addSelectedSamples(1);
+			}
+		});
+		
 		vcfSampleList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent arg0) {
 				int count = vcfSampleList.getSelectedValues().length;
-				if (count == 0)
-					addSampleButton.setEnabled(false);
-				else
-					addSampleButton.setEnabled(true);
+				if (count == 0) {
+					addSampleP0Button.setEnabled(false);
+					addSampleP1Button.setEnabled(false);
+				}
+				else {
+					addSampleP0Button.setEnabled(true);
+					addSampleP1Button.setEnabled(true);
+				}
 			}
 		});
-		lowerLeftPanel.add(addSampleButton);
+		lowerLeftPanel.add(addSampleP0Button);
+		lowerLeftPanel.add(addSampleP1Button);
 		
+		//Lower right panel: contains a list showing which samples have been added
 		
+		addedSamplesHeader = new JLabel("No samples added");
+		lowerRightPanel.add(Box.createVerticalStrut(30));
+		lowerRightPanel.add(addedSamplesHeader);
 		DefaultListModel defaultModel = new DefaultListModel();
 		addedSamplesList = new JList(defaultModel);
 		JScrollPane addedSamplesSP = new JScrollPane(addedSamplesList);
 		lowerRightPanel.add(addedSamplesSP);
-		addedSamplesSP.setPreferredSize(new Dimension(100, 200));
+		//addedSamplesSP.setPreferredSize(new Dimension(150, 200));
 		JButton clearSamplesButton = new JButton("Clear");
 		clearSamplesButton.setToolTipText("Remove added samples");
 		clearSamplesButton.addActionListener(new ActionListener() {
@@ -201,6 +374,9 @@ public class AlnGenFrame extends JFrame {
 		});
 	
 		
+		
+		
+		//Bottom panel with a cancel and build button
 		JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
 		JButton cancelButton = new JButton("Cancel");
@@ -211,7 +387,7 @@ public class AlnGenFrame extends JFrame {
 		});
 		bottomPanel.add(Box.createHorizontalGlue());
 		bottomPanel.add(cancelButton);
-		JButton buildButton = new JButton("Build Alignment");
+		buildButton = new JButton("Build Alignment");
 		buildButton.setEnabled(false);
 		buildButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -223,122 +399,14 @@ public class AlnGenFrame extends JFrame {
 		bottomPanel.add(Box.createHorizontalGlue());
 		this.getRootPane().add(bottomPanel, BorderLayout.SOUTH);
 	}
+
+
+	private JTextField contigField;
+	private JTextField startPosField;
+	private JTextField endPosField;
 	
-	
-	/**
-	 * Use the current reference, contig, positions, and samples to create an actual alignment. The user
-	 * is prompted to save the new alignment on successful creation
-	 */
-	protected void buildAlignment() {
-		 //Do some error checking! we need a valid
-		
-		for(SampleReader reader : sampleReaders) {
-			alnGen.addSampleReader(reader);
-		}
-		
-		String contig = contigField.getText();
-		Integer startPos = Integer.parseInt(startPosField.getText());
-		Integer endPos = Integer.parseInt(endPosField.getText());
-		try {
-			List<ProtoSequence> protoSeqs = alnGen.getAlignment(contig, startPos, endPos);
-			BasicSequenceAlignment aln = new BasicSequenceAlignment();
-			for(ProtoSequence pSeq : protoSeqs) {
-				aln.addSequence( pSeq.toSimpleSequence() );
-			}
-			
-			
-
-			InputFilesManager.getManager().saveAlignment(aln, "new_alignment");
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-			ErrorWindow.showErrorWindow(e, "Could not create alignment");
-		}
-		
-		
-	}
-
-
-	/**
-	 * Close this JFrame
-	 */
-	protected void cancel() {
-		this.setVisible(false);
-		this.dispose();
-	}
-
-
-
-	protected void clearAddedSamples() {
-		sampleReaders.clear();
-	}
-
-
-
-	protected void addSelectedSamples() {
-		Object[] samples = vcfSampleList.getSelectedValues();
-		for(int i=0; i<samples.length; i++) {
-			String sampleName = samples[i].toString();
-			SampleReader reader = vcfReader.getReaderForSample(sampleName, 0);
-			sampleReaders.add(reader);
-			((DefaultListModel)addedSamplesList.getModel()).addElement(sampleName);
-			System.out.println("Adding reader for sample " + sampleName);
-		}
-	}
-
-
-
-	protected void browseForVCFFile() {
-		int n = fileChooser.showOpenDialog(this);
-		if (n == JFileChooser.APPROVE_OPTION) {
-			vcfFile = fileChooser.getSelectedFile();
-			vcfFileField.setText(vcfFile.getName());
-			try {
-				vcfReader = new VCFReader(vcfFile);
-				updateSampleListFromVCF();
-			} catch (IOException e) {
-				e.printStackTrace();
-				ErrorWindow.showErrorWindow(e, "Could not open vcf file " + vcfFile.getName());
-			}
-		}
-	}
-
-
-	/**
-	 * Remove current contents of samples list and fill it with samples read from 
-	 * the currently selected vcf file
-	 */
-	private void updateSampleListFromVCF() {
-		if (vcfReader == null)
-			throw new IllegalStateException("VCF Reader not initialized");
-		
-		DefaultListModel model = new DefaultListModel();
-		for(String name : vcfReader.getSampleNames()) {
-			model.addElement(name);
-		}
-		vcfSampleList.setModel(model);
-		vcfSampleList.repaint();
-	}
-
-
-
-	/**
-	 * Open the file chooser and let user pick a reference file. 
-	 */
-	protected void browseForReferenceFile() {
-		int n = fileChooser.showOpenDialog(this);
-		if (n == JFileChooser.APPROVE_OPTION) {
-			referenceFile = fileChooser.getSelectedFile();
-			referenceFileField.setText(referenceFile.getName());
-			alnGen = new AlignmentGenerator(referenceFile);
-		}
-	}
-
-
-	JTextField contigField;
-	JTextField startPosField;
-	JTextField endPosField;
-	
+	private JLabel addedSamplesHeader;
+	private JLabel sampleListHeader;
 	private VCFReader vcfReader = null; //Reads sample names and creates SampleReaders from a vcf file
 	private AlignmentGenerator alnGen = null; //Used to actually build the alignments, initialized when a reference is picked
 	private JList addedSamplesList;
@@ -348,6 +416,7 @@ public class AlnGenFrame extends JFrame {
 	private JTextField referenceFileField;
 	private JTextField vcfFileField;
 	private File vcfFile = null;
+	private JButton buildButton;
 	
 	private final String infoText = "Create a new alignment by selecting a reference file and samples from one or more vcf files.";
 }

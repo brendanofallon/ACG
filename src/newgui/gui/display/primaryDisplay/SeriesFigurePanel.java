@@ -71,7 +71,7 @@ public class SeriesFigurePanel extends AbstractSeriesPanel implements ActionList
 		histoToggle.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				showHistogram = ! showHistogram;
-				switchHistogramTrace();
+				addSelectedSeries();
 			}
 		});
 		addOptionsComponent(histoToggle);
@@ -85,36 +85,36 @@ public class SeriesFigurePanel extends AbstractSeriesPanel implements ActionList
 	 * Switches to histogram mode by removing all current series from the figure and adding
 	 * a newly created HistogramSeries using the currently selected series as the data source
 	 */
-	protected void switchHistogramTrace() {
-		fig.removeAllSeries();
-		String seriesName = (String) chooseBox.getSelectedItem();
-
-		if (burninMessage != null && memLogger.getBurninExceeded()) {
-			fig.removeElement(burninMessage);
-			burninMessage = null;
-		}
-		
-		if (showHistogram) {
-			if ( (!memLogger.getBurninExceeded()) && burninMessage == null) {
-				burninMessage = new TextElement("(Burnin period not yet exceeded)", fig);
-				burninMessage.setPosition(0.4, 0.4);
-				fig.addElement(burninMessage);
-			}	
-			
-			HistogramSeries histo = memLogger.getHistogram(seriesName);
-			XYSeriesElement histoEl = addSeries(histo);
-			histoEl.setMode(XYSeriesElement.BOXES);
-						
-			fig.setYLabel("Frequency");
-			fig.setXLabel("Value");
-		}
-		else {
-			addSelectedSeries();
-		}
-		
-		
-		fig.inferBoundsFromCurrentSeries();
-	}
+//	protected void switchHistogramTrace() {
+//		fig.removeAllSeries();
+//		String seriesName = (String) chooseBox.getSelectedItem();
+//
+//		if (burninMessage != null && memLogger.getBurninExceeded()) {
+//			fig.removeElement(burninMessage);
+//			burninMessage = null;
+//		}
+//		
+//		if (showHistogram) {
+//			if ( (!memLogger.getBurninExceeded()) && burninMessage == null) {
+//				burninMessage = new TextElement("(Burnin period not yet exceeded)", fig);
+//				burninMessage.setPosition(0.4, 0.4);
+//				fig.addElement(burninMessage);
+//			}	
+//			
+//			HistogramSeries histo = memLogger.getHistogram(seriesName);
+//			XYSeriesElement histoEl = addSeries(histo);
+//			histoEl.setMode(XYSeriesElement.BOXES);
+//						
+//			fig.setYLabel("Frequency");
+//			fig.setXLabel("Value");
+//		}
+//		else {
+//			addSelectedSeries();
+//		}
+//		
+//		
+//		fig.inferBoundsFromCurrentSeries();
+//	}
 
 	/**
 	 * Add the series that is currently selected in the "ChooseBox". This adds both

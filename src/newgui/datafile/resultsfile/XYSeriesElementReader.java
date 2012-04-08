@@ -49,28 +49,30 @@ public class XYSeriesElementReader {
 		
 		List<Point2D> points = new ArrayList<Point2D>();
 		
-		StringTokenizer xTokenizer = new StringTokenizer(xDataStr, ",");
-		StringTokenizer yTokenizer = new StringTokenizer(yDataStr, ",");
-		while (xTokenizer.hasMoreTokens() && yTokenizer.hasMoreTokens()) {
-			String xStr = xTokenizer.nextToken();
-			String yStr = yTokenizer.nextToken();
-			Double xVal = null;
-			Double yVal = null;
-			try {
-				xVal = Double.parseDouble(xStr);
+		//Make sure there's some data, otherwise we can't tokenize..
+		if (xDataStr != null && xDataStr.length()>2) {
+			StringTokenizer xTokenizer = new StringTokenizer(xDataStr, ",");
+			StringTokenizer yTokenizer = new StringTokenizer(yDataStr, ",");
+			while (xTokenizer.hasMoreTokens() && yTokenizer.hasMoreTokens()) {
+				String xStr = xTokenizer.nextToken();
+				String yStr = yTokenizer.nextToken();
+				Double xVal = null;
+				Double yVal = null;
+				try {
+					xVal = Double.parseDouble(xStr);
+				}
+				catch (NumberFormatException nfe) {
+					throw new XMLConversionError("Could not parse value from string: " + xStr, xDataEl);
+				}
+				try {
+					yVal = Double.parseDouble(yStr);
+				}
+				catch (NumberFormatException nfe) {
+					throw new XMLConversionError("Could not parse value from string: " + xStr, xDataEl);
+				}
+				points.add(new Point2D.Double(xVal, yVal));
 			}
-			catch (NumberFormatException nfe) {
-				throw new XMLConversionError("Could not parse value from string: " + xStr, xDataEl);
-			}
-			try {
-				yVal = Double.parseDouble(yStr);
-			}
-			catch (NumberFormatException nfe) {
-				throw new XMLConversionError("Could not parse value from string: " + xStr, xDataEl);
-			}
-			points.add(new Point2D.Double(xVal, yVal));
 		}
-		
 		//Parse additional attributes like color, width, etc
 		String colorStr = xySeriesElement.getAttribute(XML_COLOR);
 		Color seriesColor = parseColor(colorStr);

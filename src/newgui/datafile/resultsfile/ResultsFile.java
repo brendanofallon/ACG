@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -43,8 +44,8 @@ import tools.StringUtilities;
 
 /**
  * The ResultsFile is a large xml-formatted DataFile that contains multiple top-level elements
- * describing various aspects of the results of an analysis - including charts from the loggers
- * and some properties of the run itself (run length, completion state, etc) 
+ * describing various aspects of the results of an analysis - including charts from the loggers,
+ *  properties of the run itself (run length, completion state, etc), and traces of likelihoods and parameter values 
  * @author brendano
  *
  */
@@ -195,14 +196,14 @@ public class ResultsFile extends XMLDataFile {
 		
 		Date startTime = chain.getStartTime();
 		if (startTime != null)
-			propsMap.put(MCMC_STARTTIME, startTime.toString());
+			propsMap.put(MCMC_STARTTIME, formatDate(startTime));
 		else 
 			propsMap.put(MCMC_STARTTIME, "unknown");
 		
 		
 		Date endTime = chain.getEndTime();
 		if (endTime != null)
-			propsMap.put(MCMC_ENDTIME, endTime.toString());
+			propsMap.put(MCMC_ENDTIME, formatDate(endTime));
 		else
 			propsMap.put(MCMC_ENDTIME, "unknown");
 		
@@ -261,6 +262,13 @@ public class ResultsFile extends XMLDataFile {
 	}
 		
 		setProperties(propsMap);
+	}
+	
+	
+	public static String formatDate(Date date) {
+		String formatStr = "k:m:ss MMMM d, yyyy";
+		SimpleDateFormat dateFormat = new SimpleDateFormat(formatStr);		
+		return dateFormat.format(date);
 	}
 	
 	/**

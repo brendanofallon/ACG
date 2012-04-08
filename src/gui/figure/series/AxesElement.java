@@ -55,100 +55,99 @@ import gui.figure.FigureElement;
 public class AxesElement extends FigureElement {
 
 
-	double minXVal = 0;
-	double maxXVal = 1;
-	double minYVal = 0;
-	double maxYVal = 1;
+	private double minXVal = 0;
+	private double maxXVal = 1;
+	private double minYVal = 0;
+	private double maxYVal = 1;
 	
 	//If true, calls to 'inferBounds...' will rescale the indicated parameter
 	//If false, calls to inferBounds will not alter the parameter
-	boolean autoXMin = true;
-	boolean autoYMin = true;
-	boolean autoXMax = true;
-	boolean autoYMax = true;
+	private boolean autoXMin = true;
+	private boolean autoYMin = true;
+	private boolean autoXMax = true;
+	private boolean autoYMax = true;
 	
-	double xTickSpacing = 1.0;
-	double yTickSpacing = 1.0;
-	boolean hasUserXTickNum = false;	//True if user has set x tick number
-	boolean hasUserYTickNum = false;	//True if user has set y tick number
-	double xTickWidth = 0.02;
-	double yTickWidth = 0.01;
-	int fontSize = 13;
+	private double xTickSpacing = 1.0;
+	private double yTickSpacing = 1.0;
+//	private boolean hasUserXTickNum = false;	//True if user has set x tick number
+//	private boolean hasUserYTickNum = false;	//True if user has set y tick number
+	private double xTickWidth = 0.02;
+	private double yTickWidth = 0.01;
+	private int fontSize = 13;
 	
 	//These indicate if the user has set values for the x or y axis, and they we should not auto-set them
 //	boolean hasUserX = false;
 //	boolean hasUserY = false;
 	
-	boolean drawYGrid = true;
-	Color yGridColor = Color.lightGray;
+	private boolean drawYGrid = true;
+	private Color yGridColor = Color.lightGray;
 	
-	boolean drawXGrid = false;
-	Color xGridColor = Color.LIGHT_GRAY;
+	private boolean drawXGrid = false;
+	private Color xGridColor = Color.LIGHT_GRAY;
 	
-	boolean recalculateBounds = true;
+	private boolean recalculateBounds = true;
 	
-	//AxesConfigFrame configFrame;
 	
-	Font xLabelFont;
-	Font exponentFont;
+	private Font xLabelFont;
+	private Font exponentFont;
 	
-	static Color selectionRegionColor = new Color(0.0f, 0.25f, 0.5f, 0.1f);
+	private static Color selectionRegionColor = new Color(0.0f, 0.25f, 0.5f, 0.1f);
 	
 	//These fields are set in paint(), which is a bit inefficient but seems not to matter
 	//Ideally, they should only be set when the component is resized... but some of them depend
 	//on knowing how big the labels are, which requires graphics, which we don't have when things
 	//are resized
-	double bottomSpace;
-	double leftSpace;
-	double graphAreaWidth;
-	double graphAreaHeight;
-	double graphAreaBottom;
-	double graphAreaTop;
-	double graphAreaLeft;
-	double fontHeight;
-	double xAxisPos;
-	double yAxisPos;
-	double yAxisZero;
-	double zeroY;
-	double positiveFrac;
+	private double bottomSpace;
+	private double leftSpace;
+	private double graphAreaWidth;
+	private double graphAreaHeight;
+	private double graphAreaBottom;
+	private double graphAreaTop;
+	private double graphAreaLeft;
+	private double fontHeight;
+	private double xAxisPos;
+	private double yAxisPos;
+	private double yAxisZero;
+	private double zeroY;
+	private double positiveFrac;
 	
-	NumberFormat labelFormatter;
-	NumberFormat scientificFormatter;
-	NumberFormat mantissaFormatter;
+	private NumberFormat labelFormatter;
+	private NumberFormat scientificFormatter;
+	private NumberFormat mantissaFormatter;
 	
-	String testLabel = "0.0000";
+	private String testLabel = "0.0000";
 	
-	boolean isXSelected = false;
-	boolean isYSelected = false;
+	private boolean isXSelected = false;
+	private boolean isYSelected = false;
 	
-	Stroke normalStroke;
-	Stroke highlightStroke;
+	private Stroke normalStroke;
+	private Stroke highlightStroke;
 	
 	//boolean forceIntegralXLabels = false;
-	boolean drawMinorXTicks = true;
+	private boolean drawMinorXTicks = true;
 
-	boolean drawMinorYTicks = true;
+	private boolean drawMinorYTicks = true;
 
-	boolean drawMousePosTick = false;
-	java.awt.Point mousePos;
+	private boolean drawMousePosTick = false;
+	private java.awt.Point mousePos;
 	
-	List<String> xLabelList = null; //An alternate listing of string-valued x labels. This is used for integer values if it is not null.
+	private List<String> xLabelList = null; //An alternate listing of string-valued x labels. This is used for integer values if it is not null.
 
-	Point2D mouseDragStart = new Point2D.Double(0,0);
-	Point2D mouseDragEnd = new Point2D.Double(0, 0);
-	boolean mouseIsBeingDragged = false; 
+	private Point2D mouseDragStart = new Point2D.Double(0,0);
+	private Point2D mouseDragEnd = new Point2D.Double(0, 0);
+	private boolean mouseIsBeingDragged = false; 
 	
 	//Controls whether dragging the mouse causes the rectangular selection area to appear
-	boolean allowMouseDragSelection = true;
+	private boolean allowMouseDragSelection = true;
 	
 	//Font for drawing x-axis values during mouse drag
-	Font mouseDragNumberFont = new Font("Sans", Font.PLAIN, 9);
+	private Font mouseDragNumberFont = new Font("Sans", Font.PLAIN, 9);
 
 	//These define whether or not a range has been selected by the user via a mouse drag,
 	//and what the left and right boundaries of the range are
-	int leftMarkerPos = 0;
-	int rightMarkerPos = 0;
-	boolean isRangeSelected = false;
+	private int leftMarkerPos = 0;
+	private int rightMarkerPos = 0;
+	private boolean isRangeSelected = false;
 
 	public AxesElement(Figure parent) {
 		super(parent);
@@ -420,6 +419,14 @@ public class AxesElement extends FigureElement {
 
 	public void setAutoYMax(boolean autoYMax) {
 		this.autoYMax = autoYMax;
+	}
+	
+	public void setDrawXGrid(boolean drawXGrid) {
+		this.drawXGrid = drawXGrid;
+	}
+	
+	public void setDrawYGrid(boolean drawYGrid) {
+		this.drawYGrid = drawYGrid;
 	}
 	
 //	public void setXAxisOptions(AxesOptions ops) {
@@ -1176,6 +1183,14 @@ public class AxesElement extends FigureElement {
 		gaBounds.width = round(graphAreaWidth);
 		gaBounds.height = round(graphAreaHeight);
 		return gaBounds;
+	}
+
+	/**
+	 * Obtain the font size used for drawing axes labels
+	 * @return
+	 */
+	public int getFontSize() {
+		return fontSize;
 	}
 
 

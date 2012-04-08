@@ -49,7 +49,7 @@ public class VCFReader {
 		
 		String[] toks = line.split("\t");
 		//First 8 columns are info, remaining columns are samples
-		for(int i=8; i<toks.length; i++) {
+		for(int i=9; i<toks.length; i++) {
 			String sampleName = toks[i];
 			Integer column = i;
 			sampleColumnMap.put(sampleName, column);
@@ -224,6 +224,9 @@ public class VCFReader {
 			writer.close();
 			System.out.println("Wrote " + seqs.size() + " sequences of length " + (endPos - startPos));
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ContigNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

@@ -316,19 +316,19 @@ public class XYSeriesFigure extends SeriesFigure {
 	}
 	
 	public double getXMax() {
-		return axes.maxXVal;
+		return axes.getXMax();
 	}
 	
 	public double getYMax() {
-		return axes.maxYVal;
+		return axes.getYMax();
 	}
 	
 	public double getXMin() {
-		return axes.minXVal;
+		return axes.getXMin();
 	}
 	
 	public double getYMin() {
-		return axes.minYVal;
+		return axes.getYMin();
 	}
 
 	/**

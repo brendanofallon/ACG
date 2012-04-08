@@ -104,6 +104,8 @@ public class RunSummaryPanel extends JPanel {
 		summaryTable.setCellSelectionEnabled(false);
 		summaryTable.setShowHorizontalLines(false);
 		summaryTable.setShowVerticalLines(false);
+		summaryTable.setOpaque(false);
+		summaryTable.setBackground(this.getBackground());
 		summaryTable.setIntercellSpacing(new Dimension(10, 2));
 		TableColumn firstCol = summaryTable.getColumnModel().getColumn(0);
 		firstCol.setPreferredWidth(200);
@@ -129,7 +131,8 @@ public class RunSummaryPanel extends JPanel {
 		this.add(modLabelPanel);
 		this.add(Box.createVerticalStrut(10));
 		
-		ModifierTableModel modModel = new ModifierTableModel();
+		String[] columnHeaders = new String[]{"Label", "Proposals", "% Accepted", ""}; 
+		ModifierTableModel modModel = new ModifierTableModel(columnHeaders);
 		modifierTable = new JTable(modModel);
 //		JScrollPane modTableSP = new JScrollPane(modifierTable);
 //		modTableSP.setPreferredSize(new Dimension(500, 200));
@@ -141,18 +144,26 @@ public class RunSummaryPanel extends JPanel {
 		modifierTable.setShowHorizontalLines(false);
 		modifierTable.setShowVerticalLines(false);
 		modifierTable.setIntercellSpacing(new Dimension(10, 2));
+		modifierTable.setOpaque(false);
+		modifierTable.setBackground(this.getBackground());
 		
 		TableColumn col = modifierTable.getColumnModel().getColumn(0);
-		col.setPreferredWidth(200);
-		col.setMaxWidth(300);
+		col.setPreferredWidth(100);
+		col.setMaxWidth(200);
 		col.setCellRenderer(new SummaryCellRenderer());
 		
 		col = modifierTable.getColumnModel().getColumn(1);
-		col.setPreferredWidth(100);
-		col.setMaxWidth(200);		
+		col.setPreferredWidth(60);
+		col.setMaxWidth(150);		
 		
 		col = modifierTable.getColumnModel().getColumn(2);
+		col.setPreferredWidth(50);
+		col.setMaxWidth(100);	
+		
+		col = modifierTable.getColumnModel().getColumn(3);
 		col.setCellRenderer(new MeterBarCellRenderer());
+		col.setPreferredWidth(200);
+		col.setMaxWidth(200);		
 		
 		this.add(modifierTable);
 		
@@ -184,11 +195,17 @@ public class RunSummaryPanel extends JPanel {
 		final Color badColor = Color.red;
 		final Color warningColor = Color.yellow;
 		final Color okColor = new Color(0, 200, 0);
+		final JLabel label = new JLabel("");
 		
 		@Override
 		public Component getTableCellRendererComponent(JTable table,
 				Object value, boolean isSelected, boolean hasFocus, int row,
 				int column) {
+			
+			if (value instanceof String) {
+				label.setText(value.toString());
+				return label;
+			}
 			
 			Double val = (Double)value;
 			this.setValue(val);

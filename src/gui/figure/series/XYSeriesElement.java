@@ -327,7 +327,7 @@ public class XYSeriesElement extends SeriesElement {
 			boxWidth = (axes.dataXtoFigureX( xySeries.getBoxWidth() ) - axes.dataXtoFigureX( 0 )) / (double)boxWidthDivisor ;
 		}
 		else {
-			double boxesShowing = xySeries.size()*(axes.maxXVal-axes.minXVal)/(xySeries.getMaxX()-xySeries.getMinX());
+			double boxesShowing = xySeries.size()*(axes.getXMax()-axes.getXMin())/(xySeries.getMaxX()-xySeries.getMinX());
 			boxWidth = axes.getGraphAreaBounds().width / boxesShowing / (double)boxWidthDivisor;
 		}
 		return boxWidth;
@@ -338,7 +338,7 @@ public class XYSeriesElement extends SeriesElement {
 		if (currentMode == POINTS_AND_LINES || currentMode == LINES) {
 			double dataX = axes.boundsXtoDataX(x);
 			
-			lineRect.setRect(x*xFactor-4, y*yFactor-4, 7, 7);
+			lineRect.setRect(x*xFactor-4, y*yFactor-4, 8, 8);
 			Point2D[] line = xySeries.getLineForXVal(dataX);
 			if (line==null || Double.isNaN(line[0].getY()) || Double.isNaN(line[1].getY())) {
 				return false;
