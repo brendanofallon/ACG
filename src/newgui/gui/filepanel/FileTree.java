@@ -59,8 +59,14 @@ public class FileTree extends JPanel implements DirectoryListener {
 		this.setLayout(new BorderLayout());
 		
 		tree = new JTree();
+		tree.setOpaque(false);
+		tree.setFont(UIConstants.sansFont.deriveFont(12f));
 		tree.addMouseListener(new TreeMouseListener());
 		tree.setAlignmentX(Component.LEFT_ALIGNMENT);
+		TreeCellRenderer renderer = tree.getCellRenderer();
+		if (renderer instanceof JComponent) {
+			((JComponent)renderer).setOpaque(false);
+		}
 		createTreeNodes();
 		this.add(tree, BorderLayout.CENTER);
 		
@@ -150,7 +156,7 @@ public class FileTree extends JPanel implements DirectoryListener {
 		
 		File file = getSelectedFile();
 		File renamedFile = new File(file.getParentFile().getAbsolutePath() + fileSeparator + text);
-		System.out.println("Renaming file : " + file.getAbsolutePath() + " to: " + renamedFile.getAbsolutePath());
+		//System.out.println("Renaming file : " + file.getAbsolutePath() + " to: " + renamedFile.getAbsolutePath());
 		file.renameTo( renamedFile );
 		filesChanged(rootDir);
 	}
@@ -222,6 +228,8 @@ public class FileTree extends JPanel implements DirectoryListener {
 	 */
 	protected void openSelectedFile() {
 		File file = getSelectedFile();
+		if (file == null)
+			return;
 		XMLDataFile dataFile;
 		try {
 			dataFile = DataFileFactory.createDataFile(file);

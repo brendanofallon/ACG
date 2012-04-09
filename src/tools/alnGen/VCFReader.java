@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +49,7 @@ public class VCFReader {
 		
 		String[] toks = line.split("\t");
 		//First 8 columns are info, remaining columns are samples
-		for(int i=8; i<toks.length; i++) {
+		for(int i=9; i<toks.length; i++) {
 			String sampleName = toks[i];
 			Integer column = i;
 			sampleColumnMap.put(sampleName, column);
@@ -120,6 +121,25 @@ public class VCFReader {
 		return sampleColumnMap.get(sampleName);
 	}
 	
+	/**
+	 * Return a new list containing all samples present in this file
+	 * @return
+	 */
+	public List<String> getSampleNames() {
+		List<String> list = new ArrayList<String>();
+		for(String name : sampleColumnMap.keySet()) {
+			list.add(name);
+		}
+		return list;
+	}
+	
+	/**
+	 * Return the number of samples in this file
+	 * @return
+	 */
+	public int getSampleCount() {
+		return sampleColumnMap.size();
+	}
 	
 	public static void main(String[] args) {
 //		File hht15 = new File("/media/MORE_DATA/detect_fp/rawvcfs/HHT15_all_variants.vcf");
@@ -204,6 +224,9 @@ public class VCFReader {
 			writer.close();
 			System.out.println("Wrote " + seqs.size() + " sequences of length " + (endPos - startPos));
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ContigNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

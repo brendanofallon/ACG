@@ -17,11 +17,16 @@ public class FastaReader {
 	protected Integer currentTrack = null;
 	protected int currentPos = -1;
 	protected int lineOffset = 0;
-	
+	protected File sourceFile;
 	BufferedReader reader;
 	
 	public FastaReader(File file) throws IOException {
-		reader = new BufferedReader(new FileReader(file));
+		this.sourceFile = file;
+		reset();
+	}
+	
+	public void reset() throws IOException {
+		reader = new BufferedReader(new FileReader(sourceFile));
 		currentLine = reader.readLine();
 		if (! currentLine.trim().startsWith(">")) {
 			throw new IOException("First line doesn't start with >");
@@ -36,7 +41,7 @@ public class FastaReader {
 		else 
 			tr = Integer.parseInt(chrStr);
 		currentTrack = tr;
-		advanceLine();
+		advanceLine();		
 	}
 	
 	/**
@@ -46,8 +51,9 @@ public class FastaReader {
 	 * @param pos
 	 * @return
 	 * @throws IOException
+	 * @throws ContigNotFoundException 
 	 */
-	public char getBaseAt(int track, int pos) throws IOException {
+	public char getBaseAt(int track, int pos) throws IOException, ContigNotFoundException {
 		if (pos <= 0) {
 			throw new IllegalArgumentException("Remember, bases are ONE-INDEXED, so the first base is base #1, not 0, so please enter a pos > " + pos);
 		}
@@ -148,7 +154,7 @@ public class FastaReader {
 		return advanced;
 	}
 	
-	private void advanceToTrack(int track) throws IOException {
+	private void advanceToTrack(int track) throws IOException, ContigNotFoundException {
 		while(currentLine != null && (! currentLine.startsWith(">"))) {
 			advanceLine();
 		}
@@ -168,8 +174,7 @@ public class FastaReader {
 		}
 		
 		if (tr > track) {
-			System.err.println("Oops, somehow missed track " + track + " maybe tracks are not in order?");
-			throw new IOException("Bad tracks");
+			throw new ContigNotFoundException("Could not find track " + track);
 		}
 	}
 	

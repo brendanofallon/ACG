@@ -36,6 +36,21 @@ public class SampleReader {
 	}
 	
 	/**
+	 * Move the pointer back to the first line of this file
+	 */
+	public void reset() {
+		try {
+			reader = new BufferedReader(new FileReader(vcfReader.getSourceFile()));
+			advanceToFirstVariant();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * Return the phase that was assigned to this reader
 	 * @return
 	 */
@@ -64,20 +79,20 @@ public class SampleReader {
 	 * @param pos
 	 * @throws IOException 
 	 */
-	public void advanceTo(String contig, int pos) throws IOException {
+	public void advanceTo(String contig, int pos) throws IOException, ContigNotFoundException {
 		String[] toks = currentLine.split("\t");
-		String curContig = toks[0];
+		String curContig = toks[0].replace("chr", "");
 		
 		while (currentLine != null && (! curContig.equals(contig))) {
 			currentLine = reader.readLine();
 			if (currentLine == null) {
-				throw new IllegalArgumentException("Could not find contig " + contig);
+				throw new ContigNotFoundException("Could not find contig " + contig);
 			}	
 			toks = currentLine.split("\t");
 			curContig = toks[0]; 
 		}
 		if (currentLine == null) {
-			throw new IllegalArgumentException("Could not find contig " + contig);
+			throw new ContigNotFoundException("Could not find contig " + contig);
 		}
 		
 		String posStr = toks[1];

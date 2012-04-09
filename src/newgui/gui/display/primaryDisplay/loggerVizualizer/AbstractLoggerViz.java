@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import newgui.UIConstants;
+import newgui.gui.widgets.AbstractSeriesPanel;
 import newgui.gui.widgets.BorderlessButton;
 
 import logging.PropertyLogger;
@@ -33,20 +34,22 @@ import logging.PropertyLogger;
  * @author brendano
  *
  */
-public abstract class AbstractLoggerViz extends JPanel implements ActionListener {
+public abstract class AbstractLoggerViz extends AbstractSeriesPanel implements ActionListener {
 
 	protected PropertyLogger logger = null;
 	
 	public AbstractLoggerViz(PropertyLogger logger) {
+		super();
 		this.logger = logger;
 		timer = new Timer(getUpdateFrequency(), this);
-		initComponents();
+		//initComponents();
 		timer.start();
 	}
 
 	public AbstractLoggerViz() {
+		super();
 		timer = new Timer(getUpdateFrequency(), this);
-		initComponents();
+		//initComponents();
 	}
 	
 	/**
@@ -113,87 +116,87 @@ public abstract class AbstractLoggerViz extends JPanel implements ActionListener
 	/**
 	 * Initialize some basic components
 	 */
-	protected void initComponents() {
-		setOpaque(false);
-		setLayout(new BorderLayout());
-		
-		fig = new XYSeriesFigure();
-		this.add(fig, BorderLayout.CENTER);
-		
-		bottomPanel = new JPanel();
-		bottomPanel.setBackground(Color.white);
-		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
-		bottomPanel.add(Box.createHorizontalGlue());
-		
-		BorderlessButton exportDataButton = new BorderlessButton(UIConstants.writeData);
-		exportDataButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				exportData();
-			}
-		});
-		bottomPanel.add(exportDataButton);
-		
-		BorderlessButton saveImageButton = new BorderlessButton(UIConstants.saveGrayButton);
-		saveImageButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				saveImage();
-			}
-		});
-		bottomPanel.add(saveImageButton);
-		bottomPanel.add(Box.createHorizontalStrut(10));
-		
-		this.add(bottomPanel, BorderLayout.NORTH);
-	}
+//	protected void initComponents() {
+//		setOpaque(false);
+//		setLayout(new BorderLayout());
+//		
+//		fig = new XYSeriesFigure();
+//		this.add(fig, BorderLayout.CENTER);
+//		
+//		bottomPanel = new JPanel();
+//		bottomPanel.setBackground(Color.white);
+//		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
+//		bottomPanel.add(Box.createHorizontalGlue());
+//		
+//		BorderlessButton exportDataButton = new BorderlessButton(UIConstants.writeData);
+//		exportDataButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				exportData();
+//			}
+//		});
+//		bottomPanel.add(exportDataButton);
+//		
+//		BorderlessButton saveImageButton = new BorderlessButton(UIConstants.saveGrayButton);
+//		saveImageButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				saveImage();
+//			}
+//		});
+//		bottomPanel.add(saveImageButton);
+//		bottomPanel.add(Box.createHorizontalStrut(10));
+//		
+//		this.add(bottomPanel, BorderLayout.NORTH);
+//	}
 	
-	/**
-	 * Obtain a string representing the data of in this logger 
-	 * @return
-	 */
-	public abstract String getDataString();
-	
-	protected void exportData() {
-		String data = getDataString();
-		if (fileChooser == null)
-			fileChooser = new JFileChooser( System.getProperty("user.dir"));
-    	int val = fileChooser.showSaveDialog(this);
-    	if (val==JFileChooser.APPROVE_OPTION) {
-    		File file = fileChooser.getSelectedFile();
-    		BufferedWriter writer;
-			try {
-				writer = new BufferedWriter(new FileWriter(file));
-	    		writer.write(data);
-	    		writer.close();
-			} catch (IOException e) {
-				ErrorWindow.showErrorWindow(e, "Error writing data to file : " + e.getMessage());
-				e.printStackTrace();
-			}
-    	}		
-	}
-
-	/**
-	 * Create an image of the current figure and open a dialog allowig the user to save the image to a file
-	 */
-	protected void saveImage() {
-		BufferedImage image = fig.getImage();
-		if (fileChooser == null)
-			fileChooser = new JFileChooser( System.getProperty("user.dir"));
-		
-    	int val = fileChooser.showSaveDialog(this);
-    	if (val==JFileChooser.APPROVE_OPTION) {
-    		File file = fileChooser.getSelectedFile();
-    		try {
-    			ImageIO.write(image, "png", file);
-    		}
-    		catch(IOException ioe) {
-    			JOptionPane.showMessageDialog(this, "Error saving image: " + ioe.getLocalizedMessage());
-    		}
-    	}		
-	}
-
-
-	static JFileChooser fileChooser;
+//	/**
+//	 * Obtain a string representing the data of in this logger 
+//	 * @return
+//	 */
+//	public abstract String getDataString();
+//	
+//	protected void exportData() {
+//		String data = getDataString();
+//		if (fileChooser == null)
+//			fileChooser = new JFileChooser( System.getProperty("user.dir"));
+//    	int val = fileChooser.showSaveDialog(this);
+//    	if (val==JFileChooser.APPROVE_OPTION) {
+//    		File file = fileChooser.getSelectedFile();
+//    		BufferedWriter writer;
+//			try {
+//				writer = new BufferedWriter(new FileWriter(file));
+//	    		writer.write(data);
+//	    		writer.close();
+//			} catch (IOException e) {
+//				ErrorWindow.showErrorWindow(e, "Error writing data to file : " + e.getMessage());
+//				e.printStackTrace();
+//			}
+//    	}		
+//	}
+//
+//	/**
+//	 * Create an image of the current figure and open a dialog allowig the user to save the image to a file
+//	 */
+//	protected void saveImage() {
+//		BufferedImage image = fig.getImage();
+//		if (fileChooser == null)
+//			fileChooser = new JFileChooser( System.getProperty("user.dir"));
+//		
+//    	int val = fileChooser.showSaveDialog(this);
+//    	if (val==JFileChooser.APPROVE_OPTION) {
+//    		File file = fileChooser.getSelectedFile();
+//    		try {
+//    			ImageIO.write(image, "png", file);
+//    		}
+//    		catch(IOException ioe) {
+//    			JOptionPane.showMessageDialog(this, "Error saving image: " + ioe.getLocalizedMessage());
+//    		}
+//    	}		
+//	}
+//
+//
+//	static JFileChooser fileChooser;
 	private boolean updating = false; 
 	protected Timer timer;
-	private JPanel bottomPanel;
-	protected XYSeriesFigure fig;
+//	private JPanel bottomPanel;
+//	protected XYSeriesFigure fig;
 }

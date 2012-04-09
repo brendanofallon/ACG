@@ -49,6 +49,7 @@ public class ConsensusTreeLogger extends PropertyLogger {
 	ARG arg;
 	int count = 0;
 	private ConsensusTreeBuilder builder = new ConsensusTreeBuilder();
+	private int treesTabulated = 0;
 	
 	public ConsensusTreeLogger(Map<String, String> attrs, ARG arg) {
 		super(attrs);
@@ -62,9 +63,18 @@ public class ConsensusTreeLogger extends PropertyLogger {
 	private void tabulateNewTree() {
 		CoalNode coalRoot = TreeUtils.createMarginalTree(arg, site);
 		Tree tree = new Tree(coalRoot);
+		treesTabulated++;
 		builder.addTree(tree.getRoot());
 	}
 
+	/**
+	 * Obtain the number of trees so far added to this logger
+	 * @return
+	 */
+	public int getTreesTabulated() {
+		return treesTabulated;
+	}
+	
 	@Override
 	public void addValue(int stateNumber) {
 		if (stateNumber > burnin && stateNumber % collectionFrequency==0) {
@@ -76,6 +86,10 @@ public class ConsensusTreeLogger extends PropertyLogger {
 	public String getSummaryString() {
 		Tree tree = new Tree();
 		count++;
+		if (treesTabulated == 0) {
+			return "(No trees tabulated)";
+		}
+		
 		builder.buildMajorityCladeList();
 		builder.mergeClades(tree);
 		List<Node> nodes = tree.getAllNodes();

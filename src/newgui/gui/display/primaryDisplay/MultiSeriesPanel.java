@@ -1,8 +1,5 @@
 package newgui.gui.display.primaryDisplay;
 
-import gui.figure.series.XYSeries;
-import gui.figure.series.XYSeriesElement;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -10,7 +7,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import logging.MemoryStateLogger;

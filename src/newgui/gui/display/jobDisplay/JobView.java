@@ -77,10 +77,7 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 				resumeJob();
 			}
 		});
-		//startButton.setPreferredSize(new Dimension(26, 24));
-		//startButton.setMaximumSize(new Dimension(26, 24));
-//		startButton.setXDif(-3);
-//		startButton.setYDif(-2);
+
 		BorderlessButton pauseButton = new BorderlessButton(UIConstants.pauseButton);
 		pauseButton.setToolTipText("Pause this job");
 		pauseButton.addActionListener(new ActionListener() {
@@ -88,10 +85,6 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 				pauseJob();
 			}
 		});
-		//pauseButton.setPreferredSize(new Dimension(28, 24));
-		//pauseButton.setMaximumSize(new Dimension(28, 24));
-//		pauseButton.setXDif(-3);
-//		pauseButton.setYDif(-1);
 		
 		BorderlessButton stopButton = new BorderlessButton(UIConstants.stopButton);
 		stopButton.setToolTipText("Abort this job");
@@ -100,15 +93,9 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 				killJob();
 			}
 		});
-		//stopButton.setPreferredSize(new Dimension(24, 24));
-		//stopButton.setMaximumSize(new Dimension(24, 24));
-//		stopButton.setXDif(0);
-//		stopButton.setYDif(-1);
 		
 		BorderlessButton saveResultsButton = new BorderlessButton(UIConstants.saveGrayButton);
 		saveResultsButton.setToolTipText("Save results");
-//		saveResultsButton.setYDif(-2);
-//		saveResultsButton.setXDif(-1);
 		saveResultsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				saveResults();
@@ -117,10 +104,12 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 		
 		statusPanel.add(statusLabel);
 		statusPanel.add(Box.createHorizontalGlue());
-		if (jobPanel != null)
-			statusPanel.add(saveResultsButton);
+//		if (jobPanel != null)
+//			statusPanel.add(saveResultsButton);
 		statusPanel.add(startButton);
+		statusPanel.add(Box.createHorizontalStrut(4));
 		statusPanel.add(pauseButton);
+		statusPanel.add(Box.createHorizontalStrut(4));
 		statusPanel.add(stopButton);
 		
 		statusPanel.add(Box.createHorizontalStrut(25));

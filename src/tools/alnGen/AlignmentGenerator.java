@@ -39,7 +39,7 @@ public class AlignmentGenerator {
 	 * @return
 	 * @throws IOException
 	 */
-	public List<ProtoSequence> getAlignment(String contig, int startPos, int endPos) throws IOException {
+	public List<ProtoSequence> getAlignment(String contig, int startPos, int endPos) throws IOException, ContigNotFoundException {
 		List<ProtoSequence> seqs = new ArrayList<ProtoSequence>();
 
 		FastaReader refReader = new FastaReader(referenceFile);

@@ -26,6 +26,9 @@ public class DataFileFactory {
 	 * @throws FileParseException 
 	 */
 	public static XMLDataFile createDataFile(File file) throws IOException, FileParseException {
+		if (file == null)
+			return null;
+		
 		if (! file.exists())
 			throw new IOException("File does not exist");
 		

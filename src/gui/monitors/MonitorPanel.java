@@ -270,7 +270,7 @@ public abstract class MonitorPanel extends FloatingPanel {
 			stdLower[index].addPointInOrder(new Point2D.Double(state, series[index].getYMean()-series[index].getYStdev()));
 		}
 		
-		traceFigure.inferBoundsPolitely();
+		traceFigure.inferBoundsFromCurrentSeries();
 		traceFigure.repaint();
 	}
 	/**
@@ -523,7 +523,7 @@ public abstract class MonitorPanel extends FloatingPanel {
 		}
 		
 
-		traceFigure.inferBoundsPolitely();
+		traceFigure.inferBoundsFromCurrentSeries();
 		traceFigure.repaint();
 	}
 

@@ -21,7 +21,6 @@ package gui.figure.series;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -29,9 +28,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Stroke;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.text.DecimalFormat;
@@ -43,7 +39,6 @@ import logging.StringUtils;
 
 import gui.figure.Figure;
 import gui.figure.FigureElement;
-import gui.figure.series.AxesConfigFrame.AxesOptions;
 
 /**
  * Paints graph axes in the specified boundaries, using the minXVal... etc to paint labels.
@@ -60,93 +55,99 @@ import gui.figure.series.AxesConfigFrame.AxesOptions;
 public class AxesElement extends FigureElement {
 
 
-	double minXVal = 0;
-	double maxXVal = 1;
-	double minYVal = 0;
-	double maxYVal = 1;
+	private double minXVal = 0;
+	private double maxXVal = 1;
+	private double minYVal = 0;
+	private double maxYVal = 1;
 	
-	double xTickSpacing = 1.0;
-	double yTickSpacing = 1.0;
-	boolean hasUserXTickNum = false;	//True if user has set x tick number
-	boolean hasUserYTickNum = false;	//True if user has set y tick number
-	double xTickWidth = 0.02;
-	double yTickWidth = 0.01;
-	int fontSize = 11;
+	//If true, calls to 'inferBounds...' will rescale the indicated parameter
+	//If false, calls to inferBounds will not alter the parameter
+	private boolean autoXMin = true;
+	private boolean autoYMin = true;
+	private boolean autoXMax = true;
+	private boolean autoYMax = true;
+	
+	private double xTickSpacing = 1.0;
+	private double yTickSpacing = 1.0;
+//	private boolean hasUserXTickNum = false;	//True if user has set x tick number
+//	private boolean hasUserYTickNum = false;	//True if user has set y tick number
+	private double xTickWidth = 0.02;
+	private double yTickWidth = 0.01;
+	private int fontSize = 13;
 	
 	//These indicate if the user has set values for the x or y axis, and they we should not auto-set them
-	boolean hasUserX = false;
-	boolean hasUserY = false;
+//	boolean hasUserX = false;
+//	boolean hasUserY = false;
 	
-	boolean drawYGrid = true;
-	Color yGridColor = Color.lightGray;
+	private boolean drawYGrid = true;
+	private Color yGridColor = Color.lightGray;
 	
-	boolean drawXGrid = false;
-	Color xGridColor = Color.LIGHT_GRAY;
+	private boolean drawXGrid = false;
+	private Color xGridColor = Color.LIGHT_GRAY;
 	
-	boolean recalculateBounds = true;
+	private boolean recalculateBounds = true;
 	
-	AxesConfigFrame configFrame;
 	
-	Font xLabelFont;
-	Font exponentFont;
+	private Font xLabelFont;
+	private Font exponentFont;
 	
-	static Color selectionRegionColor = new Color(0.0f, 0.25f, 0.5f, 0.1f);
+	private static Color selectionRegionColor = new Color(0.0f, 0.25f, 0.5f, 0.1f);
 	
 	//These fields are set in paint(), which is a bit inefficient but seems not to matter
 	//Ideally, they should only be set when the component is resized... but some of them depend
 	//on knowing how big the labels are, which requires graphics, which we don't have when things
 	//are resized
-	double bottomSpace;
-	double leftSpace;
-	double graphAreaWidth;
-	double graphAreaHeight;
-	double graphAreaBottom;
-	double graphAreaTop;
-	double graphAreaLeft;
-	double fontHeight;
-	double xAxisPos;
-	double yAxisPos;
-	double yAxisZero;
-	double zeroY;
-	double positiveFrac;
+	private double bottomSpace;
+	private double leftSpace;
+	private double graphAreaWidth;
+	private double graphAreaHeight;
+	private double graphAreaBottom;
+	private double graphAreaTop;
+	private double graphAreaLeft;
+	private double fontHeight;
+	private double xAxisPos;
+	private double yAxisPos;
+	private double yAxisZero;
+	private double zeroY;
+	private double positiveFrac;
 	
-	NumberFormat labelFormatter;
-	NumberFormat scientificFormatter;
-	NumberFormat mantissaFormatter;
+	private NumberFormat labelFormatter;
+	private NumberFormat scientificFormatter;
+	private NumberFormat mantissaFormatter;
 	
-	String testLabel = "0.0000";
+	private String testLabel = "0.0000";
 	
-	boolean isXSelected = false;
-	boolean isYSelected = false;
+	private boolean isXSelected = false;
+	private boolean isYSelected = false;
 	
-	Stroke normalStroke;
-	Stroke highlightStroke;
+	private Stroke normalStroke;
+	private Stroke highlightStroke;
 	
 	//boolean forceIntegralXLabels = false;
-	boolean drawMinorXTicks = true;
+	private boolean drawMinorXTicks = true;
 
-	boolean drawMinorYTicks = true;
+	private boolean drawMinorYTicks = true;
 
-	boolean drawMousePosTick = false;
-	java.awt.Point mousePos;
+	private boolean drawMousePosTick = false;
+	private java.awt.Point mousePos;
 	
-	List<String> xLabelList = null; //An alternate listing of string-valued x labels. This is used for integer values if it is not null.
+	private List<String> xLabelList = null; //An alternate listing of string-valued x labels. This is used for integer values if it is not null.
 
-	Point2D mouseDragStart = new Point2D.Double(0,0);
-	Point2D mouseDragEnd = new Point2D.Double(0, 0);
-	boolean mouseIsBeingDragged = false; 
+	private Point2D mouseDragStart = new Point2D.Double(0,0);
+	private Point2D mouseDragEnd = new Point2D.Double(0, 0);
+	private boolean mouseIsBeingDragged = false; 
 	
 	//Controls whether dragging the mouse causes the rectangular selection area to appear
-	boolean allowMouseDragSelection = true;
+	private boolean allowMouseDragSelection = true;
 	
 	//Font for drawing x-axis values during mouse drag
-	Font mouseDragNumberFont = new Font("Sans", Font.PLAIN, 9);
+	private Font mouseDragNumberFont = new Font("Sans", Font.PLAIN, 9);
 
 	//These define whether or not a range has been selected by the user via a mouse drag,
 	//and what the left and right boundaries of the range are
-	int leftMarkerPos = 0;
-	int rightMarkerPos = 0;
-	boolean isRangeSelected = false;
+	private int leftMarkerPos = 0;
+	private int rightMarkerPos = 0;
+	private boolean isRangeSelected = false;
 
 	public AxesElement(Figure parent) {
 		super(parent);
@@ -155,7 +156,7 @@ public class AxesElement extends FigureElement {
 		scientificFormatter = new DecimalFormat("0.0##E0##");
 		xLabelFont = new Font("Sans", Font.PLAIN, fontSize);
 		exponentFont = new Font("Sans", Font.PLAIN, round(fontSize/1.3));
-		configFrame = new AxesConfigFrame(parent, "Configure Axis Values");
+		//configFrame = new AxesConfigFrame(parent, "Configure Axis Values");
 		
 		normalStroke = new BasicStroke(1.0f);
 		highlightStroke = new BasicStroke(3.0f);
@@ -304,22 +305,22 @@ public class AxesElement extends FigureElement {
 		recalculateBounds = true;
 	}
 	
-	public void popupConfigureTool(java.awt.Point pos) {
-		setSelected(true);
-		if (xAxisContains(pos.x, pos.y) )  {
-			isXSelected = true;
-			isYSelected = false;
-			configFrame.display(this, minXVal, maxXVal, xTickSpacing, fontSize, pos, AxesConfigFrame.X_AXIS);
-		}
-		else {
-			if (yAxisContains(pos.x, pos.y) ) {
-				isXSelected = false;
-				isYSelected = true;
-				configFrame.display(this, minYVal, maxYVal, yTickSpacing, fontSize, pos, AxesConfigFrame.Y_AXIS);
-			}
-
-		}
-	}
+//	public void popupConfigureTool(java.awt.Point pos) {
+//		setSelected(true);
+//		if (xAxisContains(pos.x, pos.y) )  {
+//			isXSelected = true;
+//			isYSelected = false;
+//			configFrame.display(this, minXVal, maxXVal, xTickSpacing, fontSize, pos, AxesConfigFrame.X_AXIS);
+//		}
+//		else {
+//			if (yAxisContains(pos.x, pos.y) ) {
+//				isXSelected = false;
+//				isYSelected = true;
+//				configFrame.display(this, minYVal, maxYVal, yTickSpacing, fontSize, pos, AxesConfigFrame.Y_AXIS);
+//			}
+//
+//		}
+//	}
 	
 	public void setXTickSpacing(double spacing) {
 		xTickSpacing = spacing;
@@ -368,49 +369,108 @@ public class AxesElement extends FigureElement {
 		this.drawMinorYTicks = drawMinorYTicks;
 	}
 	
+	public void setXMax(double xMax) {
+		maxXVal = xMax;
+		recalculateBounds = true;
+	}
 	
-	public void setXAxisOptions(AxesOptions ops) {
-		if (ops.min != Double.NaN) {
-			if (ops.min!=minXVal)
-				hasUserX = true;
-			minXVal = ops.min;
-		}
-		if (ops.max != Double.NaN) {
-			if (ops.max!=maxXVal)
-				hasUserX = true;
-			maxXVal = ops.max;
-		}
-		if (ops.tickSpacing > 0) {
-			this.xTickSpacing = ops.tickSpacing;
-		}
+	public void setXMin(double xMin) {
+		minXVal = xMin;
+		recalculateBounds = true;
+	}
+	
+	public void setYMin(double yMin) {
+		minYVal = yMin;
+		recalculateBounds = true;
+	}
+	
+	public void setYMax(double yMax) {
+		maxYVal = yMax;
+		recalculateBounds = true;
+	}
+	
+	public boolean isAutoXMin() {
+		return autoXMin;
+	}
 
-		
-		drawXGrid = ops.drawAxis;
-		recalculateBounds = true;
-		setFontSize(ops.fontSize);
-		parent.repaint();
+	public void setAutoXMin(boolean autoXMin) {
+		this.autoXMin = autoXMin;
+	}
+
+	public boolean isAutoYMin() {
+		return autoYMin;
+	}
+
+	public void setAutoYMin(boolean autoYMin) {
+		this.autoYMin = autoYMin;
+	}
+
+	public boolean isAutoXMax() {
+		return autoXMax;
+	}
+
+	public void setAutoXMax(boolean autoXMax) {
+		this.autoXMax = autoXMax;
+	}
+
+	public boolean isAutoYMax() {
+		return autoYMax;
+	}
+
+	public void setAutoYMax(boolean autoYMax) {
+		this.autoYMax = autoYMax;
 	}
 	
-	public void setYAxisOptions(AxesOptions ops) {
-		if (ops.min != Double.NaN) {
-			if (ops.min!=minYVal)
-				hasUserY = true;
-			minYVal = ops.min;
-		}
-		if (ops.max != Double.NaN) {
-			if (ops.max!=maxYVal)
-				hasUserY = true;
-			maxYVal = ops.max;
-		}
-		if (ops.tickSpacing > 0) {
-			this.yTickSpacing = ops.tickSpacing;
-		}
-		
-		drawYGrid = ops.drawAxis;
-		recalculateBounds = true;
-		setFontSize(ops.fontSize);
-		parent.repaint();
+	public void setDrawXGrid(boolean drawXGrid) {
+		this.drawXGrid = drawXGrid;
 	}
+	
+	public void setDrawYGrid(boolean drawYGrid) {
+		this.drawYGrid = drawYGrid;
+	}
+	
+//	public void setXAxisOptions(AxesOptions ops) {
+//		if (ops.min != Double.NaN) {
+//			if (ops.min!=minXVal)
+//				autoXMin = true;
+//			minXVal = ops.min;
+//		}
+//		if (ops.max != Double.NaN) {
+//			if (ops.max!=maxXVal)
+//				hasUserX = true;
+//			maxXVal = ops.max;
+//		}
+//		if (ops.tickSpacing > 0) {
+//			this.xTickSpacing = ops.tickSpacing;
+//		}
+//
+//		
+//		drawXGrid = ops.drawAxis;
+//		recalculateBounds = true;
+//		setFontSize(ops.fontSize);
+//		parent.repaint();
+//	}
+//	
+//	public void setYAxisOptions(AxesOptions ops) {
+//		if (ops.min != Double.NaN) {
+//			if (ops.min!=minYVal)
+//				hasUserY = true;
+//			minYVal = ops.min;
+//		}
+//		if (ops.max != Double.NaN) {
+//			if (ops.max!=maxYVal)
+//				hasUserY = true;
+//			maxYVal = ops.max;
+//		}
+//		if (ops.tickSpacing > 0) {
+//			this.yTickSpacing = ops.tickSpacing;
+//		}
+//		
+//		drawYGrid = ops.drawAxis;
+//		recalculateBounds = true;
+//		setFontSize(ops.fontSize);
+//		parent.repaint();
+//	}
 	
 	private boolean xAxisContains(int x, int y) {
 		if (y >= graphAreaBottom && y < (bounds.y+bounds.height)*yFactor) {
@@ -499,6 +559,16 @@ public class AxesElement extends FigureElement {
 	public double getXMin() {
 		return minXVal;
 	}
+	
+	public double getXTickSpacing() {
+		return xTickSpacing;
+	}
+	
+	public double getYTickSpacing() {
+		return yTickSpacing;
+	}
+	
+	
 	
 	/**
 	 * Recalculate some of the values in pixel units, this happens whenever the size changes.
@@ -878,7 +948,7 @@ public class AxesElement extends FigureElement {
 				tickX = graphAreaLeft;
 			}
 			
-			while(tickStep > 0 && tickX<=round(graphAreaLeft+graphAreaWidth) && (drawTicks)) {
+			while(tickStep > 0 && tickX<(graphAreaLeft+graphAreaWidth) && (drawTicks)) {
 				int iTickX = round(tickX);
 				g.drawLine(iTickX, round(xAxisPos), iTickX, Math.max(round(xAxisPos+2),round(xAxisPos+xTickWidth*yFactor)));
 				if (drawXGrid && tickX>(graphAreaLeft+1)) {
@@ -886,8 +956,6 @@ public class AxesElement extends FigureElement {
 					g.drawLine(iTickX, round(graphAreaTop), iTickX, round(graphAreaBottom));
 				}
 			
-//				g.setStroke(origStroke);
-//				g.setColor(origColor);
 				//Minor tick
 				if (drawMinorXTicks &&  (tickX-minorTickOffset) > graphAreaLeft) {
 					g.drawLine(round(tickX-minorTickOffset), round(xAxisPos), round(tickX-minorTickOffset), Math.max(round(xAxisPos+2),round(xAxisPos+xTickWidth*yFactor/2.0)));
@@ -910,6 +978,22 @@ public class AxesElement extends FigureElement {
 				tickX += tickStep;
 			}
 			
+			//Paint rightmost label, rounding errors cause it to not be painted consistently in 
+			//loop above
+			int iTickX = round(graphAreaLeft+graphAreaWidth);
+			g.drawLine(iTickX, round(xAxisPos), iTickX, Math.max(round(xAxisPos+2),round(xAxisPos+xTickWidth*yFactor)));
+			if (xLabelList!=null) {	
+				paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), i*xLabelStep);
+			}
+			else {
+				double val;
+				if (tickX==yAxisZero)
+					val = 0;
+				else
+					val = figureXtoDataX(tickX);
+				paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), val);
+			}
+			
 			if (minXVal<0) {
 				if (maxXVal>0) //represses drawing two zeros which may not overlap completely
 					i=1;
@@ -917,7 +1001,7 @@ public class AxesElement extends FigureElement {
 					i=0;
 				tickX = yAxisZero-i*tickStep;
 				while(tickX>=graphAreaLeft) {
-					int iTickX = round(tickX);
+					iTickX = round(tickX);
 					g.drawLine(iTickX, round(xAxisPos), iTickX, Math.max(round(xAxisPos+2),round(xAxisPos+xTickWidth*yFactor)));
 					
 					//Minor tick
@@ -929,7 +1013,6 @@ public class AxesElement extends FigureElement {
 					}
 					else {
 						paintXLabel(g, round(tickX), round(graphAreaBottom+xTickWidth*yFactor), figureXtoDataX(tickX));
-
 					}
 
 					i++;
@@ -1102,14 +1185,22 @@ public class AxesElement extends FigureElement {
 		return gaBounds;
 	}
 
-
-	public void setYMax(double max) {
-		if (max>minYVal) 
-			maxYVal = max;
-		else
-			throw new IllegalArgumentException("Cannot set max Y val to be less than min Y val");
-		recalculateBounds = true;
+	/**
+	 * Obtain the font size used for drawing axes labels
+	 * @return
+	 */
+	public int getFontSize() {
+		return fontSize;
 	}
+
+
+//	public void setYMax(double max) {
+//		if (max>minYVal) 
+//			maxYVal = max;
+//		else
+//			throw new IllegalArgumentException("Cannot set max Y val to be less than min Y val");
+//		recalculateBounds = true;
+//	}
 
 
 //	public void setXMin(double xmin) {

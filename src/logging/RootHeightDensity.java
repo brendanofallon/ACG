@@ -111,7 +111,7 @@ public class RootHeightDensity extends PropertyLogger {
 	 * Obtain an array containing the mean TMRCA across sites
 	 * @return
 	 */
-	public double[] getMeans() {
+	public synchronized double[] getMeans() {
 		if (means == null) {
 			means = new double[heightHistos.length];
 		}

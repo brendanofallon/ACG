@@ -17,7 +17,7 @@ import org.w3c.dom.NodeList;
 import gui.figure.series.XYSeries;
 
 /**
- * Small utility class to convert XYSeries into a DOM (xml) element 
+ * Small utility class to convert XYSeries into a DOM (xml) Element and back 
  * @author brendano
  *
  */
@@ -28,6 +28,7 @@ public class XYSeriesElementReader {
 	public static final String XML_YDATA = "y.data";
 	public static final String XML_COLOR = "color";
 	public static final String XML_WIDTH = "width";
+	public static final String XML_LABEL = "label";
 	
 	/**
 	 * Construct a new XYSeries from the data in the given element
@@ -48,36 +49,40 @@ public class XYSeriesElementReader {
 		
 		List<Point2D> points = new ArrayList<Point2D>();
 		
-		StringTokenizer xTokenizer = new StringTokenizer(xDataStr, ",");
-		StringTokenizer yTokenizer = new StringTokenizer(yDataStr, ",");
-		while (xTokenizer.hasMoreTokens() && yTokenizer.hasMoreTokens()) {
-			String xStr = xTokenizer.nextToken();
-			String yStr = yTokenizer.nextToken();
-			Double xVal = null;
-			Double yVal = null;
-			try {
-				xVal = Double.parseDouble(xStr);
+		//Make sure there's some data, otherwise we can't tokenize..
+		if (xDataStr != null && xDataStr.length()>2) {
+			StringTokenizer xTokenizer = new StringTokenizer(xDataStr, ",");
+			StringTokenizer yTokenizer = new StringTokenizer(yDataStr, ",");
+			while (xTokenizer.hasMoreTokens() && yTokenizer.hasMoreTokens()) {
+				String xStr = xTokenizer.nextToken();
+				String yStr = yTokenizer.nextToken();
+				Double xVal = null;
+				Double yVal = null;
+				try {
+					xVal = Double.parseDouble(xStr);
+				}
+				catch (NumberFormatException nfe) {
+					throw new XMLConversionError("Could not parse value from string: " + xStr, xDataEl);
+				}
+				try {
+					yVal = Double.parseDouble(yStr);
+				}
+				catch (NumberFormatException nfe) {
+					throw new XMLConversionError("Could not parse value from string: " + xStr, xDataEl);
+				}
+				points.add(new Point2D.Double(xVal, yVal));
 			}
-			catch (NumberFormatException nfe) {
-				throw new XMLConversionError("Could not parse value from string: " + xStr, xDataEl);
-			}
-			try {
-				yVal = Double.parseDouble(yStr);
-			}
-			catch (NumberFormatException nfe) {
-				throw new XMLConversionError("Could not parse value from string: " + xStr, xDataEl);
-			}
-			points.add(new Point2D.Double(xVal, yVal));
 		}
-		
 		//Parse additional attributes like color, width, etc
 		String colorStr = xySeriesElement.getAttribute(XML_COLOR);
 		Color seriesColor = parseColor(colorStr);
 		String widthStr = xySeriesElement.getAttribute(XML_WIDTH);
 		Float width = Float.parseFloat(widthStr);
 		
+		String label = xySeriesElement.getAttribute(XML_LABEL);
 		
-		XYSeries series = new XYSeries(points);
+		
+		XYSeries series = new XYSeries(points, label);
 		
 		XYSeriesInfo seriesInfo = new XYSeriesInfo();
 		seriesInfo.series = series;
@@ -110,6 +115,7 @@ public class XYSeriesElementReader {
 		
 		xySeriesElement.setAttribute(XML_COLOR, colorToString(color));
 		xySeriesElement.setAttribute(XML_WIDTH, "" + width);
+		xySeriesElement.setAttribute(XML_LABEL, "" + series.getName());
 		
 		return xySeriesElement;
 	}

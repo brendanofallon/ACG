@@ -40,7 +40,7 @@ public class TMRCAViz extends AbstractLoggerViz {
 			burninMessage = null;
 		}
 		if (logger.getBurninExceeded()) {
-			fig.inferBoundsPolitely();
+			fig.inferBoundsFromCurrentSeries();
 			meanSeries.setYVals(rhLogger.getMeans());
 			
 			if (upper95Series == null && rhLogger.getHistoTriggerReached()) {

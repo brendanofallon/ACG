@@ -1,16 +1,19 @@
 package newgui.gui.display.resultsDisplay;
 
+import gui.figure.series.AbstractSeries;
 import gui.figure.series.HistogramSeries;
 import gui.figure.series.XYSeriesElement;
 import gui.figure.series.XYSeriesFigure;
 
 import java.awt.BorderLayout;
+import java.util.List;
 
 import javax.swing.JPanel;
 
 import math.Histogram;
 import newgui.datafile.resultsfile.LoggerFigInfo;
 import newgui.datafile.resultsfile.XYSeriesInfo;
+import newgui.gui.widgets.AbstractSeriesPanel;
 
 /**
  * A panel that displays the information about the saved result of a logger, typically
@@ -18,40 +21,51 @@ import newgui.datafile.resultsfile.XYSeriesInfo;
  * @author brendan
  *
  */
-public class LoggerResultDisplay extends JPanel {
-
-	public LoggerResultDisplay() {
-		initComponents();
-	}
-	
+public class LoggerResultDisplay extends AbstractSeriesPanel {
 
 	public void initialize(LoggerFigInfo figInfo) {
-		fig.setXLabel(figInfo.getxAxisTitle());
-		fig.setYLabel(figInfo.getyAxisTitle());
+		setXLabel(figInfo.getxAxisTitle());
+		setYLabel(figInfo.getyAxisTitle());
 		
 		for(XYSeriesInfo series : figInfo.getSeriesInfo()) {
-			XYSeriesElement seriesEl = fig.addDataSeries(series.getSeries());
+			XYSeriesElement seriesEl = addSeries(series.getSeries());
 			seriesEl.setLineColor(series.getColor());
 			seriesEl.setLineWidth(series.getWidth());
 		}
 		
 		Histogram histo = figInfo.getHisto();
 		if (histo != null) {
-			fig.addDataSeries(new HistogramSeries(figInfo.getTitle(), histo));
+			addSeries(new HistogramSeries(figInfo.getTitle(), histo));
 		}
 		
 		fig.inferBoundsFromCurrentSeries();
 		fig.repaint();
 	}
 	
-	private void initComponents() {
-		setLayout(new BorderLayout());
-		setOpaque(false);
+
+	@Override
+	protected String getDataString() {
+		StringBuilder strB = new StringBuilder();
+		String sep = System.getProperty("line.separator");
+		List<AbstractSeries> series = fig.getAllSeries();
 		
-		fig = new XYSeriesFigure();
-		this.add(fig, BorderLayout.CENTER);
+		for(int i=0; i<series.size()-1; i++) {
+			strB.append(series.get(i).getName() + "\t");
+		}
+		strB.append(series.get(series.size()-1).getName() + sep);
+		
+		boolean cont = true;
+		int index = 0;
+		while(cont) {
+			for(int i=0; i<series.size()-1; i++) {
+				strB.append(series.get(i).getX(index) + "\t" + series.get(i).getY(index) + "\t");
+			}
+			strB.append(series.get(series.size()-1).getX(index) + "\t" + series.get(series.size()-1).getY(index) + sep);
+			
+			index++;
+			cont = index < series.get(0).size();
+		}
+		
+		return strB.toString();
 	}
-	
-	
-	XYSeriesFigure fig;
 }

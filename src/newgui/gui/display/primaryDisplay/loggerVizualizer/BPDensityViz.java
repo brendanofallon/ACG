@@ -23,7 +23,7 @@ public class BPDensityViz extends AbstractLoggerViz {
 			burninMessage = null;
 		}
 		if (logger.getBurninExceeded()) {
-			fig.inferBoundsPolitely();
+			fig.inferBoundsFromCurrentSeries();
 		}
 	}
 	

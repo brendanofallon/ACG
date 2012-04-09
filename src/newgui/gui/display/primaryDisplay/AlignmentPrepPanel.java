@@ -78,7 +78,7 @@ public class AlignmentPrepPanel extends JPanel {
 	
 	public static final ImageIcon maskIcon = UIConstants.getIcon("gui/icons/oxygen/mask24.png");
 	public static final ImageIcon clearMaskIcon = UIConstants.getIcon("gui/icons/oxygen/clearmask24.png");
-	public static final ImageIcon addSelectionIcon = UIConstants.getIcon("gui/icons/addselection24.png");
+	public static final ImageIcon addSelectionIcon = UIConstants.getIcon("gui/icons/addselection.png");
 	
 	public AlignmentPrepPanel(PrimaryDisplay displayParent) {
 		this.displayParent = displayParent;

@@ -1,10 +1,15 @@
 package newgui.datafile.resultsfile;
 
 import gui.document.ACGDocument;
+import gui.figure.series.XYSeries;
 
+import java.awt.Color;
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,10 +19,15 @@ import java.util.Map;
 import jobqueue.ExecutingChain;
 import jobqueue.JobState;
 import logging.BreakpointDensity;
+import logging.ConsensusTreeLogger;
 import logging.HistogramCollector;
+import logging.MarginalTreeLogger;
+import logging.MemoryStateLogger;
 import logging.PropertyLogger;
+import logging.RootHeightDensity;
 import math.Histogram;
 import mcmc.MCMC;
+import modifier.AbstractModifier;
 
 import newgui.datafile.PropertiesElementReader;
 import newgui.datafile.XMLConversionError;
@@ -30,10 +40,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import tools.StringUtilities;
+
 /**
  * The ResultsFile is a large xml-formatted DataFile that contains multiple top-level elements
- * describing various aspects of the results of an analysis - including charts from the loggers
- * and some properties of the run itself (run length, completion state, etc) 
+ * describing various aspects of the results of an analysis - including charts from the loggers,
+ *  properties of the run itself (run length, completion state, etc), and traces of likelihoods and parameter values 
  * @author brendano
  *
  */
@@ -41,11 +53,20 @@ public class ResultsFile extends XMLDataFile {
 
 	//Identifies elements that can be parsed to a PropertyLogger 
 	public static final String LOGGER_ELEMENT = "logger.element";
+	public static final String TREE_ELEMENT = "tree.element";
 		
 	//Attribute containing class of PropertyLogger
 	public static final String LOGGER_CLASS = "logger.class";
 	//Arbitrary label for logger element
 	public static final String LOGGER_LABEL = "logger.label";
+	
+	public static final String MODIFIER_SUMMARY = "mod.summary";
+	public static final String MODIFIER_INFO = "mod.info";
+	public static final String MODIFIER_LABEL = "mod.label";
+	public static final String MODIFIER_CLASS = "mod.class";
+	public static final String MODIFIER_CALLS = "mod.calls";
+	public static final String MODIFIER_RATE = "mod.rate";
+	
 	
 	public static final String MCMC_RUNLENGTH = "run.length";
 	public static final String MCMC_PROPOSED = "states.proposed";
@@ -56,6 +77,14 @@ public class ResultsFile extends XMLDataFile {
 	public static final String MCMC_CHAINCOUNT = "chain.count";
 	public static final String MCMC_THREADCOUNT = "thread.count";
 	public static final String MCMC_RUNTIMEMS = "run.time.ms";
+	
+	public static final String TMRCA_LABEL = "label";
+	public static final String TMRCA_UPPER95 = "upper95";
+	public static final String TMRCA_MEAN = "mean";
+	public static final String TMRCA_LOWER95 = "lower95";
+	
+	public static final String TREE = "consensus.tree";
+	public static final String TREES_COUNTED = "trees.counted";
 	
 	Element propertiesElement;
 	
@@ -137,19 +166,24 @@ public class ResultsFile extends XMLDataFile {
 	 * @param acgDoc
 	 * @throws XMLConversionError
 	 */
-	public void addAllResults(ExecutingChain chain, ACGDocument acgDoc) throws XMLConversionError {
+	public void addAllResults(ExecutingChain chain, ACGDocument acgDoc, MemoryStateLogger memLogger) throws XMLConversionError {
 		Map<String, String> propsMap = new HashMap<String, String>();
-		propsMap.put(MCMC_RUNLENGTH, "" + chain.getTotalRunLength());
+		propsMap.put(MCMC_RUNLENGTH, StringUtilities.formatWithCommas( chain.getTotalRunLength()));
 		
+		
+		Element memLoggerEl = StateElementConverter.createElement(memLogger, doc);
+		doc.getDocumentElement().appendChild(memLoggerEl);
+		
+		DecimalFormat smallFormatter = new DecimalFormat("00.00");
 		List<String> mcLabels = acgDoc.getLabelForClass(MCMC.class);
 		if (mcLabels.size()>0) {
 			try {
 				MCMC mc = (MCMC) acgDoc.getObjectForLabel(mcLabels.get(0));
-				propsMap.put(MCMC_PROPOSED, "" + mc.getStatesProposed());
-				propsMap.put(MCMC_ACCEPTED, "" + mc.getStatesAccepted());
+				propsMap.put(MCMC_PROPOSED, StringUtilities.formatWithCommas( mc.getStatesProposed()));
+				propsMap.put(MCMC_ACCEPTED,  StringUtilities.formatWithCommas( mc.getStatesAccepted()));
 				propsMap.put(MCMC_CHAINCOUNT, "" + chain.getChainCount());
 				propsMap.put(MCMC_THREADCOUNT, "" + chain.getThreadCount());
-				propsMap.put(MCMC_ACCEPTEDRATIO, "" + (100.0*mc.getStatesAccepted() / mc.getStatesProposed()));
+				propsMap.put(MCMC_ACCEPTEDRATIO, "" + smallFormatter.format((100.0*mc.getStatesAccepted() / mc.getStatesProposed())));
 				
 			} catch (InstantiationException e) {
 				e.printStackTrace();
@@ -162,14 +196,14 @@ public class ResultsFile extends XMLDataFile {
 		
 		Date startTime = chain.getStartTime();
 		if (startTime != null)
-			propsMap.put(MCMC_STARTTIME, startTime.toString());
+			propsMap.put(MCMC_STARTTIME, formatDate(startTime));
 		else 
 			propsMap.put(MCMC_STARTTIME, "unknown");
 		
 		
 		Date endTime = chain.getEndTime();
 		if (endTime != null)
-			propsMap.put(MCMC_ENDTIME, endTime.toString());
+			propsMap.put(MCMC_ENDTIME, formatDate(endTime));
 		else
 			propsMap.put(MCMC_ENDTIME, "unknown");
 		
@@ -185,7 +219,13 @@ public class ResultsFile extends XMLDataFile {
 					String label = logger.getName();
 					if (label == null)
 						label = loggerLabel.replace(".class", "");
-					addChartElement(logger, label);
+					
+					if (logger instanceof ConsensusTreeLogger) {
+						addTreeElement( (ConsensusTreeLogger)logger, label);
+					}
+					else {
+						addChartElement(logger, label);
+					}
 				} catch (InstantiationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -198,7 +238,113 @@ public class ResultsFile extends XMLDataFile {
 				}
 				
 		}
+		
+		
+		//find all modifiers
+		Element modifierSummaryEl = doc.createElement(MODIFIER_SUMMARY);
+		doc.getDocumentElement().appendChild(modifierSummaryEl);
+		for(String modLabel : acgDoc.getLabelForClass(AbstractModifier.class)) {
+			try {
+				AbstractModifier mod = (AbstractModifier) acgDoc.getObjectForLabel(modLabel);
+				attachModifierInfo(mod, modLabel, modifierSummaryEl);		
+				
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+	}
+		
 		setProperties(propsMap);
+	}
+	
+	
+	public static String formatDate(Date date) {
+		String formatStr = "k:m:ss MMMM d, yyyy";
+		SimpleDateFormat dateFormat = new SimpleDateFormat(formatStr);		
+		return dateFormat.format(date);
+	}
+	
+	/**
+	 * Creates a new element that stores some information about the given modifier, and attaches
+	 * it to the parent element provided
+	 * @param mod
+	 * @param label
+	 * @param parent
+	 */
+	private void attachModifierInfo(AbstractModifier mod, String label, Element parent) {
+		Element modInfoEl = doc.createElement(MODIFIER_INFO);
+
+		modInfoEl.setAttribute(MODIFIER_CLASS, mod.getClass().getCanonicalName());
+		modInfoEl.setAttribute(MODIFIER_LABEL, label);
+		modInfoEl.setAttribute(MODIFIER_CALLS, StringUtilities.formatWithCommas(mod.getTotalCalls()));
+		modInfoEl.setAttribute(MODIFIER_RATE, "" + mod.getTotalAcceptanceRatio());
+		parent.appendChild(modInfoEl);
+	}
+	
+	/**
+	 * Obtain a list of all the series names that were recorded from the mem logger
+	 * @return
+	 */
+	public List<String> getStateSeriesNames() {
+		//Find the state logger element
+		Element el = this.getTopLevelElement(StateElementConverter.XML_STATELOGGER);
+		if (el == null)
+			return null;
+		else
+			return StateElementConverter.getSeriesNames(el);
+	}
+	
+	/**
+	 * Obtain an XYSeriesInfo that describes the data series associated with the given series name
+	 * @param seriesName
+	 * @return
+	 * @throws XMLConversionError
+	 */
+	public XYSeriesInfo getStateSeries(String seriesName) throws XMLConversionError {
+		Element el = this.getTopLevelElement(StateElementConverter.XML_STATELOGGER);
+		if (el == null)
+			return null;
+		else {
+			XYSeriesInfo seriesInfo = StateElementConverter.getSeriesForName(el, seriesName);
+			return seriesInfo;
+		}
+	}
+	
+	/**
+	 * Obtain a list of ModInfo objects containing information about the modifiers
+	 * stored in this file
+	 * @return
+	 */
+	public List<ModInfo> getModifierData() {
+		List<ModInfo> info = new ArrayList<ModInfo>();
+		Element modSummaryEl = this.getTopLevelElement(MODIFIER_SUMMARY);
+		NodeList children = modSummaryEl.getChildNodes();
+		for(int i=0; i<children.getLength(); i++) {
+			Node child = children.item(i);
+			if (child instanceof Element) {
+				Element modEl = (Element)child;
+				//String label = modEl.getNodeName();
+				String className = modEl.getAttribute(MODIFIER_CLASS);
+				String calls = modEl.getAttribute(MODIFIER_CALLS);
+				String ratioStr = modEl.getAttribute(MODIFIER_RATE);
+				Double ratio = Double.parseDouble(ratioStr);
+				ModInfo modInfo = new ModInfo();
+				modInfo.label = modEl.getAttribute(MODIFIER_LABEL);
+				modInfo.className = className;
+				modInfo.calls = calls;
+				modInfo.ratio = ratio;
+				info.add(modInfo);
+			}
+		}
+		
+		return info;
 	}
 	
 	/**
@@ -218,30 +364,112 @@ public class ResultsFile extends XMLDataFile {
 			loggerEl.appendChild(histoEl);
 		}
 		
+		if (logger instanceof RootHeightDensity) {
+			RootHeightDensity tmrca = (RootHeightDensity)logger;
+			double[] upper95s = tmrca.getUpper95s();
+			double[] means = tmrca.getMeans();
+			double[] lower95s = tmrca.getLower95s();
+			double[] sites = tmrca.getBinPositions();
+			
+			List<Point2D> upperList = new ArrayList<Point2D>();
+			for(int i=0; i<upper95s.length; i++) {
+				upperList.add(new Point2D.Double(sites[i], upper95s[i]));
+			}
+			XYSeries upperSeries = new XYSeries(upperList, "Upper 95%");
+			Element upperEl = XYSeriesElementReader.createElement(doc, upperSeries, Color.blue, 0.75f);
+			upperEl.setAttribute(TMRCA_LABEL, TMRCA_UPPER95);
+			loggerEl.appendChild(upperEl);
+			
+			List<Point2D> meanList = new ArrayList<Point2D>();
+			for(int i=0; i<upper95s.length; i++) {
+				meanList.add(new Point2D.Double(sites[i], means[i]));
+			}
+			XYSeries meanSeries = new XYSeries(meanList, "Mean TMRCA");
+			Element meanEl = XYSeriesElementReader.createElement(doc, meanSeries, Color.blue, 1.5f);
+			meanEl.setAttribute(TMRCA_LABEL, TMRCA_MEAN);
+			loggerEl.appendChild(meanEl);
+			
+			List<Point2D> lowerList = new ArrayList<Point2D>();
+			for(int i=0; i<lower95s.length; i++) {
+				lowerList.add(new Point2D.Double(sites[i], lower95s[i]));
+			}
+			XYSeries lowerSeries = new XYSeries(lowerList, "Lower 95%");
+			Element lowerEl = XYSeriesElementReader.createElement(doc, lowerSeries, Color.blue, 0.75f);
+			lowerEl.setAttribute(TMRCA_LABEL, TMRCA_LOWER95);
+			loggerEl.appendChild(lowerEl);
+		}
 		
 		addChartElement(loggerEl);
 	}
 	
+	/**
+	 * Creates a new top-level element that stores the information in the 
+	 * consensustreelogger
+	 * @param logger
+	 * @param label
+	 */
+	private void addTreeElement(ConsensusTreeLogger logger, String label) {
+		Element loggerEl = doc.createElement(TREE_ELEMENT);
+		loggerEl.setAttribute(LOGGER_CLASS, logger.getClass().getCanonicalName());
+		loggerEl.setAttribute(LOGGER_LABEL, label);
+		
+		ConsensusTreeLogger treeLogger = (ConsensusTreeLogger)logger;
+		String tree = treeLogger.getSummaryString();
+		
+		Element treeEl = doc.createElement(TREE);
+		Node treeText = doc.createTextNode(tree);
+		treeEl.appendChild(treeText);
+		loggerEl.appendChild(treeEl);
+		
+		addChartElement(loggerEl);
+	}
+	
+	/**
+	 * Append the given element to the top level of elements contained in the DOM document
+	 * @param el
+	 */
 	private void addChartElement(Element el) {
-		if (el.getNodeName().equals(LOGGER_ELEMENT)) {
-			doc.getDocumentElement().appendChild(el);
-		}
-		else {
-			throw new IllegalArgumentException("Element does not appear to be a logger");
-		}
+		doc.getDocumentElement().appendChild(el);
 	}
 	
 	public List<String> getChartLabels() throws XMLConversionError {
 		List<Element> propLogEls = this.getTopLevelElements();
 		List<String> loggers = new ArrayList<String>();
 		for(Element loggerElement : propLogEls) {
-			String className = loggerElement.getAttribute(LOGGER_CLASS);
-			if (className != null)
-				loggers.add( loggerElement.getAttribute(LOGGER_LABEL) );
+			if (loggerElement.getNodeName().equals(LOGGER_ELEMENT))
+				loggers.add(loggerElement.getAttribute(LOGGER_LABEL));
 		}
 		return loggers;
 	}
 	
+	public List<String> getTreeLabels() throws XMLConversionError {
+		List<Element> propLogEls = this.getTopLevelElements();
+		List<String> treeLoggers = new ArrayList<String>();
+		for(Element loggerElement : propLogEls) {
+			if (loggerElement.getNodeName().equals(TREE_ELEMENT))
+				treeLoggers.add(loggerElement.getAttribute(LOGGER_LABEL));
+		}
+		return treeLoggers;
+	}
+	
+	/**
+	 * Obtain the newick string for the tree element with the given label
+	 * @param label
+	 * @return
+	 * @throws XMLConversionError
+	 */
+	public String getNewickForTreeElement(String label) throws XMLConversionError {
+		List<Element> topEls = this.getTopLevelElements();
+		for(Element loggerElement : topEls) {
+			String loggerLabel = loggerElement.getAttribute(LOGGER_LABEL);
+			if (loggerLabel != null && loggerLabel.equals(label)) {
+				String newick = XMLDataFile.getTextFromChild(loggerElement, TREE);
+				return newick;
+			}
+		}
+		
+		throw new XMLConversionError("No tree element found with label " + label, null);
+	}
 	
 	public LoggerFigInfo getFigElementsForChartLabel(String label) throws XMLConversionError {
 		List<Element> propLogEls = this.getTopLevelElements();
@@ -270,33 +498,43 @@ public class ResultsFile extends XMLDataFile {
 			if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals(XYSeriesElementReader.XML_SERIES)) {
 				XYSeriesInfo seriesInfo = XYSeriesElementReader.readFromElement( (Element)node);
 				figInfo.seriesInfo.add(seriesInfo);
+				figInfo.xAxisTitle = "Sequence position";
+				figInfo.yAxisTitle = "Value";
 			}
 			if (node.getNodeType()==Node.ELEMENT_NODE && node.getNodeName().equals(HistogramElementReader.HISTOGRAM)) {
 				figInfo.histo = HistogramElementReader.readHistogramFromElement((Element)node);
+				figInfo.xAxisTitle = "Density";
+				figInfo.xAxisTitle = "Sequence position";
 			}
 		}
 		
 		return figInfo;
 	}
 	
-
-
 	
-	public static void main(String[] args) {
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("akey", "somevalue");
-		map.put("anotherkey", "othervalue");
-		map.put("somekey", "17");
+	/**
+	 * Container for some basic information about a Modifier
+	 * @author brendan
+	 *
+	 */
+	public class ModInfo {
+		String label;
+		String className;
+		String calls;
+		double ratio;
 		
-		ResultsFile file = new ResultsFile(new File("resultstest.xml"));
-//		file.setProperties(map);
-//		
-//		try {
-//			file.saveToFile(new File("resultstest.xml"));
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}		
+		public String getLabel() {
+			return label;
+		}
+		
+		public String getCalls() {
+			return calls;
+		}
+		
+		public double getAcceptRatio() {
+			return ratio;
+		}
+		
 	}
 
 }
