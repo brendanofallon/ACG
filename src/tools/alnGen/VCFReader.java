@@ -126,10 +126,10 @@ public class VCFReader {
 //		File hht16 = new File("/media/MORE_DATA/detect_fp/rawvcfs/HHT16_all_variants.vcf");
 //		File hht3 = new File("/media/MORE_DATA/detect_fp/rawvcfs/HHT3_all_variants.vcf");
 //		File hht4 = new File("/media/MORE_DATA/detect_fp/rawvcfs/HHT4_all_variants.vcf");
-		File genomesVCF = new File("/home/brendan/1000genomes/ALL.chr22.phase1_release_v3.20101123.snps_indels_svs.genotypes.vcf");
+		File genomesVCF = new File("/home/brendan/1000genomes/ALL.chr10.phase1_release_v3.20101123.snps_indels_svs.genotypes.vcf");
 		File reference = new File("/home/brendan/resources/human_g1k_v37.fasta");
 				
-		Integer contig = 22;
+		Integer contig = 10;
 		int startPos = 25000000;
 		int endPos =   25050000;
 		
