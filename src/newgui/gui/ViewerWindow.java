@@ -154,28 +154,25 @@ public class ViewerWindow extends JFrame {
 		leftPanel.setLayout(new BorderLayout());
 		JPanel leftPanelTop = new TopLeftPanel();
 		leftPanel.add(leftPanelTop, BorderLayout.NORTH);
-		//JComponent filesPanel = createFilesPanel();
-		
 		BlocksPanel filesPanel = new BlocksPanel();
 		filesPanel.setBackground(UIConstants.lightBackground);
 		FileTree inputsTree = new FileTree(InputFilesManager.getManager().getRootDirectory());
 		InputFilesManager.getManager().addListener(inputsTree);
 		AbstractBlock inputBlock = new AbstractBlock("Input files");
-		inputsTree.setOpaque(false);
+		
+		
 		inputBlock.setMainComponent(inputsTree);
 		filesPanel.addBlock(inputBlock);
 		
 		FileTree analysisTree = new FileTree(AnalysisFilesManager.getManager().getRootDirectory());
 		AnalysisFilesManager.getManager().addListener(analysisTree);
 		AbstractBlock analysisBlock = new AbstractBlock("Analysis files");
-		analysisBlock.setOpaque(false);
 		analysisBlock.setMainComponent(analysisTree);
 		filesPanel.addBlock(analysisBlock);
 		
 		FileTree resultsTree = new FileTree(ResultsFilesManager.getManager().getRootDirectory());
 		ResultsFilesManager.getManager().addListener(analysisTree);
 		AbstractBlock resultsBlock = new AbstractBlock("Results files");
-		resultsBlock.setOpaque(false);
 		resultsBlock.setMainComponent(resultsTree);
 		filesPanel.addBlock(resultsBlock);
 		
@@ -196,7 +193,6 @@ public class ViewerWindow extends JFrame {
 		bottomPanel.add(new JSeparator(JSeparator.HORIZONTAL));
 
 		contentPane.add(bottomPanel, BorderLayout.SOUTH);		
-		
 	}
 	
 	

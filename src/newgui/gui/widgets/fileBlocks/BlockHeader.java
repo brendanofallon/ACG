@@ -25,7 +25,7 @@ public class BlockHeader extends JPanel {
 	private final AbstractBlock parentBlock;
 	private String label;
 	private final int headerHeight = 14;
-	private Font font = UIConstants.sansFontBold.deriveFont(14f);
+	private Font font = UIConstants.sansFontBold.deriveFont(12f);
 	
 	public BlockHeader(AbstractBlock block, String label) {
 		this.parentBlock = block;

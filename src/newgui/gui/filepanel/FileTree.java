@@ -24,6 +24,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
@@ -55,18 +56,13 @@ public class FileTree extends JPanel implements DirectoryListener {
 	
 	public FileTree(File rootDir) {
 		this.rootDir = rootDir;
-		setOpaque(false);
 		this.setLayout(new BorderLayout());
 		
 		tree = new JTree();
-		tree.setOpaque(false);
+		((DefaultTreeCellRenderer)tree.getCellRenderer()).setBackgroundNonSelectionColor(new Color(0, 0, 0, 0));
 		tree.setFont(UIConstants.sansFont.deriveFont(12f));
 		tree.addMouseListener(new TreeMouseListener());
 		tree.setAlignmentX(Component.LEFT_ALIGNMENT);
-		TreeCellRenderer renderer = tree.getCellRenderer();
-		if (renderer instanceof JComponent) {
-			((JComponent)renderer).setOpaque(false);
-		}
 		createTreeNodes();
 		this.add(tree, BorderLayout.CENTER);
 		
