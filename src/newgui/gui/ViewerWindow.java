@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTree;
 import javax.swing.UIManager;
+import javax.swing.tree.DefaultTreeCellRenderer;
 
 
 import newgui.UIConstants;
@@ -39,10 +40,18 @@ import newgui.gui.filepanel.InputFilesManager;
 import newgui.gui.filepanel.ResultsFilesManager;
 import newgui.gui.widgets.BorderlessButton;
 import newgui.gui.widgets.RegionFader;
+import newgui.gui.widgets.fileBlocks.AbstractBlock;
+import newgui.gui.widgets.fileBlocks.BlocksPanel;
 import newgui.gui.widgets.panelPile.PPanel;
 import newgui.gui.widgets.panelPile.PanelPile;
 
-
+/**
+ * Main frame containing the application window. Right now, just consists 
+ * of a way to open files (through a PanelPile, at left), and a 
+ * FancyTabPane that displays the files when opened
+ * @author brendan
+ *
+ */
 public class ViewerWindow extends JFrame {
 
 	public static Font sansFont = UIConstants.sansFont;
@@ -72,8 +81,8 @@ public class ViewerWindow extends JFrame {
 		
 		initComponents();
 		
-		this.setSize(1000, 700);
-		this.setPreferredSize(new Dimension(1000, 700));
+		this.setSize(1000, 750);
+		this.setPreferredSize(new Dimension(1000, 750));
 		pack();
 		setLocationRelativeTo(null);
 	}
@@ -135,9 +144,10 @@ public class ViewerWindow extends JFrame {
 		Container contentPane = this.getContentPane();
 		
 		contentPane.setLayout(new BorderLayout());
-		contentPane.setBackground(Color.white);
+		contentPane.setBackground(UIConstants.lightBackground);
 
 		mainPanel = new JPanel();
+		mainPanel.setBackground(UIConstants.lightBackground);
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
@@ -146,14 +156,37 @@ public class ViewerWindow extends JFrame {
 		leftPanel.setLayout(new BorderLayout());
 		JPanel leftPanelTop = new TopLeftPanel();
 		leftPanel.add(leftPanelTop, BorderLayout.NORTH);
-		JComponent filesPanel = createFilesPanel();
+		//JComponent filesPanel = createFilesPanel();
+		
+		BlocksPanel filesPanel = new BlocksPanel();
+		filesPanel.setBackground(UIConstants.lightBackground);
+		FileTree inputsTree = new FileTree(InputFilesManager.getManager().getRootDirectory());
+		InputFilesManager.getManager().addListener(inputsTree);
+		AbstractBlock inputBlock = new AbstractBlock("Input files");
+		inputBlock.setMainComponent(inputsTree);
+		filesPanel.addBlock(inputBlock);
+		
+		FileTree analysisTree = new FileTree(AnalysisFilesManager.getManager().getRootDirectory());
+		AnalysisFilesManager.getManager().addListener(analysisTree);
+		AbstractBlock analysisBlock = new AbstractBlock("Analysis files");
+		analysisBlock.setMainComponent(analysisTree);
+		filesPanel.addBlock(analysisBlock);
+		
+		FileTree resultsTree = new FileTree(ResultsFilesManager.getManager().getRootDirectory());
+		
+		ResultsFilesManager.getManager().addListener(analysisTree);
+		AbstractBlock resultsBlock = new AbstractBlock("Results files");
+		resultsBlock.setMainComponent(resultsTree);
+		filesPanel.addBlock(resultsBlock);
+		
 		leftPanel.add(filesPanel, BorderLayout.CENTER);
 		leftPanel.setPreferredSize(new Dimension(200, 10000));
 		leftPanel.setMaximumSize(new Dimension(200, 10000));
 		mainPanel.add(leftPanel);
 		displayPane = new DisplayPane();
 		
-		JPanel displayBackground = new ViewerBackground();
+		JPanel displayBackground = new JPanel();
+		displayBackground.setBackground(UIConstants.lightBackground);
 		displayBackground.setLayout(new BorderLayout());
 		displayBackground.add(displayPane, BorderLayout.CENTER);
 		displayPane.setOpaque(false);

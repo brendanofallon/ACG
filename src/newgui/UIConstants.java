@@ -82,7 +82,9 @@ public class UIConstants {
 //	public static final ImageIcon blueHistogram = getIcon("gui/icons/blueHistogram.png");
 	
 	//Fonts
-	public static final Font sansFont = getFont("gui/fonts/Trebuchet_MS.ttf");
+	//public static final Font sansFont = getFont("gui/fonts/Trebuchet_MS.ttf");
+	public static final Font sansFont = getFont("gui/fonts/DroidSans.ttf");
+	public static final Font sansFontBold = getFont("gui/fonts/DroidSans-Bold.ttf");
 	
 	//Some other helpful properties:
 	
