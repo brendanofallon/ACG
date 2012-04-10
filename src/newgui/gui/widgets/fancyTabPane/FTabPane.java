@@ -1,11 +1,13 @@
 package newgui.gui.widgets.fancyTabPane;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -182,6 +184,31 @@ public class FTabPane extends JPanel implements ChangeListener {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 		
+		g.setColor(shadowColor);
+		((Graphics2D)g).setStroke(shadowStroke);
+		g.drawRoundRect(4, 4, getWidth()-5, getHeight()-5, 8, 8);
+		
+		g.setColor(bgColor);
+		((Graphics2D)g).setStroke(normalStroke);
+		g.fillRoundRect(1, 1, getWidth()-3, getHeight()-2, 5, 5);
+	
+		//A gradient
+		float gradMax = Math.min(200, Math.max( getHeight()/3f, 20));
+		g.setColor(gray2);
+		g.drawLine(3, 2, getWidth()-4, 2);
+		g.setColor(dark1);
+		g.drawLine(3, 3, getWidth()-4, 3);
+		g.drawLine(2, 4, getWidth()-2, 4);
+		for(float i=5; i<gradMax; i++) {
+			float newVal = topDark + (0.99f-topDark)*(1-(gradMax-i)/gradMax );
+			g.setColor( new Color(newVal, newVal, newVal));
+			g.drawLine(1, (int)i, getWidth()-2, (int)i);
+		}
+		
+		g.setColor(lineColor);
+		g.drawRoundRect(1, 1, getWidth()-3, getHeight()-3, 5, 5);
+
+		
 		if (tabMap.size()>1 || (tabMap.size()==1 && showTabIfOne)) {
 			g2d.setColor(Color.LIGHT_GRAY);
 			g2d.drawRoundRect(3, tabsPanel.getHeight()-2, getWidth()-6, getHeight()-tabsPanel.getHeight(), 12, 12);
@@ -190,6 +217,16 @@ public class FTabPane extends JPanel implements ChangeListener {
 	}
 	
 
+	final static Color bgColor = new Color(253, 253, 253);
+	final static Color gray1 = Color.white;
+	final static Color gray2 = new Color(250, 250, 250, 100);
+	final static float topDark = 0.935f;
+	final static Color dark1 = new Color(topDark, topDark, topDark);
+	final static Color dark2 = new Color(220, 220, 220, 100);
+	final static Color shadowColor = new Color(0f, 0f, 0f, 0.1f);
+	final static Color lineColor = new Color(200, 200, 200);
+	final static Stroke shadowStroke = new BasicStroke(1.6f);
+	final static Stroke normalStroke = new BasicStroke(1.0f);
 
 	private JPanel centerPanel;
 }

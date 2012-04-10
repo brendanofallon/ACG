@@ -81,8 +81,8 @@ public class ViewerWindow extends JFrame {
 		
 		initComponents();
 		
-		this.setSize(1000, 750);
-		this.setPreferredSize(new Dimension(1000, 750));
+		this.setSize(1000, 700);
+		this.setPreferredSize(new Dimension(1000, 700));
 		pack();
 		setLocationRelativeTo(null);
 	}
@@ -180,8 +180,8 @@ public class ViewerWindow extends JFrame {
 		filesPanel.addBlock(resultsBlock);
 		
 		leftPanel.add(filesPanel, BorderLayout.CENTER);
-		leftPanel.setPreferredSize(new Dimension(200, 10000));
-		leftPanel.setMaximumSize(new Dimension(200, 10000));
+		leftPanel.setPreferredSize(new Dimension(220, 10000));
+		leftPanel.setMaximumSize(new Dimension(220, 10000));
 		mainPanel.add(leftPanel);
 		displayPane = new DisplayPane();
 		
