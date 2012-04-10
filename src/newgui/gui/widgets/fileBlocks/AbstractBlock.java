@@ -98,7 +98,7 @@ public class AbstractBlock extends JPanel {
 		g.fillRoundRect(1, 1, getWidth()-3, getHeight()-2, 5, 5);
 	
 		//A gradient
-		float gradMax = Math.min(200, Math.max( getHeight()/2f, 20));
+		float gradMax = Math.min(200, Math.max( getHeight()/3f, 20));
 		g.setColor(gray2);
 		g.drawLine(3, 2, getWidth()-4, 2);
 		g.setColor(dark1);

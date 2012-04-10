@@ -1,6 +1,5 @@
 package newgui.gui.widgets.fileBlocks;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -10,14 +9,10 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import newgui.UIConstants;
-import newgui.gui.ViewerWindow;
 import newgui.gui.widgets.BorderlessButton;
 
 public class BlockHeader extends JPanel {
@@ -25,7 +20,7 @@ public class BlockHeader extends JPanel {
 	private final AbstractBlock parentBlock;
 	private String label;
 	private final int headerHeight = 14;
-	private Font font = UIConstants.sansFontBold.deriveFont(14f);
+	private Font font = UIConstants.sansFontBold.deriveFont(12f);
 	
 	public BlockHeader(AbstractBlock block, String label) {
 		this.parentBlock = block;

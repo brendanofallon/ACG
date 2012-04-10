@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTree;
 import javax.swing.UIManager;
+import javax.swing.tree.DefaultTreeCellRenderer;
 
 
 import newgui.UIConstants;
@@ -143,9 +144,10 @@ public class ViewerWindow extends JFrame {
 		Container contentPane = this.getContentPane();
 		
 		contentPane.setLayout(new BorderLayout());
-		contentPane.setBackground(Color.white);
+		contentPane.setBackground(UIConstants.lightBackground);
 
 		mainPanel = new JPanel();
+		mainPanel.setBackground(UIConstants.lightBackground);
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
@@ -161,21 +163,19 @@ public class ViewerWindow extends JFrame {
 		FileTree inputsTree = new FileTree(InputFilesManager.getManager().getRootDirectory());
 		InputFilesManager.getManager().addListener(inputsTree);
 		AbstractBlock inputBlock = new AbstractBlock("Input files");
-		inputsTree.setOpaque(false);
 		inputBlock.setMainComponent(inputsTree);
 		filesPanel.addBlock(inputBlock);
 		
 		FileTree analysisTree = new FileTree(AnalysisFilesManager.getManager().getRootDirectory());
 		AnalysisFilesManager.getManager().addListener(analysisTree);
 		AbstractBlock analysisBlock = new AbstractBlock("Analysis files");
-		analysisBlock.setOpaque(false);
 		analysisBlock.setMainComponent(analysisTree);
 		filesPanel.addBlock(analysisBlock);
 		
 		FileTree resultsTree = new FileTree(ResultsFilesManager.getManager().getRootDirectory());
+		
 		ResultsFilesManager.getManager().addListener(analysisTree);
 		AbstractBlock resultsBlock = new AbstractBlock("Results files");
-		resultsBlock.setOpaque(false);
 		resultsBlock.setMainComponent(resultsTree);
 		filesPanel.addBlock(resultsBlock);
 		
@@ -185,7 +185,8 @@ public class ViewerWindow extends JFrame {
 		mainPanel.add(leftPanel);
 		displayPane = new DisplayPane();
 		
-		JPanel displayBackground = new ViewerBackground();
+		JPanel displayBackground = new JPanel();
+		displayBackground.setBackground(UIConstants.lightBackground);
 		displayBackground.setLayout(new BorderLayout());
 		displayBackground.add(displayPane, BorderLayout.CENTER);
 		displayPane.setOpaque(false);
