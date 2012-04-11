@@ -285,15 +285,13 @@ public class Histogram {
 	 * @return
 	 */
 	public double lowerHPD(double hpd) {
-		if (hpd < 0 || hpd > 0.5) {
-			throw new IllegalArgumentException("Invalid density supplied to lowerHPD, value must be between 0 and 0.5, but got " + hpd);
-		}
+//		if (hpd < 0 || hpd > 0.5) {
+//			throw new IllegalArgumentException("Invalid density supplied to lowerHPD, value must be between 0 and 0.5, but got " + hpd);
+//		}
 		double lessThanMinDensity =  (double)lessThanMin / (double)count;
 		double density = lessThanMinDensity;
-		if (density <= 0)
+		if (density > hpd)
 			return minValue;
-		if (density  >= 1.0)
-			return maxValue;
 		int bin = 0;
 		while(density < hpd) {
 			double binDensity = getFreq(bin);
@@ -304,22 +302,18 @@ public class Histogram {
 	}
 	
 	public double upperHPD(double hpd) {
-		if (hpd < 0 || hpd > 0.5) {
-			throw new IllegalArgumentException("Invalid density supplied to lowerHPD, value must be between 0 and 0.5, but got " + hpd);
-		}
-		double moreThanMaxDensity = (double)moreThanMax / (double)count;
-		double density = 1.0 - moreThanMaxDensity;
-		if (density <= 0)
-			return minValue;
-		if (density  >= 1.0)
-			return maxValue;
-		int bin = 0;
-		while(density < hpd) {
-			double binDensity = getFreq(bin);
-			density += binDensity;
-			bin++;
-		}
-		return minValue + bin*getBinWidth();
+		return lowerHPD( 1.0 - hpd ); // We start counting from bottom
+//		double lessThanMinDensity =  (double)lessThanMin / (double)count;
+//		double density = lessThanMinDensity;
+//		if (density > hpd)
+//			return minValue;
+//		int bin = 0;
+//		while(density < hpd) {
+//			double binDensity = getFreq(bin);
+//			density += binDensity;
+//			bin++;
+//		}
+//		return minValue + bin*getBinWidth();
 	}
 	
 	/**
