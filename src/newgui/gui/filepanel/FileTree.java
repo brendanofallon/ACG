@@ -62,10 +62,13 @@ public class FileTree extends JPanel implements DirectoryListener {
 		((DefaultTreeCellRenderer)tree.getCellRenderer()).setBackgroundNonSelectionColor(new Color(0, 0, 0, 0));
 		tree.setFont(UIConstants.sansFont.deriveFont(12f));
 		tree.addMouseListener(new TreeMouseListener());
-		tree.setAlignmentX(Component.LEFT_ALIGNMENT);
+
 		createTreeNodes();
 		this.add(tree, BorderLayout.CENTER);
 		
+		tree.setBackground(Color.RED);
+		this.setBackground(Color.RED);
+		((DefaultTreeCellRenderer)tree.getCellRenderer()).setBackground(Color.RED);
 		initializePopupMenu();
 	}
 
@@ -118,6 +121,7 @@ public class FileTree extends JPanel implements DirectoryListener {
 		renamerPopup = new JPopupMenu();
 		renamer = new JTextField();
 		renamer.setBorder(null);
+		renamer.setFont(tree.getFont());
 		renamerPopup.add(renamer);
 		
 		renamer.addActionListener(new ActionListener() {
@@ -167,10 +171,16 @@ public class FileTree extends JPanel implements DirectoryListener {
 		
 		DirectoryNode rootNode = new DirectoryNode(rootDir);
 		TreeModel treeModel = new DefaultTreeModel(rootNode);
-		tree.setCellRenderer(new FileCellRenderer());
 		tree.setRootVisible(false);
 		buildTreeNodes(rootNode);
 		tree.setModel(treeModel);
+		DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer)tree.getCellRenderer();
+		renderer.setBackgroundSelectionColor(Color.green);
+		renderer.setBackgroundNonSelectionColor(Color.blue);
+		renderer.setBackground(Color.red);
+		
+		tree.setCellRenderer(renderer);
+		
 	}
 	
 	@Override

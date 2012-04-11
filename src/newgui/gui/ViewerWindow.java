@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTree;
 import javax.swing.UIManager;
+import javax.swing.tree.DefaultTreeCellRenderer;
 
 
 import newgui.UIConstants;
@@ -80,8 +81,8 @@ public class ViewerWindow extends JFrame {
 		
 		initComponents();
 		
-		this.setSize(1000, 750);
-		this.setPreferredSize(new Dimension(1000, 750));
+		this.setSize(1000, 700);
+		this.setPreferredSize(new Dimension(1000, 700));
 		pack();
 		setLocationRelativeTo(null);
 	}
@@ -143,9 +144,10 @@ public class ViewerWindow extends JFrame {
 		Container contentPane = this.getContentPane();
 		
 		contentPane.setLayout(new BorderLayout());
-		contentPane.setBackground(Color.white);
+		contentPane.setBackground(UIConstants.lightBackground);
 
 		mainPanel = new JPanel();
+		mainPanel.setBackground(UIConstants.lightBackground);
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
@@ -159,8 +161,7 @@ public class ViewerWindow extends JFrame {
 		FileTree inputsTree = new FileTree(InputFilesManager.getManager().getRootDirectory());
 		InputFilesManager.getManager().addListener(inputsTree);
 		AbstractBlock inputBlock = new AbstractBlock("Input files");
-		
-		
+
 		inputBlock.setMainComponent(inputsTree);
 		filesPanel.addBlock(inputBlock);
 		
@@ -171,18 +172,20 @@ public class ViewerWindow extends JFrame {
 		filesPanel.addBlock(analysisBlock);
 		
 		FileTree resultsTree = new FileTree(ResultsFilesManager.getManager().getRootDirectory());
+		
 		ResultsFilesManager.getManager().addListener(analysisTree);
 		AbstractBlock resultsBlock = new AbstractBlock("Results files");
 		resultsBlock.setMainComponent(resultsTree);
 		filesPanel.addBlock(resultsBlock);
 		
 		leftPanel.add(filesPanel, BorderLayout.CENTER);
-		leftPanel.setPreferredSize(new Dimension(200, 10000));
-		leftPanel.setMaximumSize(new Dimension(200, 10000));
+		leftPanel.setPreferredSize(new Dimension(220, 10000));
+		leftPanel.setMaximumSize(new Dimension(220, 10000));
 		mainPanel.add(leftPanel);
 		displayPane = new DisplayPane();
 		
-		JPanel displayBackground = new ViewerBackground();
+		JPanel displayBackground = new JPanel();
+		displayBackground.setBackground(UIConstants.lightBackground);
 		displayBackground.setLayout(new BorderLayout());
 		displayBackground.add(displayPane, BorderLayout.CENTER);
 		displayPane.setOpaque(false);
