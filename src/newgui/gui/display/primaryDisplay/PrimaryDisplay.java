@@ -5,6 +5,7 @@ import gui.inputPanels.AnalysisModel;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,12 +44,14 @@ public class PrimaryDisplay extends Display {
 	
 	
 	private void initComponents() {
+		setOpaque(false);
 		setLayout(new BorderLayout());
 		mainPanel = new JPanel();
-		
 		mainPanel.setLayout(new CardLayout());
+		mainPanel.setOpaque(false);
 		
 		alnPrepPanel = new AlignmentPrepPanel(this);
+		
 		analDetailsPanel = new AnalysisDetailsPanel(this);
 		runJobPanel = new RunningJobPanel(this);
 		mainPanel.add(alnPrepPanel, ALN_PREP);

@@ -1,8 +1,13 @@
 package newgui.gui.display;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Stroke;
 
 import javax.swing.JPanel;
+
+import java.awt.Graphics2D;
 
 import newgui.UIConstants;
 
@@ -16,11 +21,12 @@ import newgui.UIConstants;
 public abstract class Display extends JPanel {
 
 	private String title; //Label for this display, appears in tab at top of component
-	public static final Color defaultDisplayBackground = UIConstants.componentBackground;
+	//public static final Color defaultDisplayBackground = UIConstants.componentBackground;
 	
 	public Display() {
-		this.setBackground(defaultDisplayBackground);
+		this.setOpaque(false);
 	}
+
 	
 	/**
 	 * Set title for this display, shouldn't be too long
@@ -33,5 +39,5 @@ public abstract class Display extends JPanel {
 	public String getTitle() {
 		return title;
 	}
-	
+
 }

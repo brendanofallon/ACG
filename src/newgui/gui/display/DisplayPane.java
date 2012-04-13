@@ -10,7 +10,9 @@ import javax.swing.JPanel;
 import newgui.gui.widgets.fancyTabPane.FTabPane;
 
 /**
- * This is the panel that houses and manages zero or more Displays.
+ * This is the panel that houses and manages zero or more Displays. Currently, it's
+ * just a pretty thin wrapper for an FTabPane
+ * 
  * @author brendan
  *
  */
