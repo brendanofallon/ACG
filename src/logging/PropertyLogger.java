@@ -43,9 +43,10 @@ import mcmc.MCMCListener;
  */
 public abstract class PropertyLogger implements MCMCListener, Named {
 	
-	public static final String FREQUENCY = "frequency";
-	public static final String BURNIN = "burnin";
-	public static final String FILENAME = "filename";
+	public static final String FREQUENCY = "frequency"; //Collect data every this many steps
+	public static final String BURNIN = "burnin";		//Dont collect data prior to this step
+	public static final String FILENAME = "filename";	//Write data to this file
+	public static final String LABEL = "label";			//arbitrary, user-defined label
 	public static final String WRITE_TEMP_DATA = "write.temp.data";
 	public static final String lineSep = System.getProperty("line.separator");
 	
@@ -65,7 +66,9 @@ public abstract class PropertyLogger implements MCMCListener, Named {
 	
 	protected PrintStream outputStream = System.out;
 	
-	SiteMap siteMap = null; //Used for mapping output to other coordinates
+	
+	protected String label = "no label";
+	//SiteMap siteMap = null; //Used for mapping output to other coordinates
 
 	public PropertyLogger(Map<String, String> attrs) {
 		Integer burn = XMLUtils.getOptionalInteger(BURNIN, attrs);
@@ -81,6 +84,12 @@ public abstract class PropertyLogger implements MCMCListener, Named {
 			this.collectionFrequency = 10000;
 		else
 			this.collectionFrequency = collect;
+		
+		String label = XMLUtils.getOptionalString(LABEL, attrs);
+		if (label != null) {
+			setName(label);
+		}
+
 		
 		String filename = XMLUtils.getStringOrFail(FILENAME, attrs);
 		if (filename == null || filename.length() == 0) {
@@ -144,9 +153,9 @@ public abstract class PropertyLogger implements MCMCListener, Named {
 	 * to translate sites back to original coordinates when columns have been removed from input alignment
 	 * @param map
 	 */
-	public void setSiteMap(SiteMap map) {
-		this.siteMap = map;
-	}
+//	public void setSiteMap(SiteMap map) {
+//		this.siteMap = map;
+//	}
 	
 	/**
 	 * Return a text representation of the property suitable for writing to output files. 
@@ -247,5 +256,12 @@ public abstract class PropertyLogger implements MCMCListener, Named {
 		}
 	}
 
+
+	public void setName(String newLabel) {
+		this.label = newLabel;
+	}
 	
+	public String getName() {
+		return label;
+	}
 }

@@ -137,8 +137,8 @@ public class BreakpointDensity extends HistogramCollector  {
 		else {
 			for(int i=0; i<histo.getBinCount(); i++) {
 				int site = (int)Math.round(i*histo.getBinWidth());
-				if (siteMap != null)
-					site = siteMap.getOriginalSite(site);
+//				if (siteMap != null)
+//					site = siteMap.getOriginalSite(site);
 				strB.append(site + "\t" + formatter.format( histo.getCount(i) / (double)statesSampled ) + " " + lineSep);
 			}
 			strB.append("States sampled : " + statesSampled + lineSep);
@@ -147,8 +147,5 @@ public class BreakpointDensity extends HistogramCollector  {
 		return strB.toString();
 	}
 	
-	public String getName() {
-		return "Recombinations along sequence";
-	}
 
 }

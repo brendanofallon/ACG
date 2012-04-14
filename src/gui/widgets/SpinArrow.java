@@ -76,7 +76,7 @@ public class SpinArrow extends JPanel implements MouseListener, ActionListener {
 		this();
 		text = label;
 		
-		int strWidth = this.getFontMetrics(getFont()).stringWidth(text);
+		int strWidth = this.getFontMetrics(getFont()).stringWidth(text)+8;
 		this.setMinimumSize(new Dimension(15+strWidth+2, 14));
 		this.setPreferredSize(new Dimension(15+strWidth+2, 16));
 		this.setMaximumSize(new Dimension(15+strWidth+2, 18));
@@ -144,7 +144,7 @@ public class SpinArrow extends JPanel implements MouseListener, ActionListener {
 		g.setFont(getFont());
 		g.setColor(getForeground());
 		int strHeight = getFontMetrics(getFont()).getHeight();
-		g.drawString(text, 16, getHeight()-(getHeight()-strHeight)/2-4);
+		g.drawString(text, 17, getHeight()-(getHeight()-strHeight)/2-4);
 	}
 	
 	/**

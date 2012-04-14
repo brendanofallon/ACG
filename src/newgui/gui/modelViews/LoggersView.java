@@ -53,6 +53,8 @@ public class LoggersView extends JPanel {
 	private JScrollPane scrollPane;
 	private JPanel mainPanel;
 	
+	ImageIcon addIcon = UIConstants.getIcon("gui/icons/addButton.png");
+	
 	//Reference to ARG object that may be used by loggers
 	//This implementation sucks because what if different loggers want to reference different ARGs?
 	//Maybe there should be one logger panel per ARG? per alignment? 
@@ -81,7 +83,11 @@ public class LoggersView extends JPanel {
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		topPanel.setOpaque(false);
-		addButton = new BorderlessButton("Add logger");
+		addButton = new BorderlessButton("Add logger", addIcon);
+		addButton.setTextPosition(BorderlessButton.TEXT_RIGHT);
+		addButton.setHorizontalTextAlignment(LEFT_ALIGNMENT);
+		addButton.setPreferredSize(new Dimension(120, 32));
+		addButton.setMinimumSize(new Dimension(120, 22));
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showAddFrame();
@@ -116,10 +122,9 @@ public class LoggersView extends JPanel {
 	}
 	
 	public void addLogger(DefaultLoggerView logger) {
-		//LoggerWrapper wrapped = new LoggerWrapper(logger);
-		//wrapped.setAlignmentX(Component.LEFT_ALIGNMENT);
 		logger.setLoggerParent(this);
 		loggers.add(logger);
+		logger.setOpen();
 		layoutLoggers();
 	}
 	

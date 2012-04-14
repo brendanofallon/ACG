@@ -52,7 +52,7 @@ public class LegendElement extends FigureElement {
 	public LegendElement(SeriesFigure fig) {
 		super(fig);
 		this.seriesParent = fig;
-		font = new Font("Sans", Font.PLAIN, 10);
+		font = new Font("Sans", Font.PLAIN, 11);
 		yPosn = new ArrayList<Integer>();
 		normalStroke = new BasicStroke(1.0f);
 		highlightStroke = new BasicStroke(2.0f);

@@ -96,6 +96,15 @@ public abstract class LoggerModel extends ModelElement {
 		return null;
 	}
 	
+	protected String readLabel(Element el) {
+		String str = el.getAttribute(PropertyLogger.LABEL);
+		if (str != null ) {
+			setModelLabel(str);
+			return str;
+		}
+		return null;
+	}
+	
 	protected Integer readFrequency(Element el) {
 		String freqStr = el.getAttribute(PropertyLogger.FREQUENCY);
 		if (freqStr != null && freqStr.length()>0) {

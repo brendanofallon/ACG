@@ -37,7 +37,7 @@ public class ConsensusTreeView extends DefaultLoggerView {
 	
 	public ConsensusTreeView() {
 		this( new ConsensusTreeModel() );
-		filenameField.setText("ConsensusTree.tre");
+		loggerLabelField.setText("Consensus Tree");
 	}
 	
 	public ConsensusTreeView(final ConsensusTreeModel model) {
@@ -70,7 +70,7 @@ public class ConsensusTreeView extends DefaultLoggerView {
 			Integer site = Integer.parseInt(siteField.getText());
 			treeModel.setSite(site);
 			if (treeModel.getUseDefaultFilename()) {
-				filenameField.setText("ConsensusTree" + site + ".tre");
+				loggerLabelField.setText("Consensus tree " + site);
 			}
 		}
 		catch (NumberFormatException nfe) {
@@ -97,8 +97,8 @@ public class ConsensusTreeView extends DefaultLoggerView {
 	 * Updates widgets with info from model
 	 */
 	public void updateView() {
-		filenameField.setText( model.getOutputFilename() );
-		filenameField.repaint();
+		loggerLabelField.setText( model.getModelLabel() );
+		loggerLabelField.repaint();
 		burninSpinner.setValue( model.getBurnin() );
 		burninSpinner.repaint();
 		freqSpinner.setValue( model.getLogFrequency() );

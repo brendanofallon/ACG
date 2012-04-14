@@ -139,11 +139,5 @@ public class PopSizeLogger extends PropertyLogger {
 		return null;
 	}
 
-
-	@Override
-	public String getName() {
-		return "Population size logger";
-	}
-
 	
 }

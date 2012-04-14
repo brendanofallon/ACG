@@ -50,7 +50,7 @@ public class MPEARGModel extends LoggerModel {
 		el.setAttribute(PropertyLogger.FILENAME, getOutputFilename());
 		el.setAttribute(PropertyLogger.FREQUENCY, "" + getLogFrequency());
 		el.setAttribute(PropertyLogger.BURNIN, "" + getBurnin());
-		
+		el.setAttribute(PropertyLogger.LABEL, getModelLabel());
 		Element argEl = doc.createElement( argRef.getModelLabel() );
 		el.appendChild(argEl);
 		return el;
@@ -62,6 +62,7 @@ public class MPEARGModel extends LoggerModel {
 		readFilename(el);
 		readBurnin(el);
 		readFrequency(el);
+		readLabel(el);
 	}
 
 }

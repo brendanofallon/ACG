@@ -173,10 +173,5 @@ public class BreakpointLocation extends PropertyLogger {
 		return strB.toString();
 	}
 
-	@Override
-	public String getName() {
-		return "Recombinations in space and time";
-	}
-
 	
 }

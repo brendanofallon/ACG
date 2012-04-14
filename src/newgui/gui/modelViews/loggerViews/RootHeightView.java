@@ -79,8 +79,8 @@ public class RootHeightView extends DefaultLoggerView {
 	 * Updates widgets with info from model
 	 */
 	public void updateView() {
-		filenameField.setText( model.getOutputFilename() );
-		filenameField.repaint();
+		loggerLabelField.setText( model.getModelLabel() );
+		loggerLabelField.repaint();
 		burninSpinner.setValue( model.getBurnin() );
 		burninSpinner.repaint();
 		freqSpinner.setValue( model.getLogFrequency() );

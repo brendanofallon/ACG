@@ -31,8 +31,13 @@ import javax.swing.event.MouseInputAdapter;
  */
 public class BorderlessButton extends JPanel {
 
-	ImageIcon icon = null;
-	String[] text = null;
+	public static final int TEXT_BELOW = 0;
+	public static final int TEXT_RIGHT = 1;
+	protected int textPosition = TEXT_BELOW;
+	
+	
+	protected ImageIcon icon = null;
+	protected String[] text = null;
 	private boolean drawBorder = false;
 	private boolean clicking = false;
 	
@@ -100,6 +105,18 @@ public class BorderlessButton extends JPanel {
 	
 	public static Font getDefaultFont() {
 		return defaultFont;
+	}
+	
+	
+	/**
+	 * Determine the position for the text in this element - either below or right of the
+	 * icon. If there's no icon this has no effect
+	 * @param pos
+	 */
+	public void setTextPosition(int pos) {
+		if (pos != TEXT_BELOW && pos != TEXT_RIGHT) 
+			throw new IllegalArgumentException("Invalid text position : " + pos);
+		this.textPosition = pos;
 	}
 	
 	/**
@@ -190,8 +207,12 @@ public class BorderlessButton extends JPanel {
 		
 		int strWidth = g2d.getFontMetrics().stringWidth(text[0]); //Width of text 
 		int boxWidth = strWidth + 10; //Width of box around text
-		if (icon != null)
-			boxWidth = Math.max(boxWidth, icon.getIconWidth()+6);
+		if (icon != null) {
+			if (textPosition == TEXT_BELOW)
+				boxWidth = Math.max(boxWidth, icon.getIconWidth()+6);
+			else
+				boxWidth = boxWidth+icon.getIconWidth()+6;
+		}
 		
 		//Width of box should never be greater than width of component
 		boxWidth = Math.min(boxWidth, getWidth()-1);
@@ -218,32 +239,63 @@ public class BorderlessButton extends JPanel {
 		
 		int dx = 1;
 		if (icon != null) {
-			g2d.drawImage(icon.getImage(), Math.max(0, getWidth()/2-icon.getIconWidth()/2)+xDif, Math.max(0, getHeight()/2 - icon.getIconHeight()/2)+yDif , null);
+			if (textPosition == TEXT_BELOW)
+				g2d.drawImage(icon.getImage(), Math.max(0, getWidth()/2-icon.getIconWidth()/2)+xDif, Math.max(0, getHeight()/2 - icon.getIconHeight()/2)+yDif , null);
+			if (textPosition == TEXT_RIGHT)
+				g2d.drawImage(icon.getImage(), 3+xDif, Math.max(0, getHeight()/2 - icon.getIconHeight()/2)+yDif , null);
 		}
 		else {
 			yStart = Math.min(getHeight()-2, getHeight()/2 - 8 );
 		}
-		if (text != null) {					
-			g2d.setFont(getFont());
-			for(int i=0; i<text.length; i++) {
-				int textXPos = 1;
-				if (horTextAlignment == Component.LEFT_ALIGNMENT)
-					textXPos = 5;
-				if (horTextAlignment == Component.CENTER_ALIGNMENT)
-					textXPos = getWidth()/2-strWidth/2;
-				if (horTextAlignment == Component.RIGHT_ALIGNMENT)
-					textXPos = getWidth() - strWidth - 7;
-				
-				
-				g2d.setColor(new Color(0.99f, 0.99f, 0.99f, 0.4f));
-				g2d.drawString(text[i], Math.max(1, textXPos+1), yStart + (i+1)*14+1 /*getHeight()-(i+1)*13 */);
-				if (this.isEnabled())
-					g2d.setColor(new Color(0.2f, 0.2f, 0.2f));
-				else
-					g2d.setColor(new Color(0.5f, 0.5f, 0.5f));
-				g2d.drawString(text[i], Math.max(0, textXPos), yStart + (i+1)*14 /*getHeight()-(i+1)*14 */);	
-			}
+		if (text != null) {
+			if (textPosition == TEXT_BELOW) {
+				g2d.setFont(getFont());
+				for(int i=0; i<text.length; i++) {
+					int textXPos = 1;
+					if (horTextAlignment == Component.LEFT_ALIGNMENT)
+						textXPos = 5;
+					if (horTextAlignment == Component.CENTER_ALIGNMENT)
+						textXPos = getWidth()/2-strWidth/2;
+					if (horTextAlignment == Component.RIGHT_ALIGNMENT)
+						textXPos = getWidth() - strWidth - 7;
 
+
+					g2d.setColor(new Color(0.99f, 0.99f, 0.99f, 0.4f));
+					g2d.drawString(text[i], Math.max(1, textXPos+1), yStart + (i+1)*14+1 /*getHeight()-(i+1)*13 */);
+					if (this.isEnabled())
+						g2d.setColor(new Color(0.2f, 0.2f, 0.2f));
+					else
+						g2d.setColor(new Color(0.5f, 0.5f, 0.5f));
+					g2d.drawString(text[i], Math.max(0, textXPos), yStart + (i+1)*14 /*getHeight()-(i+1)*14 */);	
+				}
+			}//drawing text below icon
+			
+			if (textPosition == TEXT_RIGHT) {
+				g2d.setFont(getFont());
+				int iconWidth = 0;
+				if (icon != null)
+					iconWidth = icon.getIconWidth()+6;
+				yStart = 8;
+				for(int i=0; i<text.length; i++) {
+					int textXPos = 1 + iconWidth;
+					if (horTextAlignment == Component.LEFT_ALIGNMENT)
+						textXPos = 5 + iconWidth;
+					if (horTextAlignment == Component.CENTER_ALIGNMENT)
+						textXPos = getWidth()/2-strWidth/2 + iconWidth;
+					if (horTextAlignment == Component.RIGHT_ALIGNMENT)
+						textXPos = getWidth() - strWidth - 7 ;
+
+
+
+					g2d.setColor(new Color(0.99f, 0.99f, 0.99f, 0.4f));
+					g2d.drawString(text[i], Math.max(1, textXPos+1), yStart + (i+1)*14+1 );
+					if (this.isEnabled())
+						g2d.setColor(new Color(0.2f, 0.2f, 0.2f));
+					else
+						g2d.setColor(new Color(0.5f, 0.5f, 0.5f));
+					g2d.drawString(text[i], Math.max(0, textXPos), yStart + (i+1)*14);	
+				}
+			}//drawing text to the right of the icon
 		}
 		
 		if (this.isEnabled() && drawBorder) {

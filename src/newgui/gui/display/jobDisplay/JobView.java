@@ -12,12 +12,14 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JSeparator;
 import javax.swing.Timer;
 
 import newgui.UIConstants;
 import newgui.datafile.resultsfile.ResultsFile;
 import newgui.gui.display.primaryDisplay.RunningJobPanel;
 import newgui.gui.widgets.BorderlessButton;
+import newgui.gui.widgets.ToolbarPanel;
 
 
 import jobqueue.ACGJob;
@@ -32,7 +34,7 @@ import jobqueue.JobState.State;
  * @author brendano
  *
  */
-public class JobView extends JPanel implements JobListener, ActionListener {
+public class JobView extends ToolbarPanel implements JobListener, ActionListener {
 
 	private ACGJob job;
 	private RunningJobPanel jobPanel;
@@ -54,6 +56,7 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 	private void initComponents() {
 		this.setLayout(new BorderLayout());
 		this.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 10));
+		this.setOpaque(false);
 		JPanel topPanel = new JPanel();
 		topPanel.setOpaque(false);
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
@@ -123,6 +126,13 @@ public class JobView extends JPanel implements JobListener, ActionListener {
 		progressBar.setStringPainted(true);
 		centerPanel.add(progressBar);
 		this.add(centerPanel, BorderLayout.CENTER);
+		
+		JPanel bottomPanel = new JPanel();
+		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
+		bottomPanel.setOpaque(false);
+		bottomPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+		this.add(bottomPanel, BorderLayout.SOUTH);
+		
 	}
 	
 	/**

@@ -47,13 +47,13 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 	public enum State {OPEN, CLOSED};
 	
 	protected LoggerModel model;
-	protected JTextField filenameField;
+	protected JTextField loggerLabelField;
 	protected JSpinner burninSpinner;
 	protected JSpinner freqSpinner;
 	protected JPanel centerPanel;
 	protected LoggersView loggerPanelParent = null;
 	
-	static final ImageIcon removeIcon = UIConstants.redCloseButton;
+	static final ImageIcon removeIcon = UIConstants.grayCloseButton;
 	
 	static final Color lightColor = new Color(0.99f, 0.99f, 0.99f, 0.8f);
 	static final Color darkColor = new Color(0.55f, 0.55f, 0.55f, 0.7f);
@@ -100,6 +100,20 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 		return currentState;
 	}
 	
+	/**
+	 * Cause this panel to be 'open' and showing the details panel
+	 */
+	public void setOpen() {
+		arrow.open();
+	}
+	
+	/**
+	 * Cause this panel to be 'closed', which removes and hides the details panel
+	 */
+	public void setClosed() {
+		arrow.close();
+	}
+	
 	private void hideDetailsPanel() {
 		remove(centerPanel);
 		this.setPreferredSize( getPreferredDimensionsSmall() );
@@ -139,22 +153,17 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 		JPanel topPanel = new JPanel();
 		topPanel.setOpaque(false);
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
-		JLabel modelLabel = new JLabel("<html> <b> " + getName() + " </b> </html>");
-		modelLabel.setHorizontalTextPosition(SwingConstants.LEFT);
-		SpinArrow arrow = new SpinArrow();
+		arrow = new SpinArrow(getName());
+		arrow.setFont(UIConstants.sansFont.deriveFont(16f));
 		arrow.addPropertyChangeListener(SpinArrow.SPIN_ARROW_PROPERTY, this);
 		topPanel.add(arrow);
 		topPanel.add(Box.createHorizontalStrut(10));
-		topPanel.add(modelLabel);
 
 		BorderlessButton remove = new BorderlessButton(removeIcon);
-		//remove.setAlignmentY(TOP_ALIGNMENT);
 		remove.setToolTipText("Remove " + getModel().getModelLabel() );
-		remove.setXDif(-1);
-//		remove.setYDif(-1);
-//		remove.setMinimumSize(new Dimension(24, 28));
-//		remove.setPreferredSize(new Dimension(24, 28));
-//		remove.setMaximumSize(new Dimension(24, 28));
+		remove.setXDif(-3);
+		remove.setYDif(-1);
+		remove.setPreferredSize(new Dimension(24, 24));
 		
 		remove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -162,6 +171,7 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 
 			}
 		});
+		topPanel.add(Box.createHorizontalGlue());
 		topPanel.add(remove);
 		add(topPanel, BorderLayout.NORTH);
 		
@@ -169,14 +179,14 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 		centerPanel.setOpaque(false);
 		centerPanel.setLayout(new MigLayout());
 		centerPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-		filenameField = new JTextField( model.getDefaultLabel() );
-		filenameField.setFont(getFont());
+		loggerLabelField = new JTextField( model.getDefaultLabel() );
+		loggerLabelField.setFont(getFont());
 		Dimension fieldSize = new Dimension(160, 30);
-		filenameField.setMinimumSize( fieldSize );
-		filenameField.setPreferredSize( fieldSize );
-		filenameField.setMaximumSize( fieldSize );
-		filenameField.setHorizontalAlignment(JTextField.RIGHT);
-		filenameField.addActionListener(new ActionListener() {
+		loggerLabelField.setMinimumSize( fieldSize );
+		loggerLabelField.setPreferredSize( fieldSize );
+		loggerLabelField.setMaximumSize( fieldSize );
+		loggerLabelField.setHorizontalAlignment(JTextField.RIGHT);
+		loggerLabelField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					updateFields();
@@ -186,9 +196,9 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 			}
 		});
 		
-		JLabel filenameLabel = new JLabel("Logger name:");
-		centerPanel.add(filenameLabel);
-		centerPanel.add(filenameField, "wrap");
+		JLabel logLabelLabel = new JLabel("Logger label:");
+		centerPanel.add(logLabelLabel);
+		centerPanel.add(loggerLabelField, "wrap");
 		
 		SpinnerNumberModel burninModel = new SpinnerNumberModel(1000000, 0, Integer.MAX_VALUE, 1000);
 		burninSpinner = new JSpinner(burninModel);
@@ -248,9 +258,9 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 	
 	
 	public void updateFields() throws InputConfigException {
-		String filename = filenameField.getText().trim();
-		filename.replaceAll(" ", "_");
-		model.setOutputFilename(filename);
+		String loggerLabel = loggerLabelField.getText().trim();
+		loggerLabel.replaceAll(" ", "_");
+		model.setModelLabel(loggerLabel);
 		model.setBurnin( (Integer)burninSpinner.getValue());
 		model.setLogFrequency( (Integer)freqSpinner.getValue() );
 		updateModelFromView();
@@ -260,8 +270,8 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 	 * Updates widgets with info from model
 	 */
 	public void updateView() {
-		filenameField.setText( model.getOutputFilename() );
-		filenameField.repaint();
+		loggerLabelField.setText( model.getModelLabel() );
+		loggerLabelField.repaint();
 		burninSpinner.setValue( model.getBurnin() );
 		burninSpinner.repaint();
 		freqSpinner.setValue( model.getLogFrequency() );
@@ -270,5 +280,6 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 	}
 	
 
+	private SpinArrow arrow;
 
 }

@@ -62,7 +62,7 @@ public class RootHeightModel extends LoggerModel {
 		el.setAttribute(PropertyLogger.FREQUENCY, "" + getLogFrequency());
 		el.setAttribute(PropertyLogger.BURNIN, "" + getBurnin());
 		el.setAttribute(BreakpointDensity.BINS, "" + bins);
-		
+		el.setAttribute(PropertyLogger.LABEL, getModelLabel());
 		Element argEl = doc.createElement( argRef.getModelLabel() );
 		el.appendChild(argEl);
 		return el;
@@ -74,6 +74,7 @@ public class RootHeightModel extends LoggerModel {
 		readFilename(el);
 		readFrequency(el);
 		readBurnin(el);
+		readLabel(el);
 		String echoStr = el.getAttribute(BreakpointDensity.BINS);
 		if (echoStr != null && echoStr.length()>0) {
 			try {

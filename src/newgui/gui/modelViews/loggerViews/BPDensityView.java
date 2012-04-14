@@ -103,8 +103,8 @@ public class BPDensityView extends DefaultLoggerView {
 		if (model.getOutputFilename() == null || model.getOutputFilename().length()==0) {
 			model.setOutputFilename("breakpoint_density.txt");
 		}
-		filenameField.setText( model.getOutputFilename() );
-		filenameField.repaint();
+		loggerLabelField.setText( model.getModelLabel() );
+		loggerLabelField.repaint();
 		burninSpinner.setValue( model.getBurnin() );
 		burninSpinner.repaint();
 		freqSpinner.setValue( model.getLogFrequency() );

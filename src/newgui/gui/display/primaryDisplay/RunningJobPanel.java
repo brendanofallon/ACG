@@ -92,16 +92,16 @@ public class RunningJobPanel extends JPanel implements MCMCListener {
 				if (logger instanceof BreakpointDensity) {
 					BPDensityViz bpDensityViz = new BPDensityViz();
 					bpDensityViz.initialize(logger);
-					ImageIcon icon2 = UIConstants.getIcon("gui/icons/scaledBlueArrow.png");
-					sidePane.addTab("Breakpoint Density", icon2, bpDensityViz);
+					ImageIcon icon2 = UIConstants.getIcon("gui/icons/oxygen/barchart32.png");
+					sidePane.addTab(logger.getName(), icon2, bpDensityViz);
 					sidePane.revalidate();
 				}
 				
 				if (logger instanceof RootHeightDensity) {
 					TMRCAViz tmrcaViz = new TMRCAViz();
 					tmrcaViz.initialize(logger);
-					ImageIcon icon2 = UIConstants.getIcon("gui/icons/scaledBlueArrow.png");
-					sidePane.addTab("TMRCA Density", icon2, tmrcaViz);
+					ImageIcon icon2 = UIConstants.getIcon("gui/icons/oxygen/barchart32.png");
+					sidePane.addTab(logger.getName(), icon2, tmrcaViz);
 					sidePane.revalidate();
 				}
 				
@@ -110,7 +110,7 @@ public class RunningJobPanel extends JPanel implements MCMCListener {
 					ConsensusTreeViz treeViz = new ConsensusTreeViz();
 					treeViz.initialize(logger);
 					ImageIcon icon2 = UIConstants.getIcon("gui/icons/scaledBlueArrow.png");
-					sidePane.addTab("Marginal tree", icon2, treeViz);
+					sidePane.addTab(logger.getName(), icon2, treeViz);
 					sidePane.revalidate();
 				}
 				
@@ -156,7 +156,7 @@ public class RunningJobPanel extends JPanel implements MCMCListener {
 		setLayout(new BorderLayout());
 		
 		sidePane = new SideTabPane();
-		ImageIcon icon = UIConstants.getIcon("gui/icons/openFile.png");
+		ImageIcon icon = UIConstants.getIcon("gui/icons/oxygen/linechart32.png");
 		
 		seriesPanel = new SeriesFigurePanel();
 		sidePane.addTab("Model state", icon, seriesPanel);

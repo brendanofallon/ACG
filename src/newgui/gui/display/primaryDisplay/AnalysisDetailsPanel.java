@@ -124,22 +124,22 @@ public class AnalysisDetailsPanel extends JPanel {
 		});
 		buttonsPanel.add(substModelButton);
 
-		demoButton = new BorderlessButton("Demographic model");
-		demoButton.setToolTipText("Options affecting the model of population size change");
-		demoButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		demoButton.setHorizontalTextAlignment(Component.RIGHT_ALIGNMENT);
-		demoButton.setMinimumSize(new Dimension(buttonPanelWidth, 40));
-		demoButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				detailsPanel.removeAll();
-				setButtonHighlight(demoButton);
-				revalidate();
-				repaint();
-			}
-		});
-		buttonsPanel.add(demoButton);
+//		demoButton = new BorderlessButton("Demographic model");
+//		demoButton.setToolTipText("Options affecting the model of population size change");
+//		demoButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+//		demoButton.setHorizontalTextAlignment(Component.RIGHT_ALIGNMENT);
+//		demoButton.setMinimumSize(new Dimension(buttonPanelWidth, 40));
+//		demoButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				detailsPanel.removeAll();
+//				setButtonHighlight(demoButton);
+//				revalidate();
+//				repaint();
+//			}
+//		});
+//		buttonsPanel.add(demoButton);
 		
-		coalescentButton = new BorderlessButton("Recombination model");
+		coalescentButton = new BorderlessButton("Coalescent model");
 		coalescentButton.setToolTipText("Change options affecting recombination model");
 		coalescentButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		coalescentButton.setHorizontalTextAlignment(Component.RIGHT_ALIGNMENT);
@@ -307,7 +307,7 @@ public class AnalysisDetailsPanel extends JPanel {
 	protected void setButtonHighlight(BorderlessButton button) {
 		if (prevButton != null)
 			prevButton.setFont(BorderlessButton.getDefaultFont());
-		button.setFont(UIConstants.getFont("gui/fonts/ClienB.ttf").deriveFont(15f));
+		button.setFont(UIConstants.sansFontBold.deriveFont(15f));
 		prevButton = button;
 	}
 
