@@ -1,36 +1,14 @@
-/********************************************************************
-*
-* 	Copyright 2011 Brendan O'Fallon
-*
-*   Licensed under the Apache License, Version 2.0 (the "License");
-*   you may not use this file except in compliance with the License.
-*   You may obtain a copy of the License at
-*
-*       http://www.apache.org/licenses/LICENSE-2.0
-*
-*   Unless required by applicable law or agreed to in writing, software
-*   distributed under the License is distributed on an "AS IS" BASIS,
-*   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-*   See the License for the specific language governing permissions and
-*   limitations under the License.
-*
-***********************************************************************/
-
-
 package gui.inputPanels.loggerConfigs;
 
+import gui.document.ACGDocument;
+import gui.inputPanels.Configurator.InputConfigException;
 import logging.BreakpointDensity;
+import logging.PopSizeLogger;
 import logging.PropertyLogger;
-import logging.RootHeightDensity;
 
 import org.w3c.dom.Element;
 
-import gui.document.ACGDocument;
-import gui.inputPanels.Configurator;
-import gui.inputPanels.Configurator.InputConfigException;
-
-
-public class RootHeightModel extends LoggerModel {
+public class PopSizeLoggerModel extends LoggerModel {
 
 	private int bins = 250;
 	
@@ -44,20 +22,20 @@ public class RootHeightModel extends LoggerModel {
 	
 	@Override
 	public Class getLoggerClass() {
-		return RootHeightDensity.class;
+		return PopSizeLogger.class;
 	}
 
 	@Override
 	public String getDefaultLabel() {
-		return "MarginalTMRCA";
+		return "Population size";
 	}
 
 	@Override
 	protected Element getElement(ACGDocument doc) throws InputConfigException {
 		if (argRef == null)
-			throw new InputConfigException("ARG reference not set for BreakpointDensity");
+			throw new InputConfigException("ARG reference not set for PopSizeLogger");
 		
-		Element el = createElement(doc, getModelLabel(), logging.RootHeightDensity.class );
+		Element el = createElement(doc, getModelLabel(), logging.PopSizeLogger.class );
 		el.setAttribute(PropertyLogger.FILENAME, getOutputFilename());
 		el.setAttribute(PropertyLogger.FREQUENCY, "" + getLogFrequency());
 		el.setAttribute(PropertyLogger.BURNIN, "" + getBurnin());
@@ -70,7 +48,7 @@ public class RootHeightModel extends LoggerModel {
 
 	@Override
 	public void readElements(ACGDocument doc) throws InputConfigException {
-		Element el = getSingleElementForClass(doc, RootHeightDensity.class);
+		Element el = getSingleElementForClass(doc, PopSizeLogger.class);
 		readFilename(el);
 		readFrequency(el);
 		readBurnin(el);
@@ -87,5 +65,4 @@ public class RootHeightModel extends LoggerModel {
 		}
 	}
 
-	
 }
