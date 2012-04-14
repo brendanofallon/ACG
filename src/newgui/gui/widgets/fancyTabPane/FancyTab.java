@@ -151,11 +151,20 @@ public class FancyTab extends JPanel {
 	     else
 	    	 gp = new GradientPaint(0, 0, lighterColor, 0, getHeight(), darkColor);
 
+	     g.setColor(FTabPane.shadowColor);
+	     g2d.setStroke(FTabPane.shadowStroke);
+	     g2d.drawRoundRect(5, 4, getWidth()-6, getHeight()+10, 8, 8);
+	     
 	     g2d.setPaint(gp);
-	     g.fillRoundRect(0, 2, getWidth()-1, getHeight()+10, 8, 8);
+	     g.fillRoundRect(0, 2, getWidth()-3, getHeight()+10, 8, 8);
+	     
+
+	     g2d.setStroke(FTabPane.normalStroke);
+	     g2d.setColor(FTabPane.gray2);
+	     g.drawRoundRect(0, 2, getWidth()-2, getHeight()+10, 10, 10);
 	     
 	     g2d.setColor(Color.LIGHT_GRAY);
-		g.drawRoundRect(0, 2, getWidth()-1, getHeight()+10, 8, 8);
+		g.drawRoundRect(0, 2, getWidth()-2, getHeight()+10, 8, 8);
 	
 		g.setFont(getFont());
 		int strWidth = g.getFontMetrics().stringWidth(text);

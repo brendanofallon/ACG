@@ -137,7 +137,7 @@ public class SiteModelView extends JPanel {
 		mutPanel = new JPanel();
 		//mutPanel.setLayout(new BoxLayout(mutPanel, BoxLayout.Y_AXIS));
 		mutPanel.setLayout(new MigLayout());
-		mutPanel.setPreferredSize(new Dimension(300, 400));
+		//mutPanel.setPreferredSize(new Dimension(300, 400));
 		stylist.applyStyle(mutPanel);
 		JPanel mutTop = new JPanel();
 		stylist.applyStyle(mutTop);
@@ -159,7 +159,7 @@ public class SiteModelView extends JPanel {
 		mutParamsPanel = new JPanel();
 		//mutParamsPanel.setBorder(BorderFactory.createLineBorder(Color.red));
 		mutParamsPanel.setLayout(new BoxLayout(mutParamsPanel, BoxLayout.Y_AXIS));
-		mutParamsPanel.setPreferredSize(new Dimension(300, 400));
+		//mutParamsPanel.setPreferredSize(new Dimension(300, 200));
 		stylist.applyStyle(mutParamsPanel);
 		
 		mutPanel.add(mutTop, "wrap");
@@ -254,7 +254,7 @@ public class SiteModelView extends JPanel {
 		//customPanel.setOpaque(false);
 		//rateConfigPanel.add(customPanel,rateTypes[2]);
 		
-		this.add(Box.createHorizontalGlue());
+		this.add(Box.createVerticalGlue());
 	}
 
 	protected void updateMutModelBox() {

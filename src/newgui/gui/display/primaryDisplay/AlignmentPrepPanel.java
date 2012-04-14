@@ -57,6 +57,7 @@ import newgui.gui.filepanel.ChooseAlignmentPanel;
 import newgui.gui.filepanel.InputFilesManager;
 import newgui.gui.widgets.BorderlessButton;
 import newgui.gui.widgets.TextButton;
+import newgui.gui.widgets.ToolbarPanel;
 import newgui.gui.widgets.VerticalTextButtons;
 
 
@@ -195,7 +196,8 @@ public class AlignmentPrepPanel extends JPanel {
 		contentPanel = new SGContentPanel();
 		sgScrollPane = new JScrollPane( contentPanel );
 		sgScrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
-		sgScrollPane.setBorder(BorderFactory.createEmptyBorder());
+		sgScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+		sgScrollPane.setBackground(Color.white);
         JPanel corner1 = new JPanel();
         corner1.setBackground(Color.white);
         sgScrollPane.setCorner(JScrollPane.UPPER_RIGHT_CORNER, corner1);
@@ -212,7 +214,7 @@ public class AlignmentPrepPanel extends JPanel {
 		alnPanel.add(sgScrollPane, BorderLayout.CENTER);
 		
 		
-		JPanel topPanel = new JPanel();
+		JPanel topPanel = new ToolbarPanel();
 		topPanel.setBorder(BorderFactory.createEmptyBorder(3, 4, 3, 4));
 		topPanel.setOpaque(false);
 		//topPanel.setBackground(Color.magenta);
@@ -299,7 +301,7 @@ public class AlignmentPrepPanel extends JPanel {
 		topPanel.add(zoomSlider);
 		
 		bottomHalf = new JPanel();
-		bottomHalf.setOpaque(false);
+		//bottomHalf.setOpaque(false);
 		//bottomHalf.setBackground(Display.defaultDisplayBackground);
 		
 		//bottomHalf.setMinimumSize(new Dimension(400, 400));
@@ -312,8 +314,8 @@ public class AlignmentPrepPanel extends JPanel {
 		JPanel bottomRightPanel = new JPanel();
 		
 		bottomRightPanel = new JPanel();
-		bottomRightPanel.setOpaque(false);
-		bottomLeftPanel.setOpaque(false);
+//		bottomRightPanel.setOpaque(false);
+//		bottomLeftPanel.setOpaque(false);
 		bottomRightPanel.setLayout(new BorderLayout());
 		bottomRightPanel.setPreferredSize(new Dimension(400, 200));
 		analDescBox = new JTextArea();

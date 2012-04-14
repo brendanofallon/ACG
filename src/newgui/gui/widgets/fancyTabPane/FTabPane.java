@@ -210,7 +210,7 @@ public class FTabPane extends JPanel implements ChangeListener {
 			
 			g2d.setStroke(normalStroke);
 			g.setColor(lineColor);
-			g.drawRoundRect(leftPadding-1, tabsPanel.getHeight()-1, getWidth()-leftPadding-rightPadding+1, getHeight()-tabsPanel.getHeight()-5, 8, 8);
+			g.drawRoundRect(leftPadding-1, tabsPanel.getHeight()-1, getWidth()-leftPadding-rightPadding+1, getHeight()-tabsPanel.getHeight()-5, 5, 5);
 		}
 	}
 	
@@ -219,7 +219,7 @@ public class FTabPane extends JPanel implements ChangeListener {
 	final int rightPadding = 8;
 	final static Color bgColor = new Color(253, 253, 253);
 	final static Color gray1 = Color.white;
-	final static Color gray2 = new Color(250, 250, 250, 100);
+	final static Color gray2 = new Color(250, 250, 250, 150);
 	final static float topDark = 0.925f;
 	final static Color dark1 = new Color(topDark, topDark, topDark);
 	final static Color dark2 = new Color(220, 220, 220, 100);
