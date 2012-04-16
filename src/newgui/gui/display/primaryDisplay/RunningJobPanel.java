@@ -22,6 +22,7 @@ import newgui.datafile.resultsfile.ResultsFile;
 import newgui.gui.display.jobDisplay.JobView;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.BPDensityViz;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.ConsensusTreeViz;
+import newgui.gui.display.primaryDisplay.loggerVizualizer.PopSizeViz;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.TMRCAViz;
 import newgui.gui.filepanel.ResultsFilesManager;
 import newgui.gui.widgets.sideTabPane.SideTabPane;
@@ -32,6 +33,7 @@ import jobqueue.QueueManager;
 import logging.BreakpointDensity;
 import logging.ConsensusTreeLogger;
 import logging.MemoryStateLogger;
+import logging.PopSizeLogger;
 import logging.PropertyLogger;
 import logging.RootHeightDensity;
 
@@ -111,6 +113,14 @@ public class RunningJobPanel extends JPanel implements MCMCListener {
 					treeViz.initialize(logger);
 					ImageIcon icon2 = UIConstants.getIcon("gui/icons/scaledBlueArrow.png");
 					sidePane.addTab(logger.getName(), icon2, treeViz);
+					sidePane.revalidate();
+				}
+				
+				if (logger instanceof PopSizeLogger) {
+					PopSizeViz popSizeViz = new PopSizeViz();
+					popSizeViz.initialize(logger);
+					ImageIcon icon2 = UIConstants.getIcon("gui/icons/scaledBlueArrow.png");
+					sidePane.addTab(logger.getName(), icon2, popSizeViz);
 					sidePane.revalidate();
 				}
 				

@@ -48,10 +48,11 @@ public class PopSizeLogger extends PropertyLogger {
 	protected final int bins = 100; //Number of bins over time 
 	protected LazyHistogram[] sizeHistos;
 	//Quick storage  for means and confidence boundaries
+	private double[] binSites = null;
 	protected double[] means = new double[bins];
 	protected double[] upper95s = new double[bins];
 	protected double[] lower95s = new double[bins];
-	
+	double binStep;
 	
 	Double maxTreeHeight = null; 
 
@@ -59,6 +60,12 @@ public class PopSizeLogger extends PropertyLogger {
 		super(attrs);
 		this.arg = arg;
 		this.popSize = demoParam;
+		
+		sizeHistos = new LazyHistogram[bins];
+		for(int i=0; i<sizeHistos.length; i++) {
+			sizeHistos[i] = new LazyHistogram(500);
+		}
+
 	}
 
 	public void addValue(int stateNumber) {
@@ -69,14 +76,10 @@ public class PopSizeLogger extends PropertyLogger {
 			Collections.sort(dlNodes, arg.getNodeHeightComparator());
 			double maxDLHeight = dlNodes.get( dlNodes.size()-1).getHeight();
 			maxTreeHeight = 2.0*Math.round(maxDLHeight*10000.0)/10000.0;
-			
-			sizeHistos = new LazyHistogram[bins];
-			for(int i=0; i<sizeHistos.length; i++) {
-				sizeHistos[i] = new LazyHistogram(500);
-			}
+
+			binStep = maxTreeHeight / (sizeHistos.length-1);
 		}
 		
-		double binStep = maxTreeHeight / (sizeHistos.length-1);
 		double time = 0;
 		for(int i=0; i<sizeHistos.length; i++) {
 			sizeHistos[i].addValue( popSize.getPopSize(time));
@@ -84,6 +87,66 @@ public class PopSizeLogger extends PropertyLogger {
 		}
 	}
 	
+
+	/**
+	 * Returns true if the histograms have dumped their values yet
+	 * @return
+	 */
+	public boolean getHistoTriggerReached() {
+		if (sizeHistos[0]==null)
+			return false;
+		else 
+			return sizeHistos[0].triggerReached();
+	}
+	
+	public double[] getMeans() {
+		if (means == null) {
+			means = new double[sizeHistos.length];
+		}
+		if (sizeHistos[0] != null) {
+			for(int i=0; i<sizeHistos.length; i++) {
+				means[i] = sizeHistos[i].getMean();
+			}
+		}
+		return means;
+	}
+	
+	public double[] getBinPositions() {
+		if (binSites == null) {
+			double time = 0;
+			binSites = new double[sizeHistos.length];
+			for(int i=0; i<sizeHistos.length; i++) {
+				binSites[i] = time;
+				time += binStep;
+			}
+		}
+		
+		return binSites;
+	}
+	
+	public double[] getLower95s() {
+		if (lower95s == null) {
+			lower95s = new double[sizeHistos.length];
+		}
+		if (sizeHistos[0] != null) {
+			for(int i=0; i<sizeHistos.length; i++) {
+				lower95s[i] = sizeHistos[i].lowerHPD(0.05);
+			}
+		}
+		return lower95s;
+	}
+	
+	public double[] getUpper95s() {
+		if (upper95s == null) {
+			upper95s = new double[sizeHistos.length];
+		}
+		if (sizeHistos[0] != null) {
+			for(int i=0; i<sizeHistos.length; i++) {
+				upper95s[i] = sizeHistos[i].upperHPD(0.05);
+			}
+		}
+		return upper95s;
+	}
 	
 	
 	@Override
@@ -100,10 +163,6 @@ public class PopSizeLogger extends PropertyLogger {
 		}
 	}
 
-//	public double[] getMeans() {
-//		
-//	}
-	
 	@Override
 	public String getSummaryString() {
 		StringBuilder str = new StringBuilder();

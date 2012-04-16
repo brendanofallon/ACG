@@ -31,6 +31,7 @@ import gui.ErrorWindow;
 import gui.document.ACGDocument;
 import gui.inputPanels.ARGModelElement;
 import gui.inputPanels.Configurator.InputConfigException;
+import gui.inputPanels.PopSizeModelElement;
 import gui.widgets.BorderlessButton;
 
 import javax.swing.BorderFactory;
@@ -60,6 +61,7 @@ public class LoggersPanel extends JPanel implements LoggerReceiver {
 	//This implementation sucks because what if different loggers want to reference different ARGs?
 	//Maybe there should be one logger panel per ARG? per alignment? 
 	ARGModelElement ARGref = null;
+	PopSizeModelElement popSizeRef = null;
 	
 	static final ImageIcon removeIcon = ACGFrame.getIcon("inputPanels/loggerConfigs/icons/removeButton.png");
 	
@@ -94,9 +96,13 @@ public class LoggersPanel extends JPanel implements LoggerReceiver {
 		
 	}
 	
-	public void setARGReference(ARGModelElement argRef) {
-		this.ARGref = argRef;
-	}
+//	public void setARGReference(ARGModelElement argRef) {
+//		this.ARGref = argRef;
+//	}
+//	
+//	public void popSizeModelRef(PopSizeModelElement popSizeRef) {
+//		this.popSizeRef = popSizeRef;
+//	}
 	
 	/**
 	 * Clear list of logger views and add brand new ones created from the given
@@ -159,6 +165,7 @@ public class LoggersPanel extends JPanel implements LoggerReceiver {
 			AbstractLoggerView view = logger.config;
 			view.updateFields();
 			view.getModel().setArgRef( ARGref );
+			view.getModel().setPopSizeRef(popSizeRef);
 			Element loggerElement;
 			loggerElement = view.getModel().getElement(doc);
 			nodes.add( loggerElement );
@@ -174,6 +181,7 @@ public class LoggersPanel extends JPanel implements LoggerReceiver {
 			AbstractLoggerView view = logger.config;
 			view.updateFields();
 			view.getModel().setArgRef( ARGref );
+			view.getModel().setPopSizeRef( popSizeRef );
 			models.add(view.getModel());
 		}
 		

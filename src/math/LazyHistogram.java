@@ -33,7 +33,7 @@ import java.util.List;
 public class LazyHistogram {
 
 	Histogram histo;
-	int triggerSize = 500;
+	int triggerSize = 250;
 	List<Double> vals = Collections.synchronizedList(new ArrayList<Double>(500));
 	final int bins;
 	int count = 0;
@@ -83,8 +83,11 @@ public class LazyHistogram {
 				sum += val;
 			return sum / (double)vals.size();
 		}
-		else
+		else {
+			if (histo == null)
+				return Double.NaN;
 			return histo.getMean();
+		}
 	}
 	
 	public String toString() {

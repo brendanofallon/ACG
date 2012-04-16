@@ -35,7 +35,8 @@ public class PopSizeLoggerModel extends LoggerModel {
 		if (argRef == null)
 			throw new InputConfigException("ARG reference not set for PopSizeLogger");
 		
-		Element el = createElement(doc, getModelLabel(), logging.PopSizeLogger.class );
+		String elementLabel = getModelLabel().trim().replace(" ", "_");
+		Element el = createElement(doc, elementLabel, logging.PopSizeLogger.class );
 		el.setAttribute(PropertyLogger.FILENAME, getOutputFilename());
 		el.setAttribute(PropertyLogger.FREQUENCY, "" + getLogFrequency());
 		el.setAttribute(PropertyLogger.BURNIN, "" + getBurnin());
@@ -43,6 +44,9 @@ public class PopSizeLoggerModel extends LoggerModel {
 		el.setAttribute(PropertyLogger.LABEL, getModelLabel());
 		Element argEl = doc.createElement( argRef.getModelLabel() );
 		el.appendChild(argEl);
+		
+		Element popEl = doc.createElement( popSizeModel.getModelLabel() );
+		el.appendChild(popEl);
 		return el;
 	}
 
