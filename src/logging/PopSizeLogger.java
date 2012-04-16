@@ -75,7 +75,7 @@ public class PopSizeLogger extends PropertyLogger {
 			List<CoalNode> dlNodes = arg.getDLCoalNodes();
 			Collections.sort(dlNodes, arg.getNodeHeightComparator());
 			double maxDLHeight = dlNodes.get( dlNodes.size()-1).getHeight();
-			maxTreeHeight = 2.0*Math.round(maxDLHeight*10000.0)/10000.0;
+			maxTreeHeight = 1.2*Math.round(maxDLHeight*10000.0)/10000.0;
 
 			binStep = maxTreeHeight / (sizeHistos.length-1);
 		}

@@ -80,5 +80,7 @@ public class ExponentialGrowth extends CompoundParameter<Void> implements Demogr
 				baseSize.revertValue();
 		}
 	}
+	
+
 }
 	

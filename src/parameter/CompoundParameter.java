@@ -98,4 +98,34 @@ public abstract class CompoundParameter<T> extends AbstractParameter<T> implemen
 		}
 	}
 	
+	
+	
+	/**
+	 * Generally speaking CompoundParameters do not have a single loggable value, so
+	 * by default the LogKeys system has been overridden to not provide any info. 
+	 */
+	
+	/**
+	 * Compound parameters typically do not have any loggable items
+	 */
+	public int getKeyCount() {
+		return 0;
+	}
+	
+	/**
+	 * Returns a zero-length array - CompoundParameters typically do not have any logKeys 
+	 * 
+	 */
+	public String[] getLogKeys() {
+		return emptyStr;
+	}
+	
+	/**
+	 * By default this returns null
+	 */
+	public Object getLogItem(String key) {
+		return null;
+	}
+	
+	private final String[] emptyStr = new String[]{};
 }
