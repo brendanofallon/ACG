@@ -8,6 +8,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +30,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ProgressMonitor;
+import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -91,27 +95,69 @@ public class AlnGenFrame extends JFrame {
 			return;		
 		}
 		
-		try {
-			List<ProtoSequence> protoSeqs = alnGen.getAlignment(contig, startPos, endPos);
-			BasicSequenceAlignment aln = new BasicSequenceAlignment();
-			for(ProtoSequence pSeq : protoSeqs) {
-				aln.addSequence( pSeq.toSimpleSequence() );
-			}
+		final ProgressMonitor progMonitor = new ProgressMonitor(this,
+                "Building alignment...",
+                "", 0, 100);
 
-			InputFilesManager.getManager().saveAlignment(aln, "new_alignment");
+		final BuilderWorker builder = new BuilderWorker(contig, startPos, endPos);
+		builder.addPropertyChangeListener(new PropertyChangeListener() {
+
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if ("progress" == evt.getPropertyName() ) {
+		            int progress = (Integer) evt.getNewValue();
+		            progMonitor.setProgress(progress);
+		            String message =
+		                String.format("Completed %d%%.\n", progress);
+		            progMonitor.setNote(message);
+		            
+		            if (progMonitor.isCanceled() || builder.isDone()) {
+		                if (progMonitor.isCanceled()) {
+		                	// ???
+		                }
+		                	
+		                 
+		            }
+		        }
+			}
 			
-		} catch (IOException e) {
-			e.printStackTrace();
-			ErrorWindow.showErrorWindow(e, "Could not create alignment");
-		} catch (ContigNotFoundException e) {
-			
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Could not find chromomsome " + contigField.getText());
-		}
+		});
+		builder.execute();
+		
+//		try {
+//
+//			List<ProtoSequence> protoSeqs = alnGen.getAlignmentParallel(contig, startPos, endPos);
+//			BasicSequenceAlignment aln = new BasicSequenceAlignment();
+//			for(ProtoSequence pSeq : protoSeqs) {
+//				aln.addSequence( pSeq.toSimpleSequence() );
+//			}
+//
+//			InputFilesManager.getManager().saveAlignment(aln, "new_alignment");			
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			ErrorWindow.showErrorWindow(e, "Could not create alignment");
+//		} catch (ContigNotFoundException e) {
+//			
+//			e.printStackTrace();
+//			JOptionPane.showMessageDialog(this, "Could not find chromomsome " + contigField.getText());
+//		}
 		
 		
 	}
+	
+	/**
+	 * Convert the list of protosequences to a BasicSequenceAlignment and prompt the user
+	 * to save it - this happens when an alignment is done being generated
+	 * @param seqs
+	 */
+	protected void buildAndSaveAlignment(List<ProtoSequence> seqs) {
+		BasicSequenceAlignment aln = new BasicSequenceAlignment();
+		for(ProtoSequence pSeq : seqs) {
+			aln.addSequence( pSeq.toSimpleSequence() );
+		}
 
+		InputFilesManager.getManager().saveAlignment(aln, "new_alignment");
+	}
 
 	/**
 	 * Close this JFrame
@@ -400,6 +446,34 @@ public class AlnGenFrame extends JFrame {
 		this.getRootPane().add(bottomPanel, BorderLayout.SOUTH);
 	}
 
+	
+	/**
+	 * Tiny class to build alignments in background...
+	 * @author brendan
+	 *
+	 */
+	class BuilderWorker extends SwingWorker {
+		
+		final String contig;
+		final int startPos;
+		final int endPos;
+		
+		public BuilderWorker(String contig, int startPos, int endPos) {
+			this.contig = contig;
+			this.startPos = startPos;
+			this.endPos = endPos;
+		}
+		
+		@Override
+		protected Object doInBackground() throws Exception {
+			setProgress(0);
+			List<ProtoSequence> protoSeqs = alnGen.getAlignmentParallel(contig, startPos, endPos);
+			setProgress(100);
+			buildAndSaveAlignment(protoSeqs);
+			return null;
+		}
+		
+	}
 
 	private JTextField contigField;
 	private JTextField startPosField;

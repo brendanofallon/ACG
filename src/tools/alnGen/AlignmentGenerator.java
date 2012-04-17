@@ -1,9 +1,14 @@
 package tools.alnGen;
 
+import gui.ErrorWindow;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A class that takes as input a reference file and a few SampleReaders, and constructs full Sequences
@@ -52,8 +57,8 @@ public class AlignmentGenerator {
 			refSeq.append(base);
 		}
 
-		System.out.println(">reference");
-		System.out.println(refSeq.toString());
+//		System.out.println(">reference");
+//		System.out.println(refSeq.toString());
 		
 		int errorCount = 0;
 		
@@ -80,9 +85,60 @@ public class AlignmentGenerator {
 		return seqs;
 	}
 	
-	
+
+	/**
+	 * Obtain a list of proto-sequences that contain all sequence into for the requested region - but perform
+	 * the operation in parallel for speedier results. This blocks until all sequences have been generated.
+	 * @param contig
+	 * @param startPos
+	 * @param endPos
+	 * @return
+	 * @throws IOException
+	 * @throws ContigNotFoundException
+	 */
 	public List<ProtoSequence> getAlignmentParallel(String contig, int startPos, int endPos) throws IOException, ContigNotFoundException {
-		//TODO finish this, use GeneratorWorker
+		final int threads = 4;
+		ThreadPoolExecutor threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(threads);
+		
+		
+		FastaReader refReader = new FastaReader(referenceFile);
+		StringBuilder refSeq = new StringBuilder();
+
+		Integer intContig = FastaReader.getIntegerTrack(contig);
+
+		for(int i=startPos; i<endPos; i++) {
+			char base = refReader.getBaseAt(intContig, i);
+			refSeq.append(base);
+		}
+
+
+		List<GeneratorWorker> workers = new ArrayList<GeneratorWorker>();
+		
+		//Create a GeneratorWorker for each sample reader and submit it to the thread pool
+		for(SampleReader reader : sampleReaders) {
+			ProtoSequence seq = new ProtoSequence(refSeq.toString(), startPos);
+			seq.setSampleName(reader.getSampleName() + "_" + reader.getPhase());
+			GeneratorWorker worker = new GeneratorWorker(reader, seq, contig, startPos, endPos);
+			workers.add(worker);
+			threadPool.submit(worker);
+			
+		}
+
+		threadPool.shutdown(); //No new tasks will be submitted,
+		try {
+			threadPool.awaitTermination(1, TimeUnit.DAYS);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			ErrorWindow.showErrorWindow(e, "ALignment generation interrupted");
+		} //Wait until all tasks have completed
+
+		//Make a list of all protosequences we're going to return and grab the sequence 
+		//from the worker and add it to the list
+		List<ProtoSequence> seqs = new ArrayList<ProtoSequence>();
+		for(GeneratorWorker worker : workers) {
+			seqs.add(worker.getProtoSequence());
+		}
+		return seqs;
 	}
 	
 	
