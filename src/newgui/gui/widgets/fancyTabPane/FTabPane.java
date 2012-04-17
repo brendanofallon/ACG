@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -43,7 +44,7 @@ public class FTabPane extends JPanel implements ChangeListener {
 	public FTabPane() {
 		setLayout(new BorderLayout());
 		setOpaque(false);
-		setBorder(BorderFactory.createEmptyBorder(0, 5, 4, 4));
+		setBorder(BorderFactory.createEmptyBorder(0, leftPadding, 4, rightPadding));
 		tabsPanel = new FancyTabsPanel(this);
 		add(tabsPanel, BorderLayout.NORTH);
 		centerPanel = new JPanel();
@@ -153,6 +154,9 @@ public class FTabPane extends JPanel implements ChangeListener {
 			JScrollPane scrollPane = new JScrollPane(comp);
 			scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
 			scrollPane.setBorder(BorderFactory.createEmptyBorder());
+			scrollPane.getViewport().setOpaque(false);
+			scrollPane.setOpaque(false);
+			//scrollPane.getViewport().setBackground(Color.RED);
 			centerPanel.add(scrollPane, BorderLayout.CENTER);
 		}
 		else {
@@ -177,6 +181,8 @@ public class FTabPane extends JPanel implements ChangeListener {
 			showComponent(comp);
 		}
 	}
+	
+	
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -184,50 +190,43 @@ public class FTabPane extends JPanel implements ChangeListener {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		g.setColor(shadowColor);
-		((Graphics2D)g).setStroke(shadowStroke);
-		g.drawRoundRect(4, 4, getWidth()-5, getHeight()-5, 8, 8);
-		
-		g.setColor(bgColor);
-		((Graphics2D)g).setStroke(normalStroke);
-		g.fillRoundRect(1, 1, getWidth()-3, getHeight()-2, 5, 5);
-	
-		//A gradient
-		float gradMax = Math.min(200, Math.max( getHeight()/3f, 20));
-		g.setColor(gray2);
-		g.drawLine(3, 2, getWidth()-4, 2);
-		g.setColor(dark1);
-		g.drawLine(3, 3, getWidth()-4, 3);
-		g.drawLine(2, 4, getWidth()-2, 4);
-		for(float i=5; i<gradMax; i++) {
-			float newVal = topDark + (0.99f-topDark)*(1-(gradMax-i)/gradMax );
-			g.setColor( new Color(newVal, newVal, newVal));
-			g.drawLine(1, (int)i, getWidth()-2, (int)i);
-		}
-		
-		g.setColor(lineColor);
-		g.drawRoundRect(1, 1, getWidth()-3, getHeight()-3, 5, 5);
 
-		
 		if (tabMap.size()>1 || (tabMap.size()==1 && showTabIfOne)) {
-			g2d.setColor(Color.LIGHT_GRAY);
-			g2d.drawRoundRect(3, tabsPanel.getHeight()-2, getWidth()-6, getHeight()-tabsPanel.getHeight(), 12, 12);
+			//Outer shadow..goes behind everything else
+			g.setColor(shadowColor);
+			((Graphics2D)g).setStroke(shadowStroke);
+			g.drawRoundRect(leftPadding+3, tabsPanel.getHeight()+2, getWidth()-leftPadding-rightPadding-2, getHeight()-tabsPanel.getHeight()-7, 8, 8);
+			
+			GradientPaint gp = new GradientPaint(1, tabsPanel.getHeight(), dark1, 1, this.getHeight()/4f, UIConstants.lightBackground);
+			g2d.setPaint(gp);
+			g2d.fillRoundRect(leftPadding, tabsPanel.getHeight(), getWidth()-leftPadding-rightPadding, getHeight()-tabsPanel.getHeight()-6, 4, 4);
+			
+			g2d.setColor(gray2);
+			g2d.drawRoundRect(leftPadding-1, tabsPanel.getHeight()+1, getWidth()-leftPadding-rightPadding+2, getHeight(), 4,4);
+
+			//Paint over part where selected tab is...
+			g2d.setColor(dark1);
+			g.drawLine(tabsPanel.getSelectedTabLeftX(), tabsPanel.getHeight()+1, tabsPanel.getSelectedTabRightX(), tabsPanel.getHeight()+1);
+			
+			g2d.setStroke(normalStroke);
+			g.setColor(lineColor);
+			g.drawRoundRect(leftPadding-1, tabsPanel.getHeight()-1, getWidth()-leftPadding-rightPadding+1, getHeight()-tabsPanel.getHeight()-5, 5, 5);
 		}
-		
 	}
 	
 
+	final int leftPadding = 3;
+	final int rightPadding = 8;
 	final static Color bgColor = new Color(253, 253, 253);
 	final static Color gray1 = Color.white;
-	final static Color gray2 = new Color(250, 250, 250, 100);
-	final static float topDark = 0.935f;
+	final static Color gray2 = new Color(250, 250, 250, 150);
+	final static float topDark = 0.925f;
 	final static Color dark1 = new Color(topDark, topDark, topDark);
 	final static Color dark2 = new Color(220, 220, 220, 100);
-	final static Color shadowColor = new Color(0f, 0f, 0f, 0.1f);
+	final static Color shadowColor = new Color(0f, 0f, 0f, 0.2f);
 	final static Color lineColor = new Color(200, 200, 200);
-	final static Stroke shadowStroke = new BasicStroke(1.6f);
+	final static Stroke shadowStroke = new BasicStroke(1.8f);
 	final static Stroke normalStroke = new BasicStroke(1.0f);
-
 	private JPanel centerPanel;
 }
 

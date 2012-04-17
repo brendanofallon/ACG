@@ -156,6 +156,7 @@ public class ViewerWindow extends JFrame {
 		leftPanel.setLayout(new BorderLayout());
 		JPanel leftPanelTop = new TopLeftPanel();
 		leftPanel.add(leftPanelTop, BorderLayout.NORTH);
+
 		BlocksPanel filesPanel = new BlocksPanel();
 		filesPanel.setBackground(UIConstants.lightBackground);
 		FileTree inputsTree = new FileTree(InputFilesManager.getManager().getRootDirectory());

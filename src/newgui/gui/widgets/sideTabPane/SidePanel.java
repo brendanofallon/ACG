@@ -18,7 +18,7 @@ import newgui.UIConstants;
 public class SidePanel extends JPanel {
 
 	public static final int rightPadding = 5;
-	static final Color shadowColor = new Color(0.6f, 0.6f, 0.6f);
+	static final Color shadowColor = new Color(0.6f, 0.6f, 0.3f);
 	static final Color lightShadowColor = new Color(0.9f, 0.9f, 0.9f, 0f);
 	private SideTabPane ownerPane;
 	

@@ -106,8 +106,5 @@ public class MPEARG extends PropertyLogger {
 		return argStr;
 	}
 
-	public String getName() {
-		return "Most likely ARG";
-	}
 
 }

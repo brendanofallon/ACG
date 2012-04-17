@@ -1,29 +1,10 @@
-/********************************************************************
-*
-* 	Copyright 2011 Brendan O'Fallon
-*
-*   Licensed under the Apache License, Version 2.0 (the "License");
-*   you may not use this file except in compliance with the License.
-*   You may obtain a copy of the License at
-*
-*       http://www.apache.org/licenses/LICENSE-2.0
-*
-*   Unless required by applicable law or agreed to in writing, software
-*   distributed under the License is distributed on an "AS IS" BASIS,
-*   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-*   See the License for the specific language governing permissions and
-*   limitations under the License.
-*
-***********************************************************************/
-
-
 package newgui.gui.modelViews.loggerViews;
 
+import gui.inputPanels.Configurator.InputConfigException;
+import gui.inputPanels.loggerConfigs.PopSizeLoggerModel;
+import gui.inputPanels.loggerConfigs.RootHeightModel;
 
 import java.awt.Dimension;
-
-import gui.inputPanels.Configurator.InputConfigException;
-import gui.inputPanels.loggerConfigs.RootHeightModel;
 
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
@@ -31,19 +12,18 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-
-public class RootHeightView extends DefaultLoggerView {
+public class PopSizeView extends DefaultLoggerView {
 
 	JSpinner binsSpinner;
-	RootHeightModel rootHeightModel;
+	PopSizeLoggerModel popSizeModel;
 	
-	public RootHeightView() {
-		this(new RootHeightModel());
+	public PopSizeView() {
+		this(new PopSizeLoggerModel());
 	}
 	
-	public RootHeightView(final RootHeightModel model) {
+	public PopSizeView(final PopSizeLoggerModel model) {
 		super(model);
-		this.rootHeightModel = model;
+		this.popSizeModel = model;
 		SpinnerNumberModel binsModel = new SpinnerNumberModel(500, 1, 50000, 10);
 		binsSpinner = new JSpinner(binsModel);
 		binsSpinner.addChangeListener(new ChangeListener() {
@@ -62,17 +42,17 @@ public class RootHeightView extends DefaultLoggerView {
 	
 	@Override
 	public String getName() {
-		return "Marginal TMRCA";
+		return "Pop. Size";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Root height along length of sequence";
+		return "Population size over time";
 	}
 
 	@Override
 	protected void updateModelFromView() throws InputConfigException {
-		rootHeightModel.setBins( (Integer)binsSpinner.getValue() );
+		popSizeModel.setBins( (Integer)binsSpinner.getValue() );
 	}
 	
 	/**
@@ -84,8 +64,10 @@ public class RootHeightView extends DefaultLoggerView {
 		burninSpinner.setValue( model.getBurnin() );
 		burninSpinner.repaint();
 		freqSpinner.setValue( model.getLogFrequency() );
-		binsSpinner.setValue( rootHeightModel.getBins());
+		binsSpinner.setValue( popSizeModel.getBins());
 		revalidate();
 		repaint();
 	}
+
+
 }

@@ -36,10 +36,10 @@ public class SideTabPane extends JPanel {
 	private JPanel sidePanel;
 	private JPanel centerPanel;
 	private List<TabCompPair> compList = new ArrayList<TabCompPair>();
-	public static final Color sidePanelBackground = UIConstants.darkBackground;
+	public static final Color sidePanelBackground = UIConstants.componentBackground;
 	
 	private int sidePanelWidth = 120;
-	public static final int topPadding = 10; //Space between top of component and first SideTab
+	public static final int topPadding = 50; //Space between top of component and first SideTab
 	public static final int rightPadding = 4; //Space to right of main area of component, used for drawing a shadow
 	
 	public SideTabPane() {
@@ -190,7 +190,7 @@ public class SideTabPane extends JPanel {
 		this.setLayout(new BorderLayout());
 		
 		sidePanel = new SidePanel(this);
-		sidePanel.setBackground(sidePanelBackground);
+		//sidePanel.setBackground(sidePanelBackground);
 		sidePanel.setMaximumSize(new Dimension(sidePanelWidth, 32000));
 		sidePanel.setPreferredSize(new Dimension(sidePanelWidth, 400));
 		sidePanel.setMinimumSize(new Dimension(sidePanelWidth, 1));

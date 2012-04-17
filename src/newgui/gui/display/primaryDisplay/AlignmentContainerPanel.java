@@ -27,7 +27,6 @@ public class AlignmentContainerPanel extends JPanel {
 	private int columns = 3; //Will wrap to a new row after this many columns have been added
 	
 	public AlignmentContainerPanel() {
-		this.setBackground(Display.defaultDisplayBackground);
 		this.setLayout(new MigLayout());
 	}
 	

@@ -41,7 +41,7 @@ public class SGColumnHeader extends JPanel implements ZeroColumnListener {
 	
 	JPopupMenu popup;
 	
-	private int maxRulerHeight = 13;
+	private int maxRulerHeight = 16;
 	private int consensusHeight = 15;
 	private int partitionHeight = 14;
 	
@@ -187,7 +187,7 @@ public class SGColumnHeader extends JPanel implements ZeroColumnListener {
 			
 			//Now draw major ticks and 
 			for(int i=offSet; i<max; i+=majorTick) {
-				g2d.drawLine(i*cellWidth, 0, i*cellWidth, rulerHeight-1);
+				g2d.drawLine(i*cellWidth, 1, i*cellWidth, rulerHeight-1);
 				if (i>offSet) {
 					String numStr = String.valueOf(i-zeroColumn);
 					g2d.setColor(Color.white);
@@ -318,7 +318,7 @@ public class SGColumnHeader extends JPanel implements ZeroColumnListener {
         });
 		popup.add(hideConsensus);
 		
-		hidePartitions = new JMenuItem("Draw partitions");
+		/*hidePartitions = new JMenuItem("Draw partitions");
 		hidePartitions.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
             	if (drawPartitions)
@@ -331,7 +331,7 @@ public class SGColumnHeader extends JPanel implements ZeroColumnListener {
             	repaint();
             }
         });
-		popup.add(hidePartitions);
+		popup.add(hidePartitions);*/
 	}
 
 	
@@ -378,7 +378,4 @@ public class SGColumnHeader extends JPanel implements ZeroColumnListener {
 	JMenuItem hideConsensus;
 	JMenuItem hideNumbers;
 
-	
-
-	
 }

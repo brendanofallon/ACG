@@ -44,6 +44,7 @@ import newgui.gui.modelViews.MCModelView;
 import newgui.gui.modelViews.SiteModelView;
 import newgui.gui.widgets.BorderlessButton;
 import newgui.gui.widgets.HighlightButton;
+import newgui.gui.widgets.ToolbarPanel;
 
 /**
  * This panel appears when the user has selected an alignment and analysis type from the AnalysisPrepPanel
@@ -102,7 +103,6 @@ public class AnalysisDetailsPanel extends JPanel {
 		detailsPanel.setAlignmentY(Component.TOP_ALIGNMENT);
 		detailsPanel.setLayout(new BorderLayout());
 		detailsPanel.setBorder(BorderFactory.createEmptyBorder(20,10,4,10));
-		//detailsPanel.setBorder(BorderFactory.createLineBorder(Color.GREEN));
 		detailsPanel.setMinimumSize(new Dimension(400, 400));
 		detailsPanel.setPreferredSize(new Dimension(500, 400));
 		mainPanel.add(buttonsPanel);
@@ -124,22 +124,22 @@ public class AnalysisDetailsPanel extends JPanel {
 		});
 		buttonsPanel.add(substModelButton);
 
-		demoButton = new BorderlessButton("Demographic model");
-		demoButton.setToolTipText("Options affecting the model of population size change");
-		demoButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		demoButton.setHorizontalTextAlignment(Component.RIGHT_ALIGNMENT);
-		demoButton.setMinimumSize(new Dimension(buttonPanelWidth, 40));
-		demoButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				detailsPanel.removeAll();
-				setButtonHighlight(demoButton);
-				revalidate();
-				repaint();
-			}
-		});
-		buttonsPanel.add(demoButton);
+//		demoButton = new BorderlessButton("Demographic model");
+//		demoButton.setToolTipText("Options affecting the model of population size change");
+//		demoButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+//		demoButton.setHorizontalTextAlignment(Component.RIGHT_ALIGNMENT);
+//		demoButton.setMinimumSize(new Dimension(buttonPanelWidth, 40));
+//		demoButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				detailsPanel.removeAll();
+//				setButtonHighlight(demoButton);
+//				revalidate();
+//				repaint();
+//			}
+//		});
+//		buttonsPanel.add(demoButton);
 		
-		coalescentButton = new BorderlessButton("Recombination model");
+		coalescentButton = new BorderlessButton("Coalescent model");
 		coalescentButton.setToolTipText("Change options affecting recombination model");
 		coalescentButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		coalescentButton.setHorizontalTextAlignment(Component.RIGHT_ALIGNMENT);
@@ -188,7 +188,7 @@ public class AnalysisDetailsPanel extends JPanel {
 		buttonsPanel.add(mcButton);
 		buttonsPanel.add(Box.createVerticalGlue());
 		
-		JPanel bottomPanel = new JPanel();
+		JPanel bottomPanel = new ToolbarPanel();
 		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
 		bottomPanel.setPreferredSize(new Dimension(buttonPanelWidth, 50));
 		bottomPanel.setMaximumSize(new Dimension(buttonPanelWidth, 50));
@@ -199,9 +199,9 @@ public class AnalysisDetailsPanel extends JPanel {
 				displayParent.showAlignmentPrepPanel();
 			}			
 		});
-		bottomPanel.add(backButton);
 		
-		HighlightButton saveButton = new HighlightButton(UIConstants.saveGrayButton, UIConstants.saveBlueButton);
+		
+		BorderlessButton saveButton = new BorderlessButton(UIConstants.saveGrayButton);
 		saveButton.setToolTipText("Save these settings");
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -210,18 +210,19 @@ public class AnalysisDetailsPanel extends JPanel {
 		});
 		
 		
-		HighlightButton runButton = new HighlightButton(UIConstants.grayRightArrow, UIConstants.blueRightArrow);
+		BorderlessButton runButton = new BorderlessButton(UIConstants.blueRightArrow);
 		runButton.setToolTipText("Begin run");
 		runButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				beginNewRun();
 			}			
 		});
+		bottomPanel.add(backButton);
 		bottomPanel.add(Box.createHorizontalGlue());
 		bottomPanel.add(saveButton);
 		bottomPanel.add(runButton);
 		bottomPanel.add(Box.createHorizontalStrut(25));
-		this.add(bottomPanel, BorderLayout.SOUTH);
+		this.add(bottomPanel, BorderLayout.NORTH);
 		
 		loggersView = new LoggersView();
 	}
@@ -306,7 +307,7 @@ public class AnalysisDetailsPanel extends JPanel {
 	protected void setButtonHighlight(BorderlessButton button) {
 		if (prevButton != null)
 			prevButton.setFont(BorderlessButton.getDefaultFont());
-		button.setFont(UIConstants.getFont("gui/fonts/ClienB.ttf").deriveFont(15f));
+		button.setFont(UIConstants.sansFontBold.deriveFont(15f));
 		prevButton = button;
 	}
 

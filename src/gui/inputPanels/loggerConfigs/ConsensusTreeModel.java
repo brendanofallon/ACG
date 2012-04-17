@@ -67,13 +67,17 @@ public class ConsensusTreeModel extends LoggerModel {
 		if (argRef == null)
 			throw new InputConfigException("ARG reference not set for ConsensusTree logger");
 		
-		Element el = createElement(doc, getModelLabel() + site, logging.ConsensusTreeLogger.class );
+		//Could consider doing something here to ensure that we dont end up specifying identical labels...
+		String elementLabel = getModelLabel().replace(" ", "_");
+		
+		Element el = createElement(doc, elementLabel, logging.ConsensusTreeLogger.class );
 		if (useDefaultFilename)
 			el.setAttribute(PropertyLogger.FILENAME, getModelLabel() + getSite() + ".tre");
 		else
 			el.setAttribute(PropertyLogger.FILENAME, getOutputFilename());
 		el.setAttribute(PropertyLogger.FREQUENCY, "" + getLogFrequency());
 		el.setAttribute(PropertyLogger.BURNIN, "" + getBurnin());
+		el.setAttribute(PropertyLogger.LABEL, getModelLabel());
 		el.setAttribute(ConsensusTreeLogger.XML_SITE, "" + site);
 		
 		Element argEl = doc.createElement( argRef.getModelLabel() );
@@ -87,6 +91,7 @@ public class ConsensusTreeModel extends LoggerModel {
 		readFilename(el);
 		readBurnin(el);
 		readFrequency(el);
+		readLabel(el);
 		String echoStr = el.getAttribute(ConsensusTreeLogger.XML_SITE);
 		if (echoStr != null && echoStr.length()>0) {
 			try {

@@ -22,6 +22,7 @@ package gui.inputPanels.loggerConfigs;
 import gui.document.ACGDocument;
 import gui.inputPanels.Configurator.InputConfigException;
 import logging.BreakpointDensity;
+import logging.PropertyLogger;
 import logging.StateLogger;
 
 import org.w3c.dom.Element;
@@ -53,6 +54,7 @@ public class StateLoggerModel extends LoggerModel {
 		readFilename(el);
 		readFrequency(el);
 		readBurnin(el);
+		readLabel(el);
 		String echoStr = el.getAttribute(StateLogger.XML_ECHOTOSCREEN);
 		if (echoStr != null && echoStr.length()>0) {
 			Boolean echo = Boolean.parseBoolean(echoStr);
@@ -68,6 +70,7 @@ public class StateLoggerModel extends LoggerModel {
 		el.setAttribute(StateLogger.XML_FILENAME, getOutputFilename());
 		el.setAttribute(StateLogger.XML_FREQUENCY, "" + getLogFrequency());
 		el.setAttribute(StateLogger.XML_ECHOTOSCREEN, "" + getEchoToScreen());
+		el.setAttribute(PropertyLogger.LABEL, getModelLabel());
 		return el;
 	}
 

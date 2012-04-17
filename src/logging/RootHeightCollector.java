@@ -60,8 +60,8 @@ public class RootHeightCollector extends HistogramCollector {
 		outputStream.append("\n Histogram of root height conditional on breakpoints =  " + bps + "\n");
 		for(int i=0; i<histo.getBinCount(); i++) {
 			int site = (int)Math.round(i*histo.getBinWidth());
-			if (siteMap != null)
-				site = siteMap.getOriginalSite(site);
+//			if (siteMap != null)
+//				site = siteMap.getOriginalSite(site);
 			outputStream.append(site + "\t" + formatter.format( histo.getFreq(i)) + "\n");
 		}
 		outputStream.append("Count : " + histo.getCount() + "\n");

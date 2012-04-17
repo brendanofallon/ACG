@@ -60,6 +60,7 @@ public class BPDensityModel extends LoggerModel {
 		el.setAttribute(PropertyLogger.FILENAME, getOutputFilename());
 		el.setAttribute(PropertyLogger.BURNIN, "" + getBurnin());
 		el.setAttribute(PropertyLogger.FREQUENCY, "" + getLogFrequency());
+		el.setAttribute(PropertyLogger.LABEL, getModelLabel());
 		el.setAttribute(BreakpointDensity.BINS, "" + bins);
 		
 		Element argEl = doc.createElement( argRef.getModelLabel() );
@@ -73,6 +74,7 @@ public class BPDensityModel extends LoggerModel {
 		readFilename(el);
 		readBurnin(el);
 		readFrequency(el);
+		readLabel(el);
 		String echoStr = el.getAttribute(BreakpointDensity.BINS);
 		if (echoStr != null && echoStr.length()>0) {
 			try {

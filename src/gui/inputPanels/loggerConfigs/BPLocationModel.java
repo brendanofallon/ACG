@@ -71,6 +71,7 @@ public class BPLocationModel extends LoggerModel {
 		el.setAttribute(PropertyLogger.FREQUENCY, "" + getLogFrequency());
 		el.setAttribute(BreakpointLocation.XML_SEQBINS, "" + seqBins);
 		el.setAttribute(BreakpointLocation.XML_HEIGHTBINS, "" + timeBins);
+		el.setAttribute(PropertyLogger.LABEL, getModelLabel());
 		if (maxDepth != null)
 			el.setAttribute(BreakpointLocation.XML_HEIGHT, "" + maxDepth);
 		
@@ -85,6 +86,7 @@ public class BPLocationModel extends LoggerModel {
 		readFilename(el);
 		readBurnin(el);
 		readFrequency(el);
+		readLabel(el);
 		String echoStr = el.getAttribute(BreakpointLocation.XML_SEQBINS);
 		if (echoStr != null && echoStr.length()>0) {
 			try {

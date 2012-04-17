@@ -57,6 +57,7 @@ import newgui.gui.filepanel.ChooseAlignmentPanel;
 import newgui.gui.filepanel.InputFilesManager;
 import newgui.gui.widgets.BorderlessButton;
 import newgui.gui.widgets.TextButton;
+import newgui.gui.widgets.ToolbarPanel;
 import newgui.gui.widgets.VerticalTextButtons;
 
 
@@ -78,7 +79,7 @@ public class AlignmentPrepPanel extends JPanel {
 	
 	public static final ImageIcon maskIcon = UIConstants.getIcon("gui/icons/oxygen/mask24.png");
 	public static final ImageIcon clearMaskIcon = UIConstants.getIcon("gui/icons/oxygen/clearmask24.png");
-	public static final ImageIcon addSelectionIcon = UIConstants.getIcon("gui/icons/addselection.png");
+	public static final ImageIcon addSelectionIcon = UIConstants.getIcon("gui/icons/addSelection24.png");
 	
 	public AlignmentPrepPanel(PrimaryDisplay displayParent) {
 		this.displayParent = displayParent;
@@ -189,12 +190,14 @@ public class AlignmentPrepPanel extends JPanel {
 	 */
 	private void initComponents() {
 		setLayout(new BorderLayout());
-		setBackground(Display.defaultDisplayBackground);		
+		setOpaque(false);
+		//this.setBackground(Color.green);
 		
 		contentPanel = new SGContentPanel();
 		sgScrollPane = new JScrollPane( contentPanel );
 		sgScrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
-		sgScrollPane.setBorder(BorderFactory.createEmptyBorder());
+		sgScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+		sgScrollPane.setBackground(Color.white);
         JPanel corner1 = new JPanel();
         corner1.setBackground(Color.white);
         sgScrollPane.setCorner(JScrollPane.UPPER_RIGHT_CORNER, corner1);
@@ -211,9 +214,10 @@ public class AlignmentPrepPanel extends JPanel {
 		alnPanel.add(sgScrollPane, BorderLayout.CENTER);
 		
 		
-		JPanel topPanel = new JPanel();
+		JPanel topPanel = new ToolbarPanel();
 		topPanel.setBorder(BorderFactory.createEmptyBorder(3, 4, 3, 4));
 		topPanel.setOpaque(false);
+		//topPanel.setBackground(Color.magenta);
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
 		alnPanel.add(topPanel, BorderLayout.NORTH);
 		
@@ -297,7 +301,8 @@ public class AlignmentPrepPanel extends JPanel {
 		topPanel.add(zoomSlider);
 		
 		bottomHalf = new JPanel();
-		bottomHalf.setBackground(Display.defaultDisplayBackground);
+		//bottomHalf.setOpaque(false);
+		//bottomHalf.setBackground(Display.defaultDisplayBackground);
 		
 		//bottomHalf.setMinimumSize(new Dimension(400, 400));
 		//bottomHalf.setPreferredSize(new Dimension(500, 300));
@@ -309,10 +314,10 @@ public class AlignmentPrepPanel extends JPanel {
 		JPanel bottomRightPanel = new JPanel();
 		
 		bottomRightPanel = new JPanel();
-		bottomRightPanel.setOpaque(false);
-		bottomLeftPanel.setOpaque(false);
+//		bottomRightPanel.setOpaque(false);
+//		bottomLeftPanel.setOpaque(false);
 		bottomRightPanel.setLayout(new BorderLayout());
-		bottomRightPanel.setPreferredSize(new Dimension(400, 300));
+		bottomRightPanel.setPreferredSize(new Dimension(400, 200));
 		analDescBox = new JTextArea();
 		analDescBox.setOpaque(false);
 		analDescBox.setPreferredSize(new Dimension(400, 100));
@@ -370,7 +375,10 @@ public class AlignmentPrepPanel extends JPanel {
 		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, alnPanel, bottomHalf);
 		splitPane.setBorder(null);
 		splitPane.setEnabled(true);
+		splitPane.setOneTouchExpandable(true);
+		splitPane.setOpaque(false);
 		this.add(splitPane, BorderLayout.CENTER);		
+		
 	}
 	
 	/**
@@ -408,7 +416,7 @@ public class AlignmentPrepPanel extends JPanel {
 		InputFilesManager.getManager().saveAlignment(contentPanel.getAlignment(), name);
 	}
 
-	private JPanel topPanel;
+	//private JPanel topPanel;
 	private JTextArea analDescBox; //Shows descriptions of analysis types
 	private AnalysisTemplate selectedTemplate = null;
 	private BorderlessButton chooseButton;

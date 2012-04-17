@@ -176,9 +176,9 @@ public class RootHeightDensity extends PropertyLogger {
 	 * Sets a map to translate the output of this collector, 
 	 * @param map
 	 */
-	public void setSiteMap(SiteMap map) {
-		this.siteMap = map;
-	}
+//	public void setSiteMap(SiteMap map) {
+//		this.siteMap = map;
+//	}
 	
 	public void addValue(int stateNumber) {
 		if (stateNumber >= burnin/2 && heightHistos[0] == null) {
@@ -262,10 +262,6 @@ public class RootHeightDensity extends PropertyLogger {
 		return strB.toString();
 	}
 
-	@Override
-	public String getName() {
-		return "Root height logger";
-	}
 
 	private double[] binSites = null;
 	private double[] means = null; //Stores mean values across sites for rapid retrieval

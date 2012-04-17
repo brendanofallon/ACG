@@ -2,6 +2,7 @@ package newgui.gui.widgets;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -19,6 +20,7 @@ import gui.figure.series.XYSeriesElement;
 import gui.figure.series.XYSeriesFigure;
 
 import javax.imageio.ImageIO;
+import javax.swing.Box;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -184,7 +186,10 @@ public abstract class AbstractSeriesPanel extends JPanel {
 		add(fig, BorderLayout.CENTER);
 		
 		optionsPanel = new JPanel();
-		this.add(optionsPanel, BorderLayout.NORTH);
+		optionsPanel.setBackground(fig.getBackground());
+		optionsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		optionsPanel.add(Box.createHorizontalStrut(25));
+		this.add(optionsPanel, BorderLayout.SOUTH);
 		
 		BorderlessButton showConfigButton = new BorderlessButton(UIConstants.settings);
 		showConfigButton.setToolTipText("Select figure options");

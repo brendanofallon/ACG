@@ -111,6 +111,24 @@ public class FancyTabsPanel extends JPanel {
 		return tabs.contains(tab);
 	}
 	
+	public int getSelectedTabLeftX() {
+		FancyTab tab = getSelectedTab();
+		if (tab != null) {
+			return tab.getX();
+		}
+		else
+			return 0;
+	}
+	
+	public int getSelectedTabRightX() {
+		FancyTab tab = getSelectedTab();
+		if (tab != null) {
+			return tab.getX()+tab.getWidth();
+		}
+		else
+			return 0;
+	}
+	
 	/**
 	 * We override this just so we can paint a nice-looking line at the right spot across 
 	 * the bottom of the panel...
@@ -119,7 +137,10 @@ public class FancyTabsPanel extends JPanel {
 		Graphics2D g2d = (Graphics2D)g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-		
+		//
+//		g2d.setColor(Color.LIGHT_GRAY);
+//		g2d.drawRoundRect(3, tabsPanel.getHeight()-2, getWidth()-6, getHeight()-tabsPanel.getHeight(), 12, 12);
+
 		super.paintComponent(g);
 		super.paint(g);
 		
@@ -135,12 +156,11 @@ public class FancyTabsPanel extends JPanel {
 				firstEnd = width;
 				secondStart = firstEnd + tab.getWidth();
 			}
-			width += tab.getWidth();
-			
+			width += tab.getWidth();	
 		}
 		
 		
-		g2d.setColor(Color.LIGHT_GRAY);
+		g2d.setColor(FTabPane.lineColor);
 		int lineHeight = getHeight()-1;
 		g2d.drawLine(firstStart, lineHeight, firstEnd, lineHeight);
 		g2d.drawLine(secondStart, lineHeight, secondEnd, lineHeight);
