@@ -75,11 +75,15 @@ public class AlignmentGenerator {
 				
 			}
 			seqs.add(seq);
-			
-			//System.out.println(seq.toString());
 		}
 
 		return seqs;
 	}
+	
+	
+	public List<ProtoSequence> getAlignmentParallel(String contig, int startPos, int endPos) throws IOException, ContigNotFoundException {
+		//TODO finish this, use GeneratorWorker
+	}
+	
 	
 }
