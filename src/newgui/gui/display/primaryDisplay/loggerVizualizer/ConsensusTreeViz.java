@@ -7,9 +7,12 @@ import javax.swing.JCheckBox;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import newgui.UIConstants;
+
 import logging.ConsensusTreeLogger;
 
 import gui.figure.TextElement;
+import gui.figure.treeFigure.DrawableNode;
 import gui.figure.treeFigure.DrawableTree;
 import gui.figure.treeFigure.SquareTree;
 import gui.figure.treeFigure.TreeElement;
@@ -34,6 +37,7 @@ public class ConsensusTreeViz extends AbstractLoggerViz {
 		treeFig.addElement(burninMessage);
 		
 		final JCheckBox showErrorBarsBox = new JCheckBox("Error bars");
+		showErrorBarsBox.setFont(UIConstants.sansFont);
 		showErrorBarsBox.setSelected(true);
 		showErrorBarsBox.addChangeListener(new ChangeListener() {
 
@@ -44,6 +48,21 @@ public class ConsensusTreeViz extends AbstractLoggerViz {
 			}
 		});
 		super.addOptionsComponent(showErrorBarsBox);
+		
+		
+		
+		final JCheckBox showSupportBox = new JCheckBox("Node support");
+		showSupportBox.setFont(UIConstants.sansFont);
+		showSupportBox.setSelected(true);
+		showSupportBox.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				showNodeSupport = showSupportBox.isSelected();
+				update();
+			}
+		});
+		super.addOptionsComponent(showSupportBox);
 	}
 
 	protected int getUpdateFrequency() {
@@ -70,9 +89,22 @@ public class ConsensusTreeViz extends AbstractLoggerViz {
 			treeFig.addTree(drawableTree);
 			if (treeFig.getScaleType()==DrawableTree.NO_SCALE_BAR)
 				treeFig.setScaleType(DrawableTree.SCALE_AXIS);
+			
 			List<TreeElement> elems =  treeFig.getTreeElements();
 			for(TreeElement el : elems) {
 				el.getTreeDrawer().setShowErrorBars(showErrorBars);
+				
+				if (showNodeSupport) {
+					List<DrawableNode> internalNodes = drawableTree.getAllInternalDrawableNodes();
+					for(DrawableNode node : internalNodes) {
+						node.setLabelPosition(TreeFigure.UPPER_LEFT_POSITION);
+						String label = node.getAnnotationValue("support");
+						if (label != null)
+							label = label.substring(0, Math.min(label.length(), 4));
+						node.setCurrentLabel( label );
+					}
+					
+				}
 			}
 			treeFig.repaint();
 		}
@@ -83,5 +115,6 @@ public class ConsensusTreeViz extends AbstractLoggerViz {
 	private ConsensusTreeLogger treeLogger;
 	private TreeFigure treeFig;
 	private boolean showErrorBars = true;
+	private boolean showNodeSupport = false;
 
 }

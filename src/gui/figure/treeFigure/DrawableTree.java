@@ -272,7 +272,7 @@ public abstract class DrawableTree extends Tree {
 		return allNodes;
 	}
 	
-	public ArrayList<DrawableNode> getAllInternalDrawableNodes() {
+	public List<DrawableNode> getAllInternalDrawableNodes() {
 		ArrayList<DrawableNode> allNodes = new ArrayList<DrawableNode>();
 		
 		Stack<Node> stack = new Stack<Node>();
@@ -304,6 +304,26 @@ public abstract class DrawableTree extends Tree {
 	
 	public boolean hasSelectedNodes() {
 		return selectedNodes.size()>0;
+	}
+	
+	/**
+	 * Set the current label of all internal nodes to be the annotation value associated
+	 * with the given key. For instance, if key = "support", all internal node labels
+	 * will show their support (if they have that annotation defined)
+	 * @param anno
+	 */
+	public void setInternalNodeLabelsFromAnnotation(String anno) {
+		Stack<Node> stack = new Stack<Node>();
+		stack.push(root);
+		while(stack.size()>0) {
+			DrawableNode n = (DrawableNode)stack.pop(); 
+			if (n.numOffspring()>0) {
+				String annoValue = n.getAnnotationValue(anno);
+				if (annoValue != null)
+					n.setCurrentLabel(annoValue);
+			}
+			stack.addAll( n.getOffspring() );
+		}
 	}
 	
 	/**
