@@ -1,6 +1,11 @@
 package newgui.gui.display.primaryDisplay.loggerVizualizer;
 
 import java.awt.BorderLayout;
+import java.util.List;
+
+import javax.swing.JCheckBox;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import logging.ConsensusTreeLogger;
 
@@ -27,6 +32,18 @@ public class ConsensusTreeViz extends AbstractLoggerViz {
 		burninMessage = new TextElement("(Burnin period not exceeded)", fig);
 		burninMessage.setPosition(0.45, 0.5);
 		treeFig.addElement(burninMessage);
+		
+		final JCheckBox showErrorBarsBox = new JCheckBox("Error bars");
+		showErrorBarsBox.setSelected(true);
+		showErrorBarsBox.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				showErrorBars = showErrorBarsBox.isSelected();
+				update();
+			}
+		});
+		super.addOptionsComponent(showErrorBarsBox);
 	}
 
 	protected int getUpdateFrequency() {
@@ -53,6 +70,10 @@ public class ConsensusTreeViz extends AbstractLoggerViz {
 			treeFig.addTree(drawableTree);
 			if (treeFig.getScaleType()==DrawableTree.NO_SCALE_BAR)
 				treeFig.setScaleType(DrawableTree.SCALE_AXIS);
+			List<TreeElement> elems =  treeFig.getTreeElements();
+			for(TreeElement el : elems) {
+				el.getTreeDrawer().setShowErrorBars(showErrorBars);
+			}
 			treeFig.repaint();
 		}
 		repaint();
@@ -61,5 +82,6 @@ public class ConsensusTreeViz extends AbstractLoggerViz {
 	private TextElement burninMessage;
 	private ConsensusTreeLogger treeLogger;
 	private TreeFigure treeFig;
+	private boolean showErrorBars = true;
 
 }

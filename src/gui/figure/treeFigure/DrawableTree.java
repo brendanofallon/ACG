@@ -68,14 +68,16 @@ public abstract class DrawableTree extends Tree {
 	
 	public DrawableTree(DrawableNode root) {
 		super(root);
-		assignLabels((DrawableNode)root);
-		double factor = getHeight();
-		initializeErrorBars(root, factor);
+		initializeAnnotations();
 	}
 	
 	public DrawableTree(String treeStr) {
 		buildTreeFromNewick(treeStr);
-		assignLabels((DrawableNode)root);
+		initializeAnnotations();
+	}
+	
+	protected void initializeAnnotations() {
+		assignAnnotations((DrawableNode)root);
 		double factor = getHeight();
 		initializeErrorBars((DrawableNode)root, factor);
 	}
@@ -185,7 +187,7 @@ public abstract class DrawableTree extends Tree {
 	 * or the annotation value from key "tip", if getLabel() is null, and "" for all
 	 * other nodes
 	 */
-	protected void assignLabels(DrawableNode node) {
+	protected void assignAnnotations(DrawableNode node) {
 		if (node.numOffspring()==0) {
 			String label = node.getLabel();
 			if (label==null || label=="") {
@@ -201,7 +203,7 @@ public abstract class DrawableTree extends Tree {
 		}
 	
 		for(Node kid : node.getOffspring()) {
-			assignLabels((DrawableNode)kid);
+			assignAnnotations((DrawableNode)kid);
 		}		
 	}
 	

@@ -819,7 +819,12 @@ public class TreeDrawer implements TreeListener {
 		}
 	}
 		
-
+	/**
+	 * Draw the error bars for each node, but only if the node has its error
+	 * bars value set
+	 * @param g2d
+	 * @param node
+	 */
 	private void drawErrorBars(Graphics2D g2d, DrawableNode node) {
 		int x = translateTreeToPixelX(node.getX());
 		int y = translateTreeToPixelY(node.getY());
