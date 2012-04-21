@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import newgui.gui.widgets.fancyTabPane.FTabClosingListener;
 import newgui.gui.widgets.fancyTabPane.FTabPane;
 
 /**
@@ -28,8 +29,23 @@ public class DisplayPane extends JPanel {
 	}
 	
 	
-	public void addDisplay(Display display) {
+	public void addDisplay(final Display display) {
 		add(tabPane, BorderLayout.CENTER);
+		tabPane.addTabClosingListener(new FTabClosingListener() {
+			@Override
+			public boolean tabWouldLikeToClose(JComponent comp) {
+				if (comp == display)
+					return display.displayWouldLikeToClose();
+				else
+					return true;
+			}
+
+			@Override
+			public void tabClosed(JComponent comp) {
+				if (comp == display)
+					display.displayClosed();
+			}
+		});
 		tabPane.addComponent(display.getTitle(), display);
 		revalidate();
 		repaint();
@@ -58,13 +74,26 @@ public class DisplayPane extends JPanel {
 		}
 	}
 	
-	public void removeDisplay(Display display) {
-		tabPane.removeComponent(display);
-		if (tabPane.getTabCount()==0) {
-			this.remove(tabPane);
-			revalidate();
-			repaint();
+	/**
+	 * Attempt to close (remove) the given Display - the display may prevent the 
+	 * removal through its displayWouldLikeToCloseMethod. Returns true if the 
+	 * display was actually removed, false otherwise.  
+	 * @param display
+	 * @return True if display was actually closed / not aborted by user
+	 */
+	public boolean removeDisplay(Display display) {
+		boolean closeOK = display.displayWouldLikeToClose();
+		if (closeOK) {
+			tabPane.removeComponent(display);
+			display.displayClosed();
+			if (tabPane.getTabCount()==0) {
+				this.remove(tabPane);
+				revalidate();
+				repaint();
+			}
 		}
+		
+		return closeOK;
 	}
 	
 

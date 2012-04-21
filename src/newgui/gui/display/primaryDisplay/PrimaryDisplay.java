@@ -9,19 +9,30 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import jobqueue.ExecutingChain;
+import jobqueue.JobState.State;
 
 import sequence.Alignment;
 
 import newgui.datafile.AnalysisDataFile;
 import newgui.gui.display.Display;
 
-
+/**
+ * The most frequently used type of display - this is the one that opens when 
+ * the user double-clicks an alignment or analysis file. It houses at least
+ * three separate main panels, allowing the user to view the aligment,
+ * select the analyses, and view the actual run. 
+ * @author brendan
+ *
+ */
 public class PrimaryDisplay extends Display {
 
 	
 	private static final String ALN_PREP = "Aln prep panel";
-	private static final String ANALYSIS_PREP = "Analysis prep";
+	//private static final String ANALYSIS_PREP = "Analysis prep";
 	private static final String ANALYSIS_DETAILS = "Analysis details";
 	private static final String RUN_JOB = "Run joberroo";
 	
@@ -32,16 +43,40 @@ public class PrimaryDisplay extends Display {
 	
 	public PrimaryDisplay() {
 		initComponents();
-	
-		 CardLayout cl = (CardLayout)(mainPanel.getLayout());
-		 cl.show(mainPanel, ALN_PREP);
-		 repaint();
+		CardLayout cl = (CardLayout)(mainPanel.getLayout());
+		cl.show(mainPanel, ALN_PREP);
+		repaint();
 	}
 	
 	public void addAlignment(Alignment aln, String title) {
 		alnPrepPanel.addAlignment(aln, title);
 	}
 	
+	public boolean displayWouldLikeToClose() {
+		if (runJobPanel != null) {
+			ExecutingChain chain = runJobPanel.getChain();
+			if (chain != null && chain.getJobState().getState() != State.COMPLETED && chain.getJobState().getState() != State.ERROR) {
+				int n = JOptionPane.showConfirmDialog(this, "Abort this analysis?");
+				if (n == JOptionPane.YES_OPTION) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	public void displayClosed() {
+		if (runJobPanel != null) {
+			ExecutingChain chain = runJobPanel.getChain();
+			if (chain != null) {
+				chain.abort();
+				chain.cancel(true);
+			}
+		}
+	}
 	
 	private void initComponents() {
 		setOpaque(false);
@@ -60,13 +95,6 @@ public class PrimaryDisplay extends Display {
 		this.add(mainPanel, BorderLayout.CENTER);
 		
 	}
-	
-//	public void showAnalysisPanel() {
-//		analPrepPanel.initialize(alnPrepPanel.getAlnSummaries());
-//		CardLayout cl = (CardLayout)(mainPanel.getLayout());
-//		cl.show(mainPanel, ANALYSIS_PREP);
-//	}
-	
 	
 	public void showAnalysisDetails(AnalysisModel model, AnalysisDataFile sourceFile) {
 		analDetailsPanel.initialize(model, sourceFile);
