@@ -8,6 +8,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -15,19 +18,26 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import newgui.gui.filepanel.DirectoryListener;
+
 public class AbstractBlock extends JPanel {
 
 	private boolean isOpen = true;
-	private JComponent content = null;
 	protected BlocksPanel parentPanel;
 	protected BlockHeader header;
 	protected JScrollPane mainScrollPane;
 	private JComponent mainComp;
 	protected int maxBlockHeight = 100;
 	
+	protected List<DirectoryListener> dirListeners = new ArrayList<DirectoryListener>();
+	
 	public AbstractBlock(String label) {
 		header = new BlockHeader(this, label);
 		initComponents();
+	}
+	
+	public String getLabel() {
+		return header.getLabel();
 	}
 	
 	public void setParentPanel(BlocksPanel parentPanel) {
@@ -46,7 +56,6 @@ public class AbstractBlock extends JPanel {
 		setBorder(BorderFactory.createEmptyBorder(5, 3, 2, 3));
 		
 		this.add(header, BorderLayout.NORTH);
-		
 		
 		mainScrollPane = new JScrollPane();
 		mainScrollPane.setOpaque(false);
@@ -85,6 +94,24 @@ public class AbstractBlock extends JPanel {
 		revalidate();
 		repaint();
 	}	
+	
+	public void addDirectoryListener(DirectoryListener l) {
+		dirListeners.add(l);
+	}
+	
+	public void removeDirectoryListener(DirectoryListener l) {
+		dirListeners.remove(l);
+	}
+	
+	/**
+	 * Alert listeners that this directory has changed
+	 * @param dirChanged
+	 */
+	protected void fireDirectoryChangeEvent(File dirChanged) {
+		for(DirectoryListener dl : dirListeners) {
+			dl.filesChanged(dirChanged);
+		}
+	}
 	
 	public void paintComponent(Graphics g) {
 		((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,

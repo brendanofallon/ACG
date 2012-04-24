@@ -41,6 +41,7 @@ import newgui.gui.filepanel.ResultsFilesManager;
 import newgui.gui.widgets.BorderlessButton;
 import newgui.gui.widgets.RegionFader;
 import newgui.gui.widgets.fileBlocks.AbstractBlock;
+import newgui.gui.widgets.fileBlocks.BlocksManager;
 import newgui.gui.widgets.fileBlocks.BlocksPanel;
 import newgui.gui.widgets.panelPile.PPanel;
 import newgui.gui.widgets.panelPile.PanelPile;
@@ -56,6 +57,7 @@ public class ViewerWindow extends JFrame {
 
 	public static Font sansFont = UIConstants.sansFont;
 	private static ViewerWindow viewer; //Handy static reference to main window
+	private BlocksManager fileManager = null;
 	
 	public ViewerWindow() {
 		super("View");
@@ -78,6 +80,8 @@ public class ViewerWindow extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		BorderlessButton.setDefaultFont(sansFont.deriveFont(16f));
+		
+		createFileManager();
 		
 		initComponents();
 		
@@ -139,6 +143,12 @@ public class ViewerWindow extends JFrame {
 		}
 	}
 	
+	private void createFileManager() {
+		String fileSep = System.getProperty("file.separator");
+		String rootDirPath = System.getProperty("user.dir") + fileSep + ".acgdata";
+		File rootDir = new File(rootDirPath);
+		fileManager = new BlocksManager( rootDir );
+	}
 
 	private void initComponents() {
 		Container contentPane = this.getContentPane();
@@ -157,27 +167,27 @@ public class ViewerWindow extends JFrame {
 		JPanel leftPanelTop = new TopLeftPanel();
 		leftPanel.add(leftPanelTop, BorderLayout.NORTH);
 
-		BlocksPanel filesPanel = new BlocksPanel();
-		filesPanel.setBackground(UIConstants.lightBackground);
-		FileTree inputsTree = new FileTree(InputFilesManager.getManager().getRootDirectory());
-		InputFilesManager.getManager().addListener(inputsTree);
-		AbstractBlock inputBlock = new AbstractBlock("Input files");
-
-		inputBlock.setMainComponent(inputsTree);
-		filesPanel.addBlock(inputBlock);
-		
-		FileTree analysisTree = new FileTree(AnalysisFilesManager.getManager().getRootDirectory());
-		AnalysisFilesManager.getManager().addListener(analysisTree);
-		AbstractBlock analysisBlock = new AbstractBlock("Analysis files");
-		analysisBlock.setMainComponent(analysisTree);
-		filesPanel.addBlock(analysisBlock);
-		
-		FileTree resultsTree = new FileTree(ResultsFilesManager.getManager().getRootDirectory());
-		
-		ResultsFilesManager.getManager().addListener(analysisTree);
-		AbstractBlock resultsBlock = new AbstractBlock("Results files");
-		resultsBlock.setMainComponent(resultsTree);
-		filesPanel.addBlock(resultsBlock);
+		BlocksPanel filesPanel = new BlocksPanel(fileManager);
+//		filesPanel.setBackground(UIConstants.lightBackground);
+//		FileTree inputsTree = new FileTree(InputFilesManager.getManager().getRootDirectory());
+//		InputFilesManager.getManager().addListener(inputsTree);
+//		AbstractBlock inputBlock = new AbstractBlock("Input files");
+//
+//		inputBlock.setMainComponent(inputsTree);
+//		filesPanel.addBlock(inputBlock);
+//		
+//		FileTree analysisTree = new FileTree(AnalysisFilesManager.getManager().getRootDirectory());
+//		AnalysisFilesManager.getManager().addListener(analysisTree);
+//		AbstractBlock analysisBlock = new AbstractBlock("Analysis files");
+//		analysisBlock.setMainComponent(analysisTree);
+//		filesPanel.addBlock(analysisBlock);
+//		
+//		FileTree resultsTree = new FileTree(ResultsFilesManager.getManager().getRootDirectory());
+//		
+//		ResultsFilesManager.getManager().addListener(analysisTree);
+//		AbstractBlock resultsBlock = new AbstractBlock("Results files");
+//		resultsBlock.setMainComponent(resultsTree);
+//		filesPanel.addBlock(resultsBlock);
 		
 		leftPanel.add(filesPanel, BorderLayout.CENTER);
 		leftPanel.setPreferredSize(new Dimension(220, 10000));

@@ -88,6 +88,10 @@ public class BlockHeader extends JPanel {
 
 		});
 	}
+	
+	public String getLabel() {
+		return label;
+	}
 
 	protected void redrawButtons() {
 		parentBlock.repaint();

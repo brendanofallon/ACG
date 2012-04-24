@@ -9,16 +9,18 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 /**
- * A container for a bunch of Blocks 
+ * A JPanel that displays a collection of 'AbstractBlocks' contained in a BlocksManager 
  * @author brendan
  *
  */
 public class BlocksPanel extends JPanel {
 
-	private List<AbstractBlock> blocks = new ArrayList<AbstractBlock>();
+	//private List<AbstractBlock> blocks = new ArrayList<AbstractBlock>();
 	private int blockPadding = 8; //Vertical space between blocks
+	protected BlocksManager manager;
 	
-	public BlocksPanel() {
+	public BlocksPanel(BlocksManager manager) {
+		this.manager = manager;
 		initComponents();
 	}
 	
@@ -30,10 +32,12 @@ public class BlocksPanel extends JPanel {
 	private void layoutBlocks() {
 		this.removeAll();
 		this.add(Box.createVerticalGlue());
-		for(AbstractBlock block : blocks) {
+		for(int i=0; i<manager.getBlockCount(); i++) {
+			AbstractBlock block = manager.getBlockByNumber(i);
 			this.add(block);
 			this.add(Box.createVerticalStrut(blockPadding));
 		}
+
 		this.add(Box.createVerticalGlue());
 		revalidate();
 		repaint();
@@ -48,15 +52,15 @@ public class BlocksPanel extends JPanel {
 	}
 	
 	public void removeBlock(AbstractBlock whichBlock) {
-		blocks.remove(whichBlock);
+		manager.removeBlock(whichBlock);
 		layoutBlocks();
 	}
 	
-	public void addBlock(AbstractBlock newBlock) {
-		blocks.add(newBlock);
-		newBlock.setParentPanel(this);
-		layoutBlocks();
-	}
+//	public void addBlock(AbstractBlock newBlock) {
+//		manager.addBlock(newBlock);
+//		newBlock.setParentPanel(this);
+//		layoutBlocks();
+//	}
 	
 	private void initComponents() {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
