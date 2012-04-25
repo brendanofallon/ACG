@@ -137,6 +137,8 @@ public class SiteModelView extends JPanel {
 		mutPanel = new JPanel();
 		//mutPanel.setLayout(new BoxLayout(mutPanel, BoxLayout.Y_AXIS));
 		mutPanel.setLayout(new MigLayout());
+		//mutPanel.setPreferredSize(new Dimension(300, 300));
+
 		stylist.applyStyle(mutPanel);
 		JPanel mutTop = new JPanel();
 		stylist.applyStyle(mutTop);

@@ -23,8 +23,7 @@ public class SquareTree extends DrawableTree {
 		orientation = Direction.RIGHT;
 		buildTreeFromNewick(treeStr);
 		collapseZeroBranchLengths();
-		//calculateNodePositions();
-		assignLabels((DrawableNode)root);
+		initializeAnnotations();
 	}
 	
 	

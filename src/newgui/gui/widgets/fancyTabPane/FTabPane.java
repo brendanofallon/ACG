@@ -9,9 +9,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -40,6 +42,8 @@ public class FTabPane extends JPanel implements ChangeListener {
 	
 	//If true, show a tab even if there's only one panel attached. If false, don't
 	private boolean showTabIfOne = true;
+	
+	private List<FTabClosingListener> closingListeners = new ArrayList<FTabClosingListener>();
 	
 	public FTabPane() {
 		setLayout(new BorderLayout());
@@ -80,6 +84,23 @@ public class FTabPane extends JPanel implements ChangeListener {
 	 * @param tab
 	 */
 	public void removeComponentForTab(FancyTab tab) {
+		JComponent comp = tabMap.get(tab);
+		
+		//First see if any listener would like to abort the closing.
+		//If so, we just return and make no changes. 
+		for(FTabClosingListener listener : closingListeners) {
+			boolean closeOK = listener.tabWouldLikeToClose(comp);
+			if (! closeOK) {
+				return;
+			}
+		}
+		
+		//If were here the closing event was not aborted, so now 
+		//were closing for sure. Alert all listeners that were definitely closing
+		for(FTabClosingListener listener : closingListeners) {
+			listener.tabClosed(comp);
+		}
+		
 		tabsPanel.removeTab(tab);
 		tabMap.remove(tab);
 		tab.removeListener(this);
@@ -131,6 +152,19 @@ public class FTabPane extends JPanel implements ChangeListener {
 	 */
 	public int getTabCount() {
 		return tabMap.size();
+	}
+	
+	/**
+	 * Add a new listener that will be notified when tabs are closed.
+	 * @param listener
+	 */
+	public void addTabClosingListener(FTabClosingListener listener) {
+		if (! closingListeners.contains(listener))
+			closingListeners.add(listener);
+	}
+	
+	public void removingTabClosingListener(FTabClosingListener listener) {
+		closingListeners.remove(listener);
 	}
 	
 	/**

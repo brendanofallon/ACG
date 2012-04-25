@@ -15,6 +15,7 @@ import gui.ErrorWindow;
 import gui.document.ACGDocument;
 import gui.inputPanels.ARGModelElement;
 import gui.inputPanels.Configurator.InputConfigException;
+import gui.inputPanels.PopSizeModelElement;
 
 
 import gui.inputPanels.loggerConfigs.LoggerModel;
@@ -59,6 +60,7 @@ public class LoggersView extends JPanel {
 	//This implementation sucks because what if different loggers want to reference different ARGs?
 	//Maybe there should be one logger panel per ARG? per alignment? 
 	protected ARGModelElement ARGref = null;
+	protected PopSizeModelElement popSizeref = null;
 		
 	public LoggersView() {
 		this.setOpaque(false);
@@ -105,9 +107,13 @@ public class LoggersView extends JPanel {
 		
 	}
 	
-	public void setARGReference(ARGModelElement argRef) {
-		this.ARGref = argRef;
-	}
+//	public void setARGReference(ARGModelElement argRef) {
+//		this.ARGref = argRef;
+//	}
+//	
+//	public void setPopSizeModelReference(PopSizeModelElement popSizeRef) {
+//		this.popSizeref = popSizeRef;
+//	}
 	
 	/**
 	 * Clear list of logger views and add brand new ones created from the given
@@ -164,6 +170,7 @@ public class LoggersView extends JPanel {
 		for(DefaultLoggerView view : loggers) {
 			view.updateFields();
 			view.getModel().setArgRef( ARGref );
+			view.getModel().setPopSizeRef( popSizeref );
 		}
 	}
 	
@@ -173,6 +180,7 @@ public class LoggersView extends JPanel {
 		for(DefaultLoggerView view : loggers) {
 			view.updateFields();
 			view.getModel().setArgRef( ARGref );
+			view.getModel().setPopSizeRef( popSizeref );
 			models.add(view.getModel());
 		}
 		

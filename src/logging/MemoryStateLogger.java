@@ -261,7 +261,7 @@ public class MemoryStateLogger implements MCMCListener {
 					}
 					
 					if (val == null) {
-						System.err.println("Cannot find plottable value for param: " + absParam.getName() + " item:" + obj);
+						throw new IllegalArgumentException("Cannot find plottable value for param: " + absParam.getName() + " item:" + obj);
 					}
 					else {
 						Point2D p = new Point2D.Float(stateNumber, val);

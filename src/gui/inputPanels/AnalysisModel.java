@@ -165,7 +165,7 @@ public class AnalysisModel {
 
 			for(LoggerModel loggerModel : loggerModels) {
 				loggerModel.setArgRef(argModel);
-
+				loggerModel.setPopSizeRef( coalModel.getPopSizeModel() );
 				Element loggerNode = (Element) loggerModel.getElements(docBuilder.getACGDocument()).get(0);
 				docBuilder.appendNode(loggerNode);
 				mcElement.addListenerRef(loggerNode);

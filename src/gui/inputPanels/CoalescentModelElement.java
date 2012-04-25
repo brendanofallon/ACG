@@ -69,7 +69,6 @@ public class CoalescentModelElement extends ModelElement {
 		coalEl.appendChild( doc.createElement(recRateModel.getModelLabel()));
 		params.addAll(recRateModel.getDoubleParameters());
 		
-		
 		coalEl.appendChild( doc.createElement(argRef.getModelLabel()));
 		
 		nodes.add(coalEl);
@@ -82,7 +81,6 @@ public class CoalescentModelElement extends ModelElement {
 		this.setModelLabel(coalEl.getNodeName());
 		
 		popSizeModel.readElements(doc);
-		
 		recRateModel.readElements(doc);
 	}
 	
@@ -145,7 +143,5 @@ public class CoalescentModelElement extends ModelElement {
 	
 	//Maintains list of all double parameters we use
 	private List<DoubleParamElement> params = new ArrayList<DoubleParamElement>();
-
-
 
 }

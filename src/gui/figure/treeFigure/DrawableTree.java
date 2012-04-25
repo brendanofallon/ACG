@@ -68,14 +68,16 @@ public abstract class DrawableTree extends Tree {
 	
 	public DrawableTree(DrawableNode root) {
 		super(root);
-		assignLabels((DrawableNode)root);
-		double factor = getHeight();
-		initializeErrorBars(root, factor);
+		initializeAnnotations();
 	}
 	
 	public DrawableTree(String treeStr) {
 		buildTreeFromNewick(treeStr);
-		assignLabels((DrawableNode)root);
+		initializeAnnotations();
+	}
+	
+	protected void initializeAnnotations() {
+		assignAnnotations((DrawableNode)root);
 		double factor = getHeight();
 		initializeErrorBars((DrawableNode)root, factor);
 	}
@@ -185,7 +187,7 @@ public abstract class DrawableTree extends Tree {
 	 * or the annotation value from key "tip", if getLabel() is null, and "" for all
 	 * other nodes
 	 */
-	protected void assignLabels(DrawableNode node) {
+	protected void assignAnnotations(DrawableNode node) {
 		if (node.numOffspring()==0) {
 			String label = node.getLabel();
 			if (label==null || label=="") {
@@ -201,7 +203,7 @@ public abstract class DrawableTree extends Tree {
 		}
 	
 		for(Node kid : node.getOffspring()) {
-			assignLabels((DrawableNode)kid);
+			assignAnnotations((DrawableNode)kid);
 		}		
 	}
 	
@@ -270,7 +272,7 @@ public abstract class DrawableTree extends Tree {
 		return allNodes;
 	}
 	
-	public ArrayList<DrawableNode> getAllInternalDrawableNodes() {
+	public List<DrawableNode> getAllInternalDrawableNodes() {
 		ArrayList<DrawableNode> allNodes = new ArrayList<DrawableNode>();
 		
 		Stack<Node> stack = new Stack<Node>();
@@ -302,6 +304,26 @@ public abstract class DrawableTree extends Tree {
 	
 	public boolean hasSelectedNodes() {
 		return selectedNodes.size()>0;
+	}
+	
+	/**
+	 * Set the current label of all internal nodes to be the annotation value associated
+	 * with the given key. For instance, if key = "support", all internal node labels
+	 * will show their support (if they have that annotation defined)
+	 * @param anno
+	 */
+	public void setInternalNodeLabelsFromAnnotation(String anno) {
+		Stack<Node> stack = new Stack<Node>();
+		stack.push(root);
+		while(stack.size()>0) {
+			DrawableNode n = (DrawableNode)stack.pop(); 
+			if (n.numOffspring()>0) {
+				String annoValue = n.getAnnotationValue(anno);
+				if (annoValue != null)
+					n.setCurrentLabel(annoValue);
+			}
+			stack.addAll( n.getOffspring() );
+		}
 	}
 	
 	/**

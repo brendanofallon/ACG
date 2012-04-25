@@ -5,6 +5,7 @@ import gui.inputPanels.loggerConfigs.BPLocationModel;
 import gui.inputPanels.loggerConfigs.ConsensusTreeModel;
 import gui.inputPanels.loggerConfigs.LoggerModel;
 import gui.inputPanels.loggerConfigs.MPEARGModel;
+import gui.inputPanels.loggerConfigs.PopSizeLoggerModel;
 import gui.inputPanels.loggerConfigs.RootHeightModel;
 import gui.inputPanels.loggerConfigs.StateLoggerModel;
 
@@ -38,6 +39,7 @@ public class AvailableLoggers {
 		models.add(new RootHeightModel());
 		models.add(new ConsensusTreeModel());
 		models.add(new MPEARGModel());
+		models.add(new PopSizeLoggerModel());
 	}
 	
 	public static List<LoggerModel> getLoggers() {
@@ -71,6 +73,9 @@ public class AvailableLoggers {
 		if (model instanceof MPEARGModel) {
 			return new MPEARGView( (MPEARGModel)model);
 		}
+		if (model instanceof PopSizeLoggerModel) {
+			return new PopSizeView( (PopSizeLoggerModel)model);
+		}
 		
 		throw new IllegalArgumentException("Could not find a suitable view for logger model: " + model.getModelLabel() );
 	}
@@ -98,6 +103,9 @@ public class AvailableLoggers {
 		}
 		if (model instanceof MPEARGModel) {
 			return new MPEARGModel();
+		}
+		if (model instanceof PopSizeLoggerModel) {
+			return new PopSizeLoggerModel();
 		}
 		
 		throw new IllegalArgumentException("Could not find a suitable view for logger model: " + model.getModelLabel() );

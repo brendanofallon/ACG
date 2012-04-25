@@ -244,6 +244,10 @@ public class TreeFigure extends Figure {
 		scaleElements.clear();
 	}
 	
+	public List<TreeElement> getTreeElements() {
+		return treeElements;
+	}
+	
 	/**
 	 * Called to set the appropriate bounds for all trees. For now we assume they are simply laid out
 	 * left-to-right, but this would be easy to change sometime

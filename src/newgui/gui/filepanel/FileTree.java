@@ -56,15 +56,13 @@ public class FileTree extends JPanel implements DirectoryListener {
 	
 	public FileTree(File rootDir) {
 		this.rootDir = rootDir;
-		setOpaque(false);
 		this.setLayout(new BorderLayout());
 		
 		tree = new JTree();
-		tree.setOpaque(false);
+		((DefaultTreeCellRenderer)tree.getCellRenderer()).setBackgroundNonSelectionColor(new Color(0, 0, 0, 0));
 		tree.setFont(UIConstants.sansFont.deriveFont(12f));
 		tree.addMouseListener(new TreeMouseListener());
-		tree.setAlignmentX(Component.LEFT_ALIGNMENT);
-		
+
 		createTreeNodes();
 		this.add(tree, BorderLayout.CENTER);
 		

@@ -157,8 +157,8 @@ public class ACGDocumentBuilder {
 			Class<?> clazz = ClassLoader.getSystemClassLoader().loadClass(className);
 			if (AbstractParameter.class.isAssignableFrom(clazz)) {
 				//Don't load CompoundParameters by default
-				if (CompoundParameter.class.isAssignableFrom(clazz))
-					return false;
+//				if (CompoundParameter.class.isAssignableFrom(clazz))
+//					return false;
 				
 				//System.out.println("Class " + clazz + " is assignable from AbstractParam");
 				return true;

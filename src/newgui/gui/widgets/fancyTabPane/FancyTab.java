@@ -52,6 +52,7 @@ public class FancyTab extends JPanel {
 	private static final ImageIcon closeIcon = UIConstants.grayCloseButton;
 	
 	private FTabPane parentPane;
+ 
 	
 	public FancyTab(FTabPane parentPane, String label) {
 		this.text = label;
@@ -153,7 +154,7 @@ public class FancyTab extends JPanel {
 
 	     g.setColor(FTabPane.shadowColor);
 	     g2d.setStroke(FTabPane.shadowStroke);
-	     g2d.drawRoundRect(5, 4, getWidth()-6, getHeight()+10, 8, 8);
+	     g2d.drawRoundRect(5, 5, getWidth()-6, getHeight()+10, 8, 8);
 	     
 	     g2d.setPaint(gp);
 	     g.fillRoundRect(0, 2, getWidth()-3, getHeight()+10, 8, 8);

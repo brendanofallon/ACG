@@ -156,12 +156,13 @@ public class ViewerWindow extends JFrame {
 		leftPanel.setLayout(new BorderLayout());
 		JPanel leftPanelTop = new TopLeftPanel();
 		leftPanel.add(leftPanelTop, BorderLayout.NORTH);
-		
+
 		BlocksPanel filesPanel = new BlocksPanel();
 		filesPanel.setBackground(UIConstants.lightBackground);
 		FileTree inputsTree = new FileTree(InputFilesManager.getManager().getRootDirectory());
 		InputFilesManager.getManager().addListener(inputsTree);
 		AbstractBlock inputBlock = new AbstractBlock("Input files");
+
 		inputBlock.setMainComponent(inputsTree);
 		filesPanel.addBlock(inputBlock);
 		
@@ -196,7 +197,6 @@ public class ViewerWindow extends JFrame {
 		bottomPanel.add(new JSeparator(JSeparator.HORIZONTAL));
 
 		contentPane.add(bottomPanel, BorderLayout.SOUTH);		
-		
 	}
 	
 	

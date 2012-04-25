@@ -33,6 +33,7 @@ import gui.inputPanels.ARGModelElement;
 import gui.inputPanels.DoubleParamElement;
 import gui.inputPanels.ModelElement;
 import gui.inputPanels.Configurator.InputConfigException;
+import gui.inputPanels.PopSizeModelElement;
 
 /**
  * Abstract base class for objects which can read & write XML from loggers 
@@ -46,6 +47,8 @@ public abstract class LoggerModel extends ModelElement {
 	protected int logFrequency = 2000;
 	protected int burnin = 1000000;	
 	protected ARGModelElement argRef = null; //Many loggers need a reference to the ARG
+	protected PopSizeModelElement popSizeModel = null;
+	
 	
 	//We maintain a link to a view object so we can be sure all fields have been "updated" before we 
 	//create any XML nodes
@@ -76,6 +79,18 @@ public abstract class LoggerModel extends ModelElement {
 	public void setArgRef(ARGModelElement argRef) {
 		this.argRef = argRef;
 	}
+	
+	/**
+	 * A reference to the PopSizeModel associated with this logger. May be null if no reference is required. 
+	 * @return
+	 */
+	public PopSizeModelElement getPopSizeRef() {
+		return popSizeModel;
+	}
+
+	public void setPopSizeRef(PopSizeModelElement popSizeRef) {
+		this.popSizeModel = popSizeRef;
+	}	
 	
 	protected String readFilename(Element el) {
 		String filename = el.getAttribute(StateLogger.XML_FILENAME);

@@ -49,7 +49,7 @@ public class MultiSeriesPanel extends JPanel {
 	 * Add a new panel displaying the default basic series (current the "data likelihood series")
 	 */
 	public void addDefaultSeriesPanel() {
-		SeriesFigurePanel fig = new SeriesFigurePanel(this);
+		SeriesFigurePanel fig = new SeriesFigurePanel();
 		fig.setMemoryLogger(memLogger);
 		multiPanel.addComponent(fig);
 		fig.addSelectedSeries();

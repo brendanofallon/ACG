@@ -27,6 +27,9 @@ public class FileCellRenderer extends DefaultTreeCellRenderer {
 	
 	public FileCellRenderer() {
 		setMinimumSize(new Dimension(10, 40));
+		setBackgroundNonSelectionColor(new Color(0, 0, 0, 0)); //Make this thing transparent
+		//this.setOpaque(false);
+		this.setBackground(new Color(0, 0, 0, 0));
 	}
 	
 //	public Component getTreeCellRendererComponent(JTree tree,

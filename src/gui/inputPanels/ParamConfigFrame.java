@@ -54,7 +54,6 @@ public class ParamConfigFrame extends JFrame {
 	private DoubleParamView view;
 	
 	private JPanel valuesPanel;
-	//private JPanel modifierPanel;
 	private JPanel priorPanel;
 	
 	public ParamConfigFrame(final DoubleParamView paramView) {
@@ -178,17 +177,26 @@ public class ParamConfigFrame extends JFrame {
 			priorBox.setSelectedIndex(1);
 			priorMeanField.setText( model.getPriorModel().getMean() + "");
 			priorStdevField.setText( model.getPriorModel().getStdev() + "");
+			priorStdevField.setEnabled(true);
+			priorMeanField.setEnabled(true);
 		}
 		if (priorType == PriorType.Exponential) {
 			priorBox.setSelectedIndex(2);
 			priorMeanField.setText( model.getPriorModel().getMean() + "");
+			priorMeanField.setEnabled(true);
 		}
 		if (priorType == PriorType.Gamma) {
 			priorBox.setSelectedIndex(3);
 			priorMeanField.setText( model.getPriorModel().getMean() + "");
 			priorStdevField.setText( model.getPriorModel().getStdev() + "");
+			priorStdevField.setEnabled(true);
+			priorMeanField.setEnabled(true);
 		}
 		
+		if (priorType == PriorType.Uniform) {
+			priorStdevField.setEnabled(false);
+			priorMeanField.setEnabled(false);
+		}
 		
 		view.updateView();
 		repaint();
@@ -238,6 +246,11 @@ public class ParamConfigFrame extends JFrame {
 
 		priorBox = new JComboBox(priorTypes);
 		priorBox.setSelectedIndex(0);
+		priorBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				updatePriorBox();
+			}
+		});
 
 		addComps(priorPanel, "Prior type:", priorBox);
 		

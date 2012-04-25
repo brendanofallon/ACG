@@ -30,6 +30,7 @@ public class BlockHeader extends JPanel {
 	static final ImageIcon closeIcon = UIConstants.getIcon("gui/icons/smallGrayClose.png");
 	final BorderlessButton minimButton;
 	final BorderlessButton closeButton;
+
 	
 	public BlockHeader(AbstractBlock block, String label) {
 		this.parentBlock = block;
@@ -89,12 +90,7 @@ public class BlockHeader extends JPanel {
 	}
 
 	protected void redrawButtons() {
-//		closeButton.setDrawBorder(false);
-//		minimButton.setDrawBorder(false);
-//		closeButton.repaint();
-//		minimButton.repaint();
 		parentBlock.repaint();
-		System.out.println("Redrawing buttons");
 	}
 	
 	public void paintComponent(Graphics g) {

@@ -37,6 +37,7 @@ public class AbstractBlock extends JPanel {
 	public void setMainComponent(JComponent comp) {
 		this.mainComp = comp;
 		mainScrollPane.setViewportView(mainComp);
+		mainScrollPane.getViewport().setOpaque(false);
 	}
 	
 	protected void initComponents() {

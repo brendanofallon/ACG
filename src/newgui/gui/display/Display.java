@@ -27,6 +27,21 @@ public abstract class Display extends JPanel {
 		this.setOpaque(false);
 	}
 
+	/**
+	 * Called when the user has attempted to close this display. If true is returned
+	 * the display will close. If false, the closing will be aborted. 
+	 * @return
+	 */
+	public boolean displayWouldLikeToClose() {
+		return true;
+	}
+	
+	/**
+	 * Called when the display has been closed
+	 */
+	public void displayClosed() {
+		
+	}
 	
 	/**
 	 * Set title for this display, shouldn't be too long

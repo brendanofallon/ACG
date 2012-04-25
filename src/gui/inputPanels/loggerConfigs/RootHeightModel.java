@@ -32,7 +32,7 @@ import gui.inputPanels.Configurator.InputConfigException;
 
 public class RootHeightModel extends LoggerModel {
 
-	private int bins = 500;
+	private int bins = 250;
 	
 	public int getBins() {
 		return bins;

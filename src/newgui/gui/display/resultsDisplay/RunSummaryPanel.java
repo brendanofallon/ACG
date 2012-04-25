@@ -77,9 +77,9 @@ public class RunSummaryPanel extends JPanel {
 		int minutes = 0;
 		int seconds = 0;
 		
-		hours = (int)Math.round(ms / (1000.0 * 60.0 * 60.0));
-		minutes = (int)Math.round(ms / (1000.0 * 60.0 ))   % 60;
-		seconds = (int)Math.round(ms / 1000.0 ) % 60;
+		hours = (int)Math.floor(ms / (1000.0 * 60.0 * 60.0));
+		minutes = (int)Math.floor(ms / (1000.0 * 60.0 ))   % 60;
+		seconds = (int)Math.floor(ms / 1000.0 ) % 60;
 		if (hours > 0) {
 			return hours + " hours, " + minutes + " minutes and " + seconds + " seconds";
 		}
