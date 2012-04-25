@@ -1,0 +1,22 @@
+/*---------------------------------------------------------------------------------------------
+
+	Stylesheet used when Javascript is turned off
+
+---------------------------------------------------------------------------------------------*/
+
+.nojs-warning{ padding:10px 0; text-align:center; color:#ffffff; background-color:#ff0000; width:1000px; margin:0 auto; }
+.nojs-warning strong{ color:#ffffff; }
+
+#portfolio-filter{ display:none; } /* portfolio filter will not work with no JS - so hide it*/
+
+.tabs-menu{ display:none; } /* Tabs will be shown one under the other with no JS - so there is no point showing the tab header*/
+
+.portfolio-overview li, .service-overview li{ cursor:default; } /* the script to make a whole project or service over view area clickable will not work with no JS - so changing the cursor back to default */
+
+.portfolio-overview li{ background:none; } /* portfolio overlay doesnt work with no JS - so hide overlay */
+
+.accordion li div, .accordion li:hover{ background-color:#fff; }
+.accordion li a { background:none; } /* accordeon will be shown fully extended with no JS - so hide the background image that suggest expend / contract control */
+
+
+

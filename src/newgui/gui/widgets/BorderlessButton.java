@@ -224,6 +224,9 @@ public class BorderlessButton extends JPanel {
 		
 		if (this.isEnabled() && drawBorder) {
 
+			g2d.setColor(Color.white);
+			g2d.drawRoundRect(boxX, 1, boxWidth, getHeight()-3, 8, 8);
+			
 			GradientPaint gp;
 			if (clicking)
 				gp = new GradientPaint(1, 0, new Color(0.79f, 0.79f, 0.79f), 3, getHeight(), new Color(0.88f, 0.88f, 0.88f));
