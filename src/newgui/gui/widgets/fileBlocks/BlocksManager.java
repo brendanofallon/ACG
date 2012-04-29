@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 
 import newgui.datafile.XMLDataFile;
 import newgui.gui.ViewerWindow;
+import newgui.gui.filepanel.AddBlockFrame;
 import newgui.gui.filepanel.BlockChooser;
 import newgui.gui.filepanel.DirectoryListener;
 import newgui.gui.filepanel.FileTree;
@@ -28,7 +29,7 @@ public class BlocksManager {
 	private File rootDir = null;
 	public static final String blockStateChangedEvent = "blockStateChanged";
 	protected List<AbstractBlock> blocks = new ArrayList<AbstractBlock>();
-	static final String fileSep = System.getProperty("file.separator");
+	public static final String fileSep = System.getProperty("file.separator");
 	protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
 	protected List<DirectoryListener> dirListeners = new ArrayList<DirectoryListener>();
 	
@@ -50,6 +51,14 @@ public class BlocksManager {
 			names.add( block.getLabel() );
 		}
 		return names;
+	}
+	
+	/**
+	 * Return the name of the directory that contains all blocks tracked by this manager
+	 * @return
+	 */
+	public File getRootDirectory() {
+		return rootDir;
 	}
 	
 	/**
@@ -98,7 +107,6 @@ public class BlocksManager {
 				return;
 		}
 		
-		System.out.println("Saving file to path: " + destPath);
 		try {
 			data.saveToFile(destFile);
 			if (block instanceof DirectoryBlock) {
@@ -146,8 +154,9 @@ public class BlocksManager {
 	}
 	
 	protected void fireBlockStateChangedEvent(AbstractBlock block) {
-		PropertyChangeEvent evt = new PropertyChangeEvent(block, BlocksManager.blockStateChangedEvent, null, null);
+		PropertyChangeEvent evt = new PropertyChangeEvent(this, BlocksManager.blockStateChangedEvent, null, null);
 		for(PropertyChangeListener listener: listeners) {
+			System.out.println("Firing block state changed to : " + listener);
 			listener.propertyChange(evt);
 		}
 	}
@@ -159,18 +168,34 @@ public class BlocksManager {
 	}
 	
 	/**
-	 * Create a new block within the root directory with the given name
+	 * Create a new block within the root directory with the given name. If a directory with 
+	 * the given name already exists, but no block is associated with it, a new block is created.
+	 * If no directory with the given name exists, a new dir is created. In there is already
+	 * a block with the given name, a warning dialog is displayed and no action is taken. 
+	 * 
 	 * @param name
 	 */
 	public void createBlock(String name) {
+		if ( hasBlockWithName(name)) {
+			JOptionPane.showMessageDialog(ViewerWindow.getViewer(), "A folder with the name " + name + " already exists");
+			return;
+		}
 		File newBlock = new File(rootDir.getAbsolutePath() + fileSep + name);
-		//FileTree fileTree = new FileTree( newBlock );
+		if (! newBlock.exists())
+			newBlock.mkdir();
 		DirectoryBlock block = new DirectoryBlock(this, newBlock);
 		addDirectoryListener(block.getFileTree());
-		//block.setMainComponent(fileTree);
 		blocks.add(block);
+		fireBlockStateChangedEvent(block);
 	}
 	
+	public void renameBlock(AbstractBlock block, String name) {
+				
+	}
+	
+	public boolean hasBlockWithName(String name) { 
+		return getBlockByName(name) != null;
+	}
 	/**
 	 * Obtain the block whose name is .equal to blockName
 	 * @param blockName
@@ -207,6 +232,35 @@ public class BlocksManager {
 			if (dir.isDirectory()) {
 				createBlock(dir.getName());
 			}
+		}
+	}
+
+	public void showAddBlockFrame() {
+		AddBlockFrame addFrame = new AddBlockFrame(this);
+		addFrame.setVisible(true);
+		
+	}
+
+	/**
+	 * Permanently delete the given block and all of its contents. 
+	 * @param parentBlock
+	 */
+	public void deleteBlock(AbstractBlock block) {
+		Object[] options = {"Cancel",
+				"Delete " + block.getLabel()};
+		int n = JOptionPane.showOptionDialog(ViewerWindow.getViewer(),
+				"Permanently delete folder " + block.getLabel() + "?",
+				"Delete folder",
+				JOptionPane.YES_NO_OPTION,
+				JOptionPane.WARNING_MESSAGE,
+				null,
+				options,
+				options[0]);
+		
+		if (n==1) {
+			block.deleteContents();
+			blocks.remove(block);
+			fireBlockStateChangedEvent(block);
 		}
 	}
 	

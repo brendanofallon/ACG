@@ -20,8 +20,16 @@ import javax.swing.JScrollPane;
 
 import newgui.gui.filepanel.DirectoryListener;
 
+
+/**
+ * The basic UI object displayed in a BlocksPanel. These are organized and managed by a
+ * BlocksManager. There's little functionality here - mostly just painting and relabelling. 
+ * @author brendan
+ *
+ */
 public class AbstractBlock extends JPanel {
 
+	private String label;
 	private boolean isOpen = true;
 	protected BlockHeader header;
 	protected JScrollPane mainScrollPane;
@@ -29,21 +37,34 @@ public class AbstractBlock extends JPanel {
 	protected int maxBlockHeight = 100;
 	protected BlocksManager manager;
 	
-	//protected List<DirectoryListener> dirListeners = new ArrayList<DirectoryListener>();
-	
 	public AbstractBlock(BlocksManager manager, String label) {
-		header = new BlockHeader(this, label);
+		header = new BlockHeader(this);
+		this.label = label;
 		this.manager  = manager;
 		initComponents();
 	}
 	
 	public String getLabel() {
-		return header.getLabel();
+		return label;
 	}
 	
-//	public void setParentPanel(BlocksPanel parentPanel) {
-//		this.parentPanel = parentPanel;
-//	}
+	public void renameTo(String newLabel) {
+		this.label = newLabel;
+		header.repaint();
+		repaint();
+	}
+	
+	/**
+	 * Permanently delete the contents of this block. Since blocks may not store their
+	 * data in a persistent state, this does nothing by default
+	 */
+	public void deleteContents() {
+		//blank on purpose - overridden in DirectoryBlock
+	}
+	
+	public BlocksManager getManager() {
+		return manager;
+	}
 	
 	public void setMainComponent(JComponent comp) {
 		this.mainComp = comp;
@@ -95,23 +116,6 @@ public class AbstractBlock extends JPanel {
 		repaint();
 	}	
 	
-//	public void addDirectoryListener(DirectoryListener l) {
-//		dirListeners.add(l);
-//	}
-//	
-//	public void removeDirectoryListener(DirectoryListener l) {
-//		dirListeners.remove(l);
-//	}
-//	
-//	/**
-//	 * Alert listeners that this directory has changed
-//	 * @param dirChanged
-//	 */
-//	protected void fireDirectoryChangeEvent(File dirChanged) {
-//		for(DirectoryListener dl : dirListeners) {
-//			dl.filesChanged(dirChanged);
-//		}
-//	}
 	
 	public void paintComponent(Graphics g) {
 		((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,

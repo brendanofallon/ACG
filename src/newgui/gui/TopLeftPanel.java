@@ -64,8 +64,23 @@ public class TopLeftPanel extends JPanel {
 			}
 		});
 		
+		
+		BorderlessButton addBlockButton = new BorderlessButton(UIConstants.addFolder);
+		addBlockButton.setToolTipText("Create a new folder");
+		addBlockButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showAddBlockFrame();
+			}
+		});
+		addBlockButton.setXDif(-3);
+		
 		this.add(importButton);	
 		this.add(buildFromVCFButton);
+		this.add(addBlockButton);
+	}
+
+	protected void showAddBlockFrame() {
+		ViewerWindow.getViewer().getFileManager().showAddBlockFrame();
 	}
 
 	protected void showAlnGenFrame() {

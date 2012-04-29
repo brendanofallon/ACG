@@ -43,6 +43,23 @@ public class DirectoryBlock extends AbstractBlock {
 		return fTree;
 	}
 	
+	@Override
+	public void deleteContents() {
+		//PERMANENTLY DELETE ALL FILES IN THIS DIRECTORY!
+		File[] contents = baseFile.listFiles();
+		for(int i=0; i<contents.length; i++) {
+			contents[i].delete();
+		}
+		baseFile.delete();
+	}
+	
+	public void renameTo(String newLabel) {
+		File destFile = new File(baseFile.getParentFile() + fileSep + newLabel);
+		baseFile.renameTo(destFile);
+		fTree.setRootDir(destFile);
+		super.renameTo(newLabel);
+	}
+	
 	/**
 	 * Get the directory that this block is displaying
 	 * @return
