@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import newgui.datafile.XMLDataFile;
-import newgui.gui.filepanel.AnalysisFilesManager;
 import newgui.gui.filepanel.FileTree;
 
 /**
@@ -23,8 +22,8 @@ public class DirectoryBlock extends AbstractBlock {
 	 * directory.
 	 * @param file
 	 */
-	public DirectoryBlock(File file) {
-		super(file.getName());
+	public DirectoryBlock(BlocksManager manager, File file) {
+		super(manager, file.getName());
 		baseFile = file;
 		if (! file.exists())
 			throw new IllegalArgumentException("File " + file.getAbsolutePath() + " does not exist");
@@ -36,16 +35,33 @@ public class DirectoryBlock extends AbstractBlock {
 	}
 	
 	/**
+	 * Obtain a reference to the FileTree object that actually displays the files
+	 * in this block
+	 * @return
+	 */
+	public FileTree getFileTree() {
+		return fTree;
+	}
+	
+	/**
+	 * Get the directory that this block is displaying
+	 * @return
+	 */
+	public File getRootDirectory() {
+		return baseFile;
+	}
+	
+	/**
 	 * Add a new file to this directory block
 	 * @param file
 	 * @throws IOException 
 	 */
-	public void addDataFile(XMLDataFile file, String name) throws IOException {
-		if (!name.endsWith(".xml"))
-			name = name + ".xml";
-		String fullPath = baseFile + fileSep + name;
-		file.saveToFile(new File(fullPath));
-		fireDirectoryChangeEvent(baseFile);
-	}
+//	public void addDataFile(XMLDataFile file, String name) throws IOException {
+//		if (!name.endsWith(".xml"))
+//			name = name + ".xml";
+//		String fullPath = baseFile + fileSep + name;
+//		file.saveToFile(new File(fullPath));
+//	//	fireDirectoryChangeEvent(baseFile);
+//	}
 
 }

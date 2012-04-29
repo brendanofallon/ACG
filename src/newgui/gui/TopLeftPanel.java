@@ -25,8 +25,9 @@ import newgui.UIConstants;
 import newgui.alignment.FastaImporter;
 import newgui.alignment.FileParseException;
 import newgui.alignment.UnrecognizedBaseException;
+import newgui.datafile.AlignmentFile;
 import newgui.gui.alnGen.AlnGenFrame;
-import newgui.gui.filepanel.InputFilesManager;
+import newgui.gui.filepanel.BlockChooser;
 import newgui.gui.widgets.HighlightButton;
 
 /**
@@ -80,9 +81,12 @@ public class TopLeftPanel extends JPanel {
 			if (filename.endsWith(".fasta") || filename.endsWith(".fa") || filename.endsWith(".fas") ) {
 				try {
 					Alignment aln = FastaImporter.getAlignment(fileToImport);
-					InputFilesManager inputManager = InputFilesManager.getManager();
-					String newFilename = filename.substring(0, filename.lastIndexOf("."));
-					inputManager.addAlignment(aln, newFilename + ".xml");
+					AlignmentFile alnFile = new AlignmentFile(aln);
+					String newFilename = filename;
+					if (filename.contains("."))
+						newFilename = filename.substring(0, filename.lastIndexOf("."));
+					ViewerWindow.getViewer().getFileManager().showSaveDialog(alnFile, newFilename);
+					
 				} catch (Exception e) {
 					ErrorWindow.showErrorWindow(e, "Could not import file");
 					e.printStackTrace();

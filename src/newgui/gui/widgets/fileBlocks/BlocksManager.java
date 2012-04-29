@@ -1,10 +1,20 @@
 package newgui.gui.widgets.fileBlocks;
 
+import gui.ErrorWindow;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import newgui.gui.filepanel.AnalysisFilesManager;
+import javax.swing.JOptionPane;
+
+import newgui.datafile.XMLDataFile;
+import newgui.gui.ViewerWindow;
+import newgui.gui.filepanel.BlockChooser;
+import newgui.gui.filepanel.DirectoryListener;
 import newgui.gui.filepanel.FileTree;
 
 /**
@@ -16,9 +26,12 @@ import newgui.gui.filepanel.FileTree;
 public class BlocksManager {
 
 	private File rootDir = null;
-	
+	public static final String blockStateChangedEvent = "blockStateChanged";
 	protected List<AbstractBlock> blocks = new ArrayList<AbstractBlock>();
 	static final String fileSep = System.getProperty("file.separator");
+	protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
+	protected List<DirectoryListener> dirListeners = new ArrayList<DirectoryListener>();
+	
 	
 	public BlocksManager(File rootDirectory) {
 		this.rootDir = rootDirectory;
@@ -40,14 +53,121 @@ public class BlocksManager {
 	}
 	
 	/**
+	 * Show a dialog that allows the user to save the given file in one of
+	 * the file blocks
+	 * @param data
+	 */
+	public void showSaveDialog(XMLDataFile data, String suggestedName) {
+		BlockChooser chooser = new BlockChooser(this, data, suggestedName);
+		chooser.setVisible(true);
+	}
+	
+	/**
+	 * Immediately save the data in the given XML file in the block whose name
+	 * matches the given block name, using the filename provided
+	 * @param blockName
+	 * @param filename
+	 * @param data
+	 */
+	public void saveFile(String blockName, String filename, XMLDataFile data) {
+		AbstractBlock block = getBlockByName(blockName);
+		if (block == null) {
+			JOptionPane.showMessageDialog(ViewerWindow.getViewer(), "No folder with name " + blockName);
+			return;
+		}
+			
+		if (! filename.endsWith(".xml")) {
+			filename = filename + ".xml";
+		}
+		String destPath= rootDir.getAbsolutePath() + fileSep + blockName + fileSep + filename; 
+		File destFile = new File(destPath);
+		
+		if (destFile.exists()) {
+			Object[] options = {"Cancel",
+					"No",
+			"Overwrite " + filename};
+			int n = JOptionPane.showOptionDialog(ViewerWindow.getViewer(),
+					"Replace existing file " + filename + "?",
+					"File already exists",
+					JOptionPane.YES_NO_CANCEL_OPTION,
+					JOptionPane.WARNING_MESSAGE,
+					null,
+					options,
+					options[1]);
+			if (n != 2)
+				return;
+		}
+		
+		System.out.println("Saving file to path: " + destPath);
+		try {
+			data.saveToFile(destFile);
+			if (block instanceof DirectoryBlock) {
+				DirectoryBlock db = (DirectoryBlock)block;
+				fireDirectoryChangeEvent( db.getRootDirectory() );
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			ErrorWindow.showErrorWindow(e, "Error saving file " + filename);
+		}
+	}
+	
+	/**
+	 * Add a new listener that will be notified when the state of a block (open vs. closed)
+	 * changes
+	 * @param listener
+	 */
+	public void addBlockListener(PropertyChangeListener listener) {
+		listeners.add(listener);
+	}
+	
+	/**
+	 * Remove the given listener from those objects that are informed of changes
+	 * to block states (i.e. open vs. closed)
+	 * @param listener
+	 */
+	public void removeBlockListener(PropertyChangeListener listener) {
+		listeners.remove(listener);
+	}
+	
+	/**
+	 * Add a listener that will be notified when the contents of a block changes
+	 * @param listener
+	 */
+	public void addDirectoryListener(DirectoryListener listener) {
+		dirListeners.add(listener);
+	}
+	
+	/**
+	 * Remove the given listener from those objects that are informed of directory change events
+	 * @param listener
+	 */
+	public void removeDirectoryListener(DirectoryListener listener) {
+		dirListeners.remove(listener);
+	}
+	
+	protected void fireBlockStateChangedEvent(AbstractBlock block) {
+		PropertyChangeEvent evt = new PropertyChangeEvent(block, BlocksManager.blockStateChangedEvent, null, null);
+		for(PropertyChangeListener listener: listeners) {
+			listener.propertyChange(evt);
+		}
+	}
+	
+	protected void fireDirectoryChangeEvent(File dirChanged) {
+		for(DirectoryListener listener : dirListeners) {
+			listener.filesChanged(dirChanged);
+		}
+	}
+	
+	/**
 	 * Create a new block within the root directory with the given name
 	 * @param name
 	 */
 	public void createBlock(String name) {
 		File newBlock = new File(rootDir.getAbsolutePath() + fileSep + name);
-		FileTree analysisTree = new FileTree( newBlock);
-		AbstractBlock block = new AbstractBlock(name);
-		block.setMainComponent(analysisTree);
+		//FileTree fileTree = new FileTree( newBlock );
+		DirectoryBlock block = new DirectoryBlock(this, newBlock);
+		addDirectoryListener(block.getFileTree());
+		//block.setMainComponent(fileTree);
 		blocks.add(block);
 	}
 	
@@ -75,6 +195,7 @@ public class BlocksManager {
 	
 	public void removeBlock(AbstractBlock block) {
 		// ?
+		// Be sure to remove tree from listeners list
 	}
 	
 	private void initializeBlocks() {

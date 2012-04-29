@@ -23,16 +23,17 @@ import newgui.gui.filepanel.DirectoryListener;
 public class AbstractBlock extends JPanel {
 
 	private boolean isOpen = true;
-	protected BlocksPanel parentPanel;
 	protected BlockHeader header;
 	protected JScrollPane mainScrollPane;
 	private JComponent mainComp;
 	protected int maxBlockHeight = 100;
+	protected BlocksManager manager;
 	
-	protected List<DirectoryListener> dirListeners = new ArrayList<DirectoryListener>();
+	//protected List<DirectoryListener> dirListeners = new ArrayList<DirectoryListener>();
 	
-	public AbstractBlock(String label) {
+	public AbstractBlock(BlocksManager manager, String label) {
 		header = new BlockHeader(this, label);
+		this.manager  = manager;
 		initComponents();
 	}
 	
@@ -40,9 +41,9 @@ public class AbstractBlock extends JPanel {
 		return header.getLabel();
 	}
 	
-	public void setParentPanel(BlocksPanel parentPanel) {
-		this.parentPanel = parentPanel;
-	}
+//	public void setParentPanel(BlocksPanel parentPanel) {
+//		this.parentPanel = parentPanel;
+//	}
 	
 	public void setMainComponent(JComponent comp) {
 		this.mainComp = comp;
@@ -84,34 +85,33 @@ public class AbstractBlock extends JPanel {
 		if (isOpen) {
 			this.add(mainScrollPane, BorderLayout.CENTER);
 			this.setMaximumSize(new Dimension(500, maxBlockHeight));
-			parentPanel.blockOpened(this);
 		}
 		else {
 			this.remove(mainScrollPane);
 			this.setMaximumSize(new Dimension(header.getSize()));
-			parentPanel.blockClosed(this);
 		}
+		manager.fireBlockStateChangedEvent(this);
 		revalidate();
 		repaint();
 	}	
 	
-	public void addDirectoryListener(DirectoryListener l) {
-		dirListeners.add(l);
-	}
-	
-	public void removeDirectoryListener(DirectoryListener l) {
-		dirListeners.remove(l);
-	}
-	
-	/**
-	 * Alert listeners that this directory has changed
-	 * @param dirChanged
-	 */
-	protected void fireDirectoryChangeEvent(File dirChanged) {
-		for(DirectoryListener dl : dirListeners) {
-			dl.filesChanged(dirChanged);
-		}
-	}
+//	public void addDirectoryListener(DirectoryListener l) {
+//		dirListeners.add(l);
+//	}
+//	
+//	public void removeDirectoryListener(DirectoryListener l) {
+//		dirListeners.remove(l);
+//	}
+//	
+//	/**
+//	 * Alert listeners that this directory has changed
+//	 * @param dirChanged
+//	 */
+//	protected void fireDirectoryChangeEvent(File dirChanged) {
+//		for(DirectoryListener dl : dirListeners) {
+//			dl.filesChanged(dirChanged);
+//		}
+//	}
 	
 	public void paintComponent(Graphics g) {
 		((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,

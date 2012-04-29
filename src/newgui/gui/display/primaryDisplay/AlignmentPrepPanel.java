@@ -46,15 +46,16 @@ import newgui.alignment.AlignmentSummary;
 import newgui.analysisTemplate.AnalysisTemplate;
 import newgui.analysisTemplate.BasicAnalysis;
 import newgui.datafile.AlignmentFile;
+import newgui.gui.ViewerWindow;
 import newgui.gui.alignmentViewer.ColumnSelectionFrame;
 import newgui.gui.alignmentViewer.SGContentPanel;
 import newgui.gui.alignmentViewer.rowPainters.AG_CT_RowPainter;
 import newgui.gui.alignmentViewer.rowPainters.FrequencyRowPainter;
 import newgui.gui.alignmentViewer.rowPainters.GC_AT_RowPainter;
 import newgui.gui.display.Display;
+import newgui.gui.filepanel.BlockChooser;
 import newgui.gui.filepanel.ChooseAlignmentListener;
 import newgui.gui.filepanel.ChooseAlignmentPanel;
-import newgui.gui.filepanel.InputFilesManager;
 import newgui.gui.widgets.BorderlessButton;
 import newgui.gui.widgets.TextButton;
 import newgui.gui.widgets.ToolbarPanel;
@@ -413,7 +414,9 @@ public class AlignmentPrepPanel extends JPanel {
 		if (source != null) {
 			name = source.getSourceFile().getName().replace(".xml", "");
 		}
-		InputFilesManager.getManager().saveAlignment(contentPanel.getAlignment(), name);
+		BlockChooser bChooser = new BlockChooser(ViewerWindow.getViewer().getFileManager());
+		bChooser.showBlockChooser();
+		//InputFilesManager.getManager().saveAlignment(contentPanel.getAlignment(), name);
 	}
 
 	//private JPanel topPanel;

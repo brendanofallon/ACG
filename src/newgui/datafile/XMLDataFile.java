@@ -143,6 +143,26 @@ public class XMLDataFile extends DataFile {
 		return notes;
 	}
 
+	/**
+	 * Set the File that this data file is attached to to be the given file.
+	 * Future save()s will save data to the given file
+	 * @param newSourceFile
+	 */
+	public void setSourceFile(File newSourceFile) {
+		this.source = newSourceFile;
+	}
+	
+	/**
+	 * Sets the source file of this data file to be the given file, and then
+	 * saves all data to that path
+	 * @param fileToSaveTo
+	 * @throws IOException
+	 */
+	public void save(File fileToSaveTo) throws IOException {
+		setSourceFile(fileToSaveTo);
+		save();
+	}
+	
 	@Override
 	public void save() throws IOException {
 		if (source == null)

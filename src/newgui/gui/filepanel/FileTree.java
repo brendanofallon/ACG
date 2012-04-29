@@ -66,9 +66,6 @@ public class FileTree extends JPanel implements DirectoryListener {
 		createTreeNodes();
 		this.add(tree, BorderLayout.CENTER);
 		
-		tree.setBackground(Color.RED);
-		this.setBackground(Color.RED);
-		((DefaultTreeCellRenderer)tree.getCellRenderer()).setBackground(Color.RED);
 		initializePopupMenu();
 	}
 
@@ -175,9 +172,6 @@ public class FileTree extends JPanel implements DirectoryListener {
 		buildTreeNodes(rootNode);
 		tree.setModel(treeModel);
 		DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer)tree.getCellRenderer();
-		renderer.setBackgroundSelectionColor(Color.green);
-		renderer.setBackgroundNonSelectionColor(Color.blue);
-		renderer.setBackground(Color.red);
 		
 		tree.setCellRenderer(renderer);
 		
