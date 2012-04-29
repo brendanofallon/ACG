@@ -45,6 +45,8 @@ import newgui.UIConstants;
 import newgui.alignment.AlignmentSummary;
 import newgui.analysisTemplate.AnalysisTemplate;
 import newgui.analysisTemplate.BasicAnalysis;
+import newgui.analysisTemplate.QuickAnalysis;
+import newgui.analysisTemplate.ThoroughAnalysis;
 import newgui.datafile.AlignmentFile;
 import newgui.gui.ViewerWindow;
 import newgui.gui.alignmentViewer.ColumnSelectionFrame;
@@ -63,7 +65,7 @@ import newgui.gui.widgets.VerticalTextButtons;
 
 
 /**
- * The first panel that appears when an alignmetn is selected. This displays the alignment,
+ * The first panel that appears when an alignment is selected. This displays the alignment,
  * shows a few configuration options, and allows the user to transition to creating an
  * analysis based around this alignment
  * @author brendan
@@ -133,10 +135,10 @@ public class AlignmentPrepPanel extends JPanel {
 	 */
 	protected void chooseCurrentAnalysis() {
 		if (selectedTemplate != null) {
-			AnalysisModel model = selectedTemplate.getModel();
-			
 			List<Sequence> seqs = new ArrayList<Sequence>();
 			Alignment aln = contentPanel.getAlignment();
+			
+			AnalysisModel model = selectedTemplate.getModel(aln);
 			
 			aln.applyMask();
 			
@@ -326,7 +328,7 @@ public class AlignmentPrepPanel extends JPanel {
 		analDescBox.setLineWrap(true);
 		analDescBox.setWrapStyleWord(true);
 		analDescBox.setEditable(false);
-		//analDescBox.setFont(ViewerWindow.sansFont.deriveFont(16f));
+		analDescBox.setFont(ViewerWindow.sansFont.deriveFont(16f));
 		bottomRightPanel.add(analDescBox, BorderLayout.CENTER);
 		JPanel bottomButtonPanel = new JPanel();
 		bottomButtonPanel.setOpaque(false);
@@ -346,6 +348,15 @@ public class AlignmentPrepPanel extends JPanel {
 		
 		BorderlessButton quickButton = new BorderlessButton("Quick analysis");
 		quickButton.setPreferredSize(new Dimension(150, 50));
+		quickButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				chooseButton.setEnabled(true);
+				selectedTemplate = new QuickAnalysis();
+				analDescBox.setText(selectedTemplate.getDescription() );
+				revalidate();
+				repaint();
+			}
+		});
 		bottomLeftPanel.add(quickButton, "wrap");
 
 		BorderlessButton simpleButton = new BorderlessButton("Basic analysis");
@@ -365,9 +376,18 @@ public class AlignmentPrepPanel extends JPanel {
 		demoButton.setPreferredSize(new Dimension(150, 50));
 		bottomLeftPanel.add(demoButton, "wrap");
 		
-		BorderlessButton wackoButton = new BorderlessButton("Wacko analysis");
-		wackoButton.setPreferredSize(new Dimension(150, 50));
-		bottomLeftPanel.add(wackoButton, "wrap");
+		BorderlessButton thoroughButton = new BorderlessButton("Thorough analysis");
+		thoroughButton.setPreferredSize(new Dimension(150, 50));
+		thoroughButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				chooseButton.setEnabled(true);
+				selectedTemplate = new ThoroughAnalysis();
+				analDescBox.setText(selectedTemplate.getDescription() );
+				revalidate();
+				repaint();
+			}
+		});
+		bottomLeftPanel.add(thoroughButton, "wrap");
 		
 		bottomHalf.add(bottomLeftPanel);
 		bottomHalf.add(bottomRightPanel);
@@ -414,9 +434,9 @@ public class AlignmentPrepPanel extends JPanel {
 		if (source != null) {
 			name = source.getSourceFile().getName().replace(".xml", "");
 		}
-		BlockChooser bChooser = new BlockChooser(ViewerWindow.getViewer().getFileManager());
-		bChooser.showBlockChooser();
-		//InputFilesManager.getManager().saveAlignment(contentPanel.getAlignment(), name);
+		
+		ViewerWindow.getViewer().getFileManager().showSaveDialog(source, name);
+		
 	}
 
 	//private JPanel topPanel;

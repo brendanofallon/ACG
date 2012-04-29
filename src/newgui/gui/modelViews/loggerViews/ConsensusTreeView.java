@@ -44,7 +44,8 @@ public class ConsensusTreeView extends DefaultLoggerView {
 		super(model);
 		this.treeModel = model;
 		siteField = new JTextField("Enter site");
-		siteField.setMinimumSize(new Dimension(60, 10));
+		siteField.setMinimumSize(new Dimension(60, 30));
+		siteField.setPreferredSize(new Dimension(60, 30));
 		siteField.setMaximumSize(new Dimension(60, 1000));
 		siteField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
