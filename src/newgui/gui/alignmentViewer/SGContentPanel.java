@@ -40,7 +40,6 @@ import newgui.UIConstants;
 import newgui.alignment.UnrecognizedBaseException;
 import newgui.gui.alignmentViewer.rowPainters.AbstractRowPainter;
 import newgui.gui.alignmentViewer.rowPainters.GC_AT_RowPainter;
-import newgui.gui.filepanel.InputFilesManager;
 
 import sequence.Alignment;
 import sequence.AlignmentMask;

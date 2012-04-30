@@ -35,8 +35,6 @@ import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import newgui.gui.filepanel.InputFilesManager;
-
 import sequence.Alignment;
 import sequence.BasicSequenceAlignment;
 import sequence.Sequence;
@@ -156,7 +154,7 @@ public class AlnGenFrame extends JFrame {
 			aln.addSequence( pSeq.toSimpleSequence() );
 		}
 
-		InputFilesManager.getManager().saveAlignment(aln, "new_alignment");
+		//InputFilesManager.getManager().saveAlignment(aln, "new_alignment");
 	}
 
 	/**

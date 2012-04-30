@@ -19,12 +19,12 @@ import mcmc.MCMCListener;
 import newgui.UIConstants;
 import newgui.datafile.XMLConversionError;
 import newgui.datafile.resultsfile.ResultsFile;
+import newgui.gui.ViewerWindow;
 import newgui.gui.display.jobDisplay.JobView;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.BPDensityViz;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.ConsensusTreeViz;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.PopSizeViz;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.TMRCAViz;
-import newgui.gui.filepanel.ResultsFilesManager;
 import newgui.gui.widgets.sideTabPane.SideTabPane;
 
 import jobqueue.ExecutingChain;
@@ -154,8 +154,9 @@ public class RunningJobPanel extends JPanel implements MCMCListener {
 	public void saveResults() {
 		ResultsFile file = new ResultsFile();
 		try {
-			file.addAllResults(chain, getACGDocument(), memLogger);
-			ResultsFilesManager.getManager().saveResults(file, displayParent.getTitle());
+			file.addAllResults(chain, getACGDocument(), memLogger);			
+			ViewerWindow.getViewer().getFileManager().showSaveDialog(file, displayParent.getTitle());
+
 		} catch (XMLConversionError e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

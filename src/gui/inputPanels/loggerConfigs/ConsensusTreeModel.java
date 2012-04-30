@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
 public class ConsensusTreeModel extends LoggerModel {
 	
 	//Site at which to consense trees
-	int site = 0;
+	int site = 1;
 	boolean useDefaultFilename = true;
 
 	

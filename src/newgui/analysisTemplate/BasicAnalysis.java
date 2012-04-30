@@ -1,7 +1,9 @@
 package newgui.analysisTemplate;
 
+import sequence.Alignment;
 import gui.inputPanels.AnalysisModel;
 import gui.inputPanels.loggerConfigs.BPDensityModel;
+import gui.inputPanels.loggerConfigs.ConsensusTreeModel;
 import gui.inputPanels.loggerConfigs.RootHeightModel;
 import gui.inputPanels.loggerConfigs.StateLoggerModel;
 
@@ -14,18 +16,22 @@ import gui.inputPanels.loggerConfigs.StateLoggerModel;
 public class BasicAnalysis extends AnalysisTemplate {
 
 	@Override
-	public AnalysisModel getModel() {
+	public AnalysisModel getModel(Alignment aln) {
 		AnalysisModel model = new AnalysisModel();
 		//model.addLoggerModel(new StateLoggerModel()); //State logger always in by default
 		model.addLoggerModel(new BPDensityModel());
 		model.addLoggerModel(new RootHeightModel() );
+		
+		ConsensusTreeModel treeLogger = new ConsensusTreeModel();
+		treeLogger.setSite(aln.getSequenceLength()/2);
+		model.addLoggerModel( treeLogger );
 		
 		return model;
 	}
 
 	@Override
 	public String getDescription() {
-		return "A first-pass analysis suitable for smaller alignments. This analysis identifies the locations of recombination breakpoints as well as the TMRCA along the length of the sequence. It assumes a simple model of constant population size";
+		return "A smaller analysis suitable for small to medium-sized alignments. This analysis identifies the locations of recombination breakpoints as well as the TMRCA along the length of the sequence, and the consensus tree ancestral to a position along the sequence.";
 	}
 
 	@Override

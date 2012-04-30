@@ -37,7 +37,6 @@ import newgui.UIConstants;
 import newgui.datafile.AnalysisDataFile;
 import newgui.datafile.XMLConversionError;
 import newgui.gui.ViewerWindow;
-import newgui.gui.filepanel.AnalysisFilesManager;
 import newgui.gui.modelViews.CoalModelView;
 import newgui.gui.modelViews.LoggersView;
 import newgui.gui.modelViews.MCModelView;
@@ -254,11 +253,15 @@ public class AnalysisDetailsPanel extends JPanel {
 				analysisName = analysisName + ".xml";
 			}
 			
-			AnalysisFilesManager manager = AnalysisFilesManager.getManager();
-			AnalysisDataFile savedFile = manager.addAnalysisFile(acgDocument, analysisName);
-			sourceFile = savedFile;
+			sourceFile = new AnalysisDataFile();
+			sourceFile.setACGDocument(acgDocument);
+			
+			ViewerWindow.getViewer().getFileManager().showSaveDialog(sourceFile, analysisName.replace(".xml", ""));
 			
 		} catch (InputConfigException e) {
+			ErrorWindow.showErrorWindow(e);
+		} catch (XMLConversionError e) {
+			e.printStackTrace();
 			ErrorWindow.showErrorWindow(e);
 		}
 	}

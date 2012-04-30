@@ -45,12 +45,14 @@ import newgui.gui.ViewerWindow;
  */
 public class FileTree extends JPanel implements DirectoryListener {
 
+
+	final static String fileSeparator = System.getProperty("file.separator");
+	
 	private JTree tree;
-	final File rootDir;
+	private File rootDir;
 	private JPopupMenu popup;
 	private JPopupMenu renamerPopup; //Holds renaming field
 	private JTextField renamer;
-	final static String fileSeparator = System.getProperty("file.separator");
 	private boolean openFilesOnDoubleClick = true;
 	private boolean popupEnabled = true;
 	
@@ -66,9 +68,6 @@ public class FileTree extends JPanel implements DirectoryListener {
 		createTreeNodes();
 		this.add(tree, BorderLayout.CENTER);
 		
-		tree.setBackground(Color.RED);
-		this.setBackground(Color.RED);
-		((DefaultTreeCellRenderer)tree.getCellRenderer()).setBackground(Color.RED);
 		initializePopupMenu();
 	}
 
@@ -88,6 +87,18 @@ public class FileTree extends JPanel implements DirectoryListener {
 	 */
 	public void setPopupEnabled(boolean enabled) {
 		this.popupEnabled = enabled;
+	}
+	
+	/**
+	 * Set the root directory of the file tree to be the new file
+	 * @param newRoot
+	 */
+	public void setRootDir(File newRoot) {
+		if (! newRoot.exists() || (! newRoot.isDirectory())) {
+			throw new IllegalArgumentException("New directory " + newRoot.getAbsolutePath() + " does not exist or is not a directory");
+		}
+		this.rootDir = newRoot;
+		createTreeNodes();
 	}
 	
 	/**
@@ -175,9 +186,6 @@ public class FileTree extends JPanel implements DirectoryListener {
 		buildTreeNodes(rootNode);
 		tree.setModel(treeModel);
 		DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer)tree.getCellRenderer();
-		renderer.setBackgroundSelectionColor(Color.green);
-		renderer.setBackgroundNonSelectionColor(Color.blue);
-		renderer.setBackground(Color.red);
 		
 		tree.setCellRenderer(renderer);
 		

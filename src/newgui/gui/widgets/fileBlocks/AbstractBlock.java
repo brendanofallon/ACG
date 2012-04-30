@@ -8,6 +8,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -15,23 +18,52 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import newgui.gui.filepanel.DirectoryListener;
+
+
+/**
+ * The basic UI object displayed in a BlocksPanel. These are organized and managed by a
+ * BlocksManager. There's little functionality here - mostly just painting and relabelling. 
+ * @author brendan
+ *
+ */
 public class AbstractBlock extends JPanel {
 
+	private String label;
 	private boolean isOpen = true;
-	private JComponent content = null;
-	protected BlocksPanel parentPanel;
 	protected BlockHeader header;
 	protected JScrollPane mainScrollPane;
 	private JComponent mainComp;
 	protected int maxBlockHeight = 100;
+	protected BlocksManager manager;
 	
-	public AbstractBlock(String label) {
-		header = new BlockHeader(this, label);
+	public AbstractBlock(BlocksManager manager, String label) {
+		header = new BlockHeader(this);
+		this.label = label;
+		this.manager  = manager;
 		initComponents();
 	}
 	
-	public void setParentPanel(BlocksPanel parentPanel) {
-		this.parentPanel = parentPanel;
+	public String getLabel() {
+		return label;
+	}
+	
+	public void renameTo(String newLabel) {
+		this.label = newLabel;
+		header.repaint();
+		repaint();
+	}
+	
+	/**
+	 * Permanently delete the contents of this block. Since blocks may not store their
+	 * data in a persistent state, this does nothing by default
+	 */
+	public void deleteContents() {
+		//blank on purpose - overridden in DirectoryBlock
+	}
+	
+	public BlocksManager getManager() {
+		return manager;
 	}
 	
 	public void setMainComponent(JComponent comp) {
@@ -46,7 +78,6 @@ public class AbstractBlock extends JPanel {
 		setBorder(BorderFactory.createEmptyBorder(5, 3, 2, 3));
 		
 		this.add(header, BorderLayout.NORTH);
-		
 		
 		mainScrollPane = new JScrollPane();
 		mainScrollPane.setOpaque(false);
@@ -75,16 +106,16 @@ public class AbstractBlock extends JPanel {
 		if (isOpen) {
 			this.add(mainScrollPane, BorderLayout.CENTER);
 			this.setMaximumSize(new Dimension(500, maxBlockHeight));
-			parentPanel.blockOpened(this);
 		}
 		else {
 			this.remove(mainScrollPane);
 			this.setMaximumSize(new Dimension(header.getSize()));
-			parentPanel.blockClosed(this);
 		}
+		manager.fireBlockStateChangedEvent(this);
 		revalidate();
 		repaint();
 	}	
+	
 	
 	public void paintComponent(Graphics g) {
 		((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
