@@ -98,10 +98,10 @@ public class AlnGenFrame extends JFrame {
 		final ProgressMonitor progMonitor = new ProgressMonitor(this,
                 "Building alignment...",
                 "", 0, 100);
-
+		progMonitor.setMillisToPopup(100);
+		progMonitor.setMillisToDecideToPopup(100);
 		final BuilderWorker builder = new BuilderWorker(contig, startPos, endPos);
 		builder.addPropertyChangeListener(new PropertyChangeListener() {
-
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				if ("progress" == evt.getPropertyName() ) {
