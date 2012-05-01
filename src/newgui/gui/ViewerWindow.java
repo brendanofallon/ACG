@@ -57,7 +57,7 @@ public class ViewerWindow extends JFrame {
 	private BlocksManager fileManager = null;
 	
 	public ViewerWindow() {
-		super("View");
+		super("ACG");
 		viewer = this;
 		try {
         	String plaf = UIManager.getSystemLookAndFeelClassName();

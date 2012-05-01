@@ -51,10 +51,6 @@ public class SideTab extends JPanel {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 	
-//   	 	 g.setColor(SideTabPane.sidePanelBackground);
-//	     g.fillRect(0, 0, getWidth()+1, getHeight()+1);
-//	     
-	     
 	     if (selected) {
 	    	
 	    	 g.setColor(UIConstants.lightBackground);
@@ -66,6 +62,7 @@ public class SideTab extends JPanel {
 	    	 g2d.setColor(new Color(0.5f, 0.5f, 0.5f, 0.3f));
 	    	 g2d.drawRoundRect(0, 0, getWidth()+10, getHeight()+10, 14, 14);
 	    	 g2d.setStroke(new BasicStroke(1.0f));
+	    	     	 
 	     }
 	     
 	     
@@ -87,6 +84,22 @@ public class SideTab extends JPanel {
 	    	 g.drawLine(2, getHeight()-1, getWidth()-2, getHeight()-1);
 	    	 g.setColor(Color.LIGHT_GRAY);
 	    	 g.drawLine(2, getHeight()-2, getWidth()-2, getHeight()-2);
+
+	    	 g.setColor(Color.DARK_GRAY);
+	    	 g.drawLine(getWidth()-1, 0, getWidth()-1, getHeight());
+	     }
+	     else {
+	    	 g.setColor(Color.DARK_GRAY);
+	    	 int mid = this.getHeight()/2;
+	    	 int triTop = mid-TRIANGLE_SIZE/2;
+	    	 int triBottom = mid+TRIANGLE_SIZE/2;
+	    	 
+	    	 g.drawLine(getWidth()-1, 0, getWidth()-1, triTop);
+	    	 g.drawLine(getWidth()-1, triBottom, getWidth()-1, getHeight());
+	    	 g.drawLine(getWidth()-TRIANGLE_SIZE, mid, getWidth()-1, triTop);
+	    	 g.drawLine(getWidth()-TRIANGLE_SIZE, mid, getWidth()-1, triBottom);
 	     }
 	}
+	
+	public static final int TRIANGLE_SIZE = 10;
 }

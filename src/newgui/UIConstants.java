@@ -23,7 +23,7 @@ public class UIConstants {
 	//Component background colors
 	public static final Color componentBackground = new Color(0.92f, 0.93f, 0.93f);
 	
-	public static final Color lightBackground = new Color(0.97f, 0.97f, 0.99f);
+	public static final Color lightBackground = new Color(0.97f, 0.97f, 0.97f);
 	
 	public static final Color darkBackground = new Color(0.90f, 0.90f, 0.92f);
 

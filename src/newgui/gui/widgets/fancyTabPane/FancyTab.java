@@ -63,6 +63,8 @@ public class FancyTab extends JPanel {
 		this.setMinimumSize(new Dimension(20, 30));
 		this.setMaximumSize(new Dimension(targetSize, 40));
 		setFont(normalFont);
+		setOpaque(false);
+		
 		
 		this.add(Box.createHorizontalStrut(20));
 		this.add(Box.createHorizontalGlue());
