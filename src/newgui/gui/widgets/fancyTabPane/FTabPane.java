@@ -229,22 +229,26 @@ public class FTabPane extends JPanel implements ChangeListener {
 			//Outer shadow..goes behind everything else
 			g.setColor(shadowColor);
 			((Graphics2D)g).setStroke(shadowStroke);
-			g.drawRoundRect(leftPadding+3, tabsPanel.getHeight()+2, getWidth()-leftPadding-rightPadding-2, getHeight()-tabsPanel.getHeight()-7, 8, 8);
+			g.drawRoundRect(leftPadding+3, tabsPanel.getHeight()+2, getWidth()-leftPadding-rightPadding-2, getHeight()-tabsPanel.getHeight()-5, 8, 8);
 			
 			GradientPaint gp = new GradientPaint(1, tabsPanel.getHeight(), dark1, 1, this.getHeight()/4f, UIConstants.lightBackground);
 			g2d.setPaint(gp);
 			g2d.fillRoundRect(leftPadding, tabsPanel.getHeight(), getWidth()-leftPadding-rightPadding, getHeight()-tabsPanel.getHeight()-6, 4, 4);
-			
+
+			g2d.setStroke(highlightStroke);
 			g2d.setColor(gray2);
-			g2d.drawRoundRect(leftPadding-1, tabsPanel.getHeight()+1, getWidth()-leftPadding-rightPadding+2, getHeight(), 4,4);
+			g2d.drawLine(leftPadding+2, tabsPanel.getHeight()+1, getWidth()-rightPadding-3, tabsPanel.getHeight()+1);
+			//g2d.drawLine(leftPadding+1, tabsPanel.getHeight()+2, getWidth()-rightPadding-4, tabsPanel.getHeight()+2);
+			//g2d.drawRoundRect(leftPadding-1, tabsPanel.getHeight()+1, getWidth()-leftPadding-rightPadding+2, getHeight()-tabsPanel.getHeight()-10, 4,4);
 
 			//Paint over part where selected tab is...
 			g2d.setColor(dark1);
 			g.drawLine(tabsPanel.getSelectedTabLeftX(), tabsPanel.getHeight()+1, tabsPanel.getSelectedTabRightX(), tabsPanel.getHeight()+1);
-			
+			//g.drawLine(tabsPanel.getSelectedTabLeftX()-1, tabsPanel.getHeight()+2, tabsPanel.getSelectedTabRightX()+1, tabsPanel.getHeight()+2);
+
 			g2d.setStroke(normalStroke);
 			g.setColor(lineColor);
-			g.drawRoundRect(leftPadding-1, tabsPanel.getHeight()-1, getWidth()-leftPadding-rightPadding+1, getHeight()-tabsPanel.getHeight()-5, 5, 5);
+			g.drawRoundRect(leftPadding-1, tabsPanel.getHeight()-1, getWidth()-leftPadding-rightPadding+1, getHeight()-tabsPanel.getHeight()-3, 5, 5);
 		}
 	}
 	
@@ -259,7 +263,8 @@ public class FTabPane extends JPanel implements ChangeListener {
 	final static Color dark2 = new Color(220, 220, 220, 100);
 	final static Color shadowColor = new Color(0f, 0f, 0f, 0.2f);
 	final static Color lineColor = new Color(200, 200, 200);
-	final static Stroke shadowStroke = new BasicStroke(1.8f);
+	final static Stroke shadowStroke = new BasicStroke(2.2f);
+	final static Stroke highlightStroke = new BasicStroke(1.2f);
 	final static Stroke normalStroke = new BasicStroke(1.0f);
 	private JPanel centerPanel;
 }
