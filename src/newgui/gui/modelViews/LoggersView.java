@@ -107,13 +107,15 @@ public class LoggersView extends JPanel {
 		
 	}
 	
-//	public void setARGReference(ARGModelElement argRef) {
-//		this.ARGref = argRef;
-//	}
-//	
-//	public void setPopSizeModelReference(PopSizeModelElement popSizeRef) {
-//		this.popSizeref = popSizeRef;
-//	}
+	/**
+	 * Set the state of all logger views to 'closed'
+	 */
+	public void closeAllLoggers() {
+		for (DefaultLoggerView logger : loggers) {
+			logger.setClosed();
+		}
+		layoutLoggers();
+	}
 	
 	/**
 	 * Clear list of logger views and add brand new ones created from the given
@@ -213,48 +215,10 @@ public class LoggersView extends JPanel {
 			}
 			
 		}
-		
+	
+		closeAllLoggers();
 	}
 	
-	/**
-	 * Something to wrap logger views and add a remove button to them
-	 * @author brendano
-	 *
-	 */
-//	class LoggerWrapper extends JPanel {
-//		
-//		DefaultLoggerView config;
-//		
-//		public LoggerWrapper(final DefaultLoggerView conf) {
-//			this.config = conf;
-//			setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-//			setOpaque(false);
-//			setAlignmentX(Component.LEFT_ALIGNMENT);
-//			setBorder(BorderFactory.createEmptyBorder(0, 0, 4, 0));
-//			setBorder(BorderFactory.createLineBorder(Color.BLUE));
-//			conf.setAlignmentY(TOP_ALIGNMENT);
-//			add(conf);
-//			
-//			BorderlessButton remove = new BorderlessButton(removeIcon);
-//			remove.setAlignmentY(TOP_ALIGNMENT);
-//			remove.setToolTipText("Remove " + conf.getModel().getModelLabel() );
-//			remove.setXDif(-1);
-//			remove.setYDif(-2);
-//			remove.setMinimumSize(new Dimension(24, 28));
-//			remove.setPreferredSize(new Dimension(24, 28));
-//			remove.setMaximumSize(new Dimension(24, 28));
-//			
-//			remove.addActionListener(new ActionListener() {
-//				public void actionPerformed(ActionEvent e) {
-//					removeLogger(conf);
-//				}
-//			});
-//			add(remove);
-//			add(Box.createHorizontalGlue());
-//		}
-//		
-//				
-//	}
 	
 	
 }

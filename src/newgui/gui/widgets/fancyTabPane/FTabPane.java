@@ -238,13 +238,10 @@ public class FTabPane extends JPanel implements ChangeListener {
 			g2d.setStroke(highlightStroke);
 			g2d.setColor(gray2);
 			g2d.drawLine(leftPadding+2, tabsPanel.getHeight()+1, getWidth()-rightPadding-3, tabsPanel.getHeight()+1);
-			//g2d.drawLine(leftPadding+1, tabsPanel.getHeight()+2, getWidth()-rightPadding-4, tabsPanel.getHeight()+2);
-			//g2d.drawRoundRect(leftPadding-1, tabsPanel.getHeight()+1, getWidth()-leftPadding-rightPadding+2, getHeight()-tabsPanel.getHeight()-10, 4,4);
 
 			//Paint over part where selected tab is...
 			g2d.setColor(dark1);
 			g.drawLine(tabsPanel.getSelectedTabLeftX(), tabsPanel.getHeight()+1, tabsPanel.getSelectedTabRightX(), tabsPanel.getHeight()+1);
-			//g.drawLine(tabsPanel.getSelectedTabLeftX()-1, tabsPanel.getHeight()+2, tabsPanel.getSelectedTabRightX()+1, tabsPanel.getHeight()+2);
 
 			g2d.setStroke(normalStroke);
 			g.setColor(lineColor);

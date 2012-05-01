@@ -154,7 +154,7 @@ public abstract class DefaultLoggerView extends JPanel implements PropertyChange
 		topPanel.setOpaque(false);
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
 		arrow = new SpinArrow(getName());
-		arrow.setFont(UIConstants.sansFont.deriveFont(16f));
+		arrow.setFont(UIConstants.sansFontBold.deriveFont(13f));
 		arrow.addPropertyChangeListener(SpinArrow.SPIN_ARROW_PROPERTY, this);
 		topPanel.add(arrow);
 		topPanel.add(Box.createHorizontalStrut(10));
