@@ -454,18 +454,13 @@ public abstract class Figure extends JPanel implements ComponentListener, KeyLis
 			//Traverse in reverse order so elements that are on top get called first
 			for(int i=elements.size()-1; i>=0; i--) {
 				FigureElement element = elements.get(i);
-				//System.out.println("Seeing if click is in element : " + element.getClass());
 				if (element.contains(clickX, clickY)) {
-					System.out.println("Yup");
 					if (!clickConsumed) {
 						element.doubleClicked(pos);
 						clickConsumed = element.consumesMouseClick();
-						//System.out.println("Double click was in " + element.getClass() + " and was consumed by it");
 					}
 				}
-				else {
-					System.out.println("Nope");
-				}
+				
 				
 			}
 		}

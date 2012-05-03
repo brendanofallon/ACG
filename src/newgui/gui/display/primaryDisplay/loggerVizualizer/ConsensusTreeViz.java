@@ -53,7 +53,7 @@ public class ConsensusTreeViz extends AbstractLoggerViz {
 		
 		final JCheckBox showSupportBox = new JCheckBox("Node support");
 		showSupportBox.setFont(UIConstants.sansFont);
-		showSupportBox.setSelected(true);
+		showSupportBox.setSelected(false);
 		showSupportBox.addChangeListener(new ChangeListener() {
 
 			@Override
@@ -71,8 +71,13 @@ public class ConsensusTreeViz extends AbstractLoggerViz {
 	
 	@Override
 	public String getDataString() {
-		// TODO Auto-generated method stub
-		return null;
+		List<DrawableTree> trees = treeFig.getTrees();
+		StringBuilder str = new StringBuilder();
+		String lineSep = System.getProperty("line.separator");
+		for(DrawableTree tree : trees) {
+			str.append(tree.getNewick() + lineSep);
+		}
+		return str.toString();
 	}
 	
 	@Override

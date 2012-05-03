@@ -352,12 +352,10 @@ public class XYSeriesElement extends SeriesElement {
 				//System.out.println("Rect : " + lineRect.getX() + ", " + lineRect.getY() + " - " + (lineRect.getX()+lineRect.getWidth()) + ", " + (lineRect.getY() + lineRect.getHeight()));
 				//System.out.println("Line : " + figX0 + ", " + figY0 + " - " + figX1 + ", " + figY1);
 				boolean contains = lineRect.intersectsLine(figX0, figY0, figX1, figY1);
-				double rectX = Math.min(figX0, figX1);
-				double rectY = Math.min(figY0, figY1);
-				double rectWidth = Math.abs(figX1-figX0);
-				double rectHeight = Math.abs(figY1-figY0)+2;
-				//System.out.println("Drawing rect x: " + rectX + " recty: " +rectY + " width: "+ rectWidth + " height:" + rectHeight);
-				shapeToDraw = new Rectangle2D.Double(rectX, rectY, rectWidth, rectHeight);
+//				double rectX = Math.min(figX0, figX1);
+//				double rectY = Math.min(figY0, figY1);
+//				double rectWidth = Math.abs(figX1-figX0);
+//				double rectHeight = Math.abs(figY1-figY0)+2;
 				return contains;
 			}
 			
@@ -491,19 +489,10 @@ public class XYSeriesElement extends SeriesElement {
 		return boxRect;
 	}
 	
-	public void paint(Graphics2D g) {
-//		if (! scaleHasBeenSet) {
-//			System.out.println(" Calling paint, but scale has not been set! ");
-//		}
-		
+	public void paint(Graphics2D g) {		
 		if (! dataBoundsSet )
 			setDataBounds();
 	
-		//Rectangle clipBounds = axes.getGraphAreaBounds();
-		//clipBounds.x++;
-		//clipBounds.height++;
-		
-		//g.setClip(clipBounds ); //Make sure we don't draw outside the lines
 		
 		if (isSelected) {
 			g.setColor(highlightColor);
@@ -548,12 +537,7 @@ public class XYSeriesElement extends SeriesElement {
 		}	
 		
 		g.setStroke(normalStroke);
-		//g.setClip(0, 0, parent.getWidth(), parent.getHeight()); //return clip to usual bounds
-		g.fill(lineRect);
-		if (shapeToDraw != null) {
-			g.setColor(Color.RED);
-			g.fill(shapeToDraw);
-		}
+
 	}
 
 
