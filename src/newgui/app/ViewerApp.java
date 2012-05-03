@@ -31,23 +31,9 @@ public class ViewerApp {
 					loadProperties(); 
 					final ViewerWindow window = new ViewerWindow();
 					window.addWindowListener(new WindowAdapter() {
-
-						public void windowClosing(WindowEvent arg0) {
-							try {
-								int windowWidth = window.getWidth();
-								int windowHeight = window.getHeight();
-								ACGProperties.addProperty(ViewerWindow.WINDOW_WIDTH, windowWidth + "");
-								ACGProperties.addProperty(ViewerWindow.WINDOW_HEIGHT, windowHeight + "");
-								ACGProperties.writeToLastFileRead();
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-
-
 						@Override
 						public void windowClosed(WindowEvent arg0) {
+							shutdown();
 						}
 					});
 					window.setVisible(true);
@@ -57,6 +43,10 @@ public class ViewerApp {
 				}
 			}
 		});
+		
+	}
+	
+	public static void shutdown() {
 		
 	}
 	

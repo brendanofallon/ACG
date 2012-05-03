@@ -234,51 +234,51 @@ public class ACGDocument {
 	 * execution of the chain, and returns the ExecutingChain object
 	 * @return
 	 */
-	public ExecutingChain runMCMC(boolean runImmediately) {
-		List<String> mcLabels = getMCMCLabels();
-		if (mcLabels.size()==0) {
-			throw new InvalidInputFileException("Could not find any MCMC objects");
-		}
-		
-		List<String> mcmcmcLabels = getLabelForClass(MC3.class);
-		if (mcmcmcLabels.size() > 0) {
-			try {
-				MC3 mc3 = (MC3)loader.getObjectForLabel(mcmcmcLabels.get(0));
-				ExecutingChain runner = new ExecutingChain(mc3);
-				if (runImmediately)
-					runner.execute();
-				return runner;
-				
-			} catch (InstantiationException e) {
-				throw new InvalidInputFileException("Could not create mc3 object : " + e.getMessage());
-			} catch (IllegalAccessException e) {
-				throw new InvalidInputFileException("Could not create mc3 object : " + e.getMessage());
-			} catch (InvocationTargetException e) {
-				throw new InvalidInputFileException("Could not create mc3 object : " + e.getMessage());
-			}
-			
-		}
-		
-		if (mcLabels.size()==1) {
-			try {
-				MCMC mcmc = (MCMC)loader.getObjectForLabel(mcLabels.get(0));
-				ExecutingChain runner = new ExecutingChain(mcmc);
-				if (runImmediately)
-					runner.execute();
-				return runner;
-			} catch (InstantiationException e) {
-				throw new InvalidInputFileException("Could not create mcmc object : " + e.getMessage());
-			} catch (IllegalAccessException e) {
-				throw new InvalidInputFileException("Could not create mcmc object : " + e.getMessage());
-			} catch (InvocationTargetException e) {
-				throw new InvalidInputFileException("Could not create mcmc object : " + e.getMessage());
-			}
-			
-		}
-		
-		
-		return null;
-	}
+//	public ExecutingChain runMCMC(boolean runImmediately) {
+//		List<String> mcLabels = getMCMCLabels();
+//		if (mcLabels.size()==0) {
+//			throw new InvalidInputFileException("Could not find any MCMC objects");
+//		}
+//		
+//		List<String> mcmcmcLabels = getLabelForClass(MC3.class);
+//		if (mcmcmcLabels.size() > 0) {
+//			try {
+//				MC3 mc3 = (MC3)loader.getObjectForLabel(mcmcmcLabels.get(0));
+//				ExecutingChain runner = new ExecutingChain(mc3);
+//				if (runImmediately)
+//					runner.execute();
+//				return runner;
+//				
+//			} catch (InstantiationException e) {
+//				throw new InvalidInputFileException("Could not create mc3 object : " + e.getMessage());
+//			} catch (IllegalAccessException e) {
+//				throw new InvalidInputFileException("Could not create mc3 object : " + e.getMessage());
+//			} catch (InvocationTargetException e) {
+//				throw new InvalidInputFileException("Could not create mc3 object : " + e.getMessage());
+//			}
+//			
+//		}
+//		
+//		if (mcLabels.size()==1) {
+//			try {
+//				MCMC mcmc = (MCMC)loader.getObjectForLabel(mcLabels.get(0));
+//				ExecutingChain runner = new ExecutingChain(mcmc);
+//				if (runImmediately)
+//					runner.execute();
+//				return runner;
+//			} catch (InstantiationException e) {
+//				throw new InvalidInputFileException("Could not create mcmc object : " + e.getMessage());
+//			} catch (IllegalAccessException e) {
+//				throw new InvalidInputFileException("Could not create mcmc object : " + e.getMessage());
+//			} catch (InvocationTargetException e) {
+//				throw new InvalidInputFileException("Could not create mcmc object : " + e.getMessage());
+//			}
+//			
+//		}
+//		
+//		
+//		return null;
+//	}
 	
 	/**
 	 * Returns true if this document contains an MC3 object

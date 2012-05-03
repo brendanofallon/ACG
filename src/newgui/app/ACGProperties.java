@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * A singleton class to read and store sets of key-value pairs that are accessed
- * by many components to set aspects of the look and feel
+ * by many components to set aspects of the look and feel.
  * @author brendan
  *
  */

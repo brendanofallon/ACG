@@ -54,7 +54,7 @@ public class XYSeriesElement extends SeriesElement {
 	GeneralPath markerShape;
 	
 	AxesElement axes;
-	
+	Shape shapeToDraw = null; //For debugging only
 	SeriesConfigFrame configFrame;
 	
 	//Flag to indicate if we should recalculate data bounds
@@ -337,14 +337,27 @@ public class XYSeriesElement extends SeriesElement {
 		
 		if (currentMode == POINTS_AND_LINES || currentMode == LINES) {
 			double dataX = axes.boundsXtoDataX(x);
-			
+			//System.out.println("Clicking on point: " + x + ", " + y );
 			lineRect.setRect(x*xFactor-4, y*yFactor-4, 8, 8);
 			Point2D[] line = xySeries.getLineForXVal(dataX);
+			//System.out.println("Data: " + line[0].getX() + ", " + line[0].getY() + " - " + line[1].getX() + ", " + line[1].getY());
 			if (line==null || Double.isNaN(line[0].getY()) || Double.isNaN(line[1].getY())) {
 				return false;
 			}
 			else {
-				boolean contains = lineRect.intersectsLine(axes.dataXtoBoundsX(line[0].getX())*xFactor, axes.dataYtoBoundsY(line[0].getY())*yFactor, axes.dataXtoBoundsX(line[1].getX())*xFactor, axes.dataYtoBoundsY(line[1].getY())*yFactor);
+				double figX0 = axes.dataXtoFigureX(line[0].getX());
+				double figY0 = axes.dataYtoFigureY(line[0].getY());
+				double figX1 = axes.dataXtoFigureX(line[1].getX());
+				double figY1 = axes.dataYtoFigureY(line[1].getY());
+				//System.out.println("Rect : " + lineRect.getX() + ", " + lineRect.getY() + " - " + (lineRect.getX()+lineRect.getWidth()) + ", " + (lineRect.getY() + lineRect.getHeight()));
+				//System.out.println("Line : " + figX0 + ", " + figY0 + " - " + figX1 + ", " + figY1);
+				boolean contains = lineRect.intersectsLine(figX0, figY0, figX1, figY1);
+				double rectX = Math.min(figX0, figX1);
+				double rectY = Math.min(figY0, figY1);
+				double rectWidth = Math.abs(figX1-figX0);
+				double rectHeight = Math.abs(figY1-figY0)+2;
+				//System.out.println("Drawing rect x: " + rectX + " recty: " +rectY + " width: "+ rectWidth + " height:" + rectHeight);
+				shapeToDraw = new Rectangle2D.Double(rectX, rectY, rectWidth, rectHeight);
 				return contains;
 			}
 			
@@ -393,6 +406,9 @@ public class XYSeriesElement extends SeriesElement {
 		}
 	};
 	
+
+
+
 	public void drawMarker(Graphics2D g, int x, int y) {
 		if (currentMarkerType.equals("Circle")) {
 			g.setColor(getLineColor());
@@ -483,11 +499,11 @@ public class XYSeriesElement extends SeriesElement {
 		if (! dataBoundsSet )
 			setDataBounds();
 	
-		Rectangle clipBounds = axes.getGraphAreaBounds();
-		clipBounds.x++;
-		clipBounds.height++;
+		//Rectangle clipBounds = axes.getGraphAreaBounds();
+		//clipBounds.x++;
+		//clipBounds.height++;
 		
-		g.setClip(clipBounds ); //Make sure we don't draw outside the lines
+		//g.setClip(clipBounds ); //Make sure we don't draw outside the lines
 		
 		if (isSelected) {
 			g.setColor(highlightColor);
@@ -532,9 +548,12 @@ public class XYSeriesElement extends SeriesElement {
 		}	
 		
 		g.setStroke(normalStroke);
-		g.setClip(0, 0, parent.getWidth(), parent.getHeight()); //return clip to usual bounds
-		
-
+		//g.setClip(0, 0, parent.getWidth(), parent.getHeight()); //return clip to usual bounds
+		g.fill(lineRect);
+		if (shapeToDraw != null) {
+			g.setColor(Color.RED);
+			g.fill(shapeToDraw);
+		}
 	}
 
 
@@ -566,6 +585,7 @@ public class XYSeriesElement extends SeriesElement {
 			g.setStroke(normalStroke);
 			g.setColor(boxOutlineColor);
 			g.draw(rect);
+			
 		}		
 
 	}

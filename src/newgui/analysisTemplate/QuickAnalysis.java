@@ -1,5 +1,6 @@
 package newgui.analysisTemplate;
 
+import sequence.Alignment;
 import gui.inputPanels.AnalysisModel;
 import gui.inputPanels.MCMCModelElement;
 import gui.inputPanels.loggerConfigs.BPDensityModel;
@@ -8,7 +9,7 @@ import gui.inputPanels.loggerConfigs.RootHeightModel;
 public class QuickAnalysis extends AnalysisTemplate {
 
 	@Override
-	public AnalysisModel getModel() {
+	public AnalysisModel getModel(Alignment aln) {
 		AnalysisModel model = new AnalysisModel();
 		
 		MCMCModelElement mcModel = model.getMCModelElement();

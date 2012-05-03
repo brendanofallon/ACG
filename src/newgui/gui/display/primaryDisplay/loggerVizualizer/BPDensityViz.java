@@ -34,6 +34,7 @@ public class BPDensityViz extends AbstractLoggerViz {
 		XYSeriesElement histoEl = new XYSeriesElement(histoSeries, fig.getAxes(), fig);
 		histoEl.setLineColor(Color.blue);
 		histoEl.setLineWidth((float) 1.25);
+		histoEl.setCanConfigure(true);
 		fig.addSeriesElement(histoEl);
 		
 		burninMessage = new TextElement("Burnin period (" + logger.getBurnin() + ") not exceeded", fig);

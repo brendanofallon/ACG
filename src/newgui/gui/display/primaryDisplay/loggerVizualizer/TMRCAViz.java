@@ -18,6 +18,7 @@ public class TMRCAViz extends AbstractLoggerViz {
 		XYSeriesElement meanEl = new XYSeriesElement(meanSeries, fig.getAxes(), fig);
 		meanEl.setLineColor(Color.blue);
 		meanEl.setLineWidth((float) 1.5);
+		meanEl.setCanConfigure(true);
 		fig.addSeriesElement(meanEl);
 		
 		burninMessage = new TextElement("Burnin period (" + logger.getBurnin() + ") not exceeded", fig);
@@ -43,11 +44,13 @@ public class TMRCAViz extends AbstractLoggerViz {
 			fig.inferBoundsFromCurrentSeries();
 			meanSeries.setYVals(rhLogger.getMeans());
 			
+			
 			if (upper95Series == null && rhLogger.getHistoTriggerReached()) {
 				upper95Series = new ConstSizeSeries("Upper 95%", rhLogger.getUpper95s(), rhLogger.getBinPositions() );
 				XYSeriesElement upperEl = new XYSeriesElement(upper95Series, fig.getAxes(), fig);
 				upperEl.setLineColor(Color.blue);
 				upperEl.setLineWidth(0.75f);
+				upperEl.setCanConfigure(true);
 				fig.addSeriesElement(upperEl);
 			}
 			
@@ -56,6 +59,7 @@ public class TMRCAViz extends AbstractLoggerViz {
 				XYSeriesElement lowerEl = new XYSeriesElement(lower95Series, fig.getAxes(), fig);
 				lowerEl.setLineColor(Color.blue);
 				lowerEl.setLineWidth(0.75f);
+				lowerEl.setCanConfigure(true);
 				fig.addSeriesElement(lowerEl);
 			}
 			if (upper95Series != null)

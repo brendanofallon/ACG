@@ -43,6 +43,7 @@ public class PopSizeViz extends AbstractLoggerViz {
 				XYSeriesElement meanEl = new XYSeriesElement(meanSeries, fig.getAxes(), fig);
 				meanEl.setLineColor(Color.blue);
 				meanEl.setLineWidth((float) 1.5);
+				meanEl.setCanConfigure(true);
 				fig.addSeriesElement(meanEl);
 			}
 			
@@ -53,6 +54,7 @@ public class PopSizeViz extends AbstractLoggerViz {
 				XYSeriesElement upperEl = new XYSeriesElement(upper95Series, fig.getAxes(), fig);
 				upperEl.setLineColor(Color.blue);
 				upperEl.setLineWidth(0.75f);
+				upperEl.setCanConfigure(true);
 				fig.addSeriesElement(upperEl);
 			}
 			
@@ -61,6 +63,7 @@ public class PopSizeViz extends AbstractLoggerViz {
 				XYSeriesElement lowerEl = new XYSeriesElement(lower95Series, fig.getAxes(), fig);
 				lowerEl.setLineColor(Color.blue);
 				lowerEl.setLineWidth(0.75f);
+				lowerEl.setCanConfigure(true);
 				fig.addSeriesElement(lowerEl);
 			}
 			if (upper95Series != null)
