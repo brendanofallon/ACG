@@ -35,9 +35,6 @@ public class AddLoggersFrame extends JFrame {
 	LoggersView parentPanel;
 	List<DefaultLoggerView> loggerList = new ArrayList<DefaultLoggerView>();
 	
-//	public AddLoggerFrame(LoggersView parentPanel) {
-//		
-//	}
 	
 	public AddLoggersFrame(LoggersView parentPanel) {
 		super("Choose loggers");
@@ -59,10 +56,12 @@ public class AddLoggersFrame extends JFrame {
 		for(DefaultLoggerView logger : loggerList) {
 			LoggerItemRenderer renderer = new LoggerItemRenderer(logger, this);
 			listPanel.add(renderer);
-			listPanel.add(Box.createVerticalStrut(3));
+			listPanel.add(Box.createVerticalStrut(6));
 		}
 		
 		add(scrollPane, BorderLayout.CENTER);
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
+		scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
 		this.getRootPane().setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
 		pack();
 		if (parentPanel instanceof JComponent)

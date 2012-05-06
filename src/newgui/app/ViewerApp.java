@@ -31,14 +31,14 @@ public class ViewerApp {
 					loadProperties(); 
 					final ViewerWindow window = new ViewerWindow();
 					window.addWindowListener(new WindowAdapter() {
-						@Override
-						public void windowClosed(WindowEvent arg0) {
+						
+						public void windowClosing(WindowEvent arg0) {
 							shutdown();
 						}
+
 					});
 					window.setVisible(true);
 				} catch (Exception e) {
-					System.err.println("Caught exception : " + e);
 					e.printStackTrace();
 				}
 			}
@@ -47,7 +47,14 @@ public class ViewerApp {
 	}
 	
 	public static void shutdown() {
-		
+		try {
+			System.out.println("Writing properties");
+			ACGProperties.addProperty(ViewerWindow.WINDOW_WIDTH, ViewerWindow.getViewer().getWidth() + "");
+			ACGProperties.addProperty(ViewerWindow.WINDOW_HEIGHT, ViewerWindow.getViewer().getHeight() + "");
+			ACGProperties.writeToLastFileRead();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

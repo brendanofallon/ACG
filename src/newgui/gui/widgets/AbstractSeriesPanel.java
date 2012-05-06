@@ -183,6 +183,7 @@ public abstract class AbstractSeriesPanel extends JPanel {
 		fig.setYLabel("Value");
 		fig.getAxes().setNumXTicks(4);
 		fig.getAxes().setNumYTicks(4);
+		fig.setAxisLabelFont(UIConstants.sansFont.deriveFont(16f));
 		add(fig, BorderLayout.CENTER);
 		
 		optionsPanel = new JPanel();
