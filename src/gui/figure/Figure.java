@@ -155,6 +155,14 @@ public abstract class Figure extends JPanel implements ComponentListener, KeyLis
 		elements.remove(el);	
 	}
 	
+	/**
+	 * Remove all elements from this figure. This typically means that this
+	 * Figure will no longer draw anything. 
+	 */
+	public void removeAllElements() {
+		elements.removeAll();
+	}
+	
 	public void addMouseListeningElement(FigureElement el) {
 		mouseListeningElements.add(el);
 	}

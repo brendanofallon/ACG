@@ -128,5 +128,5 @@ public class TextElement extends FigureElement {
 	
 	protected static Stroke selectedStroke = new BasicStroke(1.75f);
 	protected static Stroke normalStroke = new BasicStroke(1.0f);
-	protected static Color normalColor = Color.DARK_GRAY;
+	protected static Color normalColor = new Color(0.1f, 0.1f, 0.1f);
 }

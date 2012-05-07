@@ -292,6 +292,11 @@ public class XYSeriesFigure extends SeriesFigure {
 		repaint();
 	}
 	
+	public void setLegendFont(Font font) {
+		legend.setFont(font);
+		repaint();
+	}
+	
 	/**
 	 * Set the distance (in data units) between x ticks on the axes element
 	 * @param spacing

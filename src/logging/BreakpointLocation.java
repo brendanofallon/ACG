@@ -49,8 +49,8 @@ public class BreakpointLocation extends PropertyLogger {
 	
 	
 	ARG arg;
-	int seqBins = 200;
-	int depthBins = 400;
+	int seqBins = 250;
+	int depthBins = 250;
 	int count = 0;
 	Double maxTreeHeight = null;
 	
@@ -112,7 +112,7 @@ public class BreakpointLocation extends PropertyLogger {
 			List<CoalNode> dlNodes = arg.getDLCoalNodes();
 			Collections.sort(dlNodes, arg.getNodeHeightComparator());
 			double maxDLHeight = dlNodes.get( dlNodes.size()-1).getHeight();
-			maxTreeHeight = 2.0*Math.round(maxDLHeight*10000.0)/10000.0;
+			maxTreeHeight = Math.round(maxDLHeight*10000.0)/10000.0;
 		}
 	
 		List<RecombNode> rNodes = arg.getDLRecombNodes();
@@ -145,6 +145,42 @@ public class BreakpointLocation extends PropertyLogger {
 				return (ARG)par;
 		}
 		return null;
+	}
+	
+	/**
+	 * Compute and return the densities of all bins in the given array. If the array
+	 * is null, a new one with the correct lengths is created. If it is not null, it must
+	 * must have dimensions (seqBins, depthBins)
+	 * The maximum densities encountered is returned. s
+	 * @param densities
+	 * @return
+	 */
+	public double[][] getDensities(double[][] densities) {
+		if (densities == null)
+			densities = new double[seqBins][depthBins];
+		else {
+			if (densities.length != seqBins)
+				throw new IllegalArgumentException("Incorrect number of sequence bins");
+			if (densities[0].length != depthBins) 
+				throw new IllegalArgumentException("Incorrect number of depth bins");
+		}
+		
+		
+		if (count == 0)
+			return densities;
+		
+		double max = 0;
+		for(int i=0; i<seqBins; i++) {
+			for(int j=0; j<depthBins; j++) {
+				densities[i][j] = (double)hist[i][j] / (double)count;
+				if (densities[i][j] > max)
+					max = densities[i][j];
+			}
+		}
+		
+		//System.out.println("Max is : " + max);
+		
+		return densities;
 	}
 
 	@Override

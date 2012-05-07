@@ -155,4 +155,8 @@ public class LegendElement extends FigureElement {
 		configFrame.display( seriesParent.getSeriesElements() );
 	}
 
+	public void setFont(Font newFont) {
+		this.font = newFont;
+	}
+
 }

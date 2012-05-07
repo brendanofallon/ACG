@@ -69,13 +69,9 @@ public class SideTab extends JPanel {
 	     
 
 	     g2d.setStroke(normalStroke);
-//	     g2d.setColor(gray2);
-//	     g.drawRoundRect(2, 2, getWidth()+10, getHeight()-2, 10, 10);
-	     
 	     g2d.setColor(Color.LIGHT_GRAY);
-		g.drawRoundRect(2, 2, getWidth()+10, getHeight()-4, 8, 8);
+		 g.drawRoundRect(2, 2, getWidth()+10, getHeight()-4, 8, 8);
 
-		
 	     g.drawImage(icon.getImage(), Math.max(1, getWidth()/2 - icon.getIconWidth()/2), 4, null);
 
 	     //Draw text
@@ -94,9 +90,9 @@ public class SideTab extends JPanel {
 	public static final Color lighterColor = new Color(0.90f, 0.90f, 0.90f);
 	public static final Color lightColor = new Color(1f, 1f, 1f);
 	public final static Color gray2 = new Color(250, 250, 250, 150);
-	public final static Color shadowColor = new Color(0f, 0f, 0f, 0.2f);
+	public final static Color shadowColor = new Color(0f, 0f, 0f, 0.18f);
 	public	final static Color lineColor = new Color(200, 200, 200);
-	public final static Stroke shadowStroke = new BasicStroke(2.2f);
+	public final static Stroke shadowStroke = new BasicStroke(2.1f);
 	public final static Stroke highlightStroke = new BasicStroke(1.2f);
 	public final static Stroke normalStroke = new BasicStroke(1.0f);
 

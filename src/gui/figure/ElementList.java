@@ -68,6 +68,10 @@ public class ElementList implements Iterable {
 		elements.remove(toRemove);
 	}
 	
+	public void removeAll() {
+		elements.clear();
+	}
+	
 	public int size() {
 		return elements.size();
 	}
@@ -119,6 +123,8 @@ public class ElementList implements Iterable {
 		}
 		
 	}
+
+	
 
 
 }

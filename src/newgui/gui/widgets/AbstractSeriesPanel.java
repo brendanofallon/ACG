@@ -175,7 +175,7 @@ public abstract class AbstractSeriesPanel extends JPanel {
 		configFrame.setVisible(true);
 	}
 
-	private void initComponents() {
+	protected  void initComponents() {
 		this.setLayout(new BorderLayout());
 		fig = new XYSeriesFigure();
 		fig.setAllowMouseDragSelection(false);
@@ -183,7 +183,8 @@ public abstract class AbstractSeriesPanel extends JPanel {
 		fig.setYLabel("Value");
 		fig.getAxes().setNumXTicks(4);
 		fig.getAxes().setNumYTicks(4);
-		fig.setAxisLabelFont(UIConstants.sansFont.deriveFont(16f));
+		fig.setAxisLabelFont(UIConstants.sansFont.deriveFont(14f));
+		fig.setLegendFont(UIConstants.sansFont.deriveFont(13f));
 		add(fig, BorderLayout.CENTER);
 		
 		optionsPanel = new JPanel();
@@ -226,6 +227,6 @@ public abstract class AbstractSeriesPanel extends JPanel {
 
 
 	protected UnifiedConfigFrame configFrame = null;
-	private JPanel optionsPanel;
+	protected JPanel optionsPanel;
 
 }

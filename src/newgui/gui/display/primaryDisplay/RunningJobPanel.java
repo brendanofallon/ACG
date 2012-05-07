@@ -22,6 +22,7 @@ import newgui.datafile.resultsfile.ResultsFile;
 import newgui.gui.ViewerWindow;
 import newgui.gui.display.jobDisplay.JobView;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.BPDensityViz;
+import newgui.gui.display.primaryDisplay.loggerVizualizer.BPLocationViz;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.ConsensusTreeViz;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.PopSizeViz;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.TMRCAViz;
@@ -36,6 +37,7 @@ import logging.MemoryStateLogger;
 import logging.PopSizeLogger;
 import logging.PropertyLogger;
 import logging.RootHeightDensity;
+import logging.BreakpointLocation;
 
 /**
  * A panel that shows various characteristics of an executing run. 
@@ -96,6 +98,14 @@ public class RunningJobPanel extends JPanel implements MCMCListener {
 					bpDensityViz.initialize(logger);
 					ImageIcon icon2 = UIConstants.getIcon("gui/icons/oxygen/barchart32.png");
 					sidePane.addTab(logger.getName(), icon2, bpDensityViz);
+					sidePane.revalidate();
+				}
+				
+				if (logger instanceof BreakpointLocation) {
+					BPLocationViz bpLocationViz = new BPLocationViz();
+					bpLocationViz.initialize(logger);
+					ImageIcon icon2 = UIConstants.getIcon("gui/icons/oxygen/barchart32.png");
+					sidePane.addTab(logger.getName(), icon2, bpLocationViz);
 					sidePane.revalidate();
 				}
 				
