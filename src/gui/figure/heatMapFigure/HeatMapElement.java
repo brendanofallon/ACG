@@ -102,7 +102,7 @@ public class HeatMapElement extends FigureElement {
 		
 		int boxWidth = (int)Math.round(bounds.width/(double)getNumRows() * xFactor);
 		int boxHeight = (int)Math.round(bounds.height/(double)getNumCols() * yFactor);
-		int boxTop = (int)Math.round( (bounds.height+bounds.y)*yFactor - (bounds.y*yFactor + boxHeight * col));
+		int boxTop = (int)Math.round( (bounds.height+bounds.y+boxHeight)*yFactor - (bounds.y*yFactor + boxHeight * col));
 		int boxLeft = (int)Math.round(bounds.x*xFactor + boxWidth * row);
 		
 		g.setColor(colorForHeat(heat));
