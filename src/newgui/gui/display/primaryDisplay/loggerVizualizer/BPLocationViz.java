@@ -1,6 +1,7 @@
 package newgui.gui.display.primaryDisplay.loggerVizualizer;
 
 import gui.figure.TextElement;
+import gui.figure.VerticalTextElement;
 import gui.figure.heatMapFigure.HeatMapElement;
 import gui.figure.series.XYSeriesFigure;
 
@@ -34,7 +35,7 @@ public class BPLocationViz extends AbstractLoggerViz {
 			if (densities == null)
 				System.out.println("Densities is null after returning from call");
 			heatMapEl.setData(densities);
-			heatMapEl.setHeatMax(0.1);
+			heatMapEl.setHeatMax(0.05);
 
 			fig.repaint();
 		}
@@ -47,6 +48,14 @@ public class BPLocationViz extends AbstractLoggerViz {
 		heatMapEl = new HeatMapElement(fig);
 		heatMapEl.setBounds(0.1, 0.05, 0.85, 0.9);
 		fig.addElement(heatMapEl);
+		TextElement xAxisLabel = new TextElement("Site", fig);
+		xAxisLabel.setPosition(0.45, 0.95);
+		fig.addElement(xAxisLabel);
+		VerticalTextElement yAxisLabel = new VerticalTextElement("Time in past (subs./ site)", fig);
+		yAxisLabel.setPosition(0.02, 0.4);
+		yAxisLabel.setFont(UIConstants.sansFont.deriveFont(14f));
+		xAxisLabel.setFont(UIConstants.sansFont.deriveFont(14f));
+		fig.addElement(yAxisLabel);
 		
 		burninMessage = new TextElement("Burnin period (" + logger.getBurnin() + ") not exceeded", fig);
 		burninMessage.setPosition(0.45, 0.5);

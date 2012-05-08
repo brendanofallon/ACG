@@ -45,7 +45,7 @@ public class HeatMapElement extends FigureElement {
 		double db = (hotColor.getBlue()  - coldColor.getBlue())/(double)colors.length;
 		
 		for(int i=0; i<colors.length; i++) {
-			colors[i] = new Color( (int)Math.round(coldColor.getRed() + dr*i), (int)Math.round(coldColor.getGreen() + dg*i),  (int)Math.round(coldColor.getBlue() + db*i));
+			colors[i] = new Color( (int)Math.round(coldColor.getRed() + dr*i), (int)Math.round(coldColor.getGreen() + dg*i),  (int)Math.round(coldColor.getBlue() + db*i), 150);
 		}
 	}
 
@@ -80,8 +80,8 @@ public class HeatMapElement extends FigureElement {
 		g.fillRect(left, top, width, height);
 		
 		g.setColor(Color.LIGHT_GRAY);
-		int xStep = width / 4;
-		int yStep = height / 4;
+		double xStep = width / 4.0;
+		double yStep = height / 4.0;
 		for(int i=left; i<=left+width; i+=xStep) {
 			g.drawLine(i, top, i, top+height);
 		}
@@ -100,15 +100,13 @@ public class HeatMapElement extends FigureElement {
 
 	private void drawBox(Graphics2D g, int row, int col, double heat) {
 		
-		int boxWidth = (int)Math.round(bounds.width/(double)getNumRows() * xFactor);
-		int boxHeight = (int)Math.round(bounds.height/(double)getNumCols() * yFactor);
-		int boxTop = (int)Math.round( (bounds.height+bounds.y+boxHeight)*yFactor - (bounds.y*yFactor + boxHeight * col));
+		double boxWidth = bounds.width/(double)getNumRows() * xFactor;
+		double boxHeight = bounds.height/(double)getNumCols() * yFactor;
+		int boxTop = (int)Math.round( (bounds.height+bounds.y)*yFactor +bounds.y*yFactor- (bounds.y*yFactor + boxHeight * col));
 		int boxLeft = (int)Math.round(bounds.x*xFactor + boxWidth * row);
 		
 		g.setColor(colorForHeat(heat));
-//		if (heat > 0)
-//			System.out.println("Drawing box : " + boxLeft + ", " + boxTop + " heat: " + heat  + " color: " + colorForHeat(heat));
-		g.fillRect(boxLeft, boxTop, boxWidth+1, boxHeight+1);
+		g.fillRect(boxLeft, boxTop, (int)Math.round(boxWidth+1), (int)Math.round(boxHeight+1));
 	}
 
 	private Color colorForHeat(double heat) {
