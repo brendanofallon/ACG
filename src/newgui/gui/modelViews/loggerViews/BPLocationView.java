@@ -70,6 +70,7 @@ public class BPLocationView extends DefaultLoggerView {
 		super(model);
 		this.bpModel = model;
 		initComponents();
+		updateView();
 	}
 
 	
@@ -112,9 +113,9 @@ public class BPLocationView extends DefaultLoggerView {
 			}
 			
 		});
-		centerPanel.add(setHeightBox);
+		//centerPanel.add(setHeightBox);
 		
-		centerPanel.add(new JLabel("Max height:"));
+		//centerPanel.add(new JLabel("Max height:"));
 		heightField = new JTextField("0.01");
 		heightField.setToolTipText("Maximum depth at which to collect breakpoint locations");
 		heightField.setPreferredSize(new Dimension(50, 30));
@@ -127,7 +128,7 @@ public class BPLocationView extends DefaultLoggerView {
 			}
 		});
 		heightField.setEnabled(false);
-		centerPanel.add(heightField, "wrap");
+		//centerPanel.add(heightField, "wrap");
 	} 
 	
 	protected void updateHeightField() throws InputConfigException {

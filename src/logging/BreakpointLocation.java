@@ -49,9 +49,10 @@ public class BreakpointLocation extends PropertyLogger {
 	
 	
 	ARG arg;
-	int seqBins = 250;
-	int depthBins = 250;
+	int seqBins = 200;
+	int depthBins = 200;
 	int count = 0;
+	double approxMaxDensity = 0; // For UI purposes, the most recent maximum density of bin calculated in getDensities()
 	Double maxTreeHeight = null;
 	
 	int[][] hist = new int[seqBins][depthBins];
@@ -129,6 +130,21 @@ public class BreakpointLocation extends PropertyLogger {
 		count++;
 	}
 	
+	/**
+	 * Get the height (depth) of the deepest bin we're tracking 
+	 * @return
+	 */
+	public double getTreeHeight() {
+		return maxTreeHeight; 
+	}
+	
+	/**
+	 * Return the number of sites in the ARG
+	 * @return
+	 */
+	public int getARGSites() {
+		return arg.getSiteCount();
+	}
 	@Override
 	public void setMCMC(MCMC chain) {
 		this.chain = chain;
@@ -179,10 +195,18 @@ public class BreakpointLocation extends PropertyLogger {
 		}
 		
 		//System.out.println("Max is : " + max);
-		
+		approxMaxDensity = max;
 		return densities;
 	}
 
+	/**
+	 * The most recent maximum bin density computed. Will b zero until getDensities() is called
+	 * @return
+	 */
+	public double getApproxMaxDensity() {
+		return approxMaxDensity;
+	}
+	
 	@Override
 	public String getSummaryString() {
 		StringBuilder strB = new StringBuilder();
@@ -208,6 +232,8 @@ public class BreakpointLocation extends PropertyLogger {
 		}
 		return strB.toString();
 	}
+
+	
 
 	
 }
