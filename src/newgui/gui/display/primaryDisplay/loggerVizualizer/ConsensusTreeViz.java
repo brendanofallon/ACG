@@ -27,12 +27,12 @@ public class ConsensusTreeViz extends AbstractLoggerViz {
 
 	@Override
 	public void initialize() {
-		this.remove(fig);
+		this.remove(seriesFig);
 		treeLogger = (ConsensusTreeLogger)logger;
 		treeFig = new TreeFigure();
 		add(treeFig, BorderLayout.CENTER);
 		
-		burninMessage = new TextElement("(Burnin period not exceeded)", fig);
+		burninMessage = new TextElement("(Burnin period not exceeded)", seriesFig);
 		burninMessage.setPosition(0.45, 0.5);
 		treeFig.addElement(burninMessage);
 		

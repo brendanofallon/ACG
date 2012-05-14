@@ -1,4 +1,4 @@
-package newgui.datafile.resultsfile;
+package newgui.gui.display.resultsDisplay;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import math.Histogram;
+import newgui.datafile.resultsfile.XYSeriesInfo;
 
 import org.w3c.dom.Element;
 

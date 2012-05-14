@@ -139,6 +139,26 @@ public class BreakpointLocation extends PropertyLogger {
 	}
 	
 	/**
+	 * The number of bins going back in time
+	 * @return
+	 */
+	public int getDepthBins() {
+		return depthBins;
+	}
+	
+	/**
+	 * The number of bins spanning sequence space
+	 * @return
+	 */
+	public int getSeqBins() {
+		return seqBins;
+	}
+	
+	public int[] getSiteColumn(int seqBin) {
+		return hist[seqBin];
+	}
+	
+	/**
 	 * Return the number of sites in the ARG
 	 * @return
 	 */

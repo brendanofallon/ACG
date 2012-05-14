@@ -16,9 +16,9 @@ public class PopSizeViz extends AbstractLoggerViz {
 		this.popSizeLogger = (PopSizeLogger)logger;
 		
 		
-		burninMessage = new TextElement("Burnin period (" + logger.getBurnin() + ") not exceeded", fig);
+		burninMessage = new TextElement("Burnin period (" + logger.getBurnin() + ") not exceeded", seriesFig);
 		burninMessage.setPosition(0.45, 0.5);
-		fig.addElement(burninMessage);
+		seriesFig.addElement(burninMessage);
 	}
 
 	@Override
@@ -31,40 +31,40 @@ public class PopSizeViz extends AbstractLoggerViz {
 	public void update() {
 		
 		if (burninMessage != null && logger.getBurninExceeded()) {
-			fig.removeElement(burninMessage);
+			seriesFig.removeElement(burninMessage);
 			
 			burninMessage = null;
 		}
 		if (logger.getBurninExceeded()) {
-			fig.inferBoundsFromCurrentSeries();
+			seriesFig.inferBoundsFromCurrentSeries();
 			
 			if (meanSeries == null) {
 				meanSeries = new ConstSizeSeries("Mean size", popSizeLogger.getMeans(), popSizeLogger.getBinPositions() );
-				XYSeriesElement meanEl = new XYSeriesElement(meanSeries, fig.getAxes(), fig);
+				XYSeriesElement meanEl = new XYSeriesElement(meanSeries, seriesFig.getAxes(), seriesFig);
 				meanEl.setLineColor(Color.blue);
 				meanEl.setLineWidth((float) 1.5);
 				meanEl.setCanConfigure(true);
-				fig.addSeriesElement(meanEl);
+				seriesFig.addSeriesElement(meanEl);
 			}
 			
 			meanSeries.setYVals(popSizeLogger.getMeans());
 			
 			if (upper95Series == null && popSizeLogger.getHistoTriggerReached()) {
 				upper95Series = new ConstSizeSeries("Upper 95%", popSizeLogger.getUpper95s(), popSizeLogger.getBinPositions() );
-				XYSeriesElement upperEl = new XYSeriesElement(upper95Series, fig.getAxes(), fig);
+				XYSeriesElement upperEl = new XYSeriesElement(upper95Series, seriesFig.getAxes(), seriesFig);
 				upperEl.setLineColor(Color.blue);
 				upperEl.setLineWidth(0.75f);
 				upperEl.setCanConfigure(true);
-				fig.addSeriesElement(upperEl);
+				seriesFig.addSeriesElement(upperEl);
 			}
 			
 			if (lower95Series == null && popSizeLogger.getHistoTriggerReached()) {
 				lower95Series = new ConstSizeSeries("Lower 95%", popSizeLogger.getLower95s(), popSizeLogger.getBinPositions() );
-				XYSeriesElement lowerEl = new XYSeriesElement(lower95Series, fig.getAxes(), fig);
+				XYSeriesElement lowerEl = new XYSeriesElement(lower95Series, seriesFig.getAxes(), seriesFig);
 				lowerEl.setLineColor(Color.blue);
 				lowerEl.setLineWidth(0.75f);
 				lowerEl.setCanConfigure(true);
-				fig.addSeriesElement(lowerEl);
+				seriesFig.addSeriesElement(lowerEl);
 			}
 			if (upper95Series != null)
 				upper95Series.setYVals(popSizeLogger.getUpper95s());
@@ -72,7 +72,7 @@ public class PopSizeViz extends AbstractLoggerViz {
 				lower95Series.setYVals(popSizeLogger.getLower95s());
 			}
 		}
-		fig.repaint();
+		seriesFig.repaint();
 	}
 
 	private ConstSizeSeries upper95Series;

@@ -20,7 +20,6 @@ import logging.RootHeightDensity;
 
 import newgui.UIConstants;
 import newgui.datafile.XMLConversionError;
-import newgui.datafile.resultsfile.LoggerFigInfo;
 import newgui.datafile.resultsfile.ResultsFile;
 import newgui.gui.display.Display;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.AbstractLoggerViz;
@@ -63,58 +62,67 @@ public class ResultsDisplay extends Display {
 		stateLoggerPanel.initialize(resFile);
 		tabPane.addTab("State", UIConstants.writeData, stateLoggerPanel);
 		
-		List<String> chartLabels = null;
+		List<String> loggerLabels = null;
 		try {
-			chartLabels = resFile.getChartLabels();
+			loggerLabels = resFile.getLoggerLabels();
 		} catch (XMLConversionError e) {
 			ErrorWindow.showErrorWindow(e, "Could not read chart labels for results file");
 			e.printStackTrace();
 		}
 		
-		try {
-			for(String chartLabel : chartLabels) {
-				LoggerFigInfo figInfo = resFile.getFigElementsForChartLabel(chartLabel);
-				addLoggerFigure(figInfo);
-			}
-		} catch (XMLConversionError e) {
-			ErrorWindow.showErrorWindow(e, "Error reading chart information from file");
-			e.printStackTrace();
-		}
+//		try {
+//			for(String chartLabel : chartLabels) {
+//				LoggerFigInfo figInfo = resFile.getFigElementsForChartLabel(chartLabel);
+//				addLoggerFigure(figInfo);
+//			}
+//		} catch (XMLConversionError e) {
+//			ErrorWindow.showErrorWindow(e, "Error reading chart information from file");
+//			e.printStackTrace();
+//		}
 
 		
-		try {
-			List<String> treeLabels = resFile.getTreeLabels();
-			for(String treeLabel : treeLabels) {
-				String newickTree = resFile.getNewickForTreeElement(treeLabel);
-				addTreeFigure(newickTree, treeLabel);
+		for(String label : loggerLabels) {
+			LoggerResultDisplay resultDisplay;
+			try {
+				resultDisplay = resFile.getDisplayForLogger(label);
+				if (resultDisplay == null)
+					System.out.println("Cant find display for " + label);
+				else
+					addLoggerDisplay(label, resultDisplay);
+				
+			} catch (XMLConversionError e) {
+				e.printStackTrace();
+				ErrorWindow.showErrorWindow(e);
 			}
-		} catch (XMLConversionError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		}
 		
-		
 	}
 	
-	private void addTreeFigure(String newick, String label) {
-		TreeFigure treeFig = new TreeFigure();
-		SquareTree drawableTree = new SquareTree(newick);
-		treeFig.removeAllTrees();
-		treeFig.addTree(drawableTree);
-		if (treeFig.getScaleType()==DrawableTree.NO_SCALE_BAR)
-			treeFig.setScaleType(DrawableTree.SCALE_AXIS);
-		treeFig.repaint();
-		
-		tabPane.addTab(label, UIConstants.grayRightArrow, treeFig);
-		repaint();
-	}
+//	private void addTreeFigure(String newick, String label) {
+//		TreeFigure treeFig = new TreeFigure();
+//		SquareTree drawableTree = new SquareTree(newick);
+//		treeFig.removeAllTrees();
+//		treeFig.addTree(drawableTree);
+//		if (treeFig.getScaleType()==DrawableTree.NO_SCALE_BAR)
+//			treeFig.setScaleType(DrawableTree.SCALE_AXIS);
+//		treeFig.repaint();
+//		
+//		tabPane.addTab(label, UIConstants.grayRightArrow, treeFig);
+//		repaint();
+//	}
 	
-	private void addLoggerFigure(LoggerFigInfo info) {
-		LoggerResultDisplay loggerFig = new LoggerResultDisplay();
-		loggerFig.initialize(info);
-		tabPane.addTab(info.getTitle(), UIConstants.grayRightArrow, loggerFig);
+	private void addLoggerDisplay(String title, LoggerResultDisplay resultDisplay) {
+		tabPane.addTab(title, UIConstants.grayRightArrow, resultDisplay);
 		repaint();
 	}
+
+//	private void addLoggerFigure(LoggerFigInfo info) {
+//		LoggerResultDisplay loggerFig = new LoggerResultDisplay();
+//		loggerFig.initialize(info);
+//		tabPane.addTab(info.getTitle(), UIConstants.grayRightArrow, loggerFig);
+//		repaint();
+//	}
 
 	SideTabPane tabPane;
 	JPanel bottomPanel;

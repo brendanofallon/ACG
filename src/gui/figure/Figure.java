@@ -64,7 +64,7 @@ import gui.figure.series.AxesElement;
  * @author brendan
  *
  */
-public abstract class Figure extends JPanel implements ComponentListener, KeyListener {
+public class Figure extends JPanel implements ComponentListener, KeyListener {
 
 	int minWidth = 100;
 	int minHeight = 100;

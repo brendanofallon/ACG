@@ -64,7 +64,7 @@ public class StateLoggerPanel extends AbstractSeriesPanel {
 	 * a newly created HistogramSeries using the currently selected series as the data source
 	 */
 	protected void switchHistogramTrace() {
-		fig.removeAllSeries();
+		seriesFig.removeAllSeries();
 		String seriesName = (String) chooseBox.getSelectedItem();
 		
 		if (showHistogram) {
@@ -81,8 +81,8 @@ public class StateLoggerPanel extends AbstractSeriesPanel {
 				XYSeriesElement histoEl = addSeries(histo);
 				histoEl.setMode(XYSeriesElement.BOXES);
 				
-				fig.setYLabel("Frequency");
-				fig.setXLabel("Value");
+				seriesFig.setYLabel("Frequency");
+				seriesFig.setXLabel("Value");
 				
 			} catch (XMLConversionError e) {
 				// TODO Auto-generated catch block
@@ -96,7 +96,7 @@ public class StateLoggerPanel extends AbstractSeriesPanel {
 		}
 		
 		
-		fig.inferBoundsFromCurrentSeries();
+		seriesFig.inferBoundsFromCurrentSeries();
 	}
 	
 	/**
@@ -150,11 +150,11 @@ public class StateLoggerPanel extends AbstractSeriesPanel {
 				XYSeriesElement histoEl = addSeries(histo);
 				histoEl.setMode(XYSeriesElement.BOXES);
 
-				fig.setYLabel("Frequency");
-				fig.setXLabel("Value");
+				seriesFig.setYLabel("Frequency");
+				seriesFig.setXLabel("Value");
 			}
 			else {
-				XYSeriesElement seriesEl = fig.addDataSeries(seriesInfo.getSeries());
+				XYSeriesElement seriesEl = seriesFig.addDataSeries(seriesInfo.getSeries());
 				seriesEl.setLineColor(seriesInfo.getColor());
 				seriesEl.setLineWidth(seriesInfo.getWidth());
 			}
@@ -162,7 +162,7 @@ public class StateLoggerPanel extends AbstractSeriesPanel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		fig.inferBoundsFromCurrentSeries();
+		seriesFig.inferBoundsFromCurrentSeries();
 	}
 
 	private boolean showHistogram = false;

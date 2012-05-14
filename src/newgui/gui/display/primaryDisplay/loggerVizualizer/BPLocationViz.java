@@ -28,14 +28,13 @@ public class BPLocationViz extends AbstractLoggerViz {
 
 	@Override
 	public void update() {		
-		fig.repaint();
+		seriesFig.repaint();
 		if (burninMessage != null && logger.getBurninExceeded()) {
-			fig.removeElement(burninMessage);
+			seriesFig.removeElement(burninMessage);
 			burninMessage = null;
 			
 		}
 		
-
 		if (logger.getBurninExceeded()) {
 			densities = bpLogger.getDensities(densities);
 			if (densities == null)
@@ -44,7 +43,7 @@ public class BPLocationViz extends AbstractLoggerViz {
 			heatMapEl.setHeatMax(bpLogger.getApproxMaxDensity()*0.5);
 			heatMapEl.setYMax(bpLogger.getTreeHeight());
 			heatMapEl.setXMax(bpLogger.getARGSites());
-			fig.repaint();
+			seriesFig.repaint();
 		}
 	}
 	
@@ -52,21 +51,23 @@ public class BPLocationViz extends AbstractLoggerViz {
 	public void initialize() {
 		this.bpLogger = (BreakpointLocation)logger;
 
-		heatMapEl = new HeatMapElement(fig);
-		heatMapEl.setBounds(0.1, 0.05, 0.85, 0.85);
-		fig.addElement(heatMapEl);
-		TextElement xAxisLabel = new TextElement("Site", fig);
+		heatMapEl = new HeatMapElement(seriesFig);
+		heatMapEl.setBounds(0.15, 0.05, 0.85, 0.85);
+		seriesFig.addElement(heatMapEl);
+		TextElement xAxisLabel = new TextElement("Site", seriesFig);
 		xAxisLabel.setPosition(0.45, 0.95);
-		fig.addElement(xAxisLabel);
-		VerticalTextElement yAxisLabel = new VerticalTextElement("Time in past (subs./ site)", fig);
+		xAxisLabel.setMobile(true);
+		seriesFig.addElement(xAxisLabel);
+		VerticalTextElement yAxisLabel = new VerticalTextElement("Time in past (subs./ site)", seriesFig);
 		yAxisLabel.setPosition(0.02, 0.4);
 		yAxisLabel.setFont(UIConstants.sansFont.deriveFont(14f));
 		xAxisLabel.setFont(UIConstants.sansFont.deriveFont(14f));
-		fig.addElement(yAxisLabel);
+		yAxisLabel.setMobile(true);
+		seriesFig.addElement(yAxisLabel);
 		
-		burninMessage = new TextElement("Burnin period (" + logger.getBurnin() + ") not exceeded", fig);
+		burninMessage = new TextElement("Burnin period (" + logger.getBurnin() + ") not exceeded", seriesFig);
 		burninMessage.setPosition(0.45, 0.5);
-		fig.addElement(burninMessage);
+		seriesFig.addElement(burninMessage);
 	}
 
 
@@ -80,13 +81,13 @@ public class BPLocationViz extends AbstractLoggerViz {
 	
 	protected void initComponents() {
 		this.setLayout(new BorderLayout());
-		fig = new XYSeriesFigure();
-		fig.removeAllSeries();
-		fig.removeAllElements();
-		add(fig, BorderLayout.CENTER);
+		seriesFig = new XYSeriesFigure();
+		seriesFig.removeAllSeries();
+		seriesFig.removeAllElements();
+		add(seriesFig, BorderLayout.CENTER);
 		
 		optionsPanel = new JPanel();
-		optionsPanel.setBackground(fig.getBackground());
+		optionsPanel.setBackground(seriesFig.getBackground());
 		optionsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		optionsPanel.add(Box.createHorizontalStrut(25));
 		this.add(optionsPanel, BorderLayout.SOUTH);

@@ -17,13 +17,13 @@ public class BPDensityViz extends AbstractLoggerViz {
 
 	@Override
 	public void update() {		
-		fig.repaint();
+		seriesFig.repaint();
 		if (burninMessage != null && logger.getBurninExceeded()) {
-			fig.removeElement(burninMessage);
+			seriesFig.removeElement(burninMessage);
 			burninMessage = null;
 		}
 		if (logger.getBurninExceeded()) {
-			fig.inferBoundsFromCurrentSeries();
+			seriesFig.inferBoundsFromCurrentSeries();
 		}
 	}
 	
@@ -31,15 +31,15 @@ public class BPDensityViz extends AbstractLoggerViz {
 	public void initialize() {
 		this.bpLogger = (BreakpointDensity)logger;
 		HistogramSeries histoSeries = new HistogramSeries("Breakpoint density", bpLogger.getHistogram());
-		XYSeriesElement histoEl = new XYSeriesElement(histoSeries, fig.getAxes(), fig);
+		XYSeriesElement histoEl = new XYSeriesElement(histoSeries, seriesFig.getAxes(), seriesFig);
 		histoEl.setLineColor(Color.blue);
 		histoEl.setLineWidth((float) 1.25);
 		histoEl.setCanConfigure(true);
-		fig.addSeriesElement(histoEl);
+		seriesFig.addSeriesElement(histoEl);
 		
-		burninMessage = new TextElement("Burnin period (" + logger.getBurnin() + ") not exceeded", fig);
+		burninMessage = new TextElement("Burnin period (" + logger.getBurnin() + ") not exceeded", seriesFig);
 		burninMessage.setPosition(0.45, 0.5);
-		fig.addElement(burninMessage);
+		seriesFig.addElement(burninMessage);
 	}
 
 

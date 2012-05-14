@@ -1,41 +1,73 @@
-package newgui.gui.widgets;
+package newgui.gui.display.resultsDisplay;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.List;
-
-import gui.ErrorWindow;
 import gui.figure.series.AbstractSeries;
+import gui.figure.series.HistogramSeries;
 import gui.figure.series.UnifiedConfigFrame;
 import gui.figure.series.XYSeries;
 import gui.figure.series.XYSeriesElement;
 import gui.figure.series.XYSeriesFigure;
 
-import javax.imageio.ImageIO;
-import javax.swing.Box;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import java.awt.Color;
+import java.util.List;
 
+import math.Histogram;
 import newgui.UIConstants;
-import newgui.datafile.XMLConversionError;
 import newgui.datafile.resultsfile.XYSeriesInfo;
 
 /**
- * A generic panel that contains an XYSeriesFigure and a toolbar with a few useful buttons
+ * A loggerResultDisplay with some functionality to display XY series', as well as 
+ * read data from LoggerFigInfo objects and turn that into drawn series. 
  * @author brendan
  *
  */
-public abstract class AbstractSeriesPanel extends AbstractFigurePanel {
+public class LoggerSeriesDisplay extends LoggerResultDisplay {
+
+	public void initialize(LoggerFigInfo figInfo) {
+		setXLabel(figInfo.getxAxisTitle());
+		setYLabel(figInfo.getyAxisTitle());
+		
+		for(XYSeriesInfo series : figInfo.getSeriesInfo()) {
+			XYSeriesElement seriesEl = addSeries(series.getSeries());
+			seriesEl.setLineColor(series.getColor());
+			seriesEl.setLineWidth(series.getWidth());
+		}
+		
+		Histogram histo = figInfo.getHisto();
+		if (histo != null) {
+			addSeries(new HistogramSeries(figInfo.getTitle(), histo));
+		}
+		
+		seriesFig.inferBoundsFromCurrentSeries();
+		seriesFig.repaint();
+	}
+	
+
+	@Override
+	protected String getDataString() {
+		StringBuilder strB = new StringBuilder();
+		String sep = System.getProperty("line.separator");
+		List<AbstractSeries> series = seriesFig.getAllSeries();
+		
+		for(int i=0; i<series.size()-1; i++) {
+			strB.append(series.get(i).getName() + "\t");
+		}
+		strB.append(series.get(series.size()-1).getName() + sep);
+		
+		boolean cont = true;
+		int index = 0;
+		while(cont) {
+			for(int i=0; i<series.size()-1; i++) {
+				strB.append(series.get(i).getX(index) + "\t" + series.get(i).getY(index) + "\t");
+			}
+			strB.append(series.get(series.size()-1).getX(index) + "\t" + series.get(series.size()-1).getY(index) + sep);
+			
+			index++;
+			cont = index < series.get(0).size();
+		}
+		
+		return strB.toString();
+	}
+
 
 	protected XYSeriesFigure seriesFig;
 	protected UnifiedConfigFrame configFrame = null;
@@ -123,6 +155,5 @@ public abstract class AbstractSeriesPanel extends AbstractFigurePanel {
 		configFrame.readSettingsFromFigure();
 		configFrame.setVisible(true);
 	}
-
 
 }
