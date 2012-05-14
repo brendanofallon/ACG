@@ -18,6 +18,7 @@ import org.w3c.dom.Node;
 
 public class ConsensusTreeConverter extends AbstractLoggerConverter {
 
+	
 	@Override
 	public LoggerResultDisplay getLoggerFigure(Element el) throws XMLConversionError {
 		LoggerTreeDisplay treeDisplay = new LoggerTreeDisplay();

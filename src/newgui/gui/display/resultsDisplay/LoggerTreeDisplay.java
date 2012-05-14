@@ -10,6 +10,12 @@ public class LoggerTreeDisplay extends LoggerResultDisplay {
 
 	TreeFigure treeFig = null;
 	
+	public LoggerTreeDisplay() {
+		initializeFigure();
+		initComponents();
+	}
+	
+	
 	@Override
 	public void initializeFigure() {
 		fig = new TreeFigure();

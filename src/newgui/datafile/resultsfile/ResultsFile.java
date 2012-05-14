@@ -395,6 +395,11 @@ public class ResultsFile extends XMLDataFile {
 		try {
 			Class clz = ClassLoader.getSystemClassLoader().loadClass(loggerClass);
 			LoggerElementConverter converter = LoggerConverterFactory.getConverter(clz);
+			if (converter == null) {
+				System.out.println("No converter found for logger of class : " + clz.getCanonicalName());
+				return null;
+			}
+				
 			return converter.getLoggerFigure(this.getLoggerElementForLabel(label));
 		}
 		catch (ClassNotFoundException ex) {

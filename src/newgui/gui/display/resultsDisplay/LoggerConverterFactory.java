@@ -3,6 +3,7 @@ package newgui.gui.display.resultsDisplay;
 import logging.BreakpointDensity;
 import logging.BreakpointLocation;
 import logging.ConsensusTreeLogger;
+import logging.PopSizeLogger;
 import logging.PropertyLogger;
 import logging.RootHeightDensity;
 
@@ -23,6 +24,10 @@ public class LoggerConverterFactory {
 		//	return new BPLocationConverter();
 		}
 
+		if (clz.equals(PopSizeLogger.class)) {
+			return new PopSizeConverter();
+		}
+		
 		if (clz.equals(ConsensusTreeLogger.class)) {
 			return new ConsensusTreeConverter();
 		}
