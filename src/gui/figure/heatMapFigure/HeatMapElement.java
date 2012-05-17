@@ -35,7 +35,7 @@ public class HeatMapElement extends FigureElement {
 	
 	protected double coldTemp = 0.0; //The temperature that corresponds to the cold color
 	protected double hotTemp = 1.0; //Temp that corresponds to the hot color
-	protected int colorBinCount = 20;
+	protected int colorBinCount = 10;
 	protected Color[] colors = new Color[colorBinCount];
 	
 	private DecimalFormat intFormatter = new DecimalFormat("0"); //Used to format axis labels	
@@ -59,7 +59,9 @@ public class HeatMapElement extends FigureElement {
 		double db = (double)(hotColor.getBlue()  - coldColor.getBlue())/(double)colors.length;
 		
 		for(int i=0; i<colors.length; i++) {
-			colors[i] = new Color( (int)Math.round(coldColor.getRed() + dr*i), (int)Math.round(coldColor.getGreen() + dg*i),  (int)Math.round(coldColor.getBlue() + db*i), 150);
+			//colors[i] = new Color( (int)Math.round(coldColor.getRed() + dr*i), (int)Math.round(coldColor.getGreen() + dg*i),  (int)Math.round(coldColor.getBlue() + db*i), 150);
+			float x = (float) i / (float)(colors.length-1);
+			colors[i] = new Color( Color.HSBtoRGB(0.5f+x/2.0f, 1f, 1f));
 		}
 		//System.out.println("Recreating colors, last color is : " + colors[colors.length-1]);
 	}
@@ -97,6 +99,7 @@ public class HeatMapElement extends FigureElement {
 			}
 		}
 	}
+	
 	
 	public void setYMax(double yMax) {
 		this.yMax = yMax;
@@ -268,5 +271,9 @@ public class HeatMapElement extends FigureElement {
 	public void setHotColor(Color hotColor) {
 		this.hotColor = hotColor;
 		createColorArray();
+	}
+
+	public Color[] getColors() {	
+		return colors;
 	}
 }

@@ -46,7 +46,7 @@ public class PopSizeConverter extends AbstractLoggerConverter {
 		}
 		XYSeries upperSeries = new XYSeries(upperList, "Upper 95%");
 		Element upperEl = XYSeriesElementReader.createElement(doc, upperSeries, Color.blue, 0.75f);
-		upperEl.setAttribute(TMRCA_LABEL, TMRCA_UPPER95);
+		upperEl.setAttribute(SERIES_LABEL, SERIES_UPPER95);
 		el.appendChild(upperEl);
 		
 		List<Point2D> meanList = new ArrayList<Point2D>();
@@ -55,7 +55,7 @@ public class PopSizeConverter extends AbstractLoggerConverter {
 		}
 		XYSeries meanSeries = new XYSeries(meanList, "Mean TMRCA");
 		Element meanEl = XYSeriesElementReader.createElement(doc, meanSeries, Color.blue, 1.5f);
-		meanEl.setAttribute(TMRCA_LABEL, TMRCA_MEAN);
+		meanEl.setAttribute(SERIES_LABEL, SERIES_MEAN);
 		el.appendChild(meanEl);
 		
 		List<Point2D> lowerList = new ArrayList<Point2D>();
@@ -64,7 +64,7 @@ public class PopSizeConverter extends AbstractLoggerConverter {
 		}
 		XYSeries lowerSeries = new XYSeries(lowerList, "Lower 95%");
 		Element lowerEl = XYSeriesElementReader.createElement(doc, lowerSeries, Color.blue, 0.75f);
-		lowerEl.setAttribute(TMRCA_LABEL, TMRCA_LOWER95);
+		lowerEl.setAttribute(SERIES_LABEL, SERIES_LOWER95);
 		el.appendChild(lowerEl);
 	}
 

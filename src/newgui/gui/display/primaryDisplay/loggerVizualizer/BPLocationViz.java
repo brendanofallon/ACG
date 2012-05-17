@@ -3,6 +3,7 @@ package newgui.gui.display.primaryDisplay.loggerVizualizer;
 import gui.figure.ColorSwatchButton;
 import gui.figure.TextElement;
 import gui.figure.VerticalTextElement;
+import gui.figure.heatMapFigure.ColorBarElement;
 import gui.figure.heatMapFigure.HeatMapElement;
 import gui.figure.series.XYSeriesFigure;
 
@@ -43,6 +44,7 @@ public class BPLocationViz extends AbstractLoggerViz {
 			heatMapEl.setHeatMax(bpLogger.getApproxMaxDensity()*0.5);
 			heatMapEl.setYMax(bpLogger.getTreeHeight());
 			heatMapEl.setXMax(bpLogger.getARGSites());
+			colorBar.setColors(heatMapEl.getColors());
 			seriesFig.repaint();
 		}
 	}
@@ -52,7 +54,7 @@ public class BPLocationViz extends AbstractLoggerViz {
 		this.bpLogger = (BreakpointLocation)logger;
 
 		heatMapEl = new HeatMapElement(seriesFig);
-		heatMapEl.setBounds(0.15, 0.05, 0.85, 0.85);
+		heatMapEl.setBounds(0.10, 0.05, 0.75, 0.85);
 		seriesFig.addElement(heatMapEl);
 		TextElement xAxisLabel = new TextElement("Site", seriesFig);
 		xAxisLabel.setPosition(0.45, 0.95);
@@ -64,6 +66,10 @@ public class BPLocationViz extends AbstractLoggerViz {
 		xAxisLabel.setFont(UIConstants.sansFont.deriveFont(14f));
 		yAxisLabel.setMobile(true);
 		seriesFig.addElement(yAxisLabel);
+		
+		colorBar = new ColorBarElement(seriesFig);
+		colorBar.setBounds(0.90, 0.1, 0.05, 0.7);
+		seriesFig.addElement(colorBar);
 		
 		burninMessage = new TextElement("Burnin period (" + logger.getBurnin() + ") not exceeded", seriesFig);
 		burninMessage.setPosition(0.45, 0.5);
@@ -152,6 +158,7 @@ public class BPLocationViz extends AbstractLoggerViz {
 
 	private double[][] densities = null; //Used to store densities so we're not always reallocating
 	private HeatMapElement heatMapEl = null;
+	private ColorBarElement colorBar = null;
 	private TextElement burninMessage;
 	private BreakpointLocation bpLogger;
 
