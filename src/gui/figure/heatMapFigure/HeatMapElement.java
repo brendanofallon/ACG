@@ -35,7 +35,7 @@ public class HeatMapElement extends FigureElement {
 	
 	protected double coldTemp = 0.0; //The temperature that corresponds to the cold color
 	protected double hotTemp = 1.0; //Temp that corresponds to the hot color
-	protected int colorBinCount = 10;
+	protected int colorBinCount = 20;
 	protected Color[] colors = new Color[colorBinCount];
 	
 	private DecimalFormat intFormatter = new DecimalFormat("0"); //Used to format axis labels	
@@ -61,7 +61,7 @@ public class HeatMapElement extends FigureElement {
 		for(int i=0; i<colors.length; i++) {
 			//colors[i] = new Color( (int)Math.round(coldColor.getRed() + dr*i), (int)Math.round(coldColor.getGreen() + dg*i),  (int)Math.round(coldColor.getBlue() + db*i), 150);
 			float x = (float) i / (float)(colors.length-1);
-			colors[i] = new Color( Color.HSBtoRGB(0.5f+x/2.0f, 1f, 1f));
+			colors[i] = new Color( Color.HSBtoRGB(0.5f+x/2.0f, 1f, 0.8f));
 		}
 		//System.out.println("Recreating colors, last color is : " + colors[colors.length-1]);
 	}
@@ -137,12 +137,13 @@ public class HeatMapElement extends FigureElement {
 		double yStep = height / 4.0;
 		
 		//Vertical grid lines and x-labels
+		int count = 0;
 		for(double i=left; i<=left+width; i+=xStep) {
 			g.setColor(gridColor);
 			g.drawLine((int)Math.round(i), top,(int)Math.round(i), top+height);
 			
 			g.setColor(labelColor);
-			double val = pixelXToDataX(i);
+			double val = xMin + (xMax - xMin)/4.0* count;
 			if (i==left)
 				val = xMin;
 			if (i==left+width)
@@ -151,6 +152,7 @@ public class HeatMapElement extends FigureElement {
 			
 			int strWidth = g.getFontMetrics().stringWidth(str);
 			g.drawString(str, (int)Math.round(i - strWidth/2), (int)Math.round((bounds.y+bounds.height)*yFactor+12));
+			count++;
 		}
 		
 		//Horizontal grid lines and y-labels
@@ -276,4 +278,9 @@ public class HeatMapElement extends FigureElement {
 	public Color[] getColors() {	
 		return colors;
 	}
+
+	public double[][] getData() {
+		return heats;
+	}
 }
+

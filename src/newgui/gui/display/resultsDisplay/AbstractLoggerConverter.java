@@ -108,6 +108,24 @@ public abstract class AbstractLoggerConverter implements LoggerElementConverter 
 	}
 	
 	/**
+	 * Find the child whose name is equal to the given name and return it,
+	 * or null if there is no such child
+	 * @param parent
+	 * @param nodeName
+	 * @return
+	 */
+	public static Element getChildForName(Element parent, String nodeName) {
+		NodeList children = parent.getChildNodes();
+		for(int i=0; i<children.getLength(); i++) {
+			Node child = children.item(i);
+			if (child.getNodeName().equals(nodeName)) {
+				return (Element)child;
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * Searches the given element for a child with the given name, then obtains its text content
 	 * and parses it to an array of doubles
 	 * @param el
@@ -115,7 +133,7 @@ public abstract class AbstractLoggerConverter implements LoggerElementConverter 
 	 * @return
 	 * @throws XMLConversionError
 	 */
-	public static double[] readDoubleArray(Element el, String childName) throws XMLConversionError {
+	public static double[] readDoubleArrayChild(Element el, String childName) throws XMLConversionError {
 		String list = XMLDataFile.getTextFromChild(el, childName);
 		StringTokenizer xToks = new StringTokenizer(list, ",");
 		List<Double> vals = new ArrayList<Double>();
@@ -131,6 +149,47 @@ public abstract class AbstractLoggerConverter implements LoggerElementConverter 
 			arr[i] = vals.get(i);
 		}
 		return arr;
+	}
+	
+	/**
+	 * Obtain the text from this child and attempt to parse it into an array of doubles
+	 * @param el
+	 * @return
+	 */
+	public static double[] readDoubleArray(Element el) {
+		String list = getText(el);
+		StringTokenizer xToks = new StringTokenizer(list, ",");
+		List<Double> vals = new ArrayList<Double>();
+
+		while (xToks.hasMoreTokens()) {
+			String xStr = xToks.nextToken();
+			Double val = Double.parseDouble(xStr);
+			vals.add(val);
+		}
+
+		double[] arr = new double[vals.size()];
+		for(int i=0; i<arr.length; i++) {
+			arr[i] = vals.get(i);
+		}
+		return arr;
+		
+	}
+	
+	/**
+	 * Returns the text from the first child that is of type TEXT_NODE from the
+	 * given element
+	 * @param el
+	 * @return
+	 */
+	public static String getText(Element el) {
+		NodeList children = el.getChildNodes();
+		for(int i=0; i<children.getLength(); i++) {
+			Node child = children.item(i);
+			if (child.getNodeType() == Node.TEXT_NODE) {
+				return child.getNodeValue();
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -159,5 +218,34 @@ public abstract class AbstractLoggerConverter implements LoggerElementConverter 
 		}
 		
 		return matrixEl;
+	}
+	
+	protected static double[][] readMatrix(Element el) throws XMLConversionError {
+		if (! el.getNodeName().equals(MATRIX)) {
+			throw new IllegalArgumentException("Element is not a matrix element");
+		}
+		String rowStr = el.getAttribute(ROW_COUNT);
+		if (rowStr == null || rowStr.trim().length()==0)
+			throw new XMLConversionError("No row count specified", el);
+		String colStr = el.getAttribute(COL_COUNT);
+		if (colStr == null || colStr.trim().length()==0)
+			throw new XMLConversionError("No column count specified", el);
+		
+		Integer rows = Integer.parseInt(rowStr);
+		Integer cols = Integer.parseInt(colStr);
+		
+		double[][] matrix = new double[rows][cols];
+		NodeList children = el.getChildNodes();
+		int rowsFound = 0;
+		for(int i=0; i<children.getLength(); i++) {
+			Node child = children.item(i);
+			if (child.getNodeType() == Node.ELEMENT_NODE && child.getNodeName().equals(ROW)) {
+				double[] rowData = readDoubleArray( (Element)child);
+				matrix[rowsFound] = rowData;
+				rowsFound++;
+			}
+		}
+		
+		return matrix;
 	}
 }

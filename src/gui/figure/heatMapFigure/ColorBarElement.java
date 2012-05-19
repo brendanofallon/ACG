@@ -1,7 +1,13 @@
 package gui.figure.heatMapFigure;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
+import java.text.DecimalFormat;
+
+import logging.StringUtils;
+
+import newgui.UIConstants;
 
 import gui.figure.Figure;
 import gui.figure.FigureElement;
@@ -16,6 +22,8 @@ public class ColorBarElement extends FigureElement {
 	protected Color[] colors = null;
 	protected double max = 1.0;
 	protected double min = 0;
+	protected Font font = UIConstants.sansFont.deriveFont(11f);
+//	protected DecimalFormat formatter = new DecimalFormat("0.0##");
 	
 	public ColorBarElement(Figure parent) {
 		super(parent);
@@ -47,8 +55,17 @@ public class ColorBarElement extends FigureElement {
 		double boxHeight = bounds.height*yFactor / colors.length;
 		for(int i=0; i<colors.length; i++) {
 			int boxTop = (int)Math.round( top + i*boxHeight);
-			drawBox(g, left, boxTop, width, (int) Math.round(boxHeight), colors[i]);
+			drawBox(g, left, boxTop, width, (int) Math.round(boxHeight), colors[colors.length-i-1]);
 		}
+		
+		
+		
+		//Draw labels
+		g.setFont(font);
+		g.setColor(Color.black);
+		g.drawString("" + StringUtils.format(max), left + width + 3, top + 10);
+		g.drawString("" + StringUtils.format((max+min)/2), left + width + 3, top + (height/2) + 5);
+		g.drawString("" + StringUtils.format(min), left + width + 3, top + height);
 		
 		g.setColor(Color.DARK_GRAY);
 		g.drawRect(left, top, width, height);

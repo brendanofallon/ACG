@@ -14,6 +14,7 @@ public class BPLocationConverter extends AbstractLoggerConverter {
 	public static final String maxSite = "max.site";
 	public static final String depthBins = "depth.bins";
 	public static final String seqBins = "seq.bins";
+	public static final String maxDensity = "max.density";
 
 
 	
@@ -21,8 +22,18 @@ public class BPLocationConverter extends AbstractLoggerConverter {
 	@Override
 	public LoggerResultDisplay getLoggerFigure(Element el)
 			throws XMLConversionError {
-		// TODO Auto-generated method stub
-		return null;
+		
+		LoggerHeatMapDisplay bpLocDisplay = new LoggerHeatMapDisplay();
+		Element matrixChild = getChildForName(el, MATRIX);
+		double[][] matrix = readMatrix(matrixChild);
+		double yMin = Double.parseDouble( el.getAttribute(minTreeDepth) );
+		double yMax = Double.parseDouble( el.getAttribute(maxTreeDepth) );
+		double xMin = Double.parseDouble( el.getAttribute(minSite) ); 
+		double xMax = Double.parseDouble( el.getAttribute(maxSite) );
+		double maxD = Double.parseDouble( el.getAttribute(maxDensity) );
+		
+		bpLocDisplay.setData(matrix, xMin, xMax, yMin, yMax, maxD);
+		return bpLocDisplay;
 	}
 
 	@Override
@@ -35,6 +46,7 @@ public class BPLocationConverter extends AbstractLoggerConverter {
 		el.setAttribute(minTreeDepth, "0.0");
 		el.setAttribute(minSite, "0");
 		el.setAttribute(maxSite, "" + bpLogger.getARGSites());
+		el.setAttribute(maxDensity, "" + bpLogger.getApproxMaxDensity());
 
 		Element matrixEl = createMatrixChild(doc, matrix);
 		el.appendChild(matrixEl);

@@ -5,6 +5,7 @@ import java.awt.Color;
 import gui.figure.TextElement;
 import gui.figure.series.HistogramSeries;
 import gui.figure.series.XYSeriesElement;
+import gui.figure.series.XYSeriesFigure;
 
 import logging.BreakpointDensity;
 
@@ -14,7 +15,7 @@ import logging.BreakpointDensity;
  *
  */
 public class BPDensityViz extends AbstractLoggerViz {
-
+	
 	@Override
 	public void update() {		
 		seriesFig.repaint();

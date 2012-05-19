@@ -5,6 +5,7 @@ import gui.figure.TextElement;
 import gui.figure.VerticalTextElement;
 import gui.figure.heatMapFigure.ColorBarElement;
 import gui.figure.heatMapFigure.HeatMapElement;
+import gui.figure.heatMapFigure.HeatMapFigure;
 import gui.figure.series.XYSeriesFigure;
 
 import java.awt.BorderLayout;
@@ -27,24 +28,27 @@ import logging.BreakpointLocation;
 
 public class BPLocationViz extends AbstractLoggerViz {
 
+	HeatMapFigure heatMapFig = null;
+	
 	@Override
 	public void update() {		
-		seriesFig.repaint();
-		if (burninMessage != null && logger.getBurninExceeded()) {
-			seriesFig.removeElement(burninMessage);
-			burninMessage = null;
-			
-		}
+		fig.repaint();
+//		if (burninMessage != null && logger.getBurninExceeded()) {
+//			seriesFig.removeElement(burninMessage);
+//			burninMessage = null;
+//			
+//		}
 		
 		if (logger.getBurninExceeded()) {
 			densities = bpLogger.getDensities(densities);
 			if (densities == null)
 				System.out.println("Densities is null after returning from call");
-			heatMapEl.setData(densities);
-			heatMapEl.setHeatMax(bpLogger.getApproxMaxDensity()*0.5);
-			heatMapEl.setYMax(bpLogger.getTreeHeight());
-			heatMapEl.setXMax(bpLogger.getARGSites());
-			colorBar.setColors(heatMapEl.getColors());
+			heatMapFig.setData(densities);
+			heatMapFig.setHeatMax(bpLogger.getApproxMaxDensity()*0.25);
+			
+			heatMapFig.setYMax(bpLogger.getTreeHeight());
+			heatMapFig.setXMax(bpLogger.getARGSites());
+			
 			seriesFig.repaint();
 		}
 	}
@@ -53,27 +57,16 @@ public class BPLocationViz extends AbstractLoggerViz {
 	public void initialize() {
 		this.bpLogger = (BreakpointLocation)logger;
 
-		heatMapEl = new HeatMapElement(seriesFig);
-		heatMapEl.setBounds(0.10, 0.05, 0.75, 0.85);
-		seriesFig.addElement(heatMapEl);
-		TextElement xAxisLabel = new TextElement("Site", seriesFig);
-		xAxisLabel.setPosition(0.45, 0.95);
-		xAxisLabel.setMobile(true);
-		seriesFig.addElement(xAxisLabel);
-		VerticalTextElement yAxisLabel = new VerticalTextElement("Time in past (subs./ site)", seriesFig);
-		yAxisLabel.setPosition(0.02, 0.4);
-		yAxisLabel.setFont(UIConstants.sansFont.deriveFont(14f));
-		xAxisLabel.setFont(UIConstants.sansFont.deriveFont(14f));
-		yAxisLabel.setMobile(true);
-		seriesFig.addElement(yAxisLabel);
+		heatMapFig = new HeatMapFigure();
+		setFigure(heatMapFig);
+
+		heatMapFig.setXAxisLabel("Site");
+		heatMapFig.setYAxisLabel("Time in past (subs. / site)");
 		
-		colorBar = new ColorBarElement(seriesFig);
-		colorBar.setBounds(0.90, 0.1, 0.05, 0.7);
-		seriesFig.addElement(colorBar);
 		
-		burninMessage = new TextElement("Burnin period (" + logger.getBurnin() + ") not exceeded", seriesFig);
-		burninMessage.setPosition(0.45, 0.5);
-		seriesFig.addElement(burninMessage);
+//		burninMessage = new TextElement("Burnin period (" + logger.getBurnin() + ") not exceeded", seriesFig);
+//		burninMessage.setPosition(0.45, 0.5);
+//		seriesFig.addElement(burninMessage);
 	}
 
 
@@ -99,31 +92,31 @@ public class BPLocationViz extends AbstractLoggerViz {
 		this.add(optionsPanel, BorderLayout.SOUTH);
 		
 
-		final ColorSwatchButton coldColorButton = new ColorSwatchButton(Color.BLUE);
-		coldColorButton.setPreferredSize(new Dimension(28, 28));
-		JLabel coldColorLabel = new JLabel("Cold color:");
-		coldColorButton.addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent pc) {
-				heatMapEl.setColdColor(coldColorButton.getColor());
-			}
-		});
-		coldColorLabel.setFont(UIConstants.sansFont);
-		optionsPanel.add(coldColorLabel);
-		optionsPanel.add(coldColorButton);
-		
-		final ColorSwatchButton hotColorButton = new ColorSwatchButton(Color.RED);
-		hotColorButton.setPreferredSize(new Dimension(28, 28));
-		JLabel hotColorLabel = new JLabel("Hot color:");
-		hotColorButton.addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent pc) {
-				heatMapEl.setHotColor(hotColorButton.getColor());
-				//System.out.println("Setting hot color to: " + hotColorButton.getColor());
-			}
-		});
-		hotColorLabel.setFont(UIConstants.sansFont);
-		optionsPanel.add(hotColorLabel);
-		optionsPanel.add(hotColorButton);
-		
+//		final ColorSwatchButton coldColorButton = new ColorSwatchButton(Color.BLUE);
+//		coldColorButton.setPreferredSize(new Dimension(28, 28));
+//		JLabel coldColorLabel = new JLabel("Cold color:");
+//		coldColorButton.addPropertyChangeListener(new PropertyChangeListener() {
+//			public void propertyChange(PropertyChangeEvent pc) {
+//				heatMapEl.setColdColor(coldColorButton.getColor());
+//			}
+//		});
+//		coldColorLabel.setFont(UIConstants.sansFont);
+//		optionsPanel.add(coldColorLabel);
+//		optionsPanel.add(coldColorButton);
+//		
+//		final ColorSwatchButton hotColorButton = new ColorSwatchButton(Color.RED);
+//		hotColorButton.setPreferredSize(new Dimension(28, 28));
+//		JLabel hotColorLabel = new JLabel("Hot color:");
+//		hotColorButton.addPropertyChangeListener(new PropertyChangeListener() {
+//			public void propertyChange(PropertyChangeEvent pc) {
+//				heatMapEl.setHotColor(hotColorButton.getColor());
+//				//System.out.println("Setting hot color to: " + hotColorButton.getColor());
+//			}
+//		});
+//		hotColorLabel.setFont(UIConstants.sansFont);
+//		optionsPanel.add(hotColorLabel);
+//		optionsPanel.add(hotColorButton);
+//		
 		
 		BorderlessButton showConfigButton = new BorderlessButton(UIConstants.settings);
 		showConfigButton.setToolTipText("Select figure options");
@@ -157,9 +150,9 @@ public class BPLocationViz extends AbstractLoggerViz {
 	}
 
 	private double[][] densities = null; //Used to store densities so we're not always reallocating
-	private HeatMapElement heatMapEl = null;
-	private ColorBarElement colorBar = null;
-	private TextElement burninMessage;
+	//private HeatMapElement heatMapEl = null;
+	//private ColorBarElement colorBar = null;
+	//private TextElement burninMessage;
 	private BreakpointLocation bpLogger;
 
 	

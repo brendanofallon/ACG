@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import newgui.UIConstants;
+import newgui.gui.widgets.AbstractFigurePanel;
 import newgui.gui.widgets.AbstractSeriesPanel;
 import newgui.gui.widgets.BorderlessButton;
 

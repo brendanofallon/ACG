@@ -212,8 +212,13 @@ public class ResultsFile extends XMLDataFile {
 						label = loggerLabel.replace(".class", "");
 					
 					LoggerElementConverter converter = LoggerConverterFactory.getConverter(logger.getClass());
-					Element loggerEl = converter.createElement(doc, logger, label);
-					doc.getDocumentElement().appendChild(loggerEl);
+					if (converter == null) {
+					throw new IllegalArgumentException("No converter found for logger class : " + logger.getClass());	
+					}
+					else {
+						Element loggerEl = converter.createElement(doc, logger, label);
+						doc.getDocumentElement().appendChild(loggerEl);
+					}
 					
 				} catch (InstantiationException e) {
 					// TODO Auto-generated catch block

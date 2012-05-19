@@ -21,7 +21,7 @@ public class LoggerConverterFactory {
 		}
 
 		if (clz.equals(BreakpointLocation.class)) {
-		//	return new BPLocationConverter();
+			return new BPLocationConverter();
 		}
 
 		if (clz.equals(PopSizeLogger.class)) {
