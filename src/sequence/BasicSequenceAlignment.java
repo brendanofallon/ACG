@@ -640,4 +640,13 @@ public class BasicSequenceAlignment implements Alignment {
 		}
 		
 	}
+
+	@Override
+	public int[] getBaseCounts(int col) {
+		int[] counts = new int[5];
+		for(int i=0; i<seqs.size(); i++) {
+			counts[ seqs.get(i).baseAt(col) ]++;
+		}
+		return counts;
+	}
 }

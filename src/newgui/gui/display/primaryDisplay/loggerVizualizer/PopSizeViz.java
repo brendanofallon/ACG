@@ -19,6 +19,8 @@ public class PopSizeViz extends AbstractLoggerViz {
 		burninMessage = new TextElement("Burnin period (" + logger.getBurnin() + ") not exceeded", seriesFig);
 		burninMessage.setPosition(0.45, 0.5);
 		seriesFig.addElement(burninMessage);
+		seriesFig.setXLabel("Time in past (subs. / site)");
+		seriesFig.setYLabel("Scaled population size");
 	}
 
 	@Override

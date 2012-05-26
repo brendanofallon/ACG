@@ -111,9 +111,17 @@ public class BreakpointLocation extends PropertyLogger {
 	public void addValue(int stateNumber) {
 		if (maxTreeHeight == null && stateNumber >= burnin) {
 			List<CoalNode> dlNodes = arg.getDLCoalNodes();
+			List<RecombNode> rNodes = arg.getRecombNodes();
+			Collections.sort(rNodes, arg.getNodeHeightComparator());
 			Collections.sort(dlNodes, arg.getNodeHeightComparator());
+			double maxRecombHeight = 0;
+			if (rNodes.size()>0)
+				maxRecombHeight = rNodes.get(rNodes.size()-1).getHeight();
 			double maxDLHeight = dlNodes.get( dlNodes.size()-1).getHeight();
-			maxTreeHeight = Math.round(maxDLHeight*10000.0)/10000.0;
+			double height = maxDLHeight;
+			if (maxRecombHeight > 0)
+				height = Math.min(maxRecombHeight, maxDLHeight);
+			maxTreeHeight = Math.round(height*10000.0)/15000.0;
 		}
 	
 		List<RecombNode> rNodes = arg.getDLRecombNodes();

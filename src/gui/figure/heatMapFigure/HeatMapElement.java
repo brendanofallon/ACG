@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.text.DecimalFormat;
 
+import logging.StringUtils;
+
 import gui.figure.Figure;
 import gui.figure.FigureElement;
 
@@ -148,7 +150,7 @@ public class HeatMapElement extends FigureElement {
 				val = xMin;
 			if (i==left+width)
 				val = xMax;
-			String str = format(val);
+			String str = StringUtils.format(val,3);
 			
 			int strWidth = g.getFontMetrics().stringWidth(str);
 			g.drawString(str, (int)Math.round(i - strWidth/2), (int)Math.round((bounds.y+bounds.height)*yFactor+12));

@@ -68,8 +68,15 @@ public class BlockChooser extends JDialog {
 		JPanel rootPane = new JPanel();
 		rootPane.setLayout(new BorderLayout());
 		
+		JPanel topPanel = new JPanel();
+		JLabel topLabel = new JLabel("Please select a folder:");
+		topPanel.add(topLabel);
+		topPanel.setOpaque(false);
+		topPanel.setBorder(BorderFactory.createEmptyBorder(4, 6, 0, 6));
+		rootPane.add(topPanel, BorderLayout.NORTH);
+		
 		JPanel centerPanel = new JPanel();
-		centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 5, 10));
 		centerPanel.setLayout(new BorderLayout());
 		rootPane.add(centerPanel, BorderLayout.CENTER);
 		
