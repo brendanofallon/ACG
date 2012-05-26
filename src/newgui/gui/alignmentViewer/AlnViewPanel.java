@@ -38,6 +38,9 @@ import javax.swing.Timer;
 
 import newgui.UIConstants;
 import newgui.alignment.UnrecognizedBaseException;
+import newgui.datafile.AlignmentFile;
+import newgui.datafile.XMLConversionError;
+import newgui.gui.ViewerWindow;
 import newgui.gui.alignmentViewer.rowPainters.AbstractRowPainter;
 import newgui.gui.alignmentViewer.rowPainters.GC_AT_RowPainter;
 
@@ -64,7 +67,7 @@ import sequence.SimpleSequence;
  * @author brendan
  *
  */
-public class SGContentPanel extends JPanel {
+public class AlnViewPanel extends JPanel {
 
 	public static final Color selectionRegionColor = new Color(10, 100, 250, 130); //Color of selection region 
 	
@@ -77,7 +80,7 @@ public class SGContentPanel extends JPanel {
 	
 	JScrollPane scrollPane = null;
 	RowHeader rowHeader = new RowHeader(this);
-	SGColumnHeader colHeader = new SGColumnHeader(this);
+	AlnViewColumnHeader colHeader = new AlnViewColumnHeader(this);
 	
 	boolean dragOffEdge = false; //True if we're dragging off the edges of the sequences
 	int dragStart = -1;
@@ -128,7 +131,7 @@ public class SGContentPanel extends JPanel {
 	//not fired
 	Timer dragOffEdgeTimer;
 	
-	public SGContentPanel() {
+	public AlnViewPanel() {
 		
 		PanelMouseListener mouseListener = new PanelMouseListener();
 		addMouseListener(mouseListener);
@@ -183,9 +186,10 @@ public class SGContentPanel extends JPanel {
 	
 	protected void newAlignmentFromSelection() {
 		if (getNumSelectedColumns()>0) {
-			System.out.println("Alignment class is : " + getAlignment().getClass());
-			Alignment aln = getAlignment().newAlignmentFromColumns(getSelectedColumns());
-			InputFilesManager.getManager().saveAlignment(aln, "(enter name)");
+			Alignment aln = getAlignment().newAlignmentFromColumns(getSelectedColumns());			
+			AlignmentFile file = new AlignmentFile(aln);			
+			ViewerWindow.getViewer().getFileManager().showSaveDialog(file, "new_alignment");
+
 			return;
 		}
 		
@@ -202,8 +206,10 @@ public class SGContentPanel extends JPanel {
 					e.printStackTrace();
 				}
 			}
-			if (aln.getSequenceCount()>0)
-				InputFilesManager.getManager().saveAlignment(aln, "(enter name)");
+			if (aln.getSequenceCount()>0) {
+				AlignmentFile file = new AlignmentFile(aln);			
+				ViewerWindow.getViewer().getFileManager().showSaveDialog(file, "new_alignment");
+			}
 		}
 	}
 

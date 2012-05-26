@@ -17,7 +17,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
-import newgui.gui.alignmentViewer.SGContentPanel.Selection;
+import newgui.gui.alignmentViewer.AlnViewPanel.Selection;
 
 import sequence.Alignment;
 import sequence.Sequence;
@@ -33,7 +33,7 @@ import sequence.Sequence;
  * @author brendan
  *
  */
-public class SGColumnHeader extends JPanel implements ZeroColumnListener {
+public class AlnViewColumnHeader extends JPanel implements ZeroColumnListener {
 
 	private boolean drawPartitions = false;
 	private boolean drawNumbers = true;
@@ -63,7 +63,7 @@ public class SGColumnHeader extends JPanel implements ZeroColumnListener {
 	
 	Sequence consensus = null;
 	
-	SGContentPanel contentPanel;
+	AlnViewPanel contentPanel;
 	
 	BufferedImage columnHeaderImage;
 	
@@ -74,7 +74,7 @@ public class SGColumnHeader extends JPanel implements ZeroColumnListener {
 	
 	Alignment currentSG = null;
 	
-	public SGColumnHeader(SGContentPanel contentPanel) {
+	public AlnViewColumnHeader(AlnViewPanel contentPanel) {
 		this.contentPanel = contentPanel;
 		setBackground(Color.white);
 		

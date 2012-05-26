@@ -50,7 +50,7 @@ import newgui.analysisTemplate.ThoroughAnalysis;
 import newgui.datafile.AlignmentFile;
 import newgui.gui.ViewerWindow;
 import newgui.gui.alignmentViewer.ColumnSelectionFrame;
-import newgui.gui.alignmentViewer.SGContentPanel;
+import newgui.gui.alignmentViewer.AlnViewPanel;
 import newgui.gui.alignmentViewer.rowPainters.AG_CT_RowPainter;
 import newgui.gui.alignmentViewer.rowPainters.FrequencyRowPainter;
 import newgui.gui.alignmentViewer.rowPainters.GC_AT_RowPainter;
@@ -74,7 +74,7 @@ import newgui.gui.widgets.VerticalTextButtons;
 public class AlignmentPrepPanel extends JPanel {
 
 	private JPanel alnPanel;
-	private SGContentPanel contentPanel;
+	private AlnViewPanel contentPanel;
 	private JPanel bottomHalf;
 	private PrimaryDisplay displayParent;
 	private JScrollPane sgScrollPane;
@@ -196,7 +196,7 @@ public class AlignmentPrepPanel extends JPanel {
 		setOpaque(false);
 		//this.setBackground(Color.green);
 		
-		contentPanel = new SGContentPanel();
+		contentPanel = new AlnViewPanel();
 		sgScrollPane = new JScrollPane( contentPanel );
 		sgScrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
 		sgScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));

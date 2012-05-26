@@ -13,10 +13,10 @@ import javax.swing.JPanel;
  */
 public class ColumnSelectionFrame extends javax.swing.JFrame {
 
-    SGContentPanel parentDisplay;
+    AlnViewPanel parentDisplay;
 	
 	
-    public ColumnSelectionFrame(SGContentPanel display) {
+    public ColumnSelectionFrame(AlnViewPanel display) {
     	super("Select columns");
     	
     	parentDisplay = display;
