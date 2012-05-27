@@ -224,16 +224,17 @@ public class AlignmentPrepPanel extends JPanel {
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
 		alnPanel.add(topPanel, BorderLayout.NORTH);
 		
-		BorderlessButton addAlnButton = new BorderlessButton(UIConstants.reload);
-		addAlnButton.setToolTipText("Replace alignment");
-		addAlnButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				showAlignmentChoicePanel();
-			}
-		});
+//		BorderlessButton addAlnButton = new BorderlessButton(UIConstants.reload);
+//		addAlnButton.setToolTipText("Replace alignment");
+//		addAlnButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				showAlignmentChoicePanel();
+//			}
+//		});
+		//topPanel.add(addAlnButton);
 		
-		topPanel.add(addAlnButton);
-		topPanel.add(Box.createHorizontalStrut(10));
+		
+		topPanel.add(Box.createHorizontalStrut(20));
 		
 		BorderlessButton saveAlnButton = new BorderlessButton(UIConstants.saveGrayButton);
 		saveAlnButton.setToolTipText("Save alignment");
@@ -242,9 +243,20 @@ public class AlignmentPrepPanel extends JPanel {
 				saveAlignment();
 			}
 		});
-		
-		
 		topPanel.add(saveAlnButton);
+		
+		
+		BorderlessButton showMetricsButton = new BorderlessButton( UIConstants.getIcon("gui/icons/oxygen/gear24.png"));
+		showMetricsButton.setToolTipText("Show alignment statistics");
+		showMetricsButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showMetricsFrame();
+			}
+		});
+		topPanel.add(showMetricsButton);
+		
 		topPanel.add(Box.createHorizontalGlue());
 
 		BorderlessButton selectColsButton = new BorderlessButton(addSelectionIcon);
@@ -402,6 +414,14 @@ public class AlignmentPrepPanel extends JPanel {
 		
 	}
 	
+	/**
+	 * Shows an AlignmentMetricsFrame with some basic info about this alignment
+	 */
+	protected void showMetricsFrame() {
+		AlignmentMetricsFrame mFrame = new AlignmentMetricsFrame(contentPanel.getAlignment());
+		mFrame.setVisible(true);
+	}
+
 	/**
 	 * Open a dialog allowing the user to choose which columns to select
 	 */
