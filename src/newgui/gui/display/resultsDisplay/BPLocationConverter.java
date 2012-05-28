@@ -2,6 +2,7 @@ package newgui.gui.display.resultsDisplay;
 
 import logging.BreakpointLocation;
 import logging.PropertyLogger;
+import newgui.UIConstants;
 import newgui.datafile.XMLConversionError;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,6 +34,8 @@ public class BPLocationConverter extends AbstractLoggerConverter {
 		double maxD = Double.parseDouble( el.getAttribute(maxDensity) );
 		
 		bpLocDisplay.setData(matrix, xMin, xMax, yMin, yMax, maxD);
+		bpLocDisplay.setIcon( UIConstants.getIcon("gui/icons/bpLocationIcon.png"));
+
 		return bpLocDisplay;
 	}
 

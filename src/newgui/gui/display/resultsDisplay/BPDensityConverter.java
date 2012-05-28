@@ -3,6 +3,7 @@ package newgui.gui.display.resultsDisplay;
 import logging.BreakpointDensity;
 import logging.PropertyLogger;
 import math.Histogram;
+import newgui.UIConstants;
 import newgui.datafile.XMLConversionError;
 import newgui.datafile.resultsfile.HistogramElementReader;
 
@@ -22,7 +23,7 @@ public class BPDensityConverter extends AbstractLoggerConverter {
 		info.setTitle("Density of recombinations");
 		LoggerSeriesDisplay display = new LoggerSeriesDisplay();
 		display.initialize(info);
-		
+		display.setIcon( UIConstants.getIcon("gui/icons/bpDensityIcon.png"));
 		return display;
 	}
 
