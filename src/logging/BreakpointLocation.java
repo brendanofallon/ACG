@@ -119,7 +119,7 @@ public class BreakpointLocation extends PropertyLogger {
 				maxRecombHeight = rNodes.get(rNodes.size()-1).getHeight();
 			double maxDLHeight = dlNodes.get( dlNodes.size()-1).getHeight();
 			double height = maxDLHeight;
-			if (maxRecombHeight > 0)
+			if (rNodes.size()>6 && maxRecombHeight > 0)
 				height = Math.min(maxRecombHeight, maxDLHeight);
 			maxTreeHeight = Math.round(height*10000.0)/15000.0;
 		}
