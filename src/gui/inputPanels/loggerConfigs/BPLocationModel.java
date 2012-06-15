@@ -28,8 +28,8 @@ import org.w3c.dom.Element;
 
 public class BPLocationModel extends LoggerModel {
 
-	private int seqBins = 250;
-	private int timeBins = 250;
+	private int seqBins = 200;
+	private int timeBins = 200;
 	private Double maxDepth = null;
 	
 	public Double getMaxDepth() {

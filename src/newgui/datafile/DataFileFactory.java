@@ -8,6 +8,7 @@ import newgui.alignment.FileParseException;
 import newgui.alignment.UnrecognizedBaseException;
 import newgui.datafile.resultsfile.HistogramElementReader;
 import newgui.datafile.resultsfile.ResultsFile;
+import newgui.gui.display.resultsDisplay.AbstractLoggerConverter;
 
 
 /**
@@ -51,7 +52,7 @@ public class DataFileFactory {
 				return new AnalysisDataFile(file);
 			}
 			
-			if (testFile.containsElementByName(ResultsFile.LOGGER_ELEMENT)) {
+			if (testFile.containsElementByName(AbstractLoggerConverter.LOGGER_ELEMENT)) {
 				return new ResultsFile(file);
 			}
 		}

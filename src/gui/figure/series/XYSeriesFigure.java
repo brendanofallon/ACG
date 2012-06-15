@@ -20,6 +20,7 @@
 package gui.figure.series;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -62,12 +63,12 @@ public class XYSeriesFigure extends SeriesFigure {
 
 		seriesElements = new ArrayList<SeriesElement>();
 		xLabelElement = new TextElement("Position in sequence", this);
-		xLabelElement.setPosition(0.49, 0.90);
+		xLabelElement.setPosition(0.525, 0.925);
 		xLabelElement.setCanConfigure(true);
 		xLabelElement.setFontSize(13);
 		xLabelElement.setMobile(true);
 		yLabelElement = new VerticalTextElement("     Value     ", this);
-		yLabelElement.setPosition(0.01, 0.4);
+		yLabelElement.setPosition(0.05, 0.4);
 		yLabelElement.setFontSize(12);
 		yLabelElement.setCanConfigure(true);
 		yLabelElement.setMobile(true);
@@ -281,6 +282,20 @@ public class XYSeriesFigure extends SeriesFigure {
 		return axes;
 	}
 	
+	/**
+	 * Set the font used for the x and y axis labels (not the ticks)
+	 * @param font
+	 */
+	public void setAxisLabelFont(Font font) {
+		xLabelElement.setFont(font);
+		yLabelElement.setFont(font);
+		repaint();
+	}
+	
+	public void setLegendFont(Font font) {
+		legend.setFont(font);
+		repaint();
+	}
 	
 	/**
 	 * Set the distance (in data units) between x ticks on the axes element
@@ -476,12 +491,6 @@ public class XYSeriesFigure extends SeriesFigure {
 		axes.setYMax(max);
 	}
 	
-//	public void setXMin(double xmin) {
-//		axes.setXMin(xmin);
-//	}
-//	
-//	public void setXMax(double xmax) {
-//		axes.setXMax(xmax);
-//	}
+
 
 }

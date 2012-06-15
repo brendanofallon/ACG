@@ -64,21 +64,23 @@ public class ChooserRenderer extends JPanel implements ListCellRenderer {
 		g.drawLine(2, 4, getWidth()-2, 4);
 		for(float i=5; i<gradMax; i++) {
 			float newVal = topDark + (0.99f-topDark)*(1-(gradMax-i)/gradMax );
+
 			g.setColor( new Color(newVal, newVal, newVal));
 			g.drawLine(1, (int)i, getWidth()-2, (int)i);
 		}
 		
+
+		
+		g.setColor(lineColor);
+		g.drawRoundRect(1, 1, getWidth()-3, getHeight()-3, 5, 5);
+
 		if (selected) {
 			g.setColor(selectedColor);
 			((Graphics2D)g).setStroke(thickStroke);
 			g.drawRoundRect(2, 2, getWidth()-5, getHeight()-5, 8, 8);
 		}
 		
-		g.setColor(lineColor);
-		g.drawRoundRect(1, 1, getWidth()-3, getHeight()-3, 5, 5);
-		
 		g.setFont(getFont());
-		
 		g.drawString(text, 15+1, 25+1);
 		
 		g.setColor(Color.DARK_GRAY);

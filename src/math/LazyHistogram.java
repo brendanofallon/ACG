@@ -134,7 +134,7 @@ public class LazyHistogram {
 		
 		for(Double val : vals)
 			histo.addValue(val);
-		System.out.println("Dumping values to histo, values size is: " + vals.size() + " min: " + min + " max: " + max);
+		//System.out.println("Dumping values to histo, values size is: " + vals.size() + " min: " + min + " max: " + max);
 	}
 	
 	/**

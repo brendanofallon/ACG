@@ -121,27 +121,27 @@ public class SeriesFigurePanel extends AbstractSeriesPanel implements ActionList
 	 * the burn-in and the values series
 	 */
 	protected void addSelectedSeries() {
-		fig.removeAllSeries();
+		seriesFig.removeAllSeries();
 		String seriesName = (String) chooseBox.getSelectedItem();
 
 		if (burninMessage != null && memLogger.getBurninExceeded()) {
-			fig.removeElement(burninMessage);
+			seriesFig.removeElement(burninMessage);
 			burninMessage = null;
 		}
 		
 		if (showHistogram) {
 			if ( (!memLogger.getBurninExceeded()) && burninMessage == null) {
-				burninMessage = new TextElement("(Burnin period not yet exceeded)", fig);
+				burninMessage = new TextElement("(Burnin period not yet exceeded)", seriesFig);
 				burninMessage.setPosition(0.4, 0.4);
-				fig.addElement(burninMessage);
+				seriesFig.addElement(burninMessage);
 			}	
 			
 			HistogramSeries histo = memLogger.getHistogram(seriesName);
 			XYSeriesElement histoEl = addSeries(histo);
 			histoEl.setMode(XYSeriesElement.BOXES);
 			
-			fig.setYLabel("Frequency");
-			fig.setXLabel("Value");
+			seriesFig.setYLabel("Frequency");
+			seriesFig.setXLabel("Value");
 		}
 		else {
 			XYSeries burnin = memLogger.getBurninSeries(seriesName);
@@ -152,12 +152,12 @@ public class SeriesFigurePanel extends AbstractSeriesPanel implements ActionList
 
 			//Never show the burnin message when we're drawing traces
 			if (burninMessage != null) {
-				fig.removeElement(burninMessage);
+				seriesFig.removeElement(burninMessage);
 			}
 
-			fig.setYLabel("Value");
-			fig.setXLabel("State");
-			fig.inferBoundsFromCurrentSeries();
+			seriesFig.setYLabel("Value");
+			seriesFig.setXLabel("State");
+			seriesFig.inferBoundsFromCurrentSeries();
 		}
 	}
 
@@ -174,14 +174,14 @@ public class SeriesFigurePanel extends AbstractSeriesPanel implements ActionList
 	 */
 	public void actionPerformed(ActionEvent arg0) {
 		if (memLogger.getBurninExceeded() && burninMessage != null) {
-			fig.removeElement(burninMessage);
+			seriesFig.removeElement(burninMessage);
 			burninMessage = null;
 		}
 		if (memLogger.getChainIsDone()) {
 			repaintTimer.stop();
 		}
-		fig.inferBoundsFromCurrentSeries();
-		fig.repaint();
+		seriesFig.inferBoundsFromCurrentSeries();
+		seriesFig.repaint();
 	}
 	
 	private JComboBox chooseBox;

@@ -42,7 +42,7 @@ public class ColorSwatchButton extends JButton implements MouseListener {
 		super();
 		swatchColor = col;
 		this.addMouseListener(this);
-		setPreferredSize(new Dimension(20, 20));
+		setPreferredSize(new Dimension(30, 30));
 		setMinimumSize(new Dimension(20, 20));
 		setText("."); //A dummy placeholder
 	}
@@ -56,6 +56,7 @@ public class ColorSwatchButton extends JButton implements MouseListener {
 	}
 	
 	public void paintComponent(Graphics g) {
+		Graphics2D g2d = (Graphics2D)g;
 		((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -65,12 +66,13 @@ public class ColorSwatchButton extends JButton implements MouseListener {
 			}
 
 		if (mouseOver) {
+			g2d.setStroke(new BasicStroke(2.0f));
 			g.setColor(new Color(100, 100, 100));
 			((Graphics2D)g).setStroke(new BasicStroke(1.25f));
 		}
 		else {
-			g.setColor(new Color(140, 140, 140));
-			((Graphics2D)g).setStroke(new BasicStroke(1.0f));
+			g2d.setStroke(new BasicStroke(1.0f));
+			g.setColor(new Color(180, 180, 180));
 		}
 		
 		g.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, 5, 10);
@@ -98,10 +100,12 @@ public class ColorSwatchButton extends JButton implements MouseListener {
 
 	public void mouseEntered(MouseEvent e) {
 		mouseOver = true;
+		repaint();
 	}
 
 	public void mouseExited(MouseEvent e) {
 		mouseOver = false;
+		repaint();
 	}
 
 

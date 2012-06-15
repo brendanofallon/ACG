@@ -22,13 +22,14 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import newgui.UIConstants;
+import newgui.gui.widgets.AbstractFigurePanel;
 import newgui.gui.widgets.AbstractSeriesPanel;
 import newgui.gui.widgets.BorderlessButton;
 
 import logging.PropertyLogger;
 
 /**
- * LoggerViz objects vizualize / display the output from a logger, typically a PropertyLogger. This
+ * LoggerViz objects visualize / display the output from a logger, typically a PropertyLogger. This
  * may take slightly different forms depending on the logger type, but often involve displaying a 1-D or
  * 2-D histogram of some sort.  
  * @author brendano
@@ -113,90 +114,7 @@ public abstract class AbstractLoggerViz extends AbstractSeriesPanel implements A
 		}
 	}
 	
-	/**
-	 * Initialize some basic components
-	 */
-//	protected void initComponents() {
-//		setOpaque(false);
-//		setLayout(new BorderLayout());
-//		
-//		fig = new XYSeriesFigure();
-//		this.add(fig, BorderLayout.CENTER);
-//		
-//		bottomPanel = new JPanel();
-//		bottomPanel.setBackground(Color.white);
-//		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
-//		bottomPanel.add(Box.createHorizontalGlue());
-//		
-//		BorderlessButton exportDataButton = new BorderlessButton(UIConstants.writeData);
-//		exportDataButton.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent arg0) {
-//				exportData();
-//			}
-//		});
-//		bottomPanel.add(exportDataButton);
-//		
-//		BorderlessButton saveImageButton = new BorderlessButton(UIConstants.saveGrayButton);
-//		saveImageButton.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent arg0) {
-//				saveImage();
-//			}
-//		});
-//		bottomPanel.add(saveImageButton);
-//		bottomPanel.add(Box.createHorizontalStrut(10));
-//		
-//		this.add(bottomPanel, BorderLayout.NORTH);
-//	}
-	
-//	/**
-//	 * Obtain a string representing the data of in this logger 
-//	 * @return
-//	 */
-//	public abstract String getDataString();
-//	
-//	protected void exportData() {
-//		String data = getDataString();
-//		if (fileChooser == null)
-//			fileChooser = new JFileChooser( System.getProperty("user.dir"));
-//    	int val = fileChooser.showSaveDialog(this);
-//    	if (val==JFileChooser.APPROVE_OPTION) {
-//    		File file = fileChooser.getSelectedFile();
-//    		BufferedWriter writer;
-//			try {
-//				writer = new BufferedWriter(new FileWriter(file));
-//	    		writer.write(data);
-//	    		writer.close();
-//			} catch (IOException e) {
-//				ErrorWindow.showErrorWindow(e, "Error writing data to file : " + e.getMessage());
-//				e.printStackTrace();
-//			}
-//    	}		
-//	}
-//
-//	/**
-//	 * Create an image of the current figure and open a dialog allowig the user to save the image to a file
-//	 */
-//	protected void saveImage() {
-//		BufferedImage image = fig.getImage();
-//		if (fileChooser == null)
-//			fileChooser = new JFileChooser( System.getProperty("user.dir"));
-//		
-//    	int val = fileChooser.showSaveDialog(this);
-//    	if (val==JFileChooser.APPROVE_OPTION) {
-//    		File file = fileChooser.getSelectedFile();
-//    		try {
-//    			ImageIO.write(image, "png", file);
-//    		}
-//    		catch(IOException ioe) {
-//    			JOptionPane.showMessageDialog(this, "Error saving image: " + ioe.getLocalizedMessage());
-//    		}
-//    	}		
-//	}
-//
-//
-//	static JFileChooser fileChooser;
 	private boolean updating = false; 
 	protected Timer timer;
-//	private JPanel bottomPanel;
-//	protected XYSeriesFigure fig;
+	
 }

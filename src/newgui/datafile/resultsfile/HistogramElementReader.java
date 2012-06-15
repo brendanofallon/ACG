@@ -76,7 +76,7 @@ public abstract class HistogramElementReader implements ChartElementConverter {
 		el.appendChild( createTextNode(doc, HISTO_BINWIDTH, "" + histo.getBinWidth())); 
 		el.appendChild( createTextNode(doc, HISTO_COUNT, "" + histo.getCount())); 
 		el.appendChild( createTextNode(doc, HISTO_MIN, "" + histo.getMin())); 
-		el.appendChild( createArrayChild(doc, HISTO_DATA, histo.getData()));
+		el.appendChild( createDoubleArrayChild(doc, HISTO_DATA, histo.getData()));
 		return el;
 	}
 	
@@ -146,7 +146,7 @@ public abstract class HistogramElementReader implements ChartElementConverter {
 	 * @param list
 	 * @return
 	 */
-	public static Element createArrayChild(Document doc, String childName, double[] list) {
+	public static Element createDoubleArrayChild(Document doc, String childName, double[] list) {
 		StringBuilder str = new StringBuilder();
 		for(int i=0; i<list.length; i++) {
 			str.append(list[i] + ",");
@@ -154,5 +154,13 @@ public abstract class HistogramElementReader implements ChartElementConverter {
 		return createTextNode(doc, childName, str.toString());
 	}
 	
+	
+	public static Element createIntegerArrayChild(Document doc, String childName, int[] list) {
+		StringBuilder str = new StringBuilder();
+		for(int i=0; i<list.length; i++) {
+			str.append(list[i] + ",");
+		}
+		return createTextNode(doc, childName, str.toString());
+	}
 }
 

@@ -41,6 +41,7 @@ public class SideTabPane extends JPanel {
 	private int sidePanelWidth = 120;
 	public static final int topPadding = 50; //Space between top of component and first SideTab
 	public static final int rightPadding = 4; //Space to right of main area of component, used for drawing a shadow
+	public static final int tabHeight = 65;
 	
 	public SideTabPane() {
 		initComponents();

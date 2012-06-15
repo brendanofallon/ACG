@@ -81,13 +81,13 @@ public class ConstSizeSeries extends AbstractSeries {
 	public int getIndexForXVal(double xVal) {
 		int index = Arrays.binarySearch(xvals, xVal);
 		if (index < 0)
-			index = -1*index + 1;
+			index = -1*index - 1;
 		return index;
 	}
 
 	@Override
 	public Point2D[] getLineForXVal(double xVal) {
-		int lower = getIndexForXVal(xVal);
+		int lower = getIndexForXVal(xVal)-1;
 		
 		if (lower<0 || lower>=(xvals.length-1))
 			return null;

@@ -1,5 +1,6 @@
 package newgui.datafile.resultsfile;
 
+import gui.ErrorWindow;
 import gui.document.ACGDocument;
 import gui.figure.series.XYSeries;
 
@@ -19,6 +20,7 @@ import java.util.Map;
 import jobqueue.ExecutingChain;
 import jobqueue.JobState;
 import logging.BreakpointDensity;
+import logging.BreakpointLocation;
 import logging.ConsensusTreeLogger;
 import logging.HistogramCollector;
 import logging.MarginalTreeLogger;
@@ -34,6 +36,11 @@ import newgui.datafile.XMLConversionError;
 import newgui.datafile.XMLDataFile;
 import newgui.gui.display.Display;
 import newgui.gui.display.primaryDisplay.PrimaryDisplay;
+import newgui.gui.display.resultsDisplay.AbstractLoggerConverter;
+import newgui.gui.display.resultsDisplay.LoggerConverterFactory;
+import newgui.gui.display.resultsDisplay.LoggerElementConverter;
+import newgui.gui.display.resultsDisplay.LoggerFigInfo;
+import newgui.gui.display.resultsDisplay.LoggerResultDisplay;
 import newgui.gui.display.resultsDisplay.ResultsDisplay;
 
 import org.w3c.dom.Element;
@@ -50,15 +57,6 @@ import tools.StringUtilities;
  *
  */
 public class ResultsFile extends XMLDataFile {
-
-	//Identifies elements that can be parsed to a PropertyLogger 
-	public static final String LOGGER_ELEMENT = "logger.element";
-	public static final String TREE_ELEMENT = "tree.element";
-		
-	//Attribute containing class of PropertyLogger
-	public static final String LOGGER_CLASS = "logger.class";
-	//Arbitrary label for logger element
-	public static final String LOGGER_LABEL = "logger.label";
 	
 	public static final String MODIFIER_SUMMARY = "mod.summary";
 	public static final String MODIFIER_INFO = "mod.info";
@@ -78,13 +76,6 @@ public class ResultsFile extends XMLDataFile {
 	public static final String MCMC_THREADCOUNT = "thread.count";
 	public static final String MCMC_RUNTIMEMS = "run.time.ms";
 	
-	public static final String TMRCA_LABEL = "label";
-	public static final String TMRCA_UPPER95 = "upper95";
-	public static final String TMRCA_MEAN = "mean";
-	public static final String TMRCA_LOWER95 = "lower95";
-	
-	public static final String TREE = "consensus.tree";
-	public static final String TREES_COUNTED = "trees.counted";
 	
 	Element propertiesElement;
 	
@@ -220,12 +211,15 @@ public class ResultsFile extends XMLDataFile {
 					if (label == null)
 						label = loggerLabel.replace(".class", "");
 					
-					if (logger instanceof ConsensusTreeLogger) {
-						addTreeElement( (ConsensusTreeLogger)logger, label);
+					LoggerElementConverter converter = LoggerConverterFactory.getConverter(logger.getClass());
+					if (converter == null) {
+					throw new IllegalArgumentException("No converter found for logger class : " + logger.getClass());	
 					}
 					else {
-						addChartElement(logger, label);
+						Element loggerEl = converter.createElement(doc, logger, label);
+						doc.getDocumentElement().appendChild(loggerEl);
 					}
+					
 				} catch (InstantiationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -347,169 +341,93 @@ public class ResultsFile extends XMLDataFile {
 		return info;
 	}
 	
-	/**
-	 * Create a new XML element reflecting the information in the given logger
-	 * @param logger
-	 * @throws XMLConversionError
-	 */
-	protected void addChartElement(PropertyLogger logger, String label) throws XMLConversionError {
-		Element loggerEl = doc.createElement(LOGGER_ELEMENT);
-		loggerEl.setAttribute(LOGGER_CLASS, logger.getClass().getCanonicalName());
-		loggerEl.setAttribute(LOGGER_LABEL, label);
-		
-		if (logger instanceof BreakpointDensity) {
-			BreakpointDensity bpDensity = (BreakpointDensity)logger;
-			Histogram histo = bpDensity.getHistogram();
-			Element histoEl = HistogramElementReader.createHistogramElement(doc, histo);
-			loggerEl.appendChild(histoEl);
-		}
-		
-		if (logger instanceof RootHeightDensity) {
-			RootHeightDensity tmrca = (RootHeightDensity)logger;
-			double[] upper95s = tmrca.getUpper95s();
-			double[] means = tmrca.getMeans();
-			double[] lower95s = tmrca.getLower95s();
-			double[] sites = tmrca.getBinPositions();
-			
-			List<Point2D> upperList = new ArrayList<Point2D>();
-			for(int i=0; i<upper95s.length; i++) {
-				upperList.add(new Point2D.Double(sites[i], upper95s[i]));
-			}
-			XYSeries upperSeries = new XYSeries(upperList, "Upper 95%");
-			Element upperEl = XYSeriesElementReader.createElement(doc, upperSeries, Color.blue, 0.75f);
-			upperEl.setAttribute(TMRCA_LABEL, TMRCA_UPPER95);
-			loggerEl.appendChild(upperEl);
-			
-			List<Point2D> meanList = new ArrayList<Point2D>();
-			for(int i=0; i<upper95s.length; i++) {
-				meanList.add(new Point2D.Double(sites[i], means[i]));
-			}
-			XYSeries meanSeries = new XYSeries(meanList, "Mean TMRCA");
-			Element meanEl = XYSeriesElementReader.createElement(doc, meanSeries, Color.blue, 1.5f);
-			meanEl.setAttribute(TMRCA_LABEL, TMRCA_MEAN);
-			loggerEl.appendChild(meanEl);
-			
-			List<Point2D> lowerList = new ArrayList<Point2D>();
-			for(int i=0; i<lower95s.length; i++) {
-				lowerList.add(new Point2D.Double(sites[i], lower95s[i]));
-			}
-			XYSeries lowerSeries = new XYSeries(lowerList, "Lower 95%");
-			Element lowerEl = XYSeriesElementReader.createElement(doc, lowerSeries, Color.blue, 0.75f);
-			lowerEl.setAttribute(TMRCA_LABEL, TMRCA_LOWER95);
-			loggerEl.appendChild(lowerEl);
-		}
-		
-		addChartElement(loggerEl);
-	}
+
 	
-	/**
-	 * Creates a new top-level element that stores the information in the 
-	 * consensustreelogger
-	 * @param logger
-	 * @param label
-	 */
-	private void addTreeElement(ConsensusTreeLogger logger, String label) {
-		Element loggerEl = doc.createElement(TREE_ELEMENT);
-		loggerEl.setAttribute(LOGGER_CLASS, logger.getClass().getCanonicalName());
-		loggerEl.setAttribute(LOGGER_LABEL, label);
-		
-		ConsensusTreeLogger treeLogger = (ConsensusTreeLogger)logger;
-		String tree = treeLogger.getSummaryString();
-		
-		Element treeEl = doc.createElement(TREE);
-		Node treeText = doc.createTextNode(tree);
-		treeEl.appendChild(treeText);
-		loggerEl.appendChild(treeEl);
-		
-		addChartElement(loggerEl);
-	}
-	
-	/**
-	 * Append the given element to the top level of elements contained in the DOM document
-	 * @param el
-	 */
-	private void addChartElement(Element el) {
-		doc.getDocumentElement().appendChild(el);
-	}
-	
-	public List<String> getChartLabels() throws XMLConversionError {
+	public List<String> getLoggerLabels() throws XMLConversionError {
 		List<Element> propLogEls = this.getTopLevelElements();
 		List<String> loggers = new ArrayList<String>();
 		for(Element loggerElement : propLogEls) {
-			if (loggerElement.getNodeName().equals(LOGGER_ELEMENT))
-				loggers.add(loggerElement.getAttribute(LOGGER_LABEL));
+			if (loggerElement.getNodeName().equals(AbstractLoggerConverter.LOGGER_ELEMENT))
+				loggers.add(loggerElement.getAttribute(AbstractLoggerConverter.LOGGER_LABEL));
 		}
 		return loggers;
 	}
 	
-	public List<String> getTreeLabels() throws XMLConversionError {
-		List<Element> propLogEls = this.getTopLevelElements();
-		List<String> treeLoggers = new ArrayList<String>();
-		for(Element loggerElement : propLogEls) {
-			if (loggerElement.getNodeName().equals(TREE_ELEMENT))
-				treeLoggers.add(loggerElement.getAttribute(LOGGER_LABEL));
-		}
-		return treeLoggers;
-	}
-	
 	/**
-	 * Obtain the newick string for the tree element with the given label
+	 * Returns the first top-level DOM element found that has a node name of LOGGER_ELEMENT and
+	 * a label="label" attribute, where label is the given argument
 	 * @param label
 	 * @return
-	 * @throws XMLConversionError
 	 */
-	public String getNewickForTreeElement(String label) throws XMLConversionError {
-		List<Element> topEls = this.getTopLevelElements();
-		for(Element loggerElement : topEls) {
-			String loggerLabel = loggerElement.getAttribute(LOGGER_LABEL);
-			if (loggerLabel != null && loggerLabel.equals(label)) {
-				String newick = XMLDataFile.getTextFromChild(loggerElement, TREE);
-				return newick;
-			}
-		}
-		
-		throw new XMLConversionError("No tree element found with label " + label, null);
-	}
-	
-	public LoggerFigInfo getFigElementsForChartLabel(String label) throws XMLConversionError {
+	public Element getLoggerElementForLabel(String label) {
 		List<Element> propLogEls = this.getTopLevelElements();
 		for(Element loggerElement : propLogEls) {
-			String loggerLabel = loggerElement.getAttribute(LOGGER_LABEL);
-			if (loggerLabel != null && loggerLabel.equals(label)) {
-				LoggerFigInfo info = parseFigElements(loggerElement);
-				info.setTitle(loggerLabel);
-				return info;
-			}
+			if (loggerElement.getNodeName().equals(AbstractLoggerConverter.LOGGER_ELEMENT));
+				String loggerLabel = loggerElement.getAttribute(AbstractLoggerConverter.LOGGER_LABEL);
+				if (loggerLabel.equals(label))
+					return loggerElement;
+			
 		}
-		
-		throw new XMLConversionError("No element found with class equal to " + label, null);
+		return null;
 	}
 	
 	/**
-	 * Return a collection of plottable FigureElements from the given element
-	 * @param el
+	 * Obtain a string representing the class of the logger element with the given label
 	 * @return
 	 */
-	private LoggerFigInfo parseFigElements(Element el) throws XMLConversionError {
-		NodeList children = el.getChildNodes();
-		LoggerFigInfo figInfo = new LoggerFigInfo();
-		for(int i=0; i<children.getLength(); i++) {
-			Node node = children.item(i);
-			if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals(XYSeriesElementReader.XML_SERIES)) {
-				XYSeriesInfo seriesInfo = XYSeriesElementReader.readFromElement( (Element)node);
-				figInfo.seriesInfo.add(seriesInfo);
-				figInfo.xAxisTitle = "Sequence position";
-				figInfo.yAxisTitle = "Value";
-			}
-			if (node.getNodeType()==Node.ELEMENT_NODE && node.getNodeName().equals(HistogramElementReader.HISTOGRAM)) {
-				figInfo.histo = HistogramElementReader.readHistogramFromElement((Element)node);
-				figInfo.xAxisTitle = "Density";
-				figInfo.xAxisTitle = "Sequence position";
-			}
+	protected String getClassForLoggerLabel(String label) {
+		List<Element> propLogEls = this.getTopLevelElements();
+		for(Element loggerElement : propLogEls) {
+			if (loggerElement.getNodeName().equals(AbstractLoggerConverter.LOGGER_ELEMENT));
+				String loggerLabel = loggerElement.getAttribute(AbstractLoggerConverter.LOGGER_LABEL);
+				if (loggerLabel.equals(label)) {
+					String className = loggerElement.getAttribute(AbstractLoggerConverter.LOGGER_CLASS);
+					return className;
+				}
+					
 		}
-		
-		return figInfo;
+		return null;
 	}
+	
+	/**
+	 * Create a LoggerResultDisplay to display the contents of the logger with the given label
+	 * @param label
+	 * @return
+	 * @throws XMLConversionError 
+	 */
+	public LoggerResultDisplay getDisplayForLogger(String label) throws XMLConversionError {
+		String  loggerClass = this.getClassForLoggerLabel(label);
+		try {
+			Class clz = ClassLoader.getSystemClassLoader().loadClass(loggerClass);
+			LoggerElementConverter converter = LoggerConverterFactory.getConverter(clz);
+			if (converter == null) {
+				System.out.println("No converter found for logger of class : " + clz.getCanonicalName());
+				return null;
+			}
+				
+			return converter.getLoggerFigure(this.getLoggerElementForLabel(label));
+		}
+		catch (ClassNotFoundException ex) {
+			ErrorWindow.showErrorWindow(ex, "Could not load information from logger: " + label);
+		}
+		return null;
+	}
+	
+//	public LoggerFigInfo getFigElementsForChartLabel(String label) throws XMLConversionError {
+//		List<Element> propLogEls = this.getTopLevelElements();
+//		for(Element loggerElement : propLogEls) {
+//			String loggerLabel = loggerElement.getAttribute(LOGGER_LABEL);
+//			if (loggerLabel != null && loggerLabel.equals(label)) {
+//				LoggerFigInfo info = parseFigElements(loggerElement);
+//				info.setTitle(loggerLabel);
+//				return info;
+//			}
+//		}
+//		
+//		throw new XMLConversionError("No element found with class equal to " + label, null);
+//	}
+//	
+
 	
 	
 	/**
@@ -536,5 +454,6 @@ public class ResultsFile extends XMLDataFile {
 		}
 		
 	}
+
 
 }

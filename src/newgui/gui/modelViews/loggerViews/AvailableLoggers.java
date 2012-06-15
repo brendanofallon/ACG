@@ -38,7 +38,7 @@ public class AvailableLoggers {
 		models.add(new BPLocationModel());
 		models.add(new RootHeightModel());
 		models.add(new ConsensusTreeModel());
-		models.add(new MPEARGModel());
+		//models.add(new MPEARGModel());
 		models.add(new PopSizeLoggerModel());
 	}
 	

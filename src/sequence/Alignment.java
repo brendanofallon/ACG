@@ -125,4 +125,12 @@ public interface Alignment {
 	 */
 	public void applyMask();
 	
+	/**
+	 * Return an array containing the number of sequences containing the corresponding base at the given
+	 * alignment column. For instance, array[DNAUtils.A] is the number of sequences containing an A
+	 * @param col
+	 * @return
+	 */
+	public int[] getBaseCounts(int col);
+	
 }

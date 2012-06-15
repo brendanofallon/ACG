@@ -50,8 +50,9 @@ public class BreakpointLocation extends PropertyLogger {
 	
 	ARG arg;
 	int seqBins = 200;
-	int depthBins = 400;
+	int depthBins = 200;
 	int count = 0;
+	double approxMaxDensity = 0; // For UI purposes, the most recent maximum density of bin calculated in getDensities()
 	Double maxTreeHeight = null;
 	
 	int[][] hist = new int[seqBins][depthBins];
@@ -110,9 +111,17 @@ public class BreakpointLocation extends PropertyLogger {
 	public void addValue(int stateNumber) {
 		if (maxTreeHeight == null && stateNumber >= burnin) {
 			List<CoalNode> dlNodes = arg.getDLCoalNodes();
+			List<RecombNode> rNodes = arg.getRecombNodes();
+			Collections.sort(rNodes, arg.getNodeHeightComparator());
 			Collections.sort(dlNodes, arg.getNodeHeightComparator());
+			double maxRecombHeight = 0;
+			if (rNodes.size()>0)
+				maxRecombHeight = rNodes.get(rNodes.size()-1).getHeight();
 			double maxDLHeight = dlNodes.get( dlNodes.size()-1).getHeight();
-			maxTreeHeight = 2.0*Math.round(maxDLHeight*10000.0)/10000.0;
+			double height = maxDLHeight;
+			if (maxRecombHeight > 0)
+				height = Math.min(maxRecombHeight, maxDLHeight);
+			maxTreeHeight = Math.round(height*10000.0)/15000.0;
 		}
 	
 		List<RecombNode> rNodes = arg.getDLRecombNodes();
@@ -129,6 +138,41 @@ public class BreakpointLocation extends PropertyLogger {
 		count++;
 	}
 	
+	/**
+	 * Get the height (depth) of the deepest bin we're tracking 
+	 * @return
+	 */
+	public double getTreeHeight() {
+		return maxTreeHeight; 
+	}
+	
+	/**
+	 * The number of bins going back in time
+	 * @return
+	 */
+	public int getDepthBins() {
+		return depthBins;
+	}
+	
+	/**
+	 * The number of bins spanning sequence space
+	 * @return
+	 */
+	public int getSeqBins() {
+		return seqBins;
+	}
+	
+	public int[] getSiteColumn(int seqBin) {
+		return hist[seqBin];
+	}
+	
+	/**
+	 * Return the number of sites in the ARG
+	 * @return
+	 */
+	public int getARGSites() {
+		return arg.getSiteCount();
+	}
 	@Override
 	public void setMCMC(MCMC chain) {
 		this.chain = chain;
@@ -146,7 +190,51 @@ public class BreakpointLocation extends PropertyLogger {
 		}
 		return null;
 	}
+	
+	/**
+	 * Compute and return the densities of all bins in the given array. If the array
+	 * is null, a new one with the correct lengths is created. If it is not null, it must
+	 * must have dimensions (seqBins, depthBins)
+	 * The maximum densities encountered is returned. s
+	 * @param densities
+	 * @return
+	 */
+	public double[][] getDensities(double[][] densities) {
+		if (densities == null)
+			densities = new double[seqBins][depthBins];
+		else {
+			if (densities.length != seqBins)
+				throw new IllegalArgumentException("Incorrect number of sequence bins");
+			if (densities[0].length != depthBins) 
+				throw new IllegalArgumentException("Incorrect number of depth bins");
+		}
+		
+		
+		if (count == 0)
+			return densities;
+		
+		double max = 0;
+		for(int i=0; i<seqBins; i++) {
+			for(int j=0; j<depthBins; j++) {
+				densities[i][j] = (double)hist[i][j] / (double)count;
+				if (densities[i][j] > max)
+					max = densities[i][j];
+			}
+		}
+		
+		//System.out.println("Max is : " + max);
+		approxMaxDensity = max;
+		return densities;
+	}
 
+	/**
+	 * The most recent maximum bin density computed. Will b zero until getDensities() is called
+	 * @return
+	 */
+	public double getApproxMaxDensity() {
+		return approxMaxDensity;
+	}
+	
 	@Override
 	public String getSummaryString() {
 		StringBuilder strB = new StringBuilder();
@@ -172,6 +260,8 @@ public class BreakpointLocation extends PropertyLogger {
 		}
 		return strB.toString();
 	}
+
+	
 
 	
 }

@@ -22,6 +22,7 @@ import newgui.datafile.resultsfile.ResultsFile;
 import newgui.gui.ViewerWindow;
 import newgui.gui.display.jobDisplay.JobView;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.BPDensityViz;
+import newgui.gui.display.primaryDisplay.loggerVizualizer.BPLocationViz;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.ConsensusTreeViz;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.PopSizeViz;
 import newgui.gui.display.primaryDisplay.loggerVizualizer.TMRCAViz;
@@ -36,6 +37,7 @@ import logging.MemoryStateLogger;
 import logging.PopSizeLogger;
 import logging.PropertyLogger;
 import logging.RootHeightDensity;
+import logging.BreakpointLocation;
 
 /**
  * A panel that shows various characteristics of an executing run. 
@@ -94,15 +96,23 @@ public class RunningJobPanel extends JPanel implements MCMCListener {
 				if (logger instanceof BreakpointDensity) {
 					BPDensityViz bpDensityViz = new BPDensityViz();
 					bpDensityViz.initialize(logger);
-					ImageIcon icon2 = UIConstants.getIcon("gui/icons/oxygen/barchart32.png");
+					ImageIcon icon2 = UIConstants.getIcon("gui/icons/bpDensityIcon.png");
 					sidePane.addTab(logger.getName(), icon2, bpDensityViz);
+					sidePane.revalidate();
+				}
+				
+				if (logger instanceof BreakpointLocation) {
+					BPLocationViz bpLocationViz = new BPLocationViz();
+					bpLocationViz.initialize(logger);
+					ImageIcon icon2 = UIConstants.getIcon("gui/icons/bpLocationIcon.png");
+					sidePane.addTab(logger.getName(), icon2, bpLocationViz);
 					sidePane.revalidate();
 				}
 				
 				if (logger instanceof RootHeightDensity) {
 					TMRCAViz tmrcaViz = new TMRCAViz();
 					tmrcaViz.initialize(logger);
-					ImageIcon icon2 = UIConstants.getIcon("gui/icons/oxygen/barchart32.png");
+					ImageIcon icon2 = UIConstants.getIcon("gui/icons/rootHeightIcon.png");
 					sidePane.addTab(logger.getName(), icon2, tmrcaViz);
 					sidePane.revalidate();
 				}
@@ -111,7 +121,7 @@ public class RunningJobPanel extends JPanel implements MCMCListener {
 				if (logger instanceof ConsensusTreeLogger) {
 					ConsensusTreeViz treeViz = new ConsensusTreeViz();
 					treeViz.initialize(logger);
-					ImageIcon icon2 = UIConstants.getIcon("gui/icons/scaledBlueArrow.png");
+					ImageIcon icon2 = UIConstants.getIcon("gui/icons/treeIcon.png");
 					sidePane.addTab(logger.getName(), icon2, treeViz);
 					sidePane.revalidate();
 				}
@@ -119,7 +129,7 @@ public class RunningJobPanel extends JPanel implements MCMCListener {
 				if (logger instanceof PopSizeLogger) {
 					PopSizeViz popSizeViz = new PopSizeViz();
 					popSizeViz.initialize(logger);
-					ImageIcon icon2 = UIConstants.getIcon("gui/icons/scaledBlueArrow.png");
+					ImageIcon icon2 = UIConstants.getIcon("gui/icons/popSizeIcon.png");
 					sidePane.addTab(logger.getName(), icon2, popSizeViz);
 					sidePane.revalidate();
 				}
@@ -167,7 +177,7 @@ public class RunningJobPanel extends JPanel implements MCMCListener {
 		setLayout(new BorderLayout());
 		
 		sidePane = new SideTabPane();
-		ImageIcon icon = UIConstants.getIcon("gui/icons/oxygen/linechart32.png");
+		ImageIcon icon = UIConstants.getIcon("gui/icons/stateIcon.png");
 		
 		seriesPanel = new SeriesFigurePanel();
 		sidePane.addTab("Model state", icon, seriesPanel);

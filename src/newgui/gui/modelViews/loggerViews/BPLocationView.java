@@ -70,6 +70,7 @@ public class BPLocationView extends DefaultLoggerView {
 		super(model);
 		this.bpModel = model;
 		initComponents();
+		updateView();
 	}
 
 	
@@ -105,7 +106,7 @@ public class BPLocationView extends DefaultLoggerView {
 		centerPanel.add(timeBinsSpinner, "wrap");
 		
 		setHeightBox = new JCheckBox("Set max. height");
-		setHeightBox.setToolTipText("If checked, use the given value as the max. height of the tree to collect information. \n If unchecked, the value will be the mean of the ARG height during burnin");
+		setHeightBox.setToolTipText("If checked, use the given value as the max. height of the tree to collect information.");
 		setHeightBox.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				updateHeightBox();
@@ -114,8 +115,8 @@ public class BPLocationView extends DefaultLoggerView {
 		});
 		centerPanel.add(setHeightBox);
 		
-		centerPanel.add(new JLabel("Max height:"));
-		heightField = new JTextField("0.01");
+		//centerPanel.add(new JLabel("Max height:"));
+		heightField = new JTextField("0.001");
 		heightField.setToolTipText("Maximum depth at which to collect breakpoint locations");
 		heightField.setPreferredSize(new Dimension(50, 30));
 		heightField.addActionListener(new ActionListener() {

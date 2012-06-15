@@ -232,7 +232,7 @@ public class XMLDataFile extends DataFile {
 	 * @param nodeName
 	 * @return
 	 */
-	protected Element getTopLevelElement(String nodeName) {
+	public Element getTopLevelElement(String nodeName) {
 		NodeList childs = doc.getDocumentElement().getChildNodes();
 		for(int i=0; i<childs.getLength(); i++) {
 			Node child = childs.item(i);

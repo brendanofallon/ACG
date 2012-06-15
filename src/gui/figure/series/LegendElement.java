@@ -79,7 +79,11 @@ public class LegendElement extends FigureElement {
 		int count = 0;
 		for(SeriesElement el : seriesParent.getSeriesElements()) {
 			if (el.includeInLegend() && el.getSeries().size()>0) {
-				Rectangle2D rect = fm.getStringBounds(el.getName(), 0, el.getName().length(), g);
+				String seriesName = el.getName();
+				if (seriesName==null) {
+					seriesName = "Unknown series";
+				}
+				Rectangle2D rect = fm.getStringBounds(seriesName, 0, seriesName.length(), g);
 				yPosn.add(round(bounds.y*yFactor+pos+rect.getHeight()) );
 
 				pos += rect.getHeight()+5;
@@ -114,6 +118,11 @@ public class LegendElement extends FigureElement {
 		int i = 0;
 		for(SeriesElement el : seriesParent.getSeriesElements()) {
 			if (el.includeInLegend() && el.getSeries().size()>0) {
+				String seriesName = el.getName();
+				if (seriesName==null) {
+					seriesName = "Unknown series";
+				}
+
 				g.setColor(el.getLineColor());
 				if (el.getType() == XYSeriesElement.LINES)
 					g.drawLine(round(bounds.x*xFactor+4), yPosn.get(i)-5, round(bounds.x*xFactor+markerSpace-4), yPosn.get(i)-5);
@@ -135,7 +144,7 @@ public class LegendElement extends FigureElement {
 				}
 
 				g.setColor(Color.black);
-				g.drawString(el.getName(), round(bounds.x*xFactor) + markerSpace, yPosn.get(i));
+				g.drawString(seriesName, round(bounds.x*xFactor) + markerSpace, yPosn.get(i));
 				i++;
 			}
 		}
@@ -153,6 +162,10 @@ public class LegendElement extends FigureElement {
 			configFrame = new LegendConfigFrame((XYSeriesFigure)parent, this);
 		
 		configFrame.display( seriesParent.getSeriesElements() );
+	}
+
+	public void setFont(Font newFont) {
+		this.font = newFont;
 	}
 
 }

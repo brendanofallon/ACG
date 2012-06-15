@@ -61,9 +61,9 @@ public class VerticalTextElement extends TextElement {
 		configureTextField = new JTextField();
 		Rectangle textBounds = new Rectangle();
 		textBounds.x = round(bounds.x*xFactor);
-		textBounds.y = round(bounds.y*yFactor);
-		textBounds.width = round(Math.max(40, bounds.height*xFactor));
-		textBounds.height = round(Math.max(24, bounds.width*yFactor));
+		textBounds.y = round((bounds.y+bounds.height/2)*yFactor);
+		textBounds.width = round(Math.max(80, bounds.height*xFactor));
+		textBounds.height = round(Math.max(30, bounds.width*yFactor));
 		
 		configureTextField.setBounds(textBounds);
 		configureTextField.setText(text);
@@ -81,11 +81,7 @@ public class VerticalTextElement extends TextElement {
 			return;
 		
 		g.setColor(foregroundColor);
-		
-		if (isSelected)
-			g.setFont(selectedFont);
-		else
-			g.setFont(font);
+		g.setFont(font);
 		
 		// Create a rotation transformation for the font.
 		
@@ -97,6 +93,14 @@ public class VerticalTextElement extends TextElement {
 		bounds.height = (double)stringBounds.getWidth()/yFactor; 
 		bounds.width = (double)stringBounds.getHeight()/xFactor;
 
+		if (isSelected()) {
+			g.setColor(highlightColor);
+			g.setStroke(selectedStroke);
+			g.drawRoundRect(toPixelX(0)-2, toPixelY(0)-2, (int)Math.round(bounds.width*xFactor)+4, (int)Math.round(bounds.height*yFactor)+4, 5, 5);
+		}
+		
+		g.setStroke(normalStroke);
+		g.setColor(normalColor);
 		g.drawString(text, toPixelX(1.0), toPixelY(1.0));
 		g.setFont(theFont);
 	}

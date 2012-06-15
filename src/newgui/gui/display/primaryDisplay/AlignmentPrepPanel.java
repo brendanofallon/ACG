@@ -50,7 +50,7 @@ import newgui.analysisTemplate.ThoroughAnalysis;
 import newgui.datafile.AlignmentFile;
 import newgui.gui.ViewerWindow;
 import newgui.gui.alignmentViewer.ColumnSelectionFrame;
-import newgui.gui.alignmentViewer.SGContentPanel;
+import newgui.gui.alignmentViewer.AlnViewPanel;
 import newgui.gui.alignmentViewer.rowPainters.AG_CT_RowPainter;
 import newgui.gui.alignmentViewer.rowPainters.FrequencyRowPainter;
 import newgui.gui.alignmentViewer.rowPainters.GC_AT_RowPainter;
@@ -74,7 +74,7 @@ import newgui.gui.widgets.VerticalTextButtons;
 public class AlignmentPrepPanel extends JPanel {
 
 	private JPanel alnPanel;
-	private SGContentPanel contentPanel;
+	private AlnViewPanel contentPanel;
 	private JPanel bottomHalf;
 	private PrimaryDisplay displayParent;
 	private JScrollPane sgScrollPane;
@@ -196,7 +196,7 @@ public class AlignmentPrepPanel extends JPanel {
 		setOpaque(false);
 		//this.setBackground(Color.green);
 		
-		contentPanel = new SGContentPanel();
+		contentPanel = new AlnViewPanel();
 		sgScrollPane = new JScrollPane( contentPanel );
 		sgScrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
 		sgScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
@@ -224,16 +224,17 @@ public class AlignmentPrepPanel extends JPanel {
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
 		alnPanel.add(topPanel, BorderLayout.NORTH);
 		
-		BorderlessButton addAlnButton = new BorderlessButton(UIConstants.reload);
-		addAlnButton.setToolTipText("Replace alignment");
-		addAlnButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				showAlignmentChoicePanel();
-			}
-		});
+//		BorderlessButton addAlnButton = new BorderlessButton(UIConstants.reload);
+//		addAlnButton.setToolTipText("Replace alignment");
+//		addAlnButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				showAlignmentChoicePanel();
+//			}
+//		});
+		//topPanel.add(addAlnButton);
 		
-		topPanel.add(addAlnButton);
-		topPanel.add(Box.createHorizontalStrut(10));
+		
+		topPanel.add(Box.createHorizontalStrut(20));
 		
 		BorderlessButton saveAlnButton = new BorderlessButton(UIConstants.saveGrayButton);
 		saveAlnButton.setToolTipText("Save alignment");
@@ -242,9 +243,20 @@ public class AlignmentPrepPanel extends JPanel {
 				saveAlignment();
 			}
 		});
-		
-		
 		topPanel.add(saveAlnButton);
+		
+		
+		BorderlessButton showMetricsButton = new BorderlessButton( UIConstants.getIcon("gui/icons/oxygen/gear24.png"));
+		showMetricsButton.setToolTipText("Show alignment statistics");
+		showMetricsButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showMetricsFrame();
+			}
+		});
+		topPanel.add(showMetricsButton);
+		
 		topPanel.add(Box.createHorizontalGlue());
 
 		BorderlessButton selectColsButton = new BorderlessButton(addSelectionIcon);
@@ -402,6 +414,14 @@ public class AlignmentPrepPanel extends JPanel {
 		
 	}
 	
+	/**
+	 * Shows an AlignmentMetricsFrame with some basic info about this alignment
+	 */
+	protected void showMetricsFrame() {
+		AlignmentMetricsFrame mFrame = new AlignmentMetricsFrame(contentPanel.getAlignment());
+		mFrame.setVisible(true);
+	}
+
 	/**
 	 * Open a dialog allowing the user to choose which columns to select
 	 */

@@ -26,23 +26,23 @@ public class SidePanel extends JPanel {
 		this.ownerPane = owner;
 	}
 	
-//	public void paint(Graphics g) {
-//		super.paint(g);
-//		
-//		Graphics2D g2d = (Graphics2D)g;
-//		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-//                RenderingHints.VALUE_ANTIALIAS_ON);
-//		
-//		SideTab tab = ownerPane.getSelectedTab();
-//		if (tab != null) {
-//			GradientPaint gp = new GradientPaint(getWidth()-rightPadding, 0, shadowColor, getWidth(), 0, lightShadowColor);
-//			g2d.setPaint(gp);
-//
-//			g2d.fillRect(getWidth()-rightPadding, 0, getWidth(), tab.getY());
-//			g2d.fillRect(getWidth()-rightPadding, tab.getY() + tab.getHeight(), getWidth(), getHeight());
-//		}
-//		//g2d.fillRect(0, bottomHalfTop, rightPadding, getHeight()-bottomHalfTop);
-//		
-//	}
+	public void paint(Graphics g) {
+		super.paint(g);
+		
+		Graphics2D g2d = (Graphics2D)g;
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		SideTab tab = ownerPane.getSelectedTab();
+		if (tab != null) {
+			g2d.setColor(SideTab.lineColor);
+			g2d.drawLine(getWidth()-1, 0, getWidth()-1, tab.getY());
+			g2d.drawLine(getWidth()-1, tab.getY() + tab.getHeight(), getWidth()-1, getHeight());
+			
+		}
+		
+	}
+
+	
 	
 }

@@ -64,7 +64,7 @@ import gui.figure.series.AxesElement;
  * @author brendan
  *
  */
-public abstract class Figure extends JPanel implements ComponentListener, KeyListener {
+public class Figure extends JPanel implements ComponentListener, KeyListener {
 
 	int minWidth = 100;
 	int minHeight = 100;
@@ -153,6 +153,14 @@ public abstract class Figure extends JPanel implements ComponentListener, KeyLis
 	
 	public void removeElement(FigureElement el) {
 		elements.remove(el);	
+	}
+	
+	/**
+	 * Remove all elements from this figure. This typically means that this
+	 * Figure will no longer draw anything. 
+	 */
+	public void removeAllElements() {
+		elements.removeAll();
 	}
 	
 	public void addMouseListeningElement(FigureElement el) {
@@ -460,6 +468,7 @@ public abstract class Figure extends JPanel implements ComponentListener, KeyLis
 						clickConsumed = element.consumesMouseClick();
 					}
 				}
+				
 				
 			}
 		}

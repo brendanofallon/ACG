@@ -194,13 +194,18 @@ public class XYSeries extends AbstractSeries {
 	public Point2D[] getLineForXVal(double xVal) {
 		int lower = getIndexForXVal(xVal);
 		
+
 		if (lower<0 || lower>=(pointList.size()-1))
 			return null;
-		
 		int upper = lower+1;
+		
 		Point2D[] line = new Point2D[2];
 		line[0] = pointList.get(lower);
 		line[1] = pointList.get(upper);
+		//System.out.println("click data x: " + xVal + " lower x: " + pointList.get(lower).getX() + " upper x: " + pointList.get(upper).getX());
+		if (pointList.get(lower).getX() > xVal || pointList.get(upper).getX() < xVal) {
+			System.err.println("Yikes, didn't pick th right index, got " + lower + " lower point is : " + pointList.get(lower));
+		}
 		return line;
 	}
 

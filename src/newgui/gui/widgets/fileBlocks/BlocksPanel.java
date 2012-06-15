@@ -53,6 +53,11 @@ public class BlocksPanel extends JPanel implements PropertyChangeListener {
 		centerPanel.add(Box.createVerticalGlue());
 		centerPanel.add(Box.createVerticalGlue());
 		centerPanel.add(Box.createVerticalGlue());
+		centerPanel.add(Box.createVerticalGlue());
+		centerPanel.add(Box.createVerticalGlue());
+		centerPanel.add(Box.createVerticalGlue());
+		centerPanel.add(Box.createVerticalGlue());
+		centerPanel.add(Box.createVerticalGlue());
 		revalidate();
 		repaint();
 	}

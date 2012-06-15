@@ -222,7 +222,6 @@ public abstract class SeriesFigure extends gui.figure.Figure {
 	}
 	
 	
-	
 
 	/**
 	 * Set the line width for the given series 

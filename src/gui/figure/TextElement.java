@@ -19,12 +19,14 @@
 
 package gui.figure;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
 
 import javax.swing.JTextField;
@@ -37,17 +39,14 @@ import javax.swing.JTextField;
  */
 public class TextElement extends FigureElement {
 	
-	String text = "";
-	Font font;
-	Font selectedFont;
-	
-	JTextField configureTextField;
+	protected String text = "";
+	protected Font font;
+	protected JTextField configureTextField;
 	
 	
 	public TextElement(String txt, Figure parent) {
 		super(parent);
-		font = new Font("Sans", Font.PLAIN, 12);
-		selectedFont = new Font("Sans", Font.BOLD, 12);
+		font = new Font("Sans", Font.PLAIN, 14);
 		this.text = txt;
 	}
 	
@@ -65,8 +64,8 @@ public class TextElement extends FigureElement {
 		Rectangle textBounds = new Rectangle();
 		textBounds.x = round(bounds.x*xFactor);
 		textBounds.y = round(bounds.y*yFactor);
-		textBounds.width = round(Math.max(40, bounds.width*xFactor));
-		textBounds.height = round(Math.max(24, bounds.height*yFactor));
+		textBounds.width = round(Math.max(80, bounds.width*xFactor));
+		textBounds.height = round(Math.max(30, bounds.height*yFactor));
 		
 		configureTextField.setBounds(textBounds);
 		configureTextField.setText(text);
@@ -107,20 +106,27 @@ public class TextElement extends FigureElement {
 	}
 	
 	public void paint(Graphics2D g) {
-		g.setColor(foregroundColor);
-		if (isSelected)
-			g.setFont(selectedFont);
-		else
-			g.setFont(font);
-		
+		g.setFont(font);
 		
 	    Rectangle2D stringBounds = g.getFontMetrics().getStringBounds(text, 0, text.length(), g);
 	    
 		bounds.width = (double)stringBounds.getWidth()/xFactor; 
 		bounds.height = (double)stringBounds.getHeight()/yFactor;
 
+		
+		if (isSelected()) {
+			g.setColor(highlightColor);
+			g.setStroke(selectedStroke);
+			g.drawRoundRect(toPixelX(0)-2, toPixelY(0)-2, (int)Math.round(bounds.width*xFactor)+4, (int)Math.round(bounds.height*yFactor)+4, 5, 5);
+		}
+		
+		g.setStroke(normalStroke);
+		g.setColor(normalColor);
 		g.drawString(text, toPixelX(0), toPixelY(1.0));
 				
 	}
-
+	
+	protected static Stroke selectedStroke = new BasicStroke(1.75f);
+	protected static Stroke normalStroke = new BasicStroke(1.0f);
+	protected static Color normalColor = new Color(0.1f, 0.1f, 0.1f);
 }

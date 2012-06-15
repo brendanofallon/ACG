@@ -3,6 +3,7 @@ package newgui.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -29,6 +30,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 
 
 import newgui.UIConstants;
+import newgui.app.ACGProperties;
 import newgui.datafile.DataFile;
 import newgui.gui.display.Display;
 import newgui.gui.display.DisplayPane;
@@ -36,6 +38,7 @@ import newgui.gui.display.TestDisplay;
 import newgui.gui.display.jobDisplay.JobQueueDisplay;
 import newgui.gui.filepanel.FileTree;
 import newgui.gui.widgets.BorderlessButton;
+import newgui.gui.widgets.MemoryGauge;
 import newgui.gui.widgets.RegionFader;
 import newgui.gui.widgets.fileBlocks.AbstractBlock;
 import newgui.gui.widgets.fileBlocks.BlocksManager;
@@ -52,6 +55,10 @@ import newgui.gui.widgets.panelPile.PanelPile;
  */
 public class ViewerWindow extends JFrame {
 
+	//A couple property keys..
+	public static final String WINDOW_WIDTH = "main.window.width";
+	public static final String WINDOW_HEIGHT = "main.window.height";
+	
 	public static Font sansFont = UIConstants.sansFont;
 	private static ViewerWindow viewer; //Handy static reference to main window
 	private BlocksManager fileManager = null;
@@ -82,8 +89,18 @@ public class ViewerWindow extends JFrame {
 		
 		initComponents();
 		
-		this.setSize(1000, 700);
-		this.setPreferredSize(new Dimension(1000, 700));
+		int preferredWidth = 1000;
+		int preferredHeight = 700;
+		if (ACGProperties.hasProperty(WINDOW_WIDTH)) {
+			preferredWidth = ACGProperties.getIntegerProperty(WINDOW_WIDTH);
+		}
+		
+		if (ACGProperties.hasProperty(WINDOW_HEIGHT)) {
+			preferredHeight = ACGProperties.getIntegerProperty(WINDOW_HEIGHT);
+		}
+		
+		this.setSize(preferredWidth, preferredHeight);
+		this.setPreferredSize(new Dimension(preferredWidth, preferredHeight));
 		pack();
 		setLocationRelativeTo(null);
 	}
@@ -185,42 +202,15 @@ public class ViewerWindow extends JFrame {
 		mainPanel.add(displayBackground);		
 		
 		JPanel bottomPanel = new JPanel();
-		bottomPanel.setLayout(new BorderLayout());
+		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
 		bottomPanel.add(new JSeparator(JSeparator.HORIZONTAL));
-
+		MemoryGauge memGauge = new MemoryGauge();
+		memGauge.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		bottomPanel.add(memGauge);
 		contentPane.add(bottomPanel, BorderLayout.SOUTH);		
 	}
 	
 	
-	/**
-	 * Create the PanelPile showing various files 
-	 * @return
-	 */
-//	private JComponent createFilesPanel() {
-//		PanelPile pile = new PanelPile();
-//		
-//		PPanel inputsPanel = new PPanel(pile, "Input files");
-//		FileTree inputsTree = new FileTree(InputFilesManager.getManager().getRootDirectory());
-//		InputFilesManager.getManager().addListener(inputsTree);
-//		inputsPanel.add(inputsTree);
-//		
-//		PPanel analPanel = new PPanel(pile, "Analyses");
-//		FileTree analysisTree = new FileTree(AnalysisFilesManager.getManager().getRootDirectory());
-//		AnalysisFilesManager.getManager().addListener(analysisTree);
-//		analPanel.add(analysisTree);
-//		
-//		PPanel resultsPanel = new PPanel(pile, "Results");
-//		FileTree resultsTree = new FileTree(ResultsFilesManager.getManager().getRootDirectory());
-//		ResultsFilesManager.getManager().addListener(resultsTree);
-//		resultsPanel.add(resultsTree);
-//		
-//		pile.addPanel(inputsPanel);
-//		pile.addPanel(analPanel);
-//		pile.addPanel(resultsPanel);
-//		mainPanel.add(pile);
-//		pile.showPanel(0, false);
-//		return pile;
-//	}
 	
 	private JobQueueDisplay jobDisplay = null;
 	private DisplayPane displayPane;

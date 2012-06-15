@@ -54,8 +54,8 @@ public class SimpleSequence implements Sequence {
 		bases = new int[seq.length()];
 		for(int i=0; i<seq.length(); i++) {
 			bases[i] = DNAUtils.intForBase(Character.toUpperCase(seq.charAt(i)));
-			if (bases[i] == DNAUtils.GAP)
-				System.out.println("Found gap in sequence " + label + " at column : " + i);
+			//if (bases[i] == DNAUtils.GAP)
+			//	System.out.println("Found gap in sequence " + label + " at column : " + i);
 		}
 		sequenceCount++;
 	}

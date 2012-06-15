@@ -302,7 +302,7 @@ public class BasicSequenceAlignment implements Alignment {
 	 */
 	public boolean hasGap(int site) {
 		for(Sequence seq : seqs) {
-			if (seq.charAt(site)==DNAUtils.GAP) {
+			if (seq.baseAt(site)==DNAUtils.GAP) {
 				return true;
 			}
 		}
@@ -316,7 +316,7 @@ public class BasicSequenceAlignment implements Alignment {
 	 */
 	public boolean hasUnknown(int site) {
 		for(Sequence seq : seqs) {
-			if (seq.charAt(site)==DNAUtils.N) {
+			if (seq.baseAt(site)==DNAUtils.N) {
 				return true;
 			}
 		}
@@ -639,5 +639,14 @@ public class BasicSequenceAlignment implements Alignment {
 			}
 		}
 		
+	}
+
+	@Override
+	public int[] getBaseCounts(int col) {
+		int[] counts = new int[5];
+		for(int i=0; i<seqs.size(); i++) {
+			counts[ seqs.get(i).baseAt(col) ]++;
+		}
+		return counts;
 	}
 }
