@@ -73,6 +73,10 @@ public abstract class AbstractFigurePanel extends JPanel {
 	protected void saveImage() {
 		BufferedImage image = fig.getImage();
 
+		if (image == null) {
+			JOptionPane.showMessageDialog(this, "Error saving image: " + new IllegalStateException("Could not obtain image"));			
+		}
+		
 		if (fileChooser == null)
 			fileChooser = new JFileChooser( System.getProperty("user.dir"));
 

@@ -88,19 +88,7 @@
 					<ul id="dropdown-menu" class="fixed">
 						<li class="current"><a href="index.html">Home</a></li>
 						<li><a href="about-acg.html">About</a>
-							<ul class="sub-menu">
-								<li><a href="about.html">About Us</a></li>
-								<li><a href="typography.html">Typography</a></li>
-								<li><a href="page-full.html">Full width page</a></li>
-								<li><a href="page-sidebar.html">Page with Sidebar</a></li>
-								<li><a href="#">3rd level dropdown</a>
-									<ul>
-										<li><a href="#">Just an</a></li>
-										<li><a href="#">3rd level dropdown</a></li>
-										<li><a href="#">example</a></li>
-									</ul>
-								</li>
-							</ul>
+							
 						</li>
 						<li><a href="screenshots-acg.html">Screenshots</a>
 							<ul class="sub-menu">
@@ -148,7 +136,7 @@
 	
 			<div id="page-header">
 			
-				<img src="_content/about/1000x180.png" width="1000" height="180" alt="" />
+				<img src="_layout/images/fancyARG.png" width="1000" height="180" alt="" />
 
 			</div><!-- end #page-header -->
 
@@ -161,44 +149,24 @@
 					<h1>The basic idea  </h1>
 
 					<p>
-					ACG is a tool that allows genetics researchers to infer a wide variety of parameters about a population from genetic data.
+					ACG is a tool that allows genetics researchers to infer a wide variety of parameters about a population from genetic data. As input, ACG takes an alignment of genetic sequences - that is, DNA sequences from the same genomic region sampled from multiple individuals. The software then tries to construct on evolutionary model that best fits the sequence data. The evolutionary model contains many aspects of the history of the population including its (potentially time-dependent) size, the genealogical tree of the samples, the recombination rate, and how likely individual nucleotides are to mutate to other nucleotides. Many aspects of the model are configurable by the researcher - for instance, you can tell ACG that you think the population has been exponentially growing over time and to try to infer the growth rate and current size. 
+					 </p>
+					 <p>
+					 ACG accomplishes the above task by constructing and running a Markov chain that, over time, samples states in proportion to their likelihood given the evolutionary model you supplied. This is a random process, and ACG slowly homes in on likely states over time. As your run progresses you can easily monitor that states being sampled by clicking on the "Model State" tab and watching the values of the parameters change over time. Once you've collected enough samples (a few tens of thousands should do) you'll have a pretty good idea of what the population size is, or where the recombination breakpoints are, or what the evolutionary tree looks like at a certain site. 
+					 </p>
 
 					<div class="hr"></div>
 					 
-					<h3>Left aligned image</h3>
+					<h3>Of trees and ARGs</h3>
 					 
-					<p><img src="_content/typography/160x100.jpg" alt="" class="img-align-left"/>
+					<p><img src="_layout/images/simpleARG.png" alt="" class="img-align-left"/>
 
-					 Vestibulum et felis eu dui imperdiet accumsan eu in quam. In hac habitasse platea dictumst. Integer eget
-					 placerat diam. Praesent eget nunc vel sem bibendum adipiscing. Aliquam faucibus diam non metus aliquet eu
-					 euismod lorem elementum. Rasid tempor orci. Aliquam erat volutpat. Etiam condimentum rhoncus tellus et sagittis.</p>
+					 </p>
 
-					<p>Suspendisse potenti. Nullam in lectus nibh, in semper eros. Integer nec diam tellus. Quisque sit amet
-					 auctor purus. Sed vitae erat et tellus adipiscing lobortis vel in orci. Morbi semper, lacus ac rutrum
-					 tincidunt, eros ipsum ultricies lorem, quis dictum sem eros sed ante. Curabitur adipiscing vulputate
-					 euismod. Phasellus commodo nisi vitae tellus adipiscing faucibus at nec leo. Mauris laoreet mi et augue
-					 sodales accumsan. Suspendisse vel mauris metus, ac tristique enim. </p>
+					<p>ACG is able to accomplish its task by imagining the history of the sequences as an <em>Ancestral Recombination Graph</em>, or ARG. An ARG is a bit like a stack of simple (non-recombining) trees, where recombination points separate one tree from the next. When just a few recombination breakpoints are present, ARGs are relatively simple to visualize. But when there are many samples and many recombinations its quite difficult to get a good handle on the whole thing at once. ACG addresses this by allowing researchers to look at the trees that exist at individual sites. </p>
 
-					<p>Ut rutrum, odio a suscipit aliquam, nunc elit suscipit lorem, nec sodales urna enim in leo. In quis
-					 lacus eu felis cursus pellentesque. Nullam dolor elit, dictum non accumsan nec, accumsan quis libero.
-					 Morbi faucibus pellentesque tortor, ut fermentum nisl luctus et.</p>
 					
-					<div class="hr"></div>
-					 
-					<h3>Right aligned image</h3> 
-					 
-					<p><img src="_content/typography/160x100.jpg" alt="" class="img-align-right" />
-
-					 Morbi leo purus, imperdiet at cursus non, vulputate sit amet dui. Duis feugiat augue vitae turpis placerat
-					 eget condimentum elit bibendum. Aliquam molestie, sapien ac lacinia vehicula, turpis velit porttitor arcu,
-					 vitae gravida orci ipsum et massa. Phasellus vel imperdiet est.</p> 
-					 
-					<p>Suspendisse potenti. Nullam in lectus nibh, in semper eros. Integer nec diam tellus. Quisque sit amet
-					 auctor purus. Sed vitae erat et tellus adipiscing lobortis vel in orci. Morbi semper, lacus ac rutrum
-					 tincidunt, eros ipsum ultricies lorem, quis dictum sem eros sed ante. Curabitur adipiscing vulputate
-					 euismod. Phasellus commodo nisi vitae tellus adipiscing faucibus at nec leo. Mauris laoreet mi et augue
-					 sodales accumsan. </p>
-
+					
 				<!-- /////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 				
 				</div><!-- end .col580 -->

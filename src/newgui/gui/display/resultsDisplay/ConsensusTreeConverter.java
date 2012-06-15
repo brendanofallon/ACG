@@ -9,6 +9,7 @@ import java.util.List;
 import logging.ConsensusTreeLogger;
 import logging.PropertyLogger;
 
+import newgui.UIConstants;
 import newgui.datafile.XMLConversionError;
 import newgui.datafile.XMLDataFile;
 
@@ -24,6 +25,8 @@ public class ConsensusTreeConverter extends AbstractLoggerConverter {
 		LoggerTreeDisplay treeDisplay = new LoggerTreeDisplay();
 		String newick = getNewickForTreeElement(el);
 		treeDisplay.setNewick(newick);
+		treeDisplay.setIcon( UIConstants.getIcon("gui/icons/treeIcon.png"));
+
 		return treeDisplay;
 	}
 

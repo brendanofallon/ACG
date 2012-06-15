@@ -118,14 +118,15 @@ public class BPLocationViz extends AbstractLoggerViz {
 //		optionsPanel.add(hotColorButton);
 //		
 		
-		BorderlessButton showConfigButton = new BorderlessButton(UIConstants.settings);
-		showConfigButton.setToolTipText("Select figure options");
-		showConfigButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				showConfigFrame();
-			}
-		});
-		optionsPanel.add(showConfigButton);
+		//Nothing to configure
+//		BorderlessButton showConfigButton = new BorderlessButton(UIConstants.settings);
+//		showConfigButton.setToolTipText("Select figure options");
+//		showConfigButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				showConfigFrame();
+//			}
+//		});
+//		optionsPanel.add(showConfigButton);
 		
 		
 		BorderlessButton exportDataButton = new BorderlessButton(UIConstants.writeData);

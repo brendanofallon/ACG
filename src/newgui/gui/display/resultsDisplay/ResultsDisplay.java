@@ -13,6 +13,8 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -88,7 +90,7 @@ public class ResultsDisplay extends Display {
 				if (resultDisplay == null)
 					System.out.println("Cant find display for " + label);
 				else
-					addLoggerDisplay(label, resultDisplay);
+					addLoggerDisplay(label, resultDisplay, resultDisplay.getIcon());
 				
 			} catch (XMLConversionError e) {
 				e.printStackTrace();
@@ -99,8 +101,8 @@ public class ResultsDisplay extends Display {
 		
 	}
 		
-	private void addLoggerDisplay(String title, LoggerResultDisplay resultDisplay) {
-		tabPane.addTab(title, UIConstants.grayRightArrow, resultDisplay);
+	private void addLoggerDisplay(String title, LoggerResultDisplay resultDisplay, ImageIcon icon) {
+		tabPane.addTab(title, icon, resultDisplay);
 		repaint();
 	}
 

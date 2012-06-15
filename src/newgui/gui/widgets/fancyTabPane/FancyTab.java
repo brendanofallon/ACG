@@ -159,7 +159,7 @@ public class FancyTab extends JPanel {
 	     g2d.drawRoundRect(5, 5, getWidth()-6, getHeight()+10, 8, 8);
 	     
 	     g2d.setPaint(gp);
-	     g.fillRoundRect(0, 2, getWidth()-3, getHeight()+10, 8, 8);
+	     g.fillRoundRect(0, 2, getWidth()-2, getHeight()+10, 8, 8);
 	     
 
 	     g2d.setStroke(FTabPane.normalStroke);

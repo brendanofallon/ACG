@@ -10,6 +10,7 @@ import java.util.List;
 import logging.PropertyLogger;
 import logging.RootHeightDensity;
 
+import newgui.UIConstants;
 import newgui.datafile.XMLConversionError;
 import newgui.datafile.resultsfile.XYSeriesElementReader;
 
@@ -24,6 +25,8 @@ public class RootHeightDensityConverter extends AbstractLoggerConverter {
 			LoggerFigInfo info = this.parseFigElements(el);
 			LoggerSeriesDisplay display = new LoggerSeriesDisplay();
 			display.initialize(info);
+			display.setIcon( UIConstants.getIcon("gui/icons/rootHeightIcon.png"));
+
 			return display;
 	}
 
