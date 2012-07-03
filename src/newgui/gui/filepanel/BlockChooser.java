@@ -62,6 +62,7 @@ public class BlockChooser extends JDialog {
 		}
 		
 		blocksList.setModel(model);
+		blocksList.setSelectedIndex(0);
 	}
 	
 	private void initComponents() {

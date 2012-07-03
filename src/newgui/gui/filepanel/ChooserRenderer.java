@@ -80,6 +80,8 @@ public class ChooserRenderer extends JPanel implements ListCellRenderer {
 			g.drawRoundRect(2, 2, getWidth()-5, getHeight()-5, 8, 8);
 		}
 		
+		g.setColor(lineColor);
+		((Graphics2D)g).setStroke(normalStroke);
 		g.setFont(getFont());
 		g.drawString(text, 15+1, 25+1);
 		

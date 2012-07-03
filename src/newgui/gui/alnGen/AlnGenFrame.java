@@ -4,6 +4,7 @@ import gui.ErrorWindow;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -26,6 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
@@ -34,6 +36,9 @@ import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import newgui.datafile.AlignmentFile;
+import newgui.gui.ViewerWindow;
 
 import sequence.Alignment;
 import sequence.BasicSequenceAlignment;
@@ -92,55 +97,38 @@ public class AlnGenFrame extends JFrame {
 			JOptionPane.showMessageDialog(this, "Please choose a start position before the end position");
 			return;		
 		}
-		
-		final ProgressMonitor progMonitor = new ProgressMonitor(this,
-                "Building alignment...",
-                "", 0, 100);
-		progMonitor.setMillisToPopup(100);
-		progMonitor.setMillisToDecideToPopup(100);
+
 		final BuilderWorker builder = new BuilderWorker(contig, startPos, endPos);
-		builder.addPropertyChangeListener(new PropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				if ("progress" == evt.getPropertyName() ) {
-		            int progress = (Integer) evt.getNewValue();
-		            progMonitor.setProgress(progress);
-		            String message =
-		                String.format("Completed %d%%.\n", progress);
-		            progMonitor.setNote(message);
-		            
-		            if (progMonitor.isCanceled() || builder.isDone()) {
-		                if (progMonitor.isCanceled()) {
-		                	// ???
-		                }
-		                	
-		                 
-		            }
-		        }
+		
+		Container rootPane = this.getRootPane();
+		rootPane.removeAll();
+		JPanel newPanel = new JPanel();
+		newPanel.setLayout(new BoxLayout(newPanel, BoxLayout.Y_AXIS));
+		rootPane.add(newPanel, BorderLayout.CENTER);
+		newPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		JLabel msgLabel = new JLabel("Creating alignment... this may take a few minutes");
+		newPanel.add(Box.createVerticalGlue());
+		newPanel.add(msgLabel);
+		
+		progressBar = new JProgressBar();
+		progressBar.setIndeterminate(true);
+		newPanel.add(progressBar);
+		
+				
+		newPanel.add(Box.createVerticalGlue());
+		
+		JButton cancelBuildButton = new JButton("Cancel");
+		cancelBuildButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				builder.cancel(true);
 			}
-			
 		});
+		newPanel.add(cancelBuildButton);
+		
+		rootPane.validate();
+		rootPane.repaint();
+		
 		builder.execute();
-		
-//		try {
-//
-//			List<ProtoSequence> protoSeqs = alnGen.getAlignmentParallel(contig, startPos, endPos);
-//			BasicSequenceAlignment aln = new BasicSequenceAlignment();
-//			for(ProtoSequence pSeq : protoSeqs) {
-//				aln.addSequence( pSeq.toSimpleSequence() );
-//			}
-//
-//			InputFilesManager.getManager().saveAlignment(aln, "new_alignment");			
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			ErrorWindow.showErrorWindow(e, "Could not create alignment");
-//		} catch (ContigNotFoundException e) {
-//			
-//			e.printStackTrace();
-//			JOptionPane.showMessageDialog(this, "Could not find chromomsome " + contigField.getText());
-//		}
-		
-		
 	}
 	
 	/**
@@ -154,7 +142,9 @@ public class AlnGenFrame extends JFrame {
 			aln.addSequence( pSeq.toSimpleSequence() );
 		}
 
-		//InputFilesManager.getManager().saveAlignment(aln, "new_alignment");
+		AlignmentFile alnFile = new AlignmentFile(aln);
+		ViewerWindow.getViewer().getFileManager().showSaveDialog(alnFile, "new alignment");
+		this.setVisible(false);
 	}
 
 	/**
@@ -285,8 +275,8 @@ public class AlnGenFrame extends JFrame {
 		refRegionPanel.add(refPanel);
 		refPanel.add(new JLabel("Reference file:"));
 		referenceFileField = new JTextField("choose file");
-		referenceFileField.setPreferredSize(new Dimension(100, 32));
-		referenceFileField.setMaximumSize(new Dimension(100, 32));
+		referenceFileField.setPreferredSize(new Dimension(150, 32));
+		referenceFileField.setMaximumSize(new Dimension(150, 32));
 		refPanel.add(referenceFileField);
 		JButton chooseButton = new JButton("Choose");
 		chooseButton.setToolTipText("Browse for reference file");
@@ -423,7 +413,7 @@ public class AlnGenFrame extends JFrame {
 		//Bottom panel with a cancel and build button
 		JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
-		JButton cancelButton = new JButton("Cancel");
+		cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				cancel();
@@ -464,7 +454,7 @@ public class AlnGenFrame extends JFrame {
 		
 		@Override
 		protected Object doInBackground() throws Exception {
-			setProgress(0);
+			setProgress(2);
 			List<ProtoSequence> protoSeqs = alnGen.getAlignmentParallel(contig, startPos, endPos);
 			setProgress(100);
 			buildAndSaveAlignment(protoSeqs);
@@ -473,10 +463,11 @@ public class AlnGenFrame extends JFrame {
 		
 	}
 
+	private JProgressBar progressBar;
 	private JTextField contigField;
 	private JTextField startPosField;
 	private JTextField endPosField;
-	
+	private JButton cancelButton;
 	private JLabel addedSamplesHeader;
 	private JLabel sampleListHeader;
 	private VCFReader vcfReader = null; //Reads sample names and creates SampleReaders from a vcf file

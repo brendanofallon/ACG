@@ -57,8 +57,6 @@ public class AlignmentGenerator {
 			refSeq.append(base);
 		}
 
-//		System.out.println(">reference");
-//		System.out.println(refSeq.toString());
 		
 		int errorCount = 0;
 		
@@ -97,9 +95,13 @@ public class AlignmentGenerator {
 	 * @throws ContigNotFoundException
 	 */
 	public List<ProtoSequence> getAlignmentParallel(String contig, int startPos, int endPos) throws IOException, ContigNotFoundException {
-		final int threads = 4;
+		int cpuCount = Runtime.getRuntime().availableProcessors();
+		int threads = 1;
+		if (cpuCount > 3)
+			threads = 2;
+		if (cpuCount > 5)
+			threads = 4;
 		ThreadPoolExecutor threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(threads);
-		
 		
 		FastaReader refReader = new FastaReader(referenceFile);
 		StringBuilder refSeq = new StringBuilder();
