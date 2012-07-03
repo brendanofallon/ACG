@@ -137,6 +137,8 @@ public class AlnGenFrame extends JFrame {
 	 * @param seqs
 	 */
 	protected void buildAndSaveAlignment(List<ProtoSequence> seqs) {
+		progressBar.setIndeterminate(false);
+		progressBar.setValue(100);
 		BasicSequenceAlignment aln = new BasicSequenceAlignment();
 		for(ProtoSequence pSeq : seqs) {
 			aln.addSequence( pSeq.toSimpleSequence() );
