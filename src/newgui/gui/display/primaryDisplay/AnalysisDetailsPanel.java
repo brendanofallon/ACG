@@ -139,7 +139,7 @@ public class AnalysisDetailsPanel extends JPanel {
 //		buttonsPanel.add(demoButton);
 		
 		coalescentButton = new BorderlessButton("Coalescent model");
-		coalescentButton.setToolTipText("Change options affecting recombination model");
+		coalescentButton.setToolTipText("Options affecting popultion size and recombination");
 		coalescentButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		coalescentButton.setHorizontalTextAlignment(Component.RIGHT_ALIGNMENT);
 		coalescentButton.setMinimumSize(new Dimension(buttonPanelWidth, 40));
@@ -155,7 +155,7 @@ public class AnalysisDetailsPanel extends JPanel {
 		buttonsPanel.add(coalescentButton);
 		
 		loggingButton = new BorderlessButton("Logging options");
-		loggingButton.setToolTipText("Change options regarding the type of data collected");
+		loggingButton.setToolTipText("Options regarding the type of data collected");
 		loggingButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		loggingButton.setHorizontalTextAlignment(Component.RIGHT_ALIGNMENT);
 		loggingButton.setMinimumSize(new Dimension(buttonPanelWidth, 40));
@@ -171,7 +171,7 @@ public class AnalysisDetailsPanel extends JPanel {
 		buttonsPanel.add(loggingButton);
 
 		mcButton = new BorderlessButton("Markov chain options");
-		mcButton.setToolTipText("Change options regarding the length and number of chains run");
+		mcButton.setToolTipText("Options regarding the length and number of chains run");
 		mcButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		mcButton.setHorizontalTextAlignment(Component.RIGHT_ALIGNMENT);
 		mcButton.setMinimumSize(new Dimension(buttonPanelWidth, 40));
@@ -209,8 +209,9 @@ public class AnalysisDetailsPanel extends JPanel {
 		});
 		
 		
-		BorderlessButton runButton = new BorderlessButton(UIConstants.blueRightArrow);
-		runButton.setToolTipText("Begin run");
+		BorderlessButton runButton = new BorderlessButton(UIConstants.getIcon("gui/icons/beginRunButton.png"));
+		runButton.setXDif(-1);
+		runButton.setToolTipText("Begin the analysis using the current settings");
 		runButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				beginNewRun();
