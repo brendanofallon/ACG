@@ -177,7 +177,6 @@ public class AlnViewPanel extends JPanel {
             }
         });
 		popup.add(popupItemRemoveSelection);
-		popupItemRemoveSelection.setEnabled(false);
 		
 		PopupListener popupListener = new PopupListener(); 
 		addMouseListener(popupListener);
