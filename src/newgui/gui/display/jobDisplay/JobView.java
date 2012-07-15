@@ -131,6 +131,8 @@ public class JobView extends ToolbarPanel implements JobListener, ActionListener
 		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
 		bottomPanel.setOpaque(false);
 		bottomPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+		
+		this.setMaximumSize(new Dimension(32167, 200));
 		this.add(bottomPanel, BorderLayout.SOUTH);
 		
 	}
@@ -212,13 +214,9 @@ public class JobView extends ToolbarPanel implements JobListener, ActionListener
 	
 	@Override
 	public void statusUpdated(ACGJob job) {
-		System.out.println("Status updated to : " + job.getJobState().getState() + " step: " + job.getCurrentStep() + " state: " + job.getJobState().getState());
-		updateStatusLabel();
+		currentState = job.getJobState().getState();
 		
-		if (job.getJobState().getState() != currentState) {
-			//previousState = currentState;
-			currentState = job.getJobState().getState();
-		}
+		updateStatusLabel();
 		
 		if ( (!timer.isRunning()) && currentState == State.RUNNING) {
 			timer.start();

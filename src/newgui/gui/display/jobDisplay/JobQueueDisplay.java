@@ -4,8 +4,13 @@ import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
 
 import jobqueue.ACGJob;
 import jobqueue.JobQueue;
@@ -44,7 +49,10 @@ public class JobQueueDisplay extends Display implements QueueListener {
 		layoutJobViews();
 		
 		this.add(topPanel, BorderLayout.NORTH);
-		this.add(centerPanel, BorderLayout.CENTER);
+		JScrollPane scrollPane = new JScrollPane(centerPanel);
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
+		scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
+		this.add(scrollPane, BorderLayout.CENTER);
 	}
 
 	/**
@@ -62,6 +70,11 @@ public class JobQueueDisplay extends Display implements QueueListener {
 			centerPanel.add(jView);
 		}
 		
+		if (queue.getJobs().size() == 0) {
+			centerPanel.add(new JLabel("No jobs in queue."));
+		}
+		
+		centerPanel.add(Box.createVerticalGlue());
 		centerPanel.revalidate();
 		centerPanel.repaint();
 	}
