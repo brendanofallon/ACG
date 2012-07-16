@@ -41,6 +41,7 @@ public class TopLeftPanel extends JPanel {
 	BorderlessButton importButton;
 	ImageIcon addFastaIcon = UIConstants.getIcon("gui/icons/addFASFile.png");
 	ImageIcon addVCFIcon = UIConstants.getIcon("gui/icons/addVCFFile.png");
+	ImageIcon jobQueueIcon = UIConstants.getIcon("gui/icons/oxygen/joblist.png");
 	
 	public TopLeftPanel() {
 		this.setBackground(UIConstants.lightBackground);
@@ -63,6 +64,7 @@ public class TopLeftPanel extends JPanel {
 				showAlnGenFrame();
 			}
 		});
+		buildFromVCFButton.setXDif(-2);
 		
 		
 		BorderlessButton addBlockButton = new BorderlessButton(UIConstants.addFolder);
@@ -74,9 +76,24 @@ public class TopLeftPanel extends JPanel {
 		});
 		addBlockButton.setXDif(-3);
 		
+		BorderlessButton showQueueButton = new BorderlessButton(jobQueueIcon);
+		showQueueButton.setToolTipText("Show job list");
+		showQueueButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showJobQueueDisplay();
+			}
+		});
+		showQueueButton.setXDif(-1);
+		
+		
 		this.add(importButton);	
 		this.add(buildFromVCFButton);
 		this.add(addBlockButton);
+		this.add(showQueueButton);
+	}
+
+	protected void showJobQueueDisplay() {
+		ViewerWindow.getViewer().showJobQueueDisplay();
 	}
 
 	protected void showAddBlockFrame() {

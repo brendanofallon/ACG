@@ -262,9 +262,9 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 	@Override
 	public void beginJob() {
 		state.setState(State.RUNNING);
-
+		fireStatusUpdate();
 		startTime = new Date();
-		System.out.println("Running job, start time is:" + startTime);
+		//System.out.println("Running job, start time is:" + startTime);
 		try {
 
 			if (mc3 != null) {
@@ -279,8 +279,6 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 			ex.printStackTrace();
 		}
 		endTime = new Date();
-		System.out.println("Job is done time is:" + endTime);
-
 	}
 	
 	/**

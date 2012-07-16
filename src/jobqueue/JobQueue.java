@@ -77,7 +77,7 @@ public class JobQueue implements JobListener {
 	 * @param job
 	 */
 	public void addJob(ACGJob job) {
-		System.out.println("Adding job " + job.getJobTitle() + " to queue, state is " + job.getJobState().getState() );
+	//	System.out.println("Adding job " + job.getJobTitle() + " to queue, state is " + job.getJobState().getState() );
 		if (job.getJobState().getState() == State.RUNNING) {
 			throw new IllegalArgumentException("Job is already running! This can't happen because it may lead to concurrent jobs running");
 		}
@@ -161,7 +161,7 @@ public class JobQueue implements JobListener {
 	@Override
 	public void statusUpdated(ACGJob job) {
 		JobState state = job.getJobState();
-		System.out.println("Status updated for job: " + job.getJobTitle() + " new status is: " + job.getJobState().getState());
+		//System.out.println("Status updated for job: " + job.getJobTitle() + " new status is: " + job.getJobState().getState());
 		if (state.getState() == State.COMPLETED) {
 			currentJob = null;
 		}
@@ -177,7 +177,7 @@ public class JobQueue implements JobListener {
 	 * Submit a new job to the queue if the mode is comptible 
 	 */
 	private void handleQueueUpdate() {
-		System.out.println("Handling queue update, current job is " + currentJob + " mode is: " + currentMode);
+		//System.out.println("Handling queue update, current job is " + currentJob + " mode is: " + currentMode);
 		if (currentJob == null && currentMode == Mode.RUN_AT_WILL) {
 			ACGJob nextJob = findNextJob();
 			if (nextJob != null) {
