@@ -16,6 +16,7 @@ import jobqueue.ACGJob;
 import jobqueue.JobQueue;
 import jobqueue.QueueListener;
 import jobqueue.QueueManager;
+import newgui.UIConstants;
 import newgui.gui.display.*;
 /**
  * A display that shows the current job queue, with completed, running, and scheduled jobs
@@ -27,7 +28,7 @@ public class JobQueueDisplay extends Display implements QueueListener {
 	private JobQueue queue;
 	
 	//Stores all jobviews currently displayed in the center panel 
-	private List<JobView> jobViews = new ArrayList<JobView>();
+	private List<JobQueueItem> jobViews = new ArrayList<JobQueueItem>();
 	
 	public JobQueueDisplay() {
 		queue = QueueManager.getCurrentQueue();
@@ -38,8 +39,12 @@ public class JobQueueDisplay extends Display implements QueueListener {
 
 	private void initComponents() {
 		setLayout(new BorderLayout());
-		
+		setOpaque(false);
 		JPanel topPanel = new JPanel();
+		JLabel topLabel = new JLabel("All scheduled jobs : ");
+		topLabel.setFont(UIConstants.sansFontBold.deriveFont(14f));
+		topPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+		topPanel.add(topLabel);
 		topPanel.setOpaque(false);
 		
 		centerPanel = new JPanel();
@@ -52,6 +57,8 @@ public class JobQueueDisplay extends Display implements QueueListener {
 		JScrollPane scrollPane = new JScrollPane(centerPanel);
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 		scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
+		scrollPane.setOpaque(false);
+		scrollPane.getViewport().setOpaque(false);
 		this.add(scrollPane, BorderLayout.CENTER);
 	}
 
@@ -62,16 +69,20 @@ public class JobQueueDisplay extends Display implements QueueListener {
 		centerPanel.removeAll();
 		
 		for(ACGJob job : queue.getJobs()) {
-			JobView jView = viewForJob(job);
+			JobQueueItem jView = viewForJob(job);
 			if (jView == null) {
-				jView = new JobView(null, job);
+				jView = new JobQueueItem(null, job);
+				jView.setBorder(BorderFactory.createEmptyBorder(5, 35, 5, 35));
 				jobViews.add(jView);
 			}
 			centerPanel.add(jView);
 		}
 		
 		if (queue.getJobs().size() == 0) {
-			centerPanel.add(new JLabel("No jobs in queue."));
+			JLabel lab = new JLabel("No jobs in queue.");
+			lab.setFont(UIConstants.sansFont.deriveFont(14f));
+			centerPanel.add(lab);
+			centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 20));
 		}
 		
 		centerPanel.add(Box.createVerticalGlue());
@@ -85,8 +96,8 @@ public class JobQueueDisplay extends Display implements QueueListener {
 	 * @param job
 	 * @return
 	 */
-	private JobView viewForJob(ACGJob job) {
-		for(JobView view : jobViews) {
+	private JobQueueItem viewForJob(ACGJob job) {
+		for(JobQueueItem view : jobViews) {
 			ACGJob viewJob = view.getJob();
 			if (viewJob == job)
 				return view;

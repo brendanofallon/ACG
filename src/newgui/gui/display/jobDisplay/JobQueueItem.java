@@ -12,34 +12,29 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.JSeparator;
 import javax.swing.Timer;
-
-import newgui.UIConstants;
-import newgui.datafile.resultsfile.ResultsFile;
-import newgui.gui.display.primaryDisplay.RunningJobPanel;
-import newgui.gui.widgets.BorderlessButton;
-import newgui.gui.widgets.ToolbarPanel;
-
 
 import jobqueue.ACGJob;
 import jobqueue.JobListener;
 import jobqueue.JobState;
 import jobqueue.JobState.State;
+import newgui.UIConstants;
+import newgui.gui.display.primaryDisplay.RunningJobPanel;
+import newgui.gui.widgets.BorderlessButton;
+import newgui.gui.widgets.ToolbarPanel;
 
 /**
- * A graphical view of a single ACGJob. These are typically displayed in a list in the JobQueueDisplay. 
- * Each jobview runs a javax.swing.Timer that periodically fires, causing this JobView to
- * update various UI elements, such as the progress bar and the status label
- * @author brendano
+ * Single item in job queue display
+ * 
+ * @author brendanofallon
  *
  */
-public class JobView extends ToolbarPanel implements JobListener, ActionListener {
-
+public class JobQueueItem extends ToolbarPanel implements JobListener, ActionListener {
+	
 	private ACGJob job;
 	private RunningJobPanel jobPanel;
 	
-	public JobView(RunningJobPanel jobPanel, ACGJob job) {
+	public JobQueueItem(RunningJobPanel jobPanel, ACGJob job) {
 		this.job = job;
 		this.jobPanel = jobPanel;
 		job.addListener(this);
@@ -74,10 +69,6 @@ public class JobView extends ToolbarPanel implements JobListener, ActionListener
 		statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
 		statusLabel = new JLabel("<html> Job status : <em> In queue </em> </html>");
 		BorderlessButton startButton = new BorderlessButton(UIConstants.startButton);
-		startButton.setMinimumSize(new Dimension(25, 10));
-		startButton.setPreferredSize(new Dimension(25, 10));
-		startButton.setXDif(-2);
-		startButton.setYDif(-1);
 		startButton.setToolTipText("Resume running this job");
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -87,10 +78,6 @@ public class JobView extends ToolbarPanel implements JobListener, ActionListener
 
 		BorderlessButton pauseButton = new BorderlessButton(UIConstants.pauseButton);
 		pauseButton.setToolTipText("Pause this job");
-		pauseButton.setMinimumSize(new Dimension(25, 10));
-		pauseButton.setPreferredSize(new Dimension(25, 10));
-		pauseButton.setXDif(-1);
-		pauseButton.setYDif(-1);
 		pauseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pauseJob();
@@ -99,7 +86,6 @@ public class JobView extends ToolbarPanel implements JobListener, ActionListener
 		
 		BorderlessButton stopButton = new BorderlessButton(UIConstants.stopButton);
 		stopButton.setToolTipText("Abort this job");
-		stopButton.setYDif(-1);
 		stopButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				killJob();
@@ -250,5 +236,5 @@ public class JobView extends ToolbarPanel implements JobListener, ActionListener
 	private Timer timer;
 	private JLabel statusLabel;
 	private JProgressBar progressBar;
-	
+
 }
