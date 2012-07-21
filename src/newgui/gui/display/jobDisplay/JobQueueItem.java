@@ -16,7 +16,9 @@ import javax.swing.Timer;
 
 import jobqueue.ACGJob;
 import jobqueue.JobListener;
+import jobqueue.JobQueue;
 import jobqueue.JobState;
+import jobqueue.QueueManager;
 import jobqueue.JobState.State;
 import newgui.UIConstants;
 import newgui.gui.display.primaryDisplay.RunningJobPanel;
@@ -32,11 +34,11 @@ import newgui.gui.widgets.ToolbarPanel;
 public class JobQueueItem extends ToolbarPanel implements JobListener, ActionListener {
 	
 	private ACGJob job;
-	private RunningJobPanel jobPanel;
+	private JobQueueDisplay qDisplay;
 	
-	public JobQueueItem(RunningJobPanel jobPanel, ACGJob job) {
+	public JobQueueItem(JobQueueDisplay qDisplay, ACGJob job) {
 		this.job = job;
-		this.jobPanel = jobPanel;
+		this.qDisplay = qDisplay;
 		job.addListener(this);
 		initComponents();
 		timer = new Timer(500, this);
@@ -92,18 +94,9 @@ public class JobQueueItem extends ToolbarPanel implements JobListener, ActionLis
 			}
 		});
 		
-		BorderlessButton saveResultsButton = new BorderlessButton(UIConstants.saveGrayButton);
-		saveResultsButton.setToolTipText("Save results");
-		saveResultsButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				saveResults();
-			}
-		});
-		
+
 		statusPanel.add(statusLabel);
 		statusPanel.add(Box.createHorizontalGlue());
-//		if (jobPanel != null)
-//			statusPanel.add(saveResultsButton);
 		statusPanel.add(startButton);
 		statusPanel.add(Box.createHorizontalStrut(4));
 		statusPanel.add(pauseButton);
@@ -127,17 +120,55 @@ public class JobQueueItem extends ToolbarPanel implements JobListener, ActionLis
 		bottomPanel.setOpaque(false);
 		bottomPanel.add(Box.createRigidArea(new Dimension(10, 10)));
 		
+		
+		JPanel leftPanel= new JPanel();
+		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+		leftPanel.add(Box.createVerticalGlue());
+		BorderlessButton removeButton = new BorderlessButton(UIConstants.redCloseButton);
+		removeButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				removeJobFromQueue();
+			}
+		});
+		removeButton.setToolTipText("Remove this job from the queue");
+		leftPanel.add(removeButton);
+		leftPanel.setOpaque(false);
+		leftPanel.add(Box.createVerticalGlue());
+		
+		this.add(leftPanel, BorderLayout.EAST);
+		
 		this.setMaximumSize(new Dimension(32167, 200));
 		this.add(bottomPanel, BorderLayout.SOUTH);
 		
 	}
-	
-	/**
-	 * Called when user clicks the save results button. Causes the RunningJobPanel to create and save
-	 * a ResultsFile encapsulating the results of this run
-	 */
-	protected void saveResults() {
-		jobPanel.saveResults();
+
+	protected void removeJobFromQueue() {
+		//Warn user
+		if (currentState == JobState.State.RUNNING || currentState == JobState.State.PAUSED) {
+			int n = JOptionPane.showConfirmDialog(this, "Abort this job?");
+			if (n == JOptionPane.OK_OPTION) {
+				job.abort();	
+			}
+			
+			JobQueue queue = QueueManager.getCurrentQueue();
+			job.abort();
+			queue.removeJob(job);
+			return;
+		}
+		if (currentState == JobState.State.NOT_STARTED) {
+			int n = JOptionPane.showConfirmDialog(this, "Remove this job from the list? Settings will be lost");
+			if (n == JOptionPane.OK_OPTION) {
+				JobQueue queue = QueueManager.getCurrentQueue();
+				queue.removeJob(job);
+			}
+		}
+		if (currentState == JobState.State.COMPLETED) {
+			JobQueue queue = QueueManager.getCurrentQueue();
+			queue.removeJob(job);
+		}
+		
 	}
 
 	protected void pauseJob() {

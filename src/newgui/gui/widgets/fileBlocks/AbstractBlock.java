@@ -157,7 +157,7 @@ public class AbstractBlock extends JPanel {
 		final static Color dark2 = new Color(220, 220, 220, 100);
 		final static Color shadowColor = new Color(0f, 0f, 0f, 0.1f);
 		final static Color lineColor = new Color(200, 200, 200);
-		final static Stroke shadowStroke = new BasicStroke(1.6f);
+		final static Stroke shadowStroke = new BasicStroke(2.0f);
 		final static Stroke normalStroke = new BasicStroke(1.0f);
 		
 }
