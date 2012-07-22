@@ -43,6 +43,7 @@ import newgui.gui.modelViews.MCModelView;
 import newgui.gui.modelViews.SiteModelView;
 import newgui.gui.widgets.BorderlessButton;
 import newgui.gui.widgets.HighlightButton;
+import newgui.gui.widgets.ImageButton;
 import newgui.gui.widgets.ToolbarPanel;
 
 /**
@@ -209,8 +210,7 @@ public class AnalysisDetailsPanel extends JPanel {
 		});
 		
 		
-		BorderlessButton runButton = new BorderlessButton(UIConstants.getIcon("gui/icons/beginRunButton.png"));
-		runButton.setXDif(-1);
+		ImageButton runButton = new ImageButton(UIConstants.getIcon("gui/icons/beginRunButton.png"), UIConstants.getIcon("gui/icons/beginRunButton_pressed.png"));
 		runButton.setToolTipText("Begin the analysis using the current settings");
 		runButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

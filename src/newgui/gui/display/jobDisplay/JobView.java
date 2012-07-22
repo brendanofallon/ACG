@@ -73,19 +73,21 @@ public class JobView extends ToolbarPanel implements JobListener, ActionListener
 		statusPanel.setOpaque(false);
 		statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
 		statusLabel = new JLabel("<html> Job status : <em> In queue </em> </html>");
-		BorderlessButton startButton = new BorderlessButton(UIConstants.startButton);
+		final BorderlessButton startButton = new BorderlessButton(UIConstants.startButton, UIConstants.startButtonDisabled);
 		startButton.setMinimumSize(new Dimension(25, 10));
 		startButton.setPreferredSize(new Dimension(25, 10));
 		startButton.setXDif(-2);
 		startButton.setYDif(-1);
+		startButton.setEnabled(false);
 		startButton.setToolTipText("Resume running this job");
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				resumeJob();
+				startButton.setEnabled(false);
 			}
 		});
 
-		BorderlessButton pauseButton = new BorderlessButton(UIConstants.pauseButton);
+		final BorderlessButton pauseButton = new BorderlessButton(UIConstants.pauseButton, UIConstants.pauseButtonDisabled);
 		pauseButton.setToolTipText("Pause this job");
 		pauseButton.setMinimumSize(new Dimension(25, 10));
 		pauseButton.setPreferredSize(new Dimension(25, 10));
@@ -94,15 +96,19 @@ public class JobView extends ToolbarPanel implements JobListener, ActionListener
 		pauseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pauseJob();
+				startButton.setEnabled(true);
 			}
 		});
 		
-		BorderlessButton stopButton = new BorderlessButton(UIConstants.stopButton);
+		final BorderlessButton stopButton = new BorderlessButton(UIConstants.stopButton, UIConstants.stopButtonDisabled);
 		stopButton.setToolTipText("Abort this job");
 		stopButton.setYDif(-1);
 		stopButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				killJob();
+				stopButton.setEnabled(false);
+				pauseButton.setEnabled(false);
+				startButton.setEnabled(false);
 			}
 		});
 		

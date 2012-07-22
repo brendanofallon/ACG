@@ -71,10 +71,10 @@ public class JobQueueItem extends ToolbarPanel implements JobListener, ActionLis
 		statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
 		statusLabel = new JLabel("<html> Job status : <em> In queue </em> </html>");
 		BorderlessButton startButton = new BorderlessButton(UIConstants.startButton);
-		startButton.setToolTipText("Resume running this job");
+		startButton.setToolTipText("Run this job");
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				resumeJob();
+				beginJob();
 			}
 		});
 
@@ -177,10 +177,12 @@ public class JobQueueItem extends ToolbarPanel implements JobListener, ActionLis
 		}
 	}
 
-	protected void resumeJob() {
-		if (job.getJobState().getState() == State.PAUSED) {
-			job.resume();
+	protected void beginJob() {
+		JobQueue queue = QueueManager.getCurrentQueue();
+		if (queue.getCurrentJob()==null) {
+			//queue.
 		}
+		
 	}
 
 	protected void killJob() {

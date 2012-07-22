@@ -86,6 +86,15 @@ public class JobQueue implements JobListener {
 		handleQueueUpdate();
 		fireQueueChangeEvent();
 	}
+	
+	/**
+	 * Returns true if this queue contains the given job
+	 * @param job
+	 * @return
+	 */
+	public boolean containsJob(ACGJob job) {
+		return queue.contains(job);
+	}
 
 	/**
 	 * Removes the given from from this queue
