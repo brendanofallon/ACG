@@ -15,10 +15,7 @@ import newgui.gui.ViewerWindow;
  * @author brendan
  *
  */
-public class UIConstants {
-
-	
-	
+public class UIConstants {	
 	
 	//Component background colors
 	public static final Color componentBackground = new Color(0.92f, 0.93f, 0.93f);
@@ -58,29 +55,16 @@ public class UIConstants {
 	
 	public static final ImageIcon stopButton = getIcon("gui/icons/stopButton.png");
 	
+	public static final ImageIcon startButtonDisabled = getIcon("gui/icons/startArrow_disabled.png");
+	
+	public static final ImageIcon pauseButtonDisabled = getIcon("gui/icons/pauseButton_disabled.png");
+	
+	public static final ImageIcon stopButtonDisabled = getIcon("gui/icons/stopButton_disabled.png");
+	
+	
 	public static final ImageIcon lineChart = getIcon("gui/icons/lineChart.png");
 	public static final ImageIcon barChart = getIcon("gui/icons/barChart.png");
 	
-//	public static final ImageIcon blueRightArrow = getIcon("gui/icons/blueRightArrow.png");
-//	public static final ImageIcon grayRightArrow = getIcon("gui/icons/grayRightArrow.png");
-//	
-//	public static final ImageIcon blueLeftArrow = getIcon("gui/icons/blueLeftArrow.png");
-//	
-//	public static final ImageIcon redCloseButton = getIcon("gui/icons/redClose.png");
-//	public static final ImageIcon grayCloseButton = getIcon("gui/icons/grayClose.png");
-//
-//	
-
-//	
-//	public static final ImageIcon addButton = getIcon("gui/icons/addButton.png");
-//	
-//	public static final ImageIcon saveGrayButton = getIcon("gui/icons/saveGray.png");
-//	public static final ImageIcon saveBlueButton = getIcon("gui/icons/saveBlue.png");
-//	
-//	public static final ImageIcon clearButton = getIcon("gui/icons/zeroIcon.png");
-//	
-//	public static final ImageIcon grayHistogram = getIcon("gui/icons/grayHistogram.png");
-//	public static final ImageIcon blueHistogram = getIcon("gui/icons/blueHistogram.png");
 	
 	//Fonts
 	//public static final Font sansFont = getFont("gui/fonts/Trebuchet_MS.ttf");
