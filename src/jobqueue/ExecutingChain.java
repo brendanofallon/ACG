@@ -43,7 +43,7 @@ import mcmc.mc3.MC3;
  * @author brendan
  *
  */
-public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob {
+public class ExecutingChain implements MCMCListener, ACGJob {
 
 	protected MCMC chain = null; //Will be null if user supplies an MC3 object to constructor
 	protected MC3 mc3 = null;		//Will be null if user supplies MCMC object to constructor
@@ -215,16 +215,6 @@ public class ExecutingChain extends SwingWorker implements MCMCListener, ACGJob 
 			} 
 		}
 		
-		if (this.isCancelled()) {
-			if (mc3 != null)
-				mc3.abort();
-			
-			if (chain != null)
-				chain.abort();
-			
-			state.setState(State.COMPLETED);
-			fireStatusUpdate();
-		}
 	}
 
 	@Override

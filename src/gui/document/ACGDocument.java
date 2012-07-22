@@ -93,7 +93,7 @@ public class ACGDocument {
 	XMLLoader loader = null;
 	
 	//A map associated all XMLObjects with their element name
-	Map<String, XMLObject> objMap = new HashMap<String, XMLObject>();
+	//Map<String, XMLObject> objMap = new HashMap<String, XMLObject>();
 	
 	ValidityChecker validityChecker = new ACGValidityChecker();
 	
@@ -227,6 +227,12 @@ public class ACGDocument {
 			ex.printStackTrace();
 			throw new InvalidInputFileException(ex.getMessage());
 		}
+	}
+	
+	
+	public void clearObjectMap() {
+		loader.clearObjectMap();
+		objectsCreated = false;
 	}
 	
 	/**
@@ -378,16 +384,16 @@ public class ACGDocument {
 		return loader.getChildLabelsForLabel(label);
 	}
 	
-	public String toString() {
-		StringBuilder str = new StringBuilder();
-		str.append("Found " + objMap.size() + " total objects.. \n");
-		for(String label : objMap.keySet()) {
-			XMLObject obj = objMap.get(label);
-			str.append(label + " : " + obj.className+ "\n");
-		}
-		
-		return str.toString();
-	}
+//	public String toString() {
+//		StringBuilder str = new StringBuilder();
+//		str.append("Found " + objMap.size() + " total objects.. \n");
+//		for(String label : objMap.keySet()) {
+//			XMLObject obj = objMap.get(label);
+//			str.append(label + " : " + obj.className+ "\n");
+//		}
+//		
+//		return str.toString();
+//	}
 	
 	
 	/**

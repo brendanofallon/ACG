@@ -52,7 +52,6 @@ public class RunningJobPanel extends JPanel implements MCMCListener {
 	
 	public RunningJobPanel(PrimaryDisplay parentDisplay) {
 		this.displayParent = parentDisplay;
-		memLogger = new MemoryStateLogger();
 		initComponents();
 	}
 	
@@ -71,11 +70,38 @@ public class RunningJobPanel extends JPanel implements MCMCListener {
 	public ACGDocument getACGDocument() {
 		return acgDoc;
 	}
+
+	/**
+	 * Re-start the current job, discarding all previously generated info. Most
+	 * components are re-created  
+	 */
+	public void restartJob() {
+		if(this.acgDoc == null) {
+			throw new IllegalStateException("Can't restart job, no ACG document has been set");
+		}
+		
+		chain.abort();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		this.removeAll();
+		initComponents();
+		revalidate();
+		acgDoc.clearObjectMap();
+		chain = null;
+		runJob(acgDoc);
+	}
 	
 	public void runJob(ACGDocument doc) {
 		if (chain != null)
 			throw new IllegalStateException("Only one chain per job panel");
 
+		memLogger = new MemoryStateLogger();
 		this.acgDoc = doc;
 		
 		//Must go first, otherwise objects in document will not be loaded / instantiated
@@ -147,17 +173,18 @@ public class RunningJobPanel extends JPanel implements MCMCListener {
 		
 		seriesPanel.setMemoryLogger(memLogger);
 		
-		//The job is actually run by submitting it to a global "JobQueue" that manages all running jobs
 		chain.setJobTitle( jobTitle + "-analysis" );
-		JobQueue currentQueue = QueueManager.getCurrentQueue();
-		currentQueue.addJob(chain);
+		chain.addListener(this);
 		
 		jobView = new JobView(this, chain);
 		add(jobView, BorderLayout.NORTH);
 		
-		chain.addListener(this);
-		
 		revalidate();
+		repaint();
+		
+		//The job is actually run by submitting it to a global "JobQueue" that manages all running jobs
+		JobQueue currentQueue = QueueManager.getCurrentQueue();
+		currentQueue.addJob(chain);
 		repaint();
 	}
 	
@@ -193,8 +220,8 @@ public class RunningJobPanel extends JPanel implements MCMCListener {
 		Object[] options = {"Don't save",
 				"Save results"};
 		int n = JOptionPane.showOptionDialog(this.getRootPane(),
-				"Save these results?",
-						"Run '" + displayParent.getTitle() + "' has completed",
+				"Save results for job " + chain.getJobTitle() +"?",
+						"Run " + displayParent.getTitle() + " has completed",
 						JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE,
 						null,
@@ -221,7 +248,6 @@ public class RunningJobPanel extends JPanel implements MCMCListener {
 	public void chainIsFinished() {
 		promptToSaveResults();
 	}
-
 
 	SeriesFigurePanel seriesPanel;
 	MemoryStateLogger memLogger; //Listens to chains and logs parameter values / likelihoods

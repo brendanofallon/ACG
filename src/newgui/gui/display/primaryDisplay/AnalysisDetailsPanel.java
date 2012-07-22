@@ -227,6 +227,10 @@ public class AnalysisDetailsPanel extends JPanel {
 		loggersView = new LoggersView();
 	}
 	
+	public ACGDocument createACGDocument() throws InputConfigException {
+		updateAllModels();
+		return analysis.getACGDocument();
+	}
 	
 	protected void saveAnalysisFile() {
 		updateAllModels();
@@ -275,18 +279,18 @@ public class AnalysisDetailsPanel extends JPanel {
 	 * we can watch it run. 
 	 */
 	protected void beginNewRun() {
-		ACGDocument acgDocument;
 		try {
-			updateAllModels();
-		
-			acgDocument = analysis.getACGDocument();
+
+			ACGDocument acgDocument = createACGDocument();
 			
 			displayParent.showJobPanel(acgDocument);
 			
 		} catch (InputConfigException e) {
+			ErrorWindow.showErrorWindow(e, "Error creating ACG Document : " + e.getMessage());
 			System.out.println("Input config exception, could not create ACG document: " + e.getMessage());
 			e.printStackTrace();
 		} catch (Exception e) {
+			ErrorWindow.showErrorWindow(e, "Error creating ACG Document : " + e.getMessage());
 			System.out.println("Input config exception, could not create ACG document: " + e.getMessage());
 			e.printStackTrace();
 		}

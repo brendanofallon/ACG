@@ -33,7 +33,6 @@ public class JobQueue implements JobListener {
 	public enum Mode {RUN_AT_WILL, STOP_AFTER};
 	
 	protected Mode currentMode = Mode.RUN_AT_WILL;
-	protected ACGJob currentJob = null;
 	
 	public JobQueue() {
 		
@@ -63,13 +62,39 @@ public class JobQueue implements JobListener {
 	public List<ACGJob> getJobs() {
 		return queue;
 	}
+
+	public List<ACGJob> getRunningJobs() {
+		List<ACGJob> runningJobs = new ArrayList<ACGJob>();
+		for(ACGJob job : queue) {
+			if (job.getJobState().getState() == JobState.State.RUNNING) {
+				runningJobs.add(job);
+			}
+		}
+		return runningJobs;
+	}
+	
+	public List<ACGJob> getPausedJobs() {
+		List<ACGJob> runningJobs = new ArrayList<ACGJob>();
+		for(ACGJob job : queue) {
+			if (job.getJobState().getState() == JobState.State.PAUSED) {
+				runningJobs.add(job);
+			}
+		}
+		return runningJobs;
+	}
 	
 	/**
-	 * Get the currently executing job, if there is one. Otherwise returns null
+	 * Returns the number of jobs whose state is 'RUNNING'
 	 * @return
 	 */
-	public ACGJob getCurrentJob() {
-		return currentJob;
+	public int getRunningJobCount() {
+		int count = 0;
+		for(ACGJob job : queue) {
+			if (job.getJobState().getState() == JobState.State.RUNNING) {
+				count++;
+			}
+		}
+		return count;
 	}
 	
 	/**
@@ -103,9 +128,6 @@ public class JobQueue implements JobListener {
 	public void removeJob(ACGJob job) {
 		job.removeListener(this);
 		queue.remove(job);
-		if (job == currentJob)
-			currentJob = null;
-
 		handleQueueUpdate();
 		fireQueueChangeEvent();
 	}
@@ -145,7 +167,7 @@ public class JobQueue implements JobListener {
 	 * @return
 	 */
 	public boolean isRunningJob() {
-		return currentJob != null;
+		return getRunningJobCount() > 0;
 	}
 	
 	/**
@@ -156,8 +178,7 @@ public class JobQueue implements JobListener {
 	public void setMode(Mode newMode) {
 		if (currentMode == Mode.STOP_AFTER && newMode == Mode.RUN_AT_WILL) {
 			currentMode = newMode;
-			if (currentJob == null && hasEligibleJobs())
-				handleQueueUpdate();
+			handleQueueUpdate();
 		}
 		currentMode = newMode;
 	}
@@ -173,11 +194,8 @@ public class JobQueue implements JobListener {
 	
 	@Override
 	public void statusUpdated(ACGJob job) {
-		JobState state = job.getJobState();
-		//System.out.println("Status updated for job: " + job.getJobTitle() + " new status is: " + job.getJobState().getState());
-		if (state.getState() == State.COMPLETED) {
-			currentJob = null;
-		}
+		//JobState state = job.getJobState();
+		System.out.println("Status updated for job: " + job.getJobTitle() + " new status is: " + job.getJobState().getState());
 		
 		handleQueueUpdate();
 	}
@@ -191,7 +209,7 @@ public class JobQueue implements JobListener {
 	 */
 	private void handleQueueUpdate() {
 		//System.out.println("Handling queue update, current job is " + currentJob + " mode is: " + currentMode);
-		if (currentJob == null && currentMode == Mode.RUN_AT_WILL) {
+		if (getRunningJobCount() == 0 && currentMode == Mode.RUN_AT_WILL) {
 			ACGJob nextJob = findNextJob();
 			if (nextJob != null) {
 				submitJob(nextJob);
@@ -208,7 +226,6 @@ public class JobQueue implements JobListener {
 	 */
 	private void submitJob(final ACGJob nextJob) {
 		JobRunner runner = new JobRunner(nextJob);
-		currentJob =  nextJob;
 		runner.execute();
 	}
 

@@ -61,6 +61,7 @@ public class UIConstants {
 	
 	public static final ImageIcon stopButtonDisabled = getIcon("gui/icons/stopButton_disabled.png");
 	
+	public static final ImageIcon restartButton = getIcon("gui/icons/reloadIcon16.png");
 	
 	public static final ImageIcon lineChart = getIcon("gui/icons/lineChart.png");
 	public static final ImageIcon barChart = getIcon("gui/icons/barChart.png");
