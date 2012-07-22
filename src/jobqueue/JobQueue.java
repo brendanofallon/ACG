@@ -94,6 +94,10 @@ public class JobQueue implements JobListener {
 	public void removeJob(ACGJob job) {
 		job.removeListener(this);
 		queue.remove(job);
+		if (job == currentJob)
+			currentJob = null;
+
+		handleQueueUpdate();
 		fireQueueChangeEvent();
 	}
 	

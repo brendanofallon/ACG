@@ -1,0 +1,7 @@
+
+
+Finish work on JobQueue display - jobs should be startable / stoppable / remove reorder
+
+Fix memory usage/performance  in ConsensusTreeLogger - maybe use ints instead of strings
+
+Better distinguish between alignments / saved results / saved settings in display

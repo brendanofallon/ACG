@@ -36,7 +36,7 @@ public class UIConstants {
 	
 	public static final ImageIcon blueLeftArrow = getIcon("gui/icons/blueLeftArrow.png");
 	
-	public static final ImageIcon redCloseButton = getIcon("gui/icons/oxygen/close_round.png");
+	public static final ImageIcon redCloseButton = getIcon("gui/icons/oxygen/close_round24.png");
 	public static final ImageIcon grayCloseButton = getIcon("gui/icons/smallGrayClose.png");
 
 	public static final ImageIcon settings = getIcon("gui/icons/oxygen/wrench_gear.png");
