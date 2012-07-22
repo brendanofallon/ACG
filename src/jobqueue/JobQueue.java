@@ -104,6 +104,7 @@ public class JobQueue implements JobListener {
 	public void addJob(ACGJob job) {
 	//	System.out.println("Adding job " + job.getJobTitle() + " to queue, state is " + job.getJobState().getState() );
 		if (job.getJobState().getState() == State.RUNNING) {
+			
 			throw new IllegalArgumentException("Job is already running! This can't happen because it may lead to concurrent jobs running");
 		}
 		job.addListener(this);
@@ -292,9 +293,6 @@ public class JobQueue implements JobListener {
 		}
 		
 	}
-
-
-	
 	
 	private List<QueueListener> listeners = new ArrayList<QueueListener>();
 }

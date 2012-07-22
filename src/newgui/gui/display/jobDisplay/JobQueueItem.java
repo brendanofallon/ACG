@@ -70,23 +70,38 @@ public class JobQueueItem extends ToolbarPanel implements JobListener, ActionLis
 		statusPanel.setOpaque(false);
 		statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
 		statusLabel = new JLabel("<html> Job status : <em> In queue </em> </html>");
-		BorderlessButton startButton = new BorderlessButton(UIConstants.startButton);
-		startButton.setToolTipText("Run this job");
+	
+		final BorderlessButton pauseButton = new BorderlessButton(UIConstants.pauseButton, UIConstants.pauseButtonDisabled);
+		final BorderlessButton startButton = new BorderlessButton(UIConstants.startButton, UIConstants.startButtonDisabled);
+
+		startButton.setMinimumSize(new Dimension(25, 10));
+		startButton.setPreferredSize(new Dimension(25, 10));
+		startButton.setXDif(-2);
+		startButton.setYDif(-1);
+		startButton.setEnabled(false);
+		startButton.setToolTipText("Resume running this job");
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				beginJob();
+				resumeJob();
+				startButton.setEnabled(false);
+				pauseButton.setEnabled(true);
 			}
 		});
 
-		BorderlessButton pauseButton = new BorderlessButton(UIConstants.pauseButton);
 		pauseButton.setToolTipText("Pause this job");
+		pauseButton.setMinimumSize(new Dimension(25, 10));
+		pauseButton.setPreferredSize(new Dimension(25, 10));
+		pauseButton.setXDif(-1);
+		pauseButton.setYDif(-1);
 		pauseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pauseJob();
+				startButton.setEnabled(true);
+				pauseButton.setEnabled(false);
 			}
 		});
 		
-		BorderlessButton stopButton = new BorderlessButton(UIConstants.stopButton);
+		final BorderlessButton stopButton = new BorderlessButton(UIConstants.stopButton, UIConstants.stopButtonDisabled);
 		stopButton.setToolTipText("Abort this job");
 		stopButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -177,17 +192,15 @@ public class JobQueueItem extends ToolbarPanel implements JobListener, ActionLis
 		}
 	}
 
-	protected void beginJob() {
-		JobQueue queue = QueueManager.getCurrentQueue();
-		if (queue.getCurrentJob()==null) {
-			//queue.
+	protected void resumeJob() {
+		if (job.getJobState().getState() == State.PAUSED) {
+			job.resume();
 		}
-		
 	}
 
 	protected void killJob() {
 		if (currentState != JobState.State.COMPLETED) {
-			int n = JOptionPane.showConfirmDialog(this, "Abort this job?");
+			int n = JOptionPane.showConfirmDialog(this, "Abort job " + job.getJobTitle() + "?");
 			if (n == JOptionPane.OK_OPTION) {
 				job.abort();	
 			}

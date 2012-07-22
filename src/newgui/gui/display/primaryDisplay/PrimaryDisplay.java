@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import jobqueue.ExecutingChain;
+import jobqueue.QueueManager;
 import jobqueue.JobState.State;
 
 import sequence.Alignment;
@@ -73,7 +74,7 @@ public class PrimaryDisplay extends Display {
 			ExecutingChain chain = runJobPanel.getChain();
 			if (chain != null) {
 				chain.abort();
-				chain.cancel(true);
+				QueueManager.getCurrentQueue().removeJob(chain);
 			}
 		}
 	}
