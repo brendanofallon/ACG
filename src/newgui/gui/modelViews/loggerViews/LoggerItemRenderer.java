@@ -20,7 +20,6 @@
 package newgui.gui.modelViews.loggerViews;
 
 import gui.ErrorWindow;
-import gui.widgets.RoundedPanel;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -32,6 +31,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import newgui.gui.modelViews.AddLoggersFrame;
+import newgui.gui.widgets.RoundedPanel;
 
 /**
  * This draws a representation of the given logger view in an AddLoggerFrame 

@@ -1,19 +1,13 @@
 package newgui.gui.display.primaryDisplay;
 
 import gui.ErrorWindow;
-import gui.document.ACGDocument;
-import gui.inputPanels.AnalysisModel;
-import gui.inputPanels.Configurator.InputConfigException;
-import gui.inputPanels.MCMCModelView;
-import gui.inputPanels.loggerConfigs.LoggersPanel;
+import gui.modelElements.AnalysisModel;
+import gui.modelElements.Configurator.InputConfigException;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FileDialog;
-import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -21,18 +15,12 @@ import java.io.File;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import jobqueue.ExecutingChain;
-import jobqueue.JobQueue;
-import jobqueue.QueueManager;
-import jobqueue.JobQueue.Mode;
-import logging.MemoryStateLogger;
+import document.ACGDocument;
 
-import net.miginfocom.swing.MigLayout;
 import newgui.UIConstants;
 import newgui.datafile.AnalysisDataFile;
 import newgui.datafile.XMLConversionError;
@@ -42,7 +30,6 @@ import newgui.gui.modelViews.LoggersView;
 import newgui.gui.modelViews.MCModelView;
 import newgui.gui.modelViews.SiteModelView;
 import newgui.gui.widgets.BorderlessButton;
-import newgui.gui.widgets.HighlightButton;
 import newgui.gui.widgets.ImageButton;
 import newgui.gui.widgets.ToolbarPanel;
 

@@ -19,6 +19,7 @@ import newgui.gui.ViewerWindow;
  */
 public class ViewerApp {
 
+	public static final String VERSION = "0.9b1";
 	static ViewerApp acgApp;
 	protected ViewerWindow window;
 	protected static String defaultDataDir = ".acgdata";

@@ -1,10 +1,10 @@
 package newgui.analysisTemplate;
 
 import sequence.Alignment;
-import gui.inputPanels.AnalysisModel;
-import gui.inputPanels.MCMCModelElement;
 import gui.inputPanels.loggerConfigs.BPDensityModel;
 import gui.inputPanels.loggerConfigs.RootHeightModel;
+import gui.modelElements.AnalysisModel;
+import gui.modelElements.MCMCModelElement;
 
 public class QuickAnalysis extends AnalysisTemplate {
 

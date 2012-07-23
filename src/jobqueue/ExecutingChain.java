@@ -25,9 +25,10 @@ import java.util.Date;
 import java.util.List;
 
 import gui.ErrorWindow;
-import gui.document.ACGDocument;
 
 import javax.swing.SwingWorker;
+
+import document.ACGDocument;
 
 import xml.InvalidInputFileException;
 

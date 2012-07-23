@@ -19,7 +19,6 @@
 
 package gui.inputPanels.loggerConfigs;
 
-import gui.document.ACGDocument;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -50,10 +49,12 @@ import net.miginfocom.swing.MigLayout;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import document.ACGDocument;
+
 import xml.XMLLoader;
 
 
-import gui.inputPanels.Configurator.InputConfigException;
+import gui.modelElements.Configurator.InputConfigException;
 
 public class BPLocationView extends AbstractLoggerView {
 

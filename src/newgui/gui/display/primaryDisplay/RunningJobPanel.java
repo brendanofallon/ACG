@@ -6,13 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gui.ErrorWindow;
-import gui.document.ACGDocument;
 import gui.figure.series.XYSeries;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import document.ACGDocument;
 
 import mcmc.MCMC;
 import mcmc.MCMCListener;

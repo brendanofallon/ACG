@@ -21,10 +21,11 @@ package gui.inputPanels.loggerConfigs;
 
 import logging.ConsensusTreeLogger;
 import logging.PropertyLogger;
-import gui.document.ACGDocument;
-import gui.inputPanels.Configurator.InputConfigException;
+import gui.modelElements.Configurator.InputConfigException;
 
 import org.w3c.dom.Element;
+
+import document.ACGDocument;
 
 public class ConsensusTreeModel extends LoggerModel {
 	

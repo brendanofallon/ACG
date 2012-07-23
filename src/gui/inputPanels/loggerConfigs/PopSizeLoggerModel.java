@@ -1,12 +1,13 @@
 package gui.inputPanels.loggerConfigs;
 
-import gui.document.ACGDocument;
-import gui.inputPanels.Configurator.InputConfigException;
+import gui.modelElements.Configurator.InputConfigException;
 import logging.BreakpointDensity;
 import logging.PopSizeLogger;
 import logging.PropertyLogger;
 
 import org.w3c.dom.Element;
+
+import document.ACGDocument;
 
 public class PopSizeLoggerModel extends LoggerModel {
 

@@ -5,8 +5,6 @@ import gui.figure.series.HistogramSeries;
 import gui.figure.series.XYSeries;
 import gui.figure.series.XYSeriesElement;
 import gui.figure.series.XYSeriesFigure;
-import gui.monitors.MonitorPanel;
-import gui.widgets.FloatingPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -34,6 +32,7 @@ import javax.swing.Timer;
 import newgui.UIConstants;
 import newgui.gui.widgets.AbstractSeriesPanel;
 import newgui.gui.widgets.BorderlessButton;
+import newgui.gui.widgets.FloatingPanel;
 import newgui.gui.widgets.HighlightButton;
 import newgui.gui.widgets.ToggleButton;
 

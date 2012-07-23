@@ -27,8 +27,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 
-import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.loggerConfigs.ConsensusTreeModel;
+import gui.modelElements.Configurator.InputConfigException;
 
 public class ConsensusTreeView extends DefaultLoggerView {
 

@@ -1,9 +1,8 @@
 package newgui.gui.modelViews;
 
-import gui.ACGFrame;
 import gui.ErrorWindow;
-import gui.inputPanels.Configurator.InputConfigException;
-import gui.inputPanels.MCMCModelElement;
+import gui.modelElements.MCMCModelElement;
+import gui.modelElements.Configurator.InputConfigException;
 
 import java.awt.Component;
 import java.awt.Dimension;

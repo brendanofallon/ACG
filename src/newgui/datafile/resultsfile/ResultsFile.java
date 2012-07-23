@@ -1,7 +1,6 @@
 package newgui.datafile.resultsfile;
 
 import gui.ErrorWindow;
-import gui.document.ACGDocument;
 import gui.figure.series.XYSeries;
 
 import java.awt.Color;
@@ -46,6 +45,8 @@ import newgui.gui.display.resultsDisplay.ResultsDisplay;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import document.ACGDocument;
 
 import tools.StringUtilities;
 

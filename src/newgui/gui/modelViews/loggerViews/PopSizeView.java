@@ -1,8 +1,8 @@
 package newgui.gui.modelViews.loggerViews;
 
-import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.loggerConfigs.PopSizeLoggerModel;
 import gui.inputPanels.loggerConfigs.RootHeightModel;
+import gui.modelElements.Configurator.InputConfigException;
 
 import java.awt.Dimension;
 

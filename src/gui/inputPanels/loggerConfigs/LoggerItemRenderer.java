@@ -20,7 +20,6 @@
 package gui.inputPanels.loggerConfigs;
 
 import gui.ErrorWindow;
-import gui.widgets.RoundedPanel;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -35,6 +34,8 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
+
+import newgui.gui.widgets.RoundedPanel;
 
 /**
  * This draws a representation of the given logger view in an AddLoggerFrame 

@@ -25,9 +25,10 @@ import logging.RootHeightDensity;
 
 import org.w3c.dom.Element;
 
-import gui.document.ACGDocument;
-import gui.inputPanels.Configurator;
-import gui.inputPanels.Configurator.InputConfigException;
+import document.ACGDocument;
+
+import gui.modelElements.Configurator;
+import gui.modelElements.Configurator.InputConfigException;
 
 
 public class RootHeightModel extends LoggerModel {

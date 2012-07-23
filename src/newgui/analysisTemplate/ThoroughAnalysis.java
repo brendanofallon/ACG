@@ -1,13 +1,13 @@
 package newgui.analysisTemplate;
 
 import sequence.Alignment;
-import gui.inputPanels.AnalysisModel;
-import gui.inputPanels.MCMCModelElement;
-import gui.inputPanels.SiteModelElement.MutModelType;
 import gui.inputPanels.loggerConfigs.BPDensityModel;
 import gui.inputPanels.loggerConfigs.ConsensusTreeModel;
 import gui.inputPanels.loggerConfigs.PopSizeLoggerModel;
 import gui.inputPanels.loggerConfigs.RootHeightModel;
+import gui.modelElements.AnalysisModel;
+import gui.modelElements.MCMCModelElement;
+import gui.modelElements.SiteModelElement.MutModelType;
 
 public class ThoroughAnalysis extends AnalysisTemplate {
 

@@ -19,7 +19,7 @@
 
 package gui.inputPanels.loggerConfigs;
 
-import gui.inputPanels.Configurator.InputConfigException;
+import gui.modelElements.Configurator.InputConfigException;
 
 public class MPEARGView extends AbstractLoggerView {
 

@@ -29,7 +29,7 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import gui.inputPanels.Configurator.InputConfigException;
+import gui.modelElements.Configurator.InputConfigException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;

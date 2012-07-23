@@ -1,7 +1,6 @@
 package newgui.gui.display.primaryDisplay;
 
-import gui.document.ACGDocument;
-import gui.inputPanels.AnalysisModel;
+import gui.modelElements.AnalysisModel;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -11,6 +10,8 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import document.ACGDocument;
 
 import jobqueue.ExecutingChain;
 import jobqueue.QueueManager;

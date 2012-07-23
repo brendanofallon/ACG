@@ -1,11 +1,10 @@
 package newgui.gui.modelViews;
 
-import gui.document.ACGDocument;
-import gui.inputPanels.Configurator.InputConfigException;
-import gui.inputPanels.DoubleParamView;
-import gui.inputPanels.SiteModelElement;
-import gui.inputPanels.SiteModelElement.MutModelType;
-import gui.inputPanels.SiteModelElement.RateModelType;
+import gui.modelElements.DoubleParamView;
+import gui.modelElements.SiteModelElement;
+import gui.modelElements.Configurator.InputConfigException;
+import gui.modelElements.SiteModelElement.MutModelType;
+import gui.modelElements.SiteModelElement.RateModelType;
 import gui.widgets.Style;
 import gui.widgets.Stylist;
 
@@ -40,6 +39,8 @@ import javax.swing.event.ChangeListener;
 import net.miginfocom.swing.MigLayout;
 
 import org.w3c.dom.Element;
+
+import document.ACGDocument;
 
 /**
  * The 'view' portion for site / rate models, allowing user to see and configure some options

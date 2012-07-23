@@ -39,7 +39,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import gui.widgets.SpinArrow;
+import newgui.gui.widgets.SpinArrow;
+
 
 public class ErrorWindow extends JFrame implements PropertyChangeListener {
 

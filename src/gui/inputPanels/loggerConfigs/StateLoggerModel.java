@@ -19,13 +19,14 @@
 
 package gui.inputPanels.loggerConfigs;
 
-import gui.document.ACGDocument;
-import gui.inputPanels.Configurator.InputConfigException;
+import gui.modelElements.Configurator.InputConfigException;
 import logging.BreakpointDensity;
 import logging.PropertyLogger;
 import logging.StateLogger;
 
 import org.w3c.dom.Element;
+
+import document.ACGDocument;
 
 public class StateLoggerModel extends LoggerModel {
 

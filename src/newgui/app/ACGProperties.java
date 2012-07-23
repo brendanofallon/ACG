@@ -20,11 +20,17 @@ import java.util.Map;
  */
 public class ACGProperties {
 	
+	public static final String FIRST_RUN_DATE = "first.run";
+	public static final String JAVA_VENDOR = "java.vendor";
+	public static final String JAVA_VERSION = "java.version";
+	public static final String OS_ARCH = "os.arch";
+	public static final String OS_NAME = "os.name";
 	public static final String LAST_FILE_READ = "last.file.read";
 	public static final String LAST_WRITTEN = "last.written";
 	public static final String LAST_READ = "last.read";
+	public static final String VERSION = "version";
+	public static final String ID = "id";
 	
-
 	private Map<String, String> props = new HashMap<String, String>();
 	private static ACGProperties properties = null;
 	
@@ -132,8 +138,19 @@ public class ACGProperties {
 
 		Date now = new Date();
 		addProperty(LAST_READ, now.toString());
-		
 		addProperty(LAST_FILE_READ, propsFile.getAbsolutePath());
+		addProperty(ACGProperties.VERSION, ViewerApp.VERSION);
+		
+		if ( getProperty(FIRST_RUN_DATE) == null) {
+			addProperty(FIRST_RUN_DATE, now.toString());
+		}
+		
+		addProperty(JAVA_VENDOR, System.getProperty("java.vendor"));
+		addProperty(JAVA_VERSION, System.getProperty("java.version"));
+		addProperty(OS_ARCH, System.getProperty("os.arch"));
+		addProperty(OS_NAME, System.getProperty("os.name"));
+		
+		
 	}
 	
 	/**

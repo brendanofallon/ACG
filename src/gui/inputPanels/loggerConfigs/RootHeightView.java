@@ -22,7 +22,7 @@ package gui.inputPanels.loggerConfigs;
 
 import java.awt.Dimension;
 
-import gui.inputPanels.Configurator.InputConfigException;
+import gui.modelElements.Configurator.InputConfigException;
 
 import javax.swing.JLabel;
 import javax.swing.JSpinner;

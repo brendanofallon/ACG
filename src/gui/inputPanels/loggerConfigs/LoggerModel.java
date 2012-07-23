@@ -28,12 +28,13 @@ import logging.StateLogger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import gui.document.ACGDocument;
-import gui.inputPanels.ARGModelElement;
-import gui.inputPanels.DoubleParamElement;
-import gui.inputPanels.ModelElement;
-import gui.inputPanels.Configurator.InputConfigException;
-import gui.inputPanels.PopSizeModelElement;
+import document.ACGDocument;
+
+import gui.modelElements.ARGModelElement;
+import gui.modelElements.DoubleParamElement;
+import gui.modelElements.ModelElement;
+import gui.modelElements.PopSizeModelElement;
+import gui.modelElements.Configurator.InputConfigException;
 
 /**
  * Abstract base class for objects which can read & write XML from loggers 

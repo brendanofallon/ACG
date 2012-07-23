@@ -1,9 +1,7 @@
 package newgui.gui.modelViews.loggerViews;
 
-import gui.ACGFrame;
-import gui.inputPanels.Configurator.InputConfigException;
 import gui.inputPanels.loggerConfigs.LoggerModel;
-import gui.widgets.SpinArrow;
+import gui.modelElements.Configurator.InputConfigException;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -33,6 +31,7 @@ import net.miginfocom.swing.MigLayout;
 import newgui.UIConstants;
 import newgui.gui.modelViews.LoggersView;
 import newgui.gui.widgets.BorderlessButton;
+import newgui.gui.widgets.SpinArrow;
 
 /**
  * Basic view for a single logger model - this works for a few loggers, but the rest subclass

@@ -1,7 +1,7 @@
 package newgui.analysisTemplate;
 
 import sequence.Alignment;
-import gui.inputPanels.AnalysisModel;
+import gui.modelElements.AnalysisModel;
 
 public abstract class AnalysisTemplate {
 

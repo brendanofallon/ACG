@@ -14,12 +14,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import document.ACGDocument;
+
 import newgui.gui.display.Display;
 import newgui.gui.display.primaryDisplay.PrimaryDisplay;
 import gui.ErrorWindow;
-import gui.document.ACGDocument;
-import gui.inputPanels.AnalysisModel;
-import gui.inputPanels.Configurator.InputConfigException;
+import gui.modelElements.AnalysisModel;
+import gui.modelElements.Configurator.InputConfigException;
 
 /**
  * An analysis data file basically wraps an ACGDocument and turns it into a DataFile. This may be
