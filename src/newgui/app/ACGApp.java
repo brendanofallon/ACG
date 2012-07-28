@@ -7,6 +7,8 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Properties;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
@@ -19,15 +21,21 @@ import newgui.gui.ViewerWindow;
  * @author brendan
  *
  */
-public class ViewerApp {
+public class ACGApp {
 
-	public static final String VERSION = "0.9b1";
-	static ViewerApp acgApp;
-	protected ViewerWindow window;
-	protected static String defaultDataDir = ".acgdata";
-	protected static String defaultPropsFilename = "acg_properties.dat";
-	protected static String defaultLogFilename = "acglog.txt";
+	public static final Integer VERSION_NUM = 2;
+	public static final String VERSION = "0.9-" + VERSION_NUM;
+	
+	public static final String defaultPropsFilename = "acg_properties.dat";
+	public static final String defaultLogFilename = "acglog.txt";
 	public static final Logger logger = Logger.getAnonymousLogger();
+	
+	static ACGApp acgApp;
+	protected ViewerWindow window;
+
+	public ACGApp() {
+		//Must have explicit no-arg constructor
+	}
 	
 	public static void showMainWindow() {
 		
@@ -73,7 +81,7 @@ public class ViewerApp {
 		String baseDir = System.getProperty("user.dir");
 		String fileSep = System.getProperty("file.separator");
 
-		File logFile = new File(baseDir + fileSep + defaultDataDir + fileSep + defaultLogFilename);
+		File logFile = new File(baseDir + fileSep + AppLoader.defaultDataDir + fileSep + defaultLogFilename);
 		try {
 			FileHandler handler = new FileHandler(logFile.getAbsolutePath());
 			logger.addHandler(handler);
@@ -107,7 +115,7 @@ public class ViewerApp {
 		//Look for properties in the current directory, then one dir up, then in the users home dir
 		String path = System.getProperty("user.dir");
 		String fileSep = System.getProperty("file.separator");
-		File propsFile = new File(path + fileSep + defaultDataDir + fileSep + defaultPropsFilename);
+		File propsFile = new File(path + fileSep + AppLoader.defaultDataDir + fileSep + defaultPropsFilename);
 		if (propsFile.exists()) {
 			try {
 				new ACGProperties(propsFile);
@@ -121,7 +129,7 @@ public class ViewerApp {
 		
 		
 		path = propsFile.getParentFile().getParent();
-		propsFile = new File(path + fileSep + defaultDataDir + fileSep + defaultPropsFilename);
+		propsFile = new File(path + fileSep + AppLoader.defaultDataDir + fileSep + defaultPropsFilename);
 
 		if (propsFile.exists()) {
 			try {
@@ -136,7 +144,7 @@ public class ViewerApp {
 		
 		//Hmm, try the users home dir
 		path = System.getProperty("user.home");
-		propsFile = new File(path + fileSep + defaultDataDir + fileSep + defaultPropsFilename);
+		propsFile = new File(path + fileSep + AppLoader.defaultDataDir + fileSep + defaultPropsFilename);
 
 		if (propsFile.exists()) {
 			try {
@@ -148,19 +156,20 @@ public class ViewerApp {
 			}
 		}
 		
-		
-		
 		System.err.println("Warning: Could not read properties file");
 	}
 	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
+	public void startup(String[] args) {
 		initializeLoggers();
-		
-		showMainWindow();
+		showMainWindow();	
 	}
 	
+	public Integer getVersionNum() {
+		return VERSION_NUM;
+	}
+
+	public static void main(String[] args) {
+		(new ACGApp()).startup(args);
+	}
 }
 

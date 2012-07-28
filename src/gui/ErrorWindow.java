@@ -39,7 +39,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import newgui.app.ViewerApp;
+import newgui.app.ACGApp;
 import newgui.gui.widgets.SpinArrow;
 
 
@@ -155,7 +155,7 @@ public class ErrorWindow extends JFrame implements PropertyChangeListener {
 			for(int i=0; i<stack.length; i++) {
 				msg.append( stack[i].toString() );
 			}
-			ViewerApp.logger.severe(msg.toString());
+			ACGApp.logger.severe(msg.toString());
 		}
 		
 		public static void showErrorWindow(Exception e, String extraMessage) {
@@ -168,7 +168,7 @@ public class ErrorWindow extends JFrame implements PropertyChangeListener {
 			for(int i=0; i<stack.length; i++) {
 				msg.append( stack[i].toString() + "\n");
 			}
-			ViewerApp.logger.severe(msg.toString());
+			ACGApp.logger.severe(msg.toString());
 		}
 		
 		/**

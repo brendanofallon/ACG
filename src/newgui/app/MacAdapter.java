@@ -15,7 +15,7 @@ public class MacAdapter implements QuitHandler, AboutHandler, PreferencesHandler
 	}
 	@Override
 	public void handleQuitRequestWith(QuitEvent evt, QuitResponse resp) {
-		ViewerApp.shutdown();
+		ACGApp.shutdown();
 		resp.performQuit();
 	}
 

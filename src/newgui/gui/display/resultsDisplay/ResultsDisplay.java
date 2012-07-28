@@ -25,7 +25,7 @@ import logging.PropertyLogger;
 import logging.RootHeightDensity;
 
 import newgui.UIConstants;
-import newgui.app.ViewerApp;
+import newgui.app.ACGApp;
 import newgui.datafile.XMLConversionError;
 import newgui.datafile.resultsfile.ResultsFile;
 import newgui.gui.display.Display;
@@ -60,7 +60,7 @@ public class ResultsDisplay extends Display {
 
 	public void showResultsFile(ResultsFile resFile) {
 		File source = resFile.getSourceFile();
-		ViewerApp.logger.info("Showing results file : " + resFile );
+		ACGApp.logger.info("Showing results file : " + resFile );
 		if (source != null) {
 			String title = resFile.getSourceFile().getName();
 			title = title.replace(".xml", "");

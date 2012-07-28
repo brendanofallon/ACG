@@ -129,7 +129,7 @@ public class ACGProperties {
 			if (toks.length==2) {
 				String key = toks[0];
 				String val = toks[1];
-				System.out.println("Adding " + key + "=" + val);
+				//System.out.println("Adding " + key + "=" + val);
 				props.put(key, val);
 			}
 			line = reader.readLine();
@@ -139,7 +139,7 @@ public class ACGProperties {
 		Date now = new Date();
 		addProperty(LAST_READ, now.toString());
 		addProperty(LAST_FILE_READ, propsFile.getAbsolutePath());
-		addProperty(ACGProperties.VERSION, ViewerApp.VERSION);
+		addProperty(ACGProperties.VERSION, ACGApp.VERSION);
 		
 		if ( getProperty(FIRST_RUN_DATE) == null) {
 			addProperty(FIRST_RUN_DATE, now.toString());
