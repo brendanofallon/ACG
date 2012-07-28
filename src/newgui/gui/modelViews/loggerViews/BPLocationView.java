@@ -52,7 +52,7 @@ import document.ACGDocument;
 import xml.XMLLoader;
 
 
-import gui.inputPanels.loggerConfigs.BPLocationModel;
+import gui.loggerConfigs.BPLocationModel;
 import gui.modelElements.Configurator.InputConfigException;
 
 public class BPLocationView extends DefaultLoggerView {

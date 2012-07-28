@@ -21,7 +21,6 @@ import newgui.UIConstants;
 public abstract class Display extends JPanel {
 
 	private String title; //Label for this display, appears in tab at top of component
-	//public static final Color defaultDisplayBackground = UIConstants.componentBackground;
 	
 	public Display() {
 		this.setOpaque(false);

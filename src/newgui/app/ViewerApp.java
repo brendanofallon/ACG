@@ -8,6 +8,8 @@ import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
 
 import newgui.gui.ViewerWindow;
 
@@ -23,9 +25,26 @@ public class ViewerApp {
 	static ViewerApp acgApp;
 	protected ViewerWindow window;
 	protected static String defaultDataDir = ".acgdata";
-	protected static String defaultPropsFilename = "acg_properties.dat"; 
+	protected static String defaultPropsFilename = "acg_properties.dat";
+	protected static String defaultLogFilename = "acglog.txt";
+	public static final Logger logger = Logger.getAnonymousLogger();
 	
 	public static void showMainWindow() {
+		
+		System.out.println("OS name : " + System.getProperty("os.name"));
+		System.out.println("OS arch : " + System.getProperty("os.arch"));
+		
+		if (System.getProperty("os.name").contains("Mac")) {
+				logger.info("Detected macintosh operating system, adding mac-specific application stuff");
+			try {
+				new MacAdapter();
+			}
+			catch (Exception ex){
+				logger.warning("Error creating Mac-specific application handlers : " + ex);
+			}
+			
+		}
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -47,12 +66,34 @@ public class ViewerApp {
 		
 	}
 	
+	/**
+	 * Right now this just adds a FileHandler to the main logger 
+	 */
+	public static void initializeLoggers() {
+		String baseDir = System.getProperty("user.dir");
+		String fileSep = System.getProperty("file.separator");
+
+		File logFile = new File(baseDir + fileSep + defaultDataDir + fileSep + defaultLogFilename);
+		try {
+			FileHandler handler = new FileHandler(logFile.getAbsolutePath());
+			logger.addHandler(handler);
+
+			logger.info("Startup");
+		} catch (SecurityException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+	
 	public static void shutdown() {
 		try {
-			System.out.println("Writing properties");
 			ACGProperties.addProperty(ViewerWindow.WINDOW_WIDTH, ViewerWindow.getViewer().getWidth() + "");
 			ACGProperties.addProperty(ViewerWindow.WINDOW_HEIGHT, ViewerWindow.getViewer().getHeight() + "");
 			ACGProperties.writeToLastFileRead();
+			logger.info("Shutdown");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -116,6 +157,8 @@ public class ViewerApp {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		initializeLoggers();
+		
 		showMainWindow();
 	}
 	

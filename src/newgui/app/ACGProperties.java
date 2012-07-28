@@ -150,7 +150,6 @@ public class ACGProperties {
 		addProperty(OS_ARCH, System.getProperty("os.arch"));
 		addProperty(OS_NAME, System.getProperty("os.name"));
 		
-		
 	}
 	
 	/**

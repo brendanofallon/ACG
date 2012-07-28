@@ -19,7 +19,7 @@
 
 package newgui.gui.modelViews.loggerViews;
 
-import gui.inputPanels.loggerConfigs.BPDensityModel;
+import gui.loggerConfigs.BPDensityModel;
 import gui.modelElements.Configurator.InputConfigException;
 
 import java.awt.Component;

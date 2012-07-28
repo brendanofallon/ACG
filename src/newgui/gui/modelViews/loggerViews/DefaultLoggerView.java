@@ -1,6 +1,6 @@
 package newgui.gui.modelViews.loggerViews;
 
-import gui.inputPanels.loggerConfigs.LoggerModel;
+import gui.loggerConfigs.LoggerModel;
 import gui.modelElements.Configurator.InputConfigException;
 
 import java.awt.BorderLayout;

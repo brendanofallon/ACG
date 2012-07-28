@@ -31,6 +31,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 
 import newgui.UIConstants;
 import newgui.app.ACGProperties;
+import newgui.app.ViewerApp;
 import newgui.datafile.DataFile;
 import newgui.gui.display.Display;
 import newgui.gui.display.DisplayPane;
@@ -75,10 +76,12 @@ public class ViewerWindow extends JFrame {
         		UIManager.setLookAndFeel(gtkLookAndFeel);
         	}
 
+        	ViewerApp.logger.info("Setting look and feel to : " + plaf);
         	UIManager.setLookAndFeel( plaf );
 		}
         catch (Exception e) {
             System.err.println("Could not set look and feel, exception : " + e.toString());
+            ViewerApp.logger.warning("Error setting look and feel "+ e.toString());
         }	
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -128,6 +131,7 @@ public class ViewerWindow extends JFrame {
 				display.setTitle("New display");
 				
 		}
+		ViewerApp.logger.info("Displaying data file : " + dataFile.getSourceFile().getName());
 		displayPane.addDisplay(display);
 	}
 
@@ -160,6 +164,7 @@ public class ViewerWindow extends JFrame {
 	private void createFileManager() {
 		String fileSep = System.getProperty("file.separator");
 		String rootDirPath = System.getProperty("user.dir") + fileSep + ".acgdata";
+		ViewerApp.logger.info("Creating file manager root at path : " + rootDirPath);
 		File rootDir = new File(rootDirPath);
 		fileManager = new BlocksManager( rootDir );
 	}

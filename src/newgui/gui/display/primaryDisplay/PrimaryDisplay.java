@@ -19,6 +19,7 @@ import jobqueue.JobState.State;
 
 import sequence.Alignment;
 
+import newgui.app.ViewerApp;
 import newgui.datafile.AnalysisDataFile;
 import newgui.gui.display.Display;
 
@@ -47,11 +48,13 @@ public class PrimaryDisplay extends Display {
 		initComponents();
 		CardLayout cl = (CardLayout)(mainPanel.getLayout());
 		cl.show(mainPanel, ALN_PREP);
+		ViewerApp.logger.info("Creating new primary display");
 		repaint();
 	}
 	
 	public void addAlignment(Alignment aln, String title) {
 		alnPrepPanel.addAlignment(aln, title);
+		ViewerApp.logger.info("Adding alignment to primary display");
 	}
 	
 	public boolean displayWouldLikeToClose() {
@@ -60,6 +63,7 @@ public class PrimaryDisplay extends Display {
 			if (chain != null && chain.getJobState().getState() != State.COMPLETED && chain.getJobState().getState() != State.ERROR) {
 				int n = JOptionPane.showConfirmDialog(this, "Abort this analysis?");
 				if (n == JOptionPane.YES_OPTION) {
+					ViewerApp.logger.info("Aborting analysis " + chain.getJobTitle() );
 					return true;
 				}
 				else {

@@ -22,7 +22,7 @@ package newgui.gui.modelViews.loggerViews;
 
 import java.awt.Dimension;
 
-import gui.inputPanels.loggerConfigs.RootHeightModel;
+import gui.loggerConfigs.RootHeightModel;
 import gui.modelElements.Configurator.InputConfigException;
 
 import javax.swing.JLabel;

@@ -19,8 +19,8 @@
 
 package newgui.gui.modelViews.loggerViews;
 
-import gui.inputPanels.loggerConfigs.LoggerModel;
-import gui.inputPanels.loggerConfigs.MPEARGModel;
+import gui.loggerConfigs.LoggerModel;
+import gui.loggerConfigs.MPEARGModel;
 import gui.modelElements.Configurator.InputConfigException;
 
 public class MPEARGView extends DefaultLoggerView {

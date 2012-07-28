@@ -19,7 +19,7 @@
 
 package newgui.gui.modelViews.loggerViews;
 
-import gui.inputPanels.loggerConfigs.StateLoggerModel;
+import gui.loggerConfigs.StateLoggerModel;
 import gui.modelElements.Configurator;
 import gui.modelElements.Configurator.InputConfigException;
 

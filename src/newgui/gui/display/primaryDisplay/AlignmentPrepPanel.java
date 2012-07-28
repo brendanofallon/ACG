@@ -48,6 +48,7 @@ import newgui.analysisTemplate.AnalysisTemplate;
 import newgui.analysisTemplate.BasicAnalysis;
 import newgui.analysisTemplate.QuickAnalysis;
 import newgui.analysisTemplate.ThoroughAnalysis;
+import newgui.app.ViewerApp;
 import newgui.datafile.AlignmentFile;
 import newgui.gui.ViewerWindow;
 import newgui.gui.alignmentViewer.ColumnSelectionFrame;
@@ -151,6 +152,7 @@ public class AlignmentPrepPanel extends JPanel {
 			model.setAlignment( basicAln );
 			
 			//Switch showing panel to the 'analysis details' panel
+			ViewerApp.logger.info("Analysis type chosen, going with : " + selectedTemplate.getAnalysisName() );
 			displayParent.showAnalysisDetails(model);
 		}
 	}
@@ -456,6 +458,7 @@ public class AlignmentPrepPanel extends JPanel {
 			name = source.getSourceFile().getName().replace(".xml", "");
 		}
 		
+		ViewerApp.logger.info("Saving alignment to " + name );
 		ViewerWindow.getViewer().getFileManager().showSaveDialog(source, name);
 		
 	}

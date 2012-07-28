@@ -1,6 +1,6 @@
 package newgui.gui.modelViews;
 
-import gui.inputPanels.loggerConfigs.AbstractLoggerView;
+import gui.loggerConfigs.AbstractLoggerView;
 
 public interface LoggerReceiver {
 

@@ -1,34 +1,24 @@
 package newgui.gui;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
-
 import gui.ErrorWindow;
-import gui.widgets.BorderlessButton;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import sequence.Alignment;
-import sequence.BasicSequenceAlignment;
-
 import newgui.UIConstants;
 import newgui.alignment.FastaImporter;
-import newgui.alignment.FileParseException;
-import newgui.alignment.UnrecognizedBaseException;
 import newgui.datafile.AlignmentFile;
 import newgui.gui.alnGen.AlnGenFrame;
-import newgui.gui.filepanel.BlockChooser;
-import newgui.gui.widgets.HighlightButton;
+import newgui.gui.widgets.BorderlessButton;
 
 /**
  * Panel that holds a couple of buttons and the search text field, typically at upper left of

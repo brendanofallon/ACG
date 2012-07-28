@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.swing.SwingWorker;
 
+import newgui.app.ViewerApp;
+
 import jobqueue.JobState.State;
 
 /**
@@ -101,9 +103,10 @@ public class JobQueue implements JobListener {
 	public void addJob(ACGJob job) {
 	//	System.out.println("Adding job " + job.getJobTitle() + " to queue, state is " + job.getJobState().getState() );
 		if (job.getJobState().getState() == State.RUNNING) {
-			
+			ViewerApp.logger.warning("Attempted to add job " + job.getJobTitle() + " to queue, but job state is already running!");	
 			throw new IllegalArgumentException("Job is already running! This can't happen because it may lead to concurrent jobs running");
 		}
+		ViewerApp.logger.info("Adding job " + job.getJobTitle() + " to queue");
 		job.addListener(this);
 		queue.add(job);
 		handleQueueUpdate();
@@ -124,6 +127,7 @@ public class JobQueue implements JobListener {
 	 * @param job
 	 */
 	public void removeJob(ACGJob job) {
+		ViewerApp.logger.info("Removing job " + job.getJobTitle() + " from queue, job state is : " + job.getJobState().getState());
 		job.removeListener(this);
 		queue.remove(job);
 		handleQueueUpdate();
@@ -193,8 +197,8 @@ public class JobQueue implements JobListener {
 	@Override
 	public void statusUpdated(ACGJob job) {
 		//JobState state = job.getJobState();
+		ViewerApp.logger.info("Job " + job.getJobTitle() + " status updating to : " + job.getJobState().getState());
 		System.out.println("Status updated for job: " + job.getJobTitle() + " new status is: " + job.getJobState().getState());
-		
 		handleQueueUpdate();
 	}
 	
@@ -203,7 +207,7 @@ public class JobQueue implements JobListener {
 	}
 	
 	/**
-	 * Submit a new job to the queue if the mode is comptible 
+	 * Submit a new job to the queue if the mode is compatible 
 	 */
 	private void handleQueueUpdate() {
 		//System.out.println("Handling queue update, current job is " + currentJob + " mode is: " + currentMode);
@@ -223,6 +227,7 @@ public class JobQueue implements JobListener {
 	 * @param nextJob
 	 */
 	private void submitJob(final ACGJob nextJob) {
+		ViewerApp.logger.info("Job " + nextJob.getJobTitle() + " is starting to execute");
 		JobRunner runner = new JobRunner(nextJob);
 		runner.execute();
 	}

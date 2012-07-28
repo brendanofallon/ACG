@@ -13,8 +13,8 @@ import java.util.List;
 import gui.ErrorWindow;
 
 
-import gui.inputPanels.loggerConfigs.LoggerModel;
-import gui.inputPanels.loggerConfigs.StateLoggerModel;
+import gui.loggerConfigs.LoggerModel;
+import gui.loggerConfigs.StateLoggerModel;
 import gui.modelElements.ARGModelElement;
 import gui.modelElements.PopSizeModelElement;
 import gui.modelElements.Configurator.InputConfigException;
