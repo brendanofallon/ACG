@@ -1,4 +1,6 @@
-package newgui.app;
+package app;
+
+
 
 import com.apple.eawt.*;
 import com.apple.eawt.AppEvent.AboutEvent;

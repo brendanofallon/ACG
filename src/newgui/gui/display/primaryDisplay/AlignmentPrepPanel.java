@@ -35,6 +35,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.xml.transform.TransformerException;
 
+import app.ACGApp;
+
 import document.ACGDocument;
 
 import sequence.Alignment;
@@ -48,7 +50,6 @@ import newgui.analysisTemplate.AnalysisTemplate;
 import newgui.analysisTemplate.BasicAnalysis;
 import newgui.analysisTemplate.QuickAnalysis;
 import newgui.analysisTemplate.ThoroughAnalysis;
-import newgui.app.ACGApp;
 import newgui.datafile.AlignmentFile;
 import newgui.gui.ViewerWindow;
 import newgui.gui.alignmentViewer.ColumnSelectionFrame;

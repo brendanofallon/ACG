@@ -28,10 +28,11 @@ import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
+import app.ACGApp;
+import app.ACGProperties;
+
 
 import newgui.UIConstants;
-import newgui.app.ACGProperties;
-import newgui.app.ACGApp;
 import newgui.datafile.DataFile;
 import newgui.gui.display.Display;
 import newgui.gui.display.DisplayPane;

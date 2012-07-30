@@ -11,6 +11,8 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import app.ACGApp;
+
 import document.ACGDocument;
 
 import jobqueue.ExecutingChain;
@@ -19,7 +21,6 @@ import jobqueue.JobState.State;
 
 import sequence.Alignment;
 
-import newgui.app.ACGApp;
 import newgui.datafile.AnalysisDataFile;
 import newgui.gui.display.Display;
 

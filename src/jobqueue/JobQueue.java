@@ -5,7 +5,8 @@ import java.util.List;
 
 import javax.swing.SwingWorker;
 
-import newgui.app.ACGApp;
+import app.ACGApp;
+
 
 import jobqueue.JobState.State;
 

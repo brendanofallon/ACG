@@ -1,11 +1,11 @@
 first.run=Mon Jul 23 19:08:01 MDT 2012
-last.read=Sat Jul 28 17:14:46 MDT 2012
+last.read=Sun Jul 29 18:11:20 MDT 2012
 os.arch=x86_64
 main.window.height=697
 java.version=1.6.0_33
-os.name=Mac OS X
 java.vendor=Apple Inc.
-last.file.read=/Users/brendanofallon/workspace/ACG/.acgdata/acg_properties.dat
+os.name=Mac OS X
 main.window.width=1041
-last.written=Sat Jul 28 17:15:19 MDT 2012
-version=0.9-1
+last.file.read=/Users/brendanofallon/workspace/ACG/.acgdata/acg_properties.dat
+last.written=Sun Jul 29 18:11:40 MDT 2012
+version=0.9-6

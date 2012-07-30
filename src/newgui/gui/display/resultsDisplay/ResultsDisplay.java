@@ -18,6 +18,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import app.ACGApp;
+
 import logging.BreakpointDensity;
 import logging.ConsensusTreeLogger;
 import logging.MarginalTreeLogger;
@@ -25,7 +27,6 @@ import logging.PropertyLogger;
 import logging.RootHeightDensity;
 
 import newgui.UIConstants;
-import newgui.app.ACGApp;
 import newgui.datafile.XMLConversionError;
 import newgui.datafile.resultsfile.ResultsFile;
 import newgui.gui.display.Display;

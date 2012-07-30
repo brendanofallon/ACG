@@ -39,7 +39,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import newgui.app.ACGApp;
+import app.ACGApp;
+
 import newgui.gui.widgets.SpinArrow;
 
 
