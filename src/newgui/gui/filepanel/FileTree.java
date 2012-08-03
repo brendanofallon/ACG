@@ -1,7 +1,6 @@
 package newgui.gui.filepanel;
 
 
-import gui.ErrorWindow;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -31,6 +30,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 
+import newgui.ErrorWindow;
 import newgui.UIConstants;
 import newgui.alignment.FileParseException;
 import newgui.datafile.*;

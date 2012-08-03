@@ -1,12 +1,5 @@
 package newgui.gui.modelViews;
 
-import gui.modelElements.DoubleParamView;
-import gui.modelElements.SiteModelElement;
-import gui.modelElements.Configurator.InputConfigException;
-import gui.modelElements.SiteModelElement.MutModelType;
-import gui.modelElements.SiteModelElement.RateModelType;
-import gui.widgets.Style;
-import gui.widgets.Stylist;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -37,6 +30,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
+import newgui.gui.modelElements.DoubleParamView;
+import newgui.gui.modelElements.SiteModelElement;
+import newgui.gui.modelElements.Configurator.InputConfigException;
+import newgui.gui.modelElements.SiteModelElement.MutModelType;
+import newgui.gui.modelElements.SiteModelElement.RateModelType;
+import newgui.gui.widgets.Style;
+import newgui.gui.widgets.Stylist;
 
 import org.w3c.dom.Element;
 

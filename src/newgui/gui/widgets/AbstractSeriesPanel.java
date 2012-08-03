@@ -12,7 +12,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-import gui.ErrorWindow;
 import gui.figure.series.AbstractSeries;
 import gui.figure.series.UnifiedConfigFrame;
 import gui.figure.series.XYSeries;
@@ -26,6 +25,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import newgui.ErrorWindow;
 import newgui.UIConstants;
 import newgui.datafile.XMLConversionError;
 import newgui.datafile.resultsfile.XYSeriesInfo;

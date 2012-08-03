@@ -9,12 +9,6 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import gui.modelElements.CoalescentModelElement;
-import gui.modelElements.DoubleParamView;
-import gui.modelElements.Configurator.InputConfigException;
-import gui.modelElements.PopSizeModelElement.PopSizeModel;
-import gui.widgets.Style;
-import gui.widgets.Stylist;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -23,6 +17,13 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+
+import newgui.gui.modelElements.CoalescentModelElement;
+import newgui.gui.modelElements.DoubleParamView;
+import newgui.gui.modelElements.Configurator.InputConfigException;
+import newgui.gui.modelElements.PopSizeModelElement.PopSizeModel;
+import newgui.gui.widgets.Style;
+import newgui.gui.widgets.Stylist;
 
 import org.w3c.dom.Element;
 
@@ -192,17 +193,14 @@ public class CoalModelView extends JPanel {
 		this.add(popPanel);
 		
 		popCenterPanel = new JPanel();
-		popCenterPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		popCenterPanel.setLayout(new BoxLayout(popCenterPanel, BoxLayout.Y_AXIS));
 		stylist.applyStyle(popCenterPanel);
 		popPanel.add(popCenterPanel, BorderLayout.CENTER);
 		constPopView = new DoubleParamView("Population Size", coalModel.getPopSizeModel().getConstSizeModel());
-		constPopView.setPreferredSize(new Dimension(300, 36));
 		popCenterPanel.add( constPopView);
-		
+		popCenterPanel.add(Box.createVerticalGlue());
 		baseSizeView = new DoubleParamView("Base Size", coalModel.getPopSizeModel().getBaseSizeModel());
-		baseSizeView.setPreferredSize(new Dimension(300, 36));
 		growthRateView = new DoubleParamView("Growth Rate", coalModel.getPopSizeModel().getGrowthRateModel());
-		growthRateView.setPreferredSize(new Dimension(300, 36));
 		
 		growthRatePanel = new JPanel();
 		growthRatePanel.setOpaque(false);
@@ -221,6 +219,7 @@ public class CoalModelView extends JPanel {
 		stylist.applyStyle(recTop);
 		
 		recCenterPanel = new JPanel();
+		recCenterPanel.setLayout(new BoxLayout(recCenterPanel, BoxLayout.Y_AXIS));
 		stylist.applyStyle(recCenterPanel);
 		
 		recPanel.add(recTop, BorderLayout.NORTH);

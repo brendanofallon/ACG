@@ -5,7 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import gui.ErrorWindow;
 import gui.figure.series.XYSeries;
 
 import javax.swing.ImageIcon;
@@ -17,6 +16,7 @@ import document.ACGDocument;
 
 import mcmc.MCMC;
 import mcmc.MCMCListener;
+import newgui.ErrorWindow;
 import newgui.UIConstants;
 import newgui.datafile.XMLConversionError;
 import newgui.datafile.resultsfile.ResultsFile;

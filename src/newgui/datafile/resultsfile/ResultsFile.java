@@ -1,6 +1,5 @@
 package newgui.datafile.resultsfile;
 
-import gui.ErrorWindow;
 import gui.figure.series.XYSeries;
 
 import java.awt.Color;
@@ -30,6 +29,7 @@ import math.Histogram;
 import mcmc.MCMC;
 import modifier.AbstractModifier;
 
+import newgui.ErrorWindow;
 import newgui.datafile.PropertiesElementReader;
 import newgui.datafile.XMLConversionError;
 import newgui.datafile.XMLDataFile;

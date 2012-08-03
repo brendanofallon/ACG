@@ -1,7 +1,6 @@
 package newgui.gui.widgets;
 
-import gui.ErrorWindow;
-import gui.figure.Figure;
+import figure.Figure;
 import gui.figure.series.UnifiedConfigFrame;
 import gui.figure.series.XYSeriesFigure;
 
@@ -22,6 +21,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import newgui.ErrorWindow;
 import newgui.UIConstants;
 
 /**

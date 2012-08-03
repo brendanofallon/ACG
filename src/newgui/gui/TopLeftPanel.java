@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import gui.ErrorWindow;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -14,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import sequence.Alignment;
+import newgui.ErrorWindow;
 import newgui.UIConstants;
 import newgui.alignment.FastaImporter;
 import newgui.datafile.AlignmentFile;

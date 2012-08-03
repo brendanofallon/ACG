@@ -1,8 +1,6 @@
 package newgui.gui.display.primaryDisplay;
 
 
-import gui.modelElements.AnalysisModel;
-import gui.modelElements.Configurator.InputConfigException;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -61,6 +59,8 @@ import newgui.gui.display.Display;
 import newgui.gui.filepanel.BlockChooser;
 import newgui.gui.filepanel.ChooseAlignmentListener;
 import newgui.gui.filepanel.ChooseAlignmentPanel;
+import newgui.gui.modelElements.AnalysisModel;
+import newgui.gui.modelElements.Configurator.InputConfigException;
 import newgui.gui.widgets.BorderlessButton;
 import newgui.gui.widgets.TextButton;
 import newgui.gui.widgets.ToolbarPanel;

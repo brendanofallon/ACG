@@ -1,7 +1,7 @@
 package newgui.gui.display.resultsDisplay;
 
-import gui.figure.TextElement;
-import gui.figure.VerticalTextElement;
+import figure.TextElement;
+import figure.VerticalTextElement;
 import gui.figure.heatMapFigure.ColorBarElement;
 import gui.figure.heatMapFigure.HeatMapElement;
 import gui.figure.heatMapFigure.HeatMapFigure;

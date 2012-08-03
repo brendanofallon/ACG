@@ -1,8 +1,8 @@
 package newgui.gui.display.primaryDisplay.loggerVizualizer;
 
-import gui.figure.ColorSwatchButton;
-import gui.figure.TextElement;
-import gui.figure.VerticalTextElement;
+import figure.ColorSwatchButton;
+import figure.TextElement;
+import figure.VerticalTextElement;
 import gui.figure.heatMapFigure.ColorBarElement;
 import gui.figure.heatMapFigure.HeatMapElement;
 import gui.figure.heatMapFigure.HeatMapFigure;

@@ -1,6 +1,5 @@
 package newgui.gui.widgets.fileBlocks;
 
-import gui.ErrorWindow;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -11,6 +10,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import newgui.ErrorWindow;
 import newgui.datafile.XMLDataFile;
 import newgui.gui.ViewerWindow;
 import newgui.gui.filepanel.AddBlockFrame;

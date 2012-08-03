@@ -1,6 +1,5 @@
 package newgui.gui.display.primaryDisplay;
 
-import gui.modelElements.AnalysisModel;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -23,6 +22,7 @@ import sequence.Alignment;
 
 import newgui.datafile.AnalysisDataFile;
 import newgui.gui.display.Display;
+import newgui.gui.modelElements.AnalysisModel;
 
 /**
  * The most frequently used type of display - this is the one that opens when 

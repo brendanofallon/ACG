@@ -1,6 +1,5 @@
 package tools.alnGen;
 
-import gui.ErrorWindow;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +8,8 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import newgui.ErrorWindow;
 
 /**
  * A class that takes as input a reference file and a few SampleReaders, and constructs full Sequences

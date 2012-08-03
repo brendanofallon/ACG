@@ -22,7 +22,8 @@ package gui.loggerConfigs;
 import logging.ConsensusTreeLogger;
 import logging.MPEARG;
 import logging.PropertyLogger;
-import gui.modelElements.Configurator.InputConfigException;
+
+import newgui.gui.modelElements.Configurator.InputConfigException;
 
 import org.w3c.dom.Element;
 

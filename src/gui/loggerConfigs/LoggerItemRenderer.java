@@ -19,7 +19,6 @@
 
 package gui.loggerConfigs;
 
-import gui.ErrorWindow;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -35,6 +34,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
+import newgui.ErrorWindow;
 import newgui.gui.widgets.RoundedPanel;
 
 /**

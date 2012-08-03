@@ -1,9 +1,10 @@
 package gui.loggerConfigs;
 
-import gui.modelElements.Configurator.InputConfigException;
 import logging.BreakpointDensity;
 import logging.PopSizeLogger;
 import logging.PropertyLogger;
+
+import newgui.gui.modelElements.Configurator.InputConfigException;
 
 import org.w3c.dom.Element;
 

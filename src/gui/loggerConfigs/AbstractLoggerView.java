@@ -29,7 +29,6 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import gui.modelElements.Configurator.InputConfigException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -43,6 +42,7 @@ import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
 import newgui.gui.ViewerWindow;
+import newgui.gui.modelElements.Configurator.InputConfigException;
 
 /**
  * Base class for individual logger views that appear in the loggers panel. These graphically

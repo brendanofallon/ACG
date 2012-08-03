@@ -25,16 +25,17 @@ import java.util.List;
 import logging.PropertyLogger;
 import logging.StateLogger;
 
+import newgui.gui.modelElements.ARGModelElement;
+import newgui.gui.modelElements.DoubleParamElement;
+import newgui.gui.modelElements.ModelElement;
+import newgui.gui.modelElements.PopSizeModelElement;
+import newgui.gui.modelElements.Configurator.InputConfigException;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import document.ACGDocument;
 
-import gui.modelElements.ARGModelElement;
-import gui.modelElements.DoubleParamElement;
-import gui.modelElements.ModelElement;
-import gui.modelElements.PopSizeModelElement;
-import gui.modelElements.Configurator.InputConfigException;
 
 /**
  * Abstract base class for objects which can read & write XML from loggers 

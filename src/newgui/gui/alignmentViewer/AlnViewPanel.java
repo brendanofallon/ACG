@@ -1,6 +1,5 @@
 package newgui.gui.alignmentViewer;
 
-import gui.ErrorWindow;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -36,6 +35,7 @@ import javax.swing.JViewport;
 import javax.swing.Timer;
 
 
+import newgui.ErrorWindow;
 import newgui.UIConstants;
 import newgui.alignment.UnrecognizedBaseException;
 import newgui.datafile.AlignmentFile;

@@ -1,6 +1,5 @@
 package newgui.gui.alnGen;
 
-import gui.ErrorWindow;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -37,6 +36,7 @@ import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import newgui.ErrorWindow;
 import newgui.datafile.AlignmentFile;
 import newgui.gui.ViewerWindow;
 

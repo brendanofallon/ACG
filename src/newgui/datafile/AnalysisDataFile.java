@@ -16,11 +16,11 @@ import org.xml.sax.SAXException;
 
 import document.ACGDocument;
 
+import newgui.ErrorWindow;
 import newgui.gui.display.Display;
 import newgui.gui.display.primaryDisplay.PrimaryDisplay;
-import gui.ErrorWindow;
-import gui.modelElements.AnalysisModel;
-import gui.modelElements.Configurator.InputConfigException;
+import newgui.gui.modelElements.AnalysisModel;
+import newgui.gui.modelElements.Configurator.InputConfigException;
 
 /**
  * An analysis data file basically wraps an ACGDocument and turns it into a DataFile. This may be

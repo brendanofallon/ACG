@@ -26,7 +26,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import gui.modelElements.Configurator.InputConfigException;
+import newgui.gui.modelElements.Configurator.InputConfigException;
+
 
 public class ConsensusTreeView extends AbstractLoggerView {
 

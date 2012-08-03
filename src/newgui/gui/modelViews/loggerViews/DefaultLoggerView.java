@@ -1,7 +1,6 @@
 package newgui.gui.modelViews.loggerViews;
 
 import gui.loggerConfigs.LoggerModel;
-import gui.modelElements.Configurator.InputConfigException;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -29,6 +28,7 @@ import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
 import newgui.UIConstants;
+import newgui.gui.modelElements.Configurator.InputConfigException;
 import newgui.gui.modelViews.LoggersView;
 import newgui.gui.widgets.BorderlessButton;
 import newgui.gui.widgets.SpinArrow;

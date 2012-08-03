@@ -1,6 +1,5 @@
 package newgui.gui.display.resultsDisplay;
 
-import gui.ErrorWindow;
 import gui.figure.treeFigure.DrawableTree;
 import gui.figure.treeFigure.SquareTree;
 import gui.figure.treeFigure.TreeFigure;
@@ -26,6 +25,7 @@ import logging.MarginalTreeLogger;
 import logging.PropertyLogger;
 import logging.RootHeightDensity;
 
+import newgui.ErrorWindow;
 import newgui.UIConstants;
 import newgui.datafile.XMLConversionError;
 import newgui.datafile.resultsfile.ResultsFile;
