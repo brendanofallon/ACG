@@ -1,13 +1,13 @@
 package newgui.gui.modelViews.loggerViews;
 
-import gui.inputPanels.loggerConfigs.BPDensityModel;
-import gui.inputPanels.loggerConfigs.BPLocationModel;
-import gui.inputPanels.loggerConfigs.ConsensusTreeModel;
-import gui.inputPanels.loggerConfigs.LoggerModel;
-import gui.inputPanels.loggerConfigs.MPEARGModel;
-import gui.inputPanels.loggerConfigs.PopSizeLoggerModel;
-import gui.inputPanels.loggerConfigs.RootHeightModel;
-import gui.inputPanels.loggerConfigs.StateLoggerModel;
+import gui.loggerConfigs.BPDensityModel;
+import gui.loggerConfigs.BPLocationModel;
+import gui.loggerConfigs.ConsensusTreeModel;
+import gui.loggerConfigs.LoggerModel;
+import gui.loggerConfigs.MPEARGModel;
+import gui.loggerConfigs.PopSizeLoggerModel;
+import gui.loggerConfigs.RootHeightModel;
+import gui.loggerConfigs.StateLoggerModel;
 
 import java.util.ArrayList;
 import java.util.List;

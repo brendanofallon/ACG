@@ -73,27 +73,55 @@ public class JobView extends ToolbarPanel implements JobListener, ActionListener
 		statusPanel.setOpaque(false);
 		statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
 		statusLabel = new JLabel("<html> Job status : <em> In queue </em> </html>");
-		BorderlessButton startButton = new BorderlessButton(UIConstants.startButton);
+		
+		final BorderlessButton pauseButton = new BorderlessButton(UIConstants.pauseButton, UIConstants.pauseButtonDisabled);
+		final BorderlessButton startButton = new BorderlessButton(UIConstants.startButton, UIConstants.startButtonDisabled);
+		
+		startButton.setMinimumSize(new Dimension(25, 10));
+		startButton.setPreferredSize(new Dimension(25, 10));
+		startButton.setXDif(-2);
+		startButton.setYDif(-1);
+		startButton.setEnabled(false);
 		startButton.setToolTipText("Resume running this job");
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				resumeJob();
+				startButton.setEnabled(false);
+				pauseButton.setEnabled(true);
 			}
 		});
 
-		BorderlessButton pauseButton = new BorderlessButton(UIConstants.pauseButton);
 		pauseButton.setToolTipText("Pause this job");
+		pauseButton.setMinimumSize(new Dimension(25, 10));
+		pauseButton.setPreferredSize(new Dimension(25, 10));
+		pauseButton.setXDif(-1);
+		pauseButton.setYDif(-1);
 		pauseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pauseJob();
+				startButton.setEnabled(true);
+				pauseButton.setEnabled(false);
 			}
 		});
 		
-		BorderlessButton stopButton = new BorderlessButton(UIConstants.stopButton);
+		final BorderlessButton stopButton = new BorderlessButton(UIConstants.stopButton, UIConstants.stopButtonDisabled);
 		stopButton.setToolTipText("Abort this job");
+		stopButton.setYDif(-1);
 		stopButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				killJob();
+				stopButton.setEnabled(false);
+				pauseButton.setEnabled(false);
+				startButton.setEnabled(false);
+			}
+		});
+		
+		
+		final BorderlessButton restartButton = new BorderlessButton(UIConstants.restartButton);
+		restartButton.setToolTipText("Restart this job");
+		restartButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				restartJob();
 			}
 		});
 		
@@ -110,10 +138,13 @@ public class JobView extends ToolbarPanel implements JobListener, ActionListener
 //		if (jobPanel != null)
 //			statusPanel.add(saveResultsButton);
 		statusPanel.add(startButton);
-		statusPanel.add(Box.createHorizontalStrut(4));
+		statusPanel.add(Box.createHorizontalStrut(2));
 		statusPanel.add(pauseButton);
 		statusPanel.add(Box.createHorizontalStrut(4));
 		statusPanel.add(stopButton);
+		
+		statusPanel.add(Box.createHorizontalStrut(4));
+		statusPanel.add(restartButton);
 		
 		statusPanel.add(Box.createHorizontalStrut(25));
 		statusPanel.setMaximumSize(new Dimension(1000, 34));
@@ -137,6 +168,15 @@ public class JobView extends ToolbarPanel implements JobListener, ActionListener
 		
 	}
 	
+	protected void restartJob() {
+		if (currentState != JobState.State.NOT_STARTED) {
+			int n = JOptionPane.showConfirmDialog(this, "Restart job " + job.getJobTitle() + "?");
+			if (n == JOptionPane.OK_OPTION) {
+				jobPanel.restartJob();
+			}
+		}
+	}
+
 	/**
 	 * Called when user clicks the save results button. Causes the RunningJobPanel to create and save
 	 * a ResultsFile encapsulating the results of this run
@@ -159,7 +199,7 @@ public class JobView extends ToolbarPanel implements JobListener, ActionListener
 
 	protected void killJob() {
 		if (currentState != JobState.State.COMPLETED) {
-			int n = JOptionPane.showConfirmDialog(this, "Abort this job?");
+			int n = JOptionPane.showConfirmDialog(this, "Abort job " + job.getJobTitle() + "?");
 			if (n == JOptionPane.OK_OPTION) {
 				job.abort();	
 			}

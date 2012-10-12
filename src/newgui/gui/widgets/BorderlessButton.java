@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,6 +38,7 @@ public class BorderlessButton extends JPanel {
 	
 	
 	protected ImageIcon icon = null;
+	protected ImageIcon disabledIcon = null;
 	protected String[] text = null;
 	private boolean drawBorder = false;
 	private boolean clicking = false;
@@ -60,14 +62,29 @@ public class BorderlessButton extends JPanel {
 		this(label, null);
 	}
 	
+	public BorderlessButton(ImageIcon enabledIcon, ImageIcon disabledIcon) {
+		this(enabledIcon);
+		this.disabledIcon = disabledIcon;
+	}
+	
 	public BorderlessButton(String label, ImageIcon icon) {
+		this.icon = icon;
+		initialize(label);
+	}
+	
+	public BorderlessButton(ImageIcon icon) {
+		this.icon= icon;
+		initialize(null);
+	}
+	
+	private void initialize(String label) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setOpaque(false);
+
 		if (label != null)
 			this.text = label.split("\\n");
 		else
 			this.text = new String[]{""};
-		this.icon = icon;
 		
 		setBorder(BorderFactory.createEmptyBorder(4, 2, 4, 2));
 		int pWidth = 0;
@@ -89,10 +106,6 @@ public class BorderlessButton extends JPanel {
 		Listener listener = new Listener();
 		addMouseListener(listener);
 		addMouseMotionListener(listener);
-	}
-	
-	public BorderlessButton(ImageIcon icon) {
-		this(null, icon);
 	}
 	
 	/**
@@ -166,37 +179,6 @@ public class BorderlessButton extends JPanel {
 		this.icon = newIcon;
 	}
 	
-	class Listener extends MouseInputAdapter {
-		
-		public void mouseClicked(MouseEvent me) {
-			if (isEnabled())
-				fireActionEvent(me);
-		}
-		
-		public void mousePressed(MouseEvent me) {
-			if (isEnabled()) {
-				clicking = true;
-				repaint();
-			}
-		}
-		
-		public void mouseReleased(MouseEvent me) {
-			if (isEnabled()) {
-				clicking = false;
-				repaint();
-			}
-		}
-		
-		public void mouseEntered(MouseEvent me) {
-			setDrawBorder(true);
-		}
-		
-		public void mouseExited(MouseEvent me) {
-			setDrawBorder(false);
-		}
-		
-	}
-	
 	public void paintComponent(Graphics g) {
 		Graphics2D g2d = (Graphics2D)g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -241,15 +223,22 @@ public class BorderlessButton extends JPanel {
 		}
 		
 		int dx = 1;
+		
+		//Draw icon
 		if (icon != null) {
+			Image image = icon.getImage();
+			if (! this.isEnabled() && disabledIcon != null)
+				image = disabledIcon.getImage();
 			if (textPosition == TEXT_BELOW)
-				g2d.drawImage(icon.getImage(), Math.max(0, getWidth()/2-icon.getIconWidth()/2)+xDif, Math.max(0, getHeight()/2 - icon.getIconHeight()/2)+yDif , null);
+				g2d.drawImage(image, Math.max(0, getWidth()/2-icon.getIconWidth()/2)+xDif, Math.max(0, getHeight()/2 - icon.getIconHeight()/2)+yDif , null);
 			if (textPosition == TEXT_RIGHT)
-				g2d.drawImage(icon.getImage(), 3+xDif, Math.max(0, getHeight()/2 - icon.getIconHeight()/2)+yDif , null);
+				g2d.drawImage(image, 3+xDif, Math.max(0, getHeight()/2 - icon.getIconHeight()/2)+yDif , null);
 		}
 		else {
 			yStart = Math.min(getHeight()-2, getHeight()/2 - 8 );
 		}
+		
+		//Draw text
 		if (text != null) {
 			if (textPosition == TEXT_BELOW) {
 				g2d.setFont(getFont());
@@ -328,6 +317,38 @@ public class BorderlessButton extends JPanel {
 	}
 
 	
+	
+	
+	class Listener extends MouseInputAdapter {
+		
+		public void mouseClicked(MouseEvent me) {
+			if (isEnabled())
+				fireActionEvent(me);
+		}
+		
+		public void mousePressed(MouseEvent me) {
+			if (isEnabled()) {
+				clicking = true;
+				repaint();
+			}
+		}
+		
+		public void mouseReleased(MouseEvent me) {
+			if (isEnabled()) {
+				clicking = false;
+				repaint();
+			}
+		}
+		
+		public void mouseEntered(MouseEvent me) {
+			setDrawBorder(true);
+		}
+		
+		public void mouseExited(MouseEvent me) {
+			setDrawBorder(false);
+		}
+		
+	}
 	
 }
 

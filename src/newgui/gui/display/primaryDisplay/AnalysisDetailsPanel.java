@@ -1,19 +1,13 @@
 package newgui.gui.display.primaryDisplay;
 
 import gui.ErrorWindow;
-import gui.document.ACGDocument;
-import gui.inputPanels.AnalysisModel;
-import gui.inputPanels.Configurator.InputConfigException;
-import gui.inputPanels.MCMCModelView;
-import gui.inputPanels.loggerConfigs.LoggersPanel;
+import gui.modelElements.AnalysisModel;
+import gui.modelElements.Configurator.InputConfigException;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FileDialog;
-import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -21,18 +15,12 @@ import java.io.File;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import jobqueue.ExecutingChain;
-import jobqueue.JobQueue;
-import jobqueue.QueueManager;
-import jobqueue.JobQueue.Mode;
-import logging.MemoryStateLogger;
+import document.ACGDocument;
 
-import net.miginfocom.swing.MigLayout;
 import newgui.UIConstants;
 import newgui.datafile.AnalysisDataFile;
 import newgui.datafile.XMLConversionError;
@@ -42,7 +30,7 @@ import newgui.gui.modelViews.LoggersView;
 import newgui.gui.modelViews.MCModelView;
 import newgui.gui.modelViews.SiteModelView;
 import newgui.gui.widgets.BorderlessButton;
-import newgui.gui.widgets.HighlightButton;
+import newgui.gui.widgets.ImageButton;
 import newgui.gui.widgets.ToolbarPanel;
 
 /**
@@ -209,8 +197,7 @@ public class AnalysisDetailsPanel extends JPanel {
 		});
 		
 		
-		BorderlessButton runButton = new BorderlessButton(UIConstants.getIcon("gui/icons/beginRunButton.png"));
-		runButton.setXDif(-1);
+		ImageButton runButton = new ImageButton(UIConstants.getIcon("gui/icons/beginRunButton.png"), UIConstants.getIcon("gui/icons/beginRunButton_pressed.png"));
 		runButton.setToolTipText("Begin the analysis using the current settings");
 		runButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -227,6 +214,10 @@ public class AnalysisDetailsPanel extends JPanel {
 		loggersView = new LoggersView();
 	}
 	
+	public ACGDocument createACGDocument() throws InputConfigException {
+		updateAllModels();
+		return analysis.getACGDocument();
+	}
 	
 	protected void saveAnalysisFile() {
 		updateAllModels();
@@ -275,18 +266,18 @@ public class AnalysisDetailsPanel extends JPanel {
 	 * we can watch it run. 
 	 */
 	protected void beginNewRun() {
-		ACGDocument acgDocument;
 		try {
-			updateAllModels();
-		
-			acgDocument = analysis.getACGDocument();
+
+			ACGDocument acgDocument = createACGDocument();
 			
 			displayParent.showJobPanel(acgDocument);
 			
 		} catch (InputConfigException e) {
+			ErrorWindow.showErrorWindow(e, "Error creating ACG Document : " + e.getMessage());
 			System.out.println("Input config exception, could not create ACG document: " + e.getMessage());
 			e.printStackTrace();
 		} catch (Exception e) {
+			ErrorWindow.showErrorWindow(e, "Error creating ACG Document : " + e.getMessage());
 			System.out.println("Input config exception, could not create ACG document: " + e.getMessage());
 			e.printStackTrace();
 		}

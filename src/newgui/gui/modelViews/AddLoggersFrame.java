@@ -1,6 +1,6 @@
 package newgui.gui.modelViews;
 
-import gui.inputPanels.loggerConfigs.LoggerModel;
+import gui.loggerConfigs.LoggerModel;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;

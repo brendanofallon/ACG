@@ -1,7 +1,6 @@
 package newgui.gui.display.primaryDisplay;
 
-import gui.document.ACGDocument;
-import gui.inputPanels.AnalysisModel;
+import gui.modelElements.AnalysisModel;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -12,7 +11,12 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import app.ACGApp;
+
+import document.ACGDocument;
+
 import jobqueue.ExecutingChain;
+import jobqueue.QueueManager;
 import jobqueue.JobState.State;
 
 import sequence.Alignment;
@@ -45,11 +49,13 @@ public class PrimaryDisplay extends Display {
 		initComponents();
 		CardLayout cl = (CardLayout)(mainPanel.getLayout());
 		cl.show(mainPanel, ALN_PREP);
+		ACGApp.logger.info("Creating new primary display");
 		repaint();
 	}
 	
 	public void addAlignment(Alignment aln, String title) {
 		alnPrepPanel.addAlignment(aln, title);
+		ACGApp.logger.info("Adding alignment to primary display");
 	}
 	
 	public boolean displayWouldLikeToClose() {
@@ -58,6 +64,7 @@ public class PrimaryDisplay extends Display {
 			if (chain != null && chain.getJobState().getState() != State.COMPLETED && chain.getJobState().getState() != State.ERROR) {
 				int n = JOptionPane.showConfirmDialog(this, "Abort this analysis?");
 				if (n == JOptionPane.YES_OPTION) {
+					ACGApp.logger.info("Aborting analysis " + chain.getJobTitle() );
 					return true;
 				}
 				else {
@@ -73,7 +80,7 @@ public class PrimaryDisplay extends Display {
 			ExecutingChain chain = runJobPanel.getChain();
 			if (chain != null) {
 				chain.abort();
-				chain.cancel(true);
+				QueueManager.getCurrentQueue().removeJob(chain);
 			}
 		}
 	}

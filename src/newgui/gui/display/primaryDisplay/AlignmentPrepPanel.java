@@ -1,9 +1,8 @@
 package newgui.gui.display.primaryDisplay;
 
 
-import gui.document.ACGDocument;
-import gui.inputPanels.AnalysisModel;
-import gui.inputPanels.Configurator.InputConfigException;
+import gui.modelElements.AnalysisModel;
+import gui.modelElements.Configurator.InputConfigException;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -35,6 +34,10 @@ import javax.swing.JTextArea;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.xml.transform.TransformerException;
+
+import app.ACGApp;
+
+import document.ACGDocument;
 
 import sequence.Alignment;
 import sequence.BasicSequenceAlignment;
@@ -150,6 +153,7 @@ public class AlignmentPrepPanel extends JPanel {
 			model.setAlignment( basicAln );
 			
 			//Switch showing panel to the 'analysis details' panel
+			ACGApp.logger.info("Analysis type chosen, going with : " + selectedTemplate.getAnalysisName() );
 			displayParent.showAnalysisDetails(model);
 		}
 	}
@@ -455,6 +459,7 @@ public class AlignmentPrepPanel extends JPanel {
 			name = source.getSourceFile().getName().replace(".xml", "");
 		}
 		
+		ACGApp.logger.info("Saving alignment to " + name );
 		ViewerWindow.getViewer().getFileManager().showSaveDialog(source, name);
 		
 	}

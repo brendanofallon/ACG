@@ -1,7 +1,6 @@
 package newgui.gui.modelViews;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -10,16 +9,13 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import gui.document.ACGDocument;
-import gui.inputPanels.CoalescentModelElement;
-import gui.inputPanels.Configurator.InputConfigException;
-import gui.inputPanels.DoubleModifierElement.ModType;
-import gui.inputPanels.DoubleParamView;
-import gui.inputPanels.PopSizeModelElement.PopSizeModel;
+import gui.modelElements.CoalescentModelElement;
+import gui.modelElements.DoubleParamView;
+import gui.modelElements.Configurator.InputConfigException;
+import gui.modelElements.PopSizeModelElement.PopSizeModel;
 import gui.widgets.Style;
 import gui.widgets.Stylist;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
@@ -28,9 +24,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.w3c.dom.Element;
+
+import document.ACGDocument;
 
 /**
  * Represents a CoalescentModelElement graphically. Typically this is included in a DocMemberConfigPanel

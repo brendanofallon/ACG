@@ -18,6 +18,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import app.ACGApp;
+
 import logging.BreakpointDensity;
 import logging.ConsensusTreeLogger;
 import logging.MarginalTreeLogger;
@@ -59,6 +61,7 @@ public class ResultsDisplay extends Display {
 
 	public void showResultsFile(ResultsFile resFile) {
 		File source = resFile.getSourceFile();
+		ACGApp.logger.info("Showing results file : " + resFile );
 		if (source != null) {
 			String title = resFile.getSourceFile().getName();
 			title = title.replace(".xml", "");

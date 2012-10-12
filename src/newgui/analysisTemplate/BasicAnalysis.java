@@ -1,11 +1,11 @@
 package newgui.analysisTemplate;
 
 import sequence.Alignment;
-import gui.inputPanels.AnalysisModel;
-import gui.inputPanels.loggerConfigs.BPDensityModel;
-import gui.inputPanels.loggerConfigs.ConsensusTreeModel;
-import gui.inputPanels.loggerConfigs.RootHeightModel;
-import gui.inputPanels.loggerConfigs.StateLoggerModel;
+import gui.loggerConfigs.BPDensityModel;
+import gui.loggerConfigs.ConsensusTreeModel;
+import gui.loggerConfigs.RootHeightModel;
+import gui.loggerConfigs.StateLoggerModel;
+import gui.modelElements.AnalysisModel;
 
 /**
  * A simple analysis template that can operate on a single alignment. This does 
