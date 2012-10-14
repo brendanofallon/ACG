@@ -218,6 +218,11 @@ public class StateLogger implements MCMCListener, Named {
 		this.chain = chain;
 	}
 
+	@Override
+	public String getName() {
+		return "statelogger";
+	}
+
 
 }
 

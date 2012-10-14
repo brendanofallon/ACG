@@ -1,6 +1,5 @@
 package newgui.gui.display.resultsDisplay;
 
-import figure.TextElement;
 import gui.figure.series.HistogramSeries;
 import gui.figure.series.XYSeries;
 import gui.figure.series.XYSeriesElement;

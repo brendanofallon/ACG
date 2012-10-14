@@ -11,7 +11,7 @@ import newgui.UIConstants;
 
 import logging.ConsensusTreeLogger;
 
-import figure.TextElement;
+import gui.figure.TextElement;
 import gui.figure.treeFigure.DrawableNode;
 import gui.figure.treeFigure.DrawableTree;
 import gui.figure.treeFigure.SquareTree;

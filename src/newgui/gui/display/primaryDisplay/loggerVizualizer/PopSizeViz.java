@@ -1,6 +1,6 @@
 package newgui.gui.display.primaryDisplay.loggerVizualizer;
 
-import figure.TextElement;
+import gui.figure.TextElement;
 import gui.figure.series.ConstSizeSeries;
 import gui.figure.series.XYSeriesElement;
 

@@ -2,7 +2,7 @@ package newgui.gui.display.primaryDisplay.loggerVizualizer;
 
 import java.awt.Color;
 
-import figure.TextElement;
+import gui.figure.TextElement;
 import gui.figure.series.HistogramSeries;
 import gui.figure.series.XYSeriesElement;
 import gui.figure.series.XYSeriesFigure;

@@ -26,19 +26,12 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-
-import javax.swing.JTextField;
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
-import gui.figure.*;
-import gui.figure.series.SeriesElement;
 /**
  * An element that draws a series of points in x-y space. Different markers can be placed
  * on data points, or lines can be drawn through points, or the series can be represented by
@@ -279,7 +272,9 @@ public class XYSeriesElement extends SeriesElement {
 				double y1 = axes.dataYtoBoundsY(xySeries.getY(0) );
 				double x2 = axes.dataXtoBoundsX( xySeries.getX(1));
 				double y2 = axes.dataYtoBoundsY( xySeries.getY(1) );
-				pathShape = new GeneralPath(new Line2D.Double(x1, y1, x2, y2) );
+				pathShape = new GeneralPath();
+				pathShape.moveTo(x1, y1);
+				pathShape.lineTo(x2, y2);
 				
 				boolean connect = true;
 				
