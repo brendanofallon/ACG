@@ -1,6 +1,6 @@
 package newgui.gui.widgets;
 
-import figure.Figure;
+import gui.figure.Figure;
 import gui.figure.series.UnifiedConfigFrame;
 import gui.figure.series.XYSeriesFigure;
 
