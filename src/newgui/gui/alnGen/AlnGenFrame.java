@@ -202,6 +202,10 @@ public class AlnGenFrame extends JFrame {
 				e.printStackTrace();
 				ErrorWindow.showErrorWindow(e, "Could not open vcf file " + vcfFile.getName());
 			}
+			catch (Exception e) {
+				e.printStackTrace();
+				ErrorWindow.showErrorWindow(e, "Error reading vcf file " + vcfFile.getName());
+			}
 		}
 	}
 
@@ -213,6 +217,10 @@ public class AlnGenFrame extends JFrame {
 	private void updateSampleListFromVCF() {
 		if (vcfReader == null)
 			throw new IllegalStateException("VCF Reader not initialized");
+		
+		if (vcfReader.getSampleNames().size() == 0) {
+			JOptionPane.showMessageDialog(this, "No samples found in vcf file");
+		}
 		
 		DefaultListModel model = new DefaultListModel();
 		for(String name : vcfReader.getSampleNames()) {
@@ -313,27 +321,13 @@ public class AlnGenFrame extends JFrame {
 		refRegionPanel.add(Box.createVerticalStrut(10));
 		refRegionPanel.add(new JSeparator(JSeparator.HORIZONTAL));
 		
-		
-		
-		//Contains vcf & sample selection panels on left and produced sequences on right 
-		JPanel lowerPanel = new JPanel();
-		mainPanel.add(lowerPanel, BorderLayout.CENTER);
-		lowerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		
-		JPanel lowerLeftPanel = new JPanel();
-		lowerLeftPanel.setLayout(new BoxLayout(lowerLeftPanel, BoxLayout.Y_AXIS));
-		lowerLeftPanel.setPreferredSize(new Dimension(250, 300));
-		lowerPanel.add(lowerLeftPanel);
-		
-		JPanel lowerRightPanel = new JPanel();
-		lowerRightPanel.setLayout(new BoxLayout(lowerRightPanel, BoxLayout.Y_AXIS));
-		lowerRightPanel.setPreferredSize(new Dimension(250, 300));
-		lowerPanel.add(lowerRightPanel);
-		
+		//VCF selection panel
 		JPanel pickVCFPanel = new JPanel();
 		pickVCFPanel.setLayout(new BoxLayout(pickVCFPanel, BoxLayout.X_AXIS));
+		pickVCFPanel.setAlignmentX(LEFT_ALIGNMENT);
 		pickVCFPanel.add(new JLabel("VCF file:"));
 		vcfFileField = new JTextField("choose");
+		vcfFileField.setMinimumSize(new Dimension(160, 20));
 		vcfFileField.setPreferredSize(new Dimension(160, 32));
 		vcfFileField.setMaximumSize(new Dimension(160, 32));
 		pickVCFPanel.add(vcfFileField);
@@ -347,7 +341,23 @@ public class AlnGenFrame extends JFrame {
 		vcfFileField.add(chooseVCFButton);
 		pickVCFPanel.add(vcfFileField);
 		pickVCFPanel.add(chooseVCFButton);
-		lowerLeftPanel.add(pickVCFPanel);
+		refRegionPanel.add(pickVCFPanel);
+		
+		
+		//Contains sample selection panels on left and produced sequences on right 
+		JPanel lowerPanel = new JPanel();
+		mainPanel.add(lowerPanel, BorderLayout.CENTER);
+		lowerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		
+		JPanel lowerLeftPanel = new JPanel();
+		lowerLeftPanel.setLayout(new BoxLayout(lowerLeftPanel, BoxLayout.Y_AXIS));
+		lowerLeftPanel.setPreferredSize(new Dimension(250, 300));
+		lowerPanel.add(lowerLeftPanel);
+		
+		JPanel lowerRightPanel = new JPanel();
+		lowerRightPanel.setLayout(new BoxLayout(lowerRightPanel, BoxLayout.Y_AXIS));
+		lowerRightPanel.setPreferredSize(new Dimension(250, 300));
+		lowerPanel.add(lowerRightPanel);
 		
 		sampleListHeader = new JLabel("No samples loaded");
 		lowerLeftPanel.add(sampleListHeader);
@@ -394,7 +404,7 @@ public class AlnGenFrame extends JFrame {
 		//Lower right panel: contains a list showing which samples have been added
 		
 		addedSamplesHeader = new JLabel("No samples added");
-		lowerRightPanel.add(Box.createVerticalStrut(30));
+		//lowerRightPanel.add(Box.createVerticalStrut(30));
 		lowerRightPanel.add(addedSamplesHeader);
 		DefaultListModel defaultModel = new DefaultListModel();
 		addedSamplesList = new JList(defaultModel);

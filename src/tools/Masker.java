@@ -54,74 +54,74 @@ public class Masker {
 	}
 	
 
-	private static void maskSites(int start, int end, int[] segSites, BasicSequenceAlignment aln) {
-		for(int i=0; i<segSites.length; i++) {
-			int site = segSites[i];
-			if (site >= start && site < end) {
-				char c = aln.getMaxFreqBase(site);
-				aln.conditionalMask(c, site);
-			}
-		}
-	}
+//	private static void maskSites(int start, int end, int[] segSites, BasicSequenceAlignment aln) {
+//		for(int i=0; i<segSites.length; i++) {
+//			int site = segSites[i];
+//			if (site >= start && site < end) {
+//				char c = aln.getMaxFreqBase(site);
+//				aln.conditionalMask(c, site);
+//			}
+//		}
+//	}
 	
 	
-	public static void main(String[] args) {
-		if (args.length==0) {
-			System.out.println("Enter the name of the file to mask");
-			return;
-		}
-		File file = new File(args[0]);
-		
-		BasicSequenceAlignment aln = new BasicSequenceAlignment(file);
-		
-		
-		int totalLength = aln.getSiteCount();
-		int[] segSites = aln.getNonGapPolymorphicSites();
-		
-		if (segSites.length < 10) {
-			System.out.println(aln);
-			System.exit(0);
-		}
-		else {
-			
-			int windowSize = 100;
-			int windowStep = 10;
-			for(int start = 0; start < totalLength-windowSize; start+=windowStep){
-				double poly = calcPolymorphism(start, start+windowSize, segSites);
-				//System.out.println(start + "\t" + poly);
-				if (poly > 0.10) {
-					maskSites(start, start+windowSize, segSites, aln);
-				}
-				
-				
-			}
-			
-			
-			windowSize = 500;
-			windowStep = 50;
-			for(int start = 0; start < totalLength-windowSize; start+=windowStep){
-				double poly = calcPolymorphism(start, start+windowSize, segSites);
-				//System.out.println(start + "\t" + poly);
-				if (poly > 0.02) {
-					maskSites(start, start+windowSize, segSites, aln);
-				}
-			}
-			
-			
-			windowSize = 25;
-			windowStep = 5;
-			for(int start = 0; start < totalLength-windowSize; start+=windowStep){
-				double poly = calcPolymorphism(start, start+windowSize, segSites);
-				//System.out.println(start + "\t" + poly);
-				if (poly > 0.2) {
-					maskSites(start, start+windowSize, segSites, aln);
-				}
-			}
-			
-			System.out.println(aln);
-		}
-		
-	}
+//	public static void main(String[] args) {
+//		if (args.length==0) {
+//			System.out.println("Enter the name of the file to mask");
+//			return;
+//		}
+//		File file = new File(args[0]);
+//		
+//		BasicSequenceAlignment aln = new BasicSequenceAlignment(file);
+//		
+//		
+//		int totalLength = aln.getSiteCount();
+//		int[] segSites = aln.getNonGapPolymorphicSites();
+//		
+//		if (segSites.length < 10) {
+//			System.out.println(aln);
+//			System.exit(0);
+//		}
+//		else {
+//			
+//			int windowSize = 100;
+//			int windowStep = 10;
+//			for(int start = 0; start < totalLength-windowSize; start+=windowStep){
+//				double poly = calcPolymorphism(start, start+windowSize, segSites);
+//				//System.out.println(start + "\t" + poly);
+//				if (poly > 0.10) {
+//					maskSites(start, start+windowSize, segSites, aln);
+//				}
+//				
+//				
+//			}
+//			
+//			
+//			windowSize = 500;
+//			windowStep = 50;
+//			for(int start = 0; start < totalLength-windowSize; start+=windowStep){
+//				double poly = calcPolymorphism(start, start+windowSize, segSites);
+//				//System.out.println(start + "\t" + poly);
+//				if (poly > 0.02) {
+//					maskSites(start, start+windowSize, segSites, aln);
+//				}
+//			}
+//			
+//			
+//			windowSize = 25;
+//			windowStep = 5;
+//			for(int start = 0; start < totalLength-windowSize; start+=windowStep){
+//				double poly = calcPolymorphism(start, start+windowSize, segSites);
+//				//System.out.println(start + "\t" + poly);
+//				if (poly > 0.2) {
+//					maskSites(start, start+windowSize, segSites, aln);
+//				}
+//			}
+//			
+//			System.out.println(aln);
+//		}
+//		
+//	}
 
 
 }
