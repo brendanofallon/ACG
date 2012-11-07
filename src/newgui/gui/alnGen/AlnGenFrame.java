@@ -36,6 +36,8 @@ import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import app.ACGProperties;
+
 import newgui.ErrorWindow;
 import newgui.datafile.AlignmentFile;
 import newgui.gui.ViewerWindow;
@@ -55,6 +57,8 @@ import tools.alnGen.VCFReader;
  *
  */
 public class AlnGenFrame extends JFrame {
+	
+	public static final String REFERENCE_PROP = "vcf.reference";
 
 	List<SampleReader> sampleReaders = new ArrayList<SampleReader>();
 	
@@ -242,15 +246,13 @@ public class AlnGenFrame extends JFrame {
 		if (n == JFileChooser.APPROVE_OPTION) {
 			referenceFile = fileChooser.getSelectedFile();
 			referenceFileField.setText(referenceFile.getName());
+			ACGProperties.addProperty(REFERENCE_PROP, referenceFile.getAbsolutePath());
 			alnGen = new AlignmentGenerator(referenceFile);
 			if (sampleReaders.size()>0)
 				buildButton.setEnabled(true);
 		}
 	}
 
-	
-	
-	
 	
 	private void initComponents() {
 		this.setPreferredSize(new Dimension(550, 550));
@@ -285,6 +287,14 @@ public class AlnGenFrame extends JFrame {
 		refRegionPanel.add(refPanel);
 		refPanel.add(new JLabel("Reference file:"));
 		referenceFileField = new JTextField("choose file");
+		String previousReference = ACGProperties.getProperty(REFERENCE_PROP);
+		if (previousReference != null) {
+			File testRef = new File(previousReference);
+			if (testRef.exists() && testRef.canRead()) {
+				referenceFile = testRef;
+				referenceFileField.setText(testRef.getName());
+			}
+		}
 		referenceFileField.setPreferredSize(new Dimension(150, 32));
 		referenceFileField.setMaximumSize(new Dimension(150, 32));
 		refPanel.add(referenceFileField);
