@@ -101,7 +101,41 @@ public class AlnGenFrame extends JFrame {
 			JOptionPane.showMessageDialog(this, "Please choose a start position before the end position");
 			return;		
 		}
-
+		
+		
+		if ( (endPos - startPos) > 1000000) {
+			JOptionPane.showMessageDialog(this, "Currently alignments may not be larger than 1MB. Please enter new start / end coordinates");
+			return;		
+		}
+		
+		
+		boolean allOK = true;
+		for(SampleReader reader : sampleReaders) {
+			boolean phasedOK;
+			try {
+				phasedOK = reader.queryPhased(contig, startPos, endPos);
+				reader.reset();
+				if (! phasedOK) {
+					allOK = false;
+				}
+			} catch (IOException e) {
+				break;
+			} catch (ContigNotFoundException e) {
+				break;
+			}
+			
+		}
+		
+		if (!allOK) {
+			int n = JOptionPane.showConfirmDialog(this.getRootPane(), "Not all variant files appear to have been phased. Proceed anyway?");
+			if (n == JOptionPane.OK_OPTION) {
+				//proceed as usual
+			}
+			else {
+				return;
+			}
+		}
+		
 		final BuilderWorker builder = new BuilderWorker(contig, startPos, endPos);
 		
 		Container rootPane = this.getRootPane();
@@ -160,8 +194,6 @@ public class AlnGenFrame extends JFrame {
 		this.setVisible(false);
 		this.dispose();
 	}
-
-
 	
 	/**
 	 * Remove all samples from added samples list
@@ -182,7 +214,7 @@ public class AlnGenFrame extends JFrame {
 		Object[] samples = vcfSampleList.getSelectedValues();
 		for(int i=0; i<samples.length; i++) {
 			String sampleName = samples[i].toString();
-			SampleReader reader = vcfReader.getReaderForSample(sampleName, phase);
+			SampleReader reader = vcfReader.getReaderForSample(sampleName, phase);			
 			sampleReaders.add(reader);
 			((DefaultListModel)addedSamplesList.getModel()).addElement(sampleName + " (" + phase + ")");
 		}
@@ -191,7 +223,6 @@ public class AlnGenFrame extends JFrame {
 			buildButton.setEnabled(true);
 		addedSamplesHeader.revalidate();
 	}
-
 
 
 	protected void browseForVCFFile() {
@@ -244,16 +275,24 @@ public class AlnGenFrame extends JFrame {
 	protected void browseForReferenceFile() {
 		int n = fileChooser.showOpenDialog(this);
 		if (n == JFileChooser.APPROVE_OPTION) {
-			referenceFile = fileChooser.getSelectedFile();
-			referenceFileField.setText(referenceFile.getName());
-			ACGProperties.addProperty(REFERENCE_PROP, referenceFile.getAbsolutePath());
-			alnGen = new AlignmentGenerator(referenceFile);
-			if (sampleReaders.size()>0)
-				buildButton.setEnabled(true);
+			initializeReference(fileChooser.getSelectedFile().getAbsolutePath());
 		}
 	}
-
 	
+	/**
+	 * When a reference file has been selected this method initializes an the fields
+	 * and creates an AlignmentGenerator
+	 * @param pathToReference
+	 */
+	protected void initializeReference(String pathToReference) {
+		referenceFile = new File(pathToReference);
+		referenceFileField.setText(referenceFile.getName());
+		ACGProperties.addProperty(REFERENCE_PROP, referenceFile.getAbsolutePath());
+		alnGen = new AlignmentGenerator(referenceFile);
+		if (sampleReaders.size()>0)
+			buildButton.setEnabled(true);
+	}
+		
 	private void initComponents() {
 		this.setPreferredSize(new Dimension(550, 550));
 		this.getRootPane().setLayout(new BorderLayout());
@@ -291,8 +330,7 @@ public class AlnGenFrame extends JFrame {
 		if (previousReference != null) {
 			File testRef = new File(previousReference);
 			if (testRef.exists() && testRef.canRead()) {
-				referenceFile = testRef;
-				referenceFileField.setText(testRef.getName());
+				initializeReference(testRef.getAbsolutePath());
 			}
 		}
 		referenceFileField.setPreferredSize(new Dimension(150, 32));
@@ -475,11 +513,16 @@ public class AlnGenFrame extends JFrame {
 		}
 		
 		@Override
-		protected Object doInBackground() throws Exception {
-			setProgress(2);
-			List<ProtoSequence> protoSeqs = alnGen.getAlignmentParallel(contig, startPos, endPos);
-			setProgress(100);
-			buildAndSaveAlignment(protoSeqs);
+		protected Object doInBackground() {
+			try {
+				setProgress(2);
+				List<ProtoSequence> protoSeqs = alnGen.getAlignmentParallel(contig, startPos, endPos);
+				setProgress(100);
+				buildAndSaveAlignment(protoSeqs);
+			}
+			catch (Exception ex) {
+				ErrorWindow.showErrorWindow(ex, "Error building alignment");
+			}
 			return null;
 		}
 		
