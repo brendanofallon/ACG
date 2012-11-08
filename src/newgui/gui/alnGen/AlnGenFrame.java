@@ -58,6 +58,7 @@ import tools.alnGen.VCFReader;
  */
 public class AlnGenFrame extends JFrame {
 	
+	//Property key so we can save the position of the most recently used reference file
 	public static final String REFERENCE_PROP = "vcf.reference";
 
 	List<SampleReader> sampleReaders = new ArrayList<SampleReader>();

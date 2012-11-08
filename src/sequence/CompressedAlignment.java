@@ -306,6 +306,30 @@ public class CompressedAlignment implements Alignment {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public AlignmentMask getMask() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setAlignmentMask(AlignmentMask mask) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void applyMask() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int[] getBaseCounts(int col) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 		
 	
 	
