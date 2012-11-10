@@ -37,7 +37,6 @@ import sequence.BasicSequenceAlignment;
 import sequence.DataMatrix;
 import sequence.RemovedColumnsMap;
 import testing.Timer;
-import tools.ApplicationHeader;
 import arg.ARG;
 import arg.TipNode;
 import coalescent.CoalescentLikelihood;
@@ -411,7 +410,6 @@ public class RecombMC3 {
 		
 		String outputDir = argOps.getStringOp("dir");
 		
-		System.out.println("\n" + ApplicationHeader.getHeader() );
 		System.out.println("\n Running input files with run length : " + runLength + " and sample frequency : " + sampleFrequency);
 		System.out.println("Chains: " + chains + "\t threads: " + threads + "\t chain swap frequency: " + swapFrequency + " lambda: " + lambda);
 		if (startARG != null) {

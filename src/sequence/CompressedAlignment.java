@@ -301,34 +301,31 @@ public class CompressedAlignment implements Alignment {
 		this.sourceFile = source;
 	}
 
+	/******* Unused Alignment implementation methods **************/
+	
 	@Override
 	public Alignment newAlignmentFromColumns(int[] cols) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IllegalStateException("This feature not implemented for compressed alignments");
 	}
 
 	@Override
 	public AlignmentMask getMask() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setAlignmentMask(AlignmentMask mask) {
-		// TODO Auto-generated method stub
-		
+		throw new IllegalStateException("Cannot mask a compressed alignment");
 	}
 
 	@Override
 	public void applyMask() {
-		// TODO Auto-generated method stub
-		
+		throw new IllegalStateException("Cannot mask a compressed alignment");
 	}
 
 	@Override
 	public int[] getBaseCounts(int col) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new IllegalStateException("This feature not implemented for compressed alignments");
 	}
 		
 	

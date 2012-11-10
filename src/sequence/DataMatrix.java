@@ -56,35 +56,7 @@ public class DataMatrix {
 		//TODO do something with attributes?
 		this(data);
 	}
-	
-	/**
-	 * Create a DataMatrix storing information from the given CompressedAlignment
-	 * @param aln
-	 */
-	public DataMatrix(CompressedAlignment aln) {
-		
-		//Note that there's actually a more efficient way to do this, if we use information
-		//about the column mapping in CompressedAlignment to directly add information to
-		//this object... but this isn't likely to be a big performance bottleneck anyway
-		for(int i=0; i<aln.getSequenceLength(); i++) {
-			CharacterColumn col = new GappedNucColumn( DNAUtils.basesForVals( aln.getAbsoluteColumn(i) ) );
-			addColumn(col);
-		}
-		
-		for(int i=0; i<aln.getSequenceCount(); i++) {
-			rowLabels.add( aln.getSequence(i).getLabel() );
-		}
-		
-		//Small amount of error checking here
-		int sum = 0;
-		for(int i=0; i<patterns.size(); i++) {
-			sum += patternCardinality.get(i);
-		}
-		
-		if (sum != totalColsAdded) {
-			throw new IllegalStateException("Uh oh, the sum of pattern cardinalities did not match the total number of sites!");
-		}
-	}
+
 	
 	/**
 	 * Create a new data matrix from the specified alignment assuming we have nucleotide data
