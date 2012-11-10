@@ -31,7 +31,8 @@ import newgui.datafile.XMLConversionError;
 import newgui.datafile.resultsfile.XYSeriesInfo;
 
 /**
- * A generic panel that contains an XYSeriesFigure and a toolbar with a few useful buttons
+ * A generic panel that contains an XYSeriesFigure and a config frame with some basic
+ * configuration buttons.
  * @author brendan
  *
  */

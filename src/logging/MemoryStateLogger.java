@@ -136,8 +136,8 @@ public class MemoryStateLogger implements MCMCListener {
 		for(String ser : likelihoodSeriesMap.keySet()) {
 			if (ser.equals(seriesName)) {
 				SeriesWrapper wrapper = likelihoodSeriesMap.get(ser);
-				if (wrapper.histo == null)
-					createHistogramForSeries(wrapper);
+				//if (wrapper.histo == null) buggy - re-creating histogram every time seems to work fine
+				createHistogramForSeries(wrapper);
 				return wrapper.histo;
 			}
 		}
@@ -145,8 +145,8 @@ public class MemoryStateLogger implements MCMCListener {
 		for(String ser : paramSeriesMap.keySet()) {
 			if (ser.equals(seriesName)) {
 				SeriesWrapper wrapper = paramSeriesMap.get(ser);
-				if (wrapper.histo == null)
-					createHistogramForSeries(wrapper);
+				//if (wrapper.histo == null) buggy - re-creating histogram every time seems to work fine
+				createHistogramForSeries(wrapper);
 				return paramSeriesMap.get(ser).histo;
 			}
 		}

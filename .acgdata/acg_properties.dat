@@ -1,6 +1,6 @@
 vcf.reference=/Users/brendanofallon/resources/human_GRC37.fa
 first.run=Mon Jul 23 19:08:01 MDT 2012
-last.read=Fri Nov 09 14:08:41 PST 2012
+last.read=Fri Nov 09 16:26:04 PST 2012
 os.arch=x86_64
 main.window.height=715
 java.version=1.6.0_35
@@ -8,5 +8,5 @@ java.vendor=Apple Inc.
 os.name=Mac OS X
 last.file.read=/Users/brendanofallon/workspace/ACG/.acgdata/acg_properties.dat
 main.window.width=1173
-last.written=Fri Nov 09 16:00:00 PST 2012
+last.written=Fri Nov 09 16:27:04 PST 2012
 version=0.9-6

@@ -31,6 +31,8 @@ public class SeriesFigurePanel extends AbstractSeriesPanel implements ActionList
 	public void setMemoryLogger(MemoryStateLogger logger) {
 		this.memLogger = logger;
 		
+		
+		//Choose series box
 		List<String> seriesNames = logger.getSeriesNames();
 		String[] nameArray = seriesNames.toArray(new String[]{});
 		chooseBox = new JComboBox(nameArray);
@@ -45,6 +47,7 @@ public class SeriesFigurePanel extends AbstractSeriesPanel implements ActionList
 		addSelectedSeries();
 		
 		
+		//Histogram / trace toggle switch
 		ToggleButton histoToggle = new ToggleButton(UIConstants.getIcon("gui/icons/histoToggleLeft.png"), UIConstants.getIcon("gui/icons/histoToggleRight.png"));
 		histoToggle.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -59,40 +62,6 @@ public class SeriesFigurePanel extends AbstractSeriesPanel implements ActionList
 	}
 
 
-	/**
-	 * Switches to histogram mode by removing all current series from the figure and adding
-	 * a newly created HistogramSeries using the currently selected series as the data source
-	 */
-//	protected void switchHistogramTrace() {
-//		fig.removeAllSeries();
-//		String seriesName = (String) chooseBox.getSelectedItem();
-//
-//		if (burninMessage != null && memLogger.getBurninExceeded()) {
-//			fig.removeElement(burninMessage);
-//			burninMessage = null;
-//		}
-//		
-//		if (showHistogram) {
-//			if ( (!memLogger.getBurninExceeded()) && burninMessage == null) {
-//				burninMessage = new TextElement("(Burnin period not yet exceeded)", fig);
-//				burninMessage.setPosition(0.4, 0.4);
-//				fig.addElement(burninMessage);
-//			}	
-//			
-//			HistogramSeries histo = memLogger.getHistogram(seriesName);
-//			XYSeriesElement histoEl = addSeries(histo);
-//			histoEl.setMode(XYSeriesElement.BOXES);
-//						
-//			fig.setYLabel("Frequency");
-//			fig.setXLabel("Value");
-//		}
-//		else {
-//			addSelectedSeries();
-//		}
-//		
-//		
-//		fig.inferBoundsFromCurrentSeries();
-//	}
 
 	/**
 	 * Add the series that is currently selected in the "ChooseBox". This adds both
@@ -114,12 +83,17 @@ public class SeriesFigurePanel extends AbstractSeriesPanel implements ActionList
 				seriesFig.addElement(burninMessage);
 			}	
 			
+			if(memLogger.getBurninExceeded() && burninMessage != null) {
+				seriesFig.removeElement(burninMessage);
+			}
+
 			HistogramSeries histo = memLogger.getHistogram(seriesName);
 			XYSeriesElement histoEl = addSeries(histo);
 			histoEl.setMode(XYSeriesElement.BOXES);
-			
+
 			seriesFig.setYLabel("Frequency");
 			seriesFig.setXLabel("Value");
+			
 		}
 		else {
 			XYSeries burnin = memLogger.getBurninSeries(seriesName);
