@@ -1,20 +1,11 @@
-<<<<<<< HEAD
-last.read=Tue Aug 07 14:45:16 MDT 2012
-=======
 first.run=Mon Jul 23 19:08:01 MDT 2012
-last.read=Sun Jul 29 18:11:20 MDT 2012
-os.arch=x86_64
->>>>>>> 8c7031f03cbfb81046280e4ca513abf085bdc5a6
-main.window.height=697
-java.version=1.6.0_33
-java.vendor=Apple Inc.
-os.name=Mac OS X
-main.window.width=1041
-<<<<<<< HEAD
+last.read=Fri Nov 30 13:55:08 MST 2012
+os.arch=amd64
+main.window.height=617
+java.version=1.7.0_09
+java.vendor=Oracle Corporation
+os.name=Linux
+main.window.width=1258
 last.file.read=/home/brendan/workspace/ACG/.acgdata/acg_properties.dat
-last.written=Tue Aug 07 14:51:12 MDT 2012
-=======
-last.file.read=/Users/brendanofallon/workspace/ACG/.acgdata/acg_properties.dat
-last.written=Sun Jul 29 18:11:40 MDT 2012
+last.written=Fri Nov 30 13:55:44 MST 2012
 version=0.9-6
->>>>>>> 8c7031f03cbfb81046280e4ca513abf085bdc5a6
