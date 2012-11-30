@@ -1,6 +1,5 @@
 package newgui.gui.display.primaryDisplay.loggerVizualizer;
 
-import gui.ErrorWindow;
 import gui.figure.series.XYSeriesFigure;
 
 import java.awt.BorderLayout;
@@ -21,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import newgui.ErrorWindow;
 import newgui.UIConstants;
 import newgui.gui.widgets.AbstractFigurePanel;
 import newgui.gui.widgets.AbstractSeriesPanel;

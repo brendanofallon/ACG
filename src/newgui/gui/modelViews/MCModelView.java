@@ -1,8 +1,5 @@
 package newgui.gui.modelViews;
 
-import gui.ErrorWindow;
-import gui.modelElements.MCMCModelElement;
-import gui.modelElements.Configurator.InputConfigException;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -20,6 +17,10 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import newgui.ErrorWindow;
+import newgui.gui.modelElements.MCMCModelElement;
+import newgui.gui.modelElements.Configurator.InputConfigException;
 
 public class MCModelView extends JPanel {
 

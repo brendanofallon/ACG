@@ -23,13 +23,14 @@ package newgui.gui.modelViews.loggerViews;
 import java.awt.Dimension;
 
 import gui.loggerConfigs.RootHeightModel;
-import gui.modelElements.Configurator.InputConfigException;
 
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import newgui.gui.modelElements.Configurator.InputConfigException;
 
 
 public class RootHeightView extends DefaultLoggerView {

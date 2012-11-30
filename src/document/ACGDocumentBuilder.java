@@ -19,8 +19,6 @@
 
 package document;
 
-import gui.modelElements.ElementProvider;
-import gui.modelElements.Configurator.InputConfigException;
 
 import java.io.File;
 import java.io.StringWriter;
@@ -40,6 +38,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import newgui.gui.modelElements.ElementProvider;
+import newgui.gui.modelElements.Configurator.InputConfigException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

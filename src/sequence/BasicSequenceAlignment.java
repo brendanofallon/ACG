@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import newgui.ErrorWindow;
 import newgui.alignment.UnrecognizedBaseException;
 import newgui.datafile.AlignmentFile;
 
@@ -629,10 +630,9 @@ public class BasicSequenceAlignment implements Alignment {
 		if (mask == null) 
 			return;
 		if (dataMatrix != null) {
-			System.err.println("WARNING: DataMatrix has already been created for alignment, but we're applying a mask now so info in matrix will out outdated!");
+			ErrorWindow.showErrorWindow(new IllegalStateException("A data matrix has already been created for this alignment, which likely indicates a masking error") );
 		}
 		
-		System.out.println("APPLYING SEQUENCE MASK!");
 		for(Sequence seq : seqs) {
 			for(Integer col : mask.getMaskedColumns()) {
 				seq.mask(col);

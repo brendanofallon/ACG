@@ -46,7 +46,6 @@ import parameter.DoubleParameter;
 import priors.ExponentialPrior;
 import sequence.BasicSequenceAlignment;
 import sequence.DataMatrix;
-import tools.ApplicationHeader;
 import arg.ARG;
 import coalescent.CoalescentLikelihood;
 import coalescent.ConstantPopSize;
@@ -184,7 +183,6 @@ public class RecombAnalysis extends NoRecombAnalysis {
 		if (sampleFrequency == null)
 			sampleFrequency = 5000;
 		
-		System.out.println("\n" + ApplicationHeader.getHeader() );
 		System.out.println("\n\n Running input files with run length : " + runLength + " and sample frequency : " + sampleFrequency);
 		
 		for(String arg : args) {

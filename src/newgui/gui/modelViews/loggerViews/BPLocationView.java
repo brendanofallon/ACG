@@ -44,6 +44,8 @@ import logging.BreakpointLocation;
 import logging.StateLogger;
 
 
+import newgui.gui.modelElements.Configurator.InputConfigException;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -53,7 +55,6 @@ import xml.XMLLoader;
 
 
 import gui.loggerConfigs.BPLocationModel;
-import gui.modelElements.Configurator.InputConfigException;
 
 public class BPLocationView extends DefaultLoggerView {
 

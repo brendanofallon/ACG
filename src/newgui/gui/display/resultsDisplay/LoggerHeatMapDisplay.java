@@ -1,11 +1,6 @@
 package newgui.gui.display.resultsDisplay;
 
-import gui.figure.TextElement;
-import gui.figure.VerticalTextElement;
-import gui.figure.heatMapFigure.ColorBarElement;
-import gui.figure.heatMapFigure.HeatMapElement;
 import gui.figure.heatMapFigure.HeatMapFigure;
-import newgui.UIConstants;
 
 public class LoggerHeatMapDisplay extends LoggerResultDisplay {
 

@@ -10,14 +10,10 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import gui.ErrorWindow;
 
 
 import gui.loggerConfigs.LoggerModel;
 import gui.loggerConfigs.StateLoggerModel;
-import gui.modelElements.ARGModelElement;
-import gui.modelElements.PopSizeModelElement;
-import gui.modelElements.Configurator.InputConfigException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -32,7 +28,11 @@ import logging.PropertyLogger;
 import logging.StateLogger;
 
 import net.miginfocom.swing.MigLayout;
+import newgui.ErrorWindow;
 import newgui.UIConstants;
+import newgui.gui.modelElements.ARGModelElement;
+import newgui.gui.modelElements.PopSizeModelElement;
+import newgui.gui.modelElements.Configurator.InputConfigException;
 import newgui.gui.modelViews.loggerViews.AvailableLoggers;
 import newgui.gui.modelViews.loggerViews.DefaultLoggerView;
 import newgui.gui.modelViews.loggerViews.StateLoggerView;

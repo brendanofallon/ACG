@@ -7,15 +7,16 @@ package tools.alnGen;
  */
 public class Variant {
 
-	String contig;
-	int pos;
-	String ref;
-	String alt0;
-	String alt1;
-	Double quality;
-	Integer depth;
+	final String contig;
+	final int pos;
+	final String ref;
+	final String alt0;
+	final String alt1;
+	final Double quality;
+	final Integer depth;
+	final boolean phased;
 	
-	public Variant(String contig, int pos, String ref, String alt0, String alt1, double quality, int depth) {
+	public Variant(String contig, int pos, String ref, String alt0, String alt1, double quality, int depth, boolean phased) {
 		this.contig = contig;
 		this.pos = pos;
 		this.ref = ref;
@@ -23,6 +24,7 @@ public class Variant {
 		this.alt1 = alt1;
 		this.quality = quality;
 		this.depth = depth;
+		this.phased = phased;
 	}
 	
 	public String getContig() {
@@ -51,6 +53,14 @@ public class Variant {
 	
 	public int getDepth() {
 		return depth;
+	}
+	
+	/**
+	 * True if this variant has been phased
+	 * @return
+	 */
+	public boolean phased() {
+		return phased;
 	}
 	
 	public String toString() {

@@ -1,7 +1,5 @@
 package newgui.gui.display.resultsDisplay;
 
-import gui.ErrorWindow;
-import gui.figure.TextElement;
 import gui.figure.series.HistogramSeries;
 import gui.figure.series.XYSeries;
 import gui.figure.series.XYSeriesElement;
@@ -14,6 +12,7 @@ import java.util.List;
 
 import javax.swing.JComboBox;
 
+import newgui.ErrorWindow;
 import newgui.UIConstants;
 import newgui.datafile.XMLConversionError;
 import newgui.datafile.resultsfile.ResultsFile;

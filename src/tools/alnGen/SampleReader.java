@@ -73,6 +73,35 @@ public class SampleReader {
 	}
 	
 	/**
+	 * Returns false if more than a couple of the variants have not been phased. 
+	 * @param contig
+	 * @param start
+	 * @param end
+	 * @return
+	 * @throws IOException
+	 * @throws ContigNotFoundException
+	 */
+	public boolean queryPhased(String contig, int start, int end) throws IOException, ContigNotFoundException {
+		advanceTo(contig, start);
+		Variant var = getVariant();
+		int count = 0;
+		int unphased = 0;
+		while( var.getContig().equals(contig) && var.getPos() < end && count < 50) {
+			if ( ! var.phased()) {
+				unphased++;
+			}
+			count++;
+		}
+		
+		//If more than a couple unphased vars return false
+		if (unphased > 2) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
 	 * Advances the current line until it contains the first variant in the given
 	 * contig after or equal to the given position
 	 * @param contig
@@ -137,6 +166,7 @@ public class SampleReader {
 
 			String GTStr = formatToks[ vcfReader.getFormatCol("GT")];
 			char gt0 = GTStr.charAt(0);
+			char div = GTStr.charAt(1);
 			char gt1 = GTStr.charAt(2);
 			String alt0;
 			String alt1;
@@ -184,7 +214,8 @@ public class SampleReader {
 				depth = totDepth;
 			}
 
-			Variant var = new Variant(contig, pos, ref, alt0, alt1, quality, depth);
+			boolean phased = div == '|';
+			Variant var = new Variant(contig, pos, ref, alt0, alt1, quality, depth, phased);
 			return var;
 		}
 		catch (NumberFormatException nfe) {

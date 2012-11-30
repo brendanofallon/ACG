@@ -1,8 +1,5 @@
 package newgui.gui.display.primaryDisplay;
 
-import gui.ErrorWindow;
-import gui.modelElements.AnalysisModel;
-import gui.modelElements.Configurator.InputConfigException;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -21,10 +18,13 @@ import javax.swing.JPanel;
 
 import document.ACGDocument;
 
+import newgui.ErrorWindow;
 import newgui.UIConstants;
 import newgui.datafile.AnalysisDataFile;
 import newgui.datafile.XMLConversionError;
 import newgui.gui.ViewerWindow;
+import newgui.gui.modelElements.AnalysisModel;
+import newgui.gui.modelElements.Configurator.InputConfigException;
 import newgui.gui.modelViews.CoalModelView;
 import newgui.gui.modelViews.LoggersView;
 import newgui.gui.modelViews.MCModelView;

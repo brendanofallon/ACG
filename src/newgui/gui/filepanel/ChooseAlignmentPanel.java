@@ -1,6 +1,5 @@
 package newgui.gui.filepanel;
 
-import gui.ErrorWindow;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -18,6 +17,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import newgui.ErrorWindow;
 import newgui.alignment.FileParseException;
 import newgui.datafile.AlignmentFile;
 import newgui.datafile.DataFileFactory;

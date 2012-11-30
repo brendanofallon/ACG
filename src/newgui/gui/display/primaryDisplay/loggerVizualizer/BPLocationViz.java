@@ -1,24 +1,13 @@
 package newgui.gui.display.primaryDisplay.loggerVizualizer;
 
-import gui.figure.ColorSwatchButton;
-import gui.figure.TextElement;
-import gui.figure.VerticalTextElement;
-import gui.figure.heatMapFigure.ColorBarElement;
-import gui.figure.heatMapFigure.HeatMapElement;
 import gui.figure.heatMapFigure.HeatMapFigure;
 import gui.figure.series.XYSeriesFigure;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import javax.swing.Box;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import newgui.UIConstants;

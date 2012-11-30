@@ -1,7 +1,5 @@
 package gui.figure.treeFigure;
 
-import gui.ErrorWindow;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -20,6 +18,8 @@ import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import newgui.ErrorWindow;
 
 
 public class ScaleAxisConfigFrame extends JFrame {

@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -59,17 +58,22 @@ public class ImageButton extends JPanel {
 	}
 	
 	public void paintComponent(Graphics g) {
-//		if (hovering) {
-//			Graphics2D g2d = (Graphics2D)g;
-//			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-//	                RenderingHints.VALUE_ANTIALIAS_ON);
-//			g.setColor(new Color(0.75f, 0.75f, 0.75f, 0.6f));
-//			g2d.setStroke(new BasicStroke(2.0f));
-//			g.drawRoundRect(1, 1, getWidth()-2, getHeight()-2, 10, 10);
-//		}
-//		else {
-//			super.paintComponent(g);
-//		}
+
+		
+		//Always paint over background
+		g.setColor(getBackground());
+		g.fillRect(0, 0, getWidth(), getHeight());
+		
+		
+		if (hovering) {
+			Graphics2D g2d = (Graphics2D)g;
+			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+	                RenderingHints.VALUE_ANTIALIAS_ON);
+			g.setColor(new Color(0.75f, 0.75f, 0.75f, 0.6f));
+			g2d.setStroke(new BasicStroke(2.0f));
+			g.drawRoundRect(1, 1, getWidth()-2, getHeight()-2, 10, 10);
+		}
+		
 		if (clicking)
 			g.drawImage(pressedImage.getImage(), 0, 1, null);
 		else

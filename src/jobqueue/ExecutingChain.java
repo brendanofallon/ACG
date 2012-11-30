@@ -24,9 +24,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import gui.ErrorWindow;
 
 import javax.swing.SwingWorker;
+
+import newgui.ErrorWindow;
 
 import document.ACGDocument;
 

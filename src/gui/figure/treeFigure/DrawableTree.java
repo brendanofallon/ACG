@@ -1,7 +1,5 @@
 package gui.figure.treeFigure;
 
-import gui.ErrorWindow;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Rectangle;
@@ -17,6 +15,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 import java.util.regex.Pattern;
+
+import newgui.ErrorWindow;
 
 
 /**

@@ -1,7 +1,6 @@
 package newgui.gui.filepanel;
 
 
-import gui.ErrorWindow;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -31,6 +30,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 
+import newgui.ErrorWindow;
 import newgui.UIConstants;
 import newgui.alignment.FileParseException;
 import newgui.datafile.*;
@@ -60,7 +60,9 @@ public class FileTree extends JPanel implements DirectoryListener {
 		this.rootDir = rootDir;
 		this.setLayout(new BorderLayout());
 		
+		this.setOpaque(false);
 		tree = new JTree();
+		tree.setOpaque(false);
 		((DefaultTreeCellRenderer)tree.getCellRenderer()).setBackgroundNonSelectionColor(new Color(0, 0, 0, 0));
 		tree.setFont(UIConstants.sansFont.deriveFont(12f));
 		tree.addMouseListener(new TreeMouseListener());

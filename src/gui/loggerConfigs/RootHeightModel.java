@@ -23,12 +23,13 @@ import logging.BreakpointDensity;
 import logging.PropertyLogger;
 import logging.RootHeightDensity;
 
+import newgui.gui.modelElements.Configurator;
+import newgui.gui.modelElements.Configurator.InputConfigException;
+
 import org.w3c.dom.Element;
 
 import document.ACGDocument;
 
-import gui.modelElements.Configurator;
-import gui.modelElements.Configurator.InputConfigException;
 
 
 public class RootHeightModel extends LoggerModel {

@@ -1,6 +1,5 @@
 package newgui.gui.alnGen;
 
-import gui.ErrorWindow;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -37,6 +36,9 @@ import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import app.ACGProperties;
+
+import newgui.ErrorWindow;
 import newgui.datafile.AlignmentFile;
 import newgui.gui.ViewerWindow;
 
@@ -55,6 +57,9 @@ import tools.alnGen.VCFReader;
  *
  */
 public class AlnGenFrame extends JFrame {
+	
+	//Property key so we can save the position of the most recently used reference file
+	public static final String REFERENCE_PROP = "vcf.reference";
 
 	List<SampleReader> sampleReaders = new ArrayList<SampleReader>();
 	
@@ -97,7 +102,41 @@ public class AlnGenFrame extends JFrame {
 			JOptionPane.showMessageDialog(this, "Please choose a start position before the end position");
 			return;		
 		}
-
+		
+		
+		if ( (endPos - startPos) > 1000000) {
+			JOptionPane.showMessageDialog(this, "Currently alignments may not be larger than 1MB. Please enter new start / end coordinates");
+			return;		
+		}
+		
+		
+		boolean allOK = true;
+		for(SampleReader reader : sampleReaders) {
+			boolean phasedOK;
+			try {
+				phasedOK = reader.queryPhased(contig, startPos, endPos);
+				reader.reset();
+				if (! phasedOK) {
+					allOK = false;
+				}
+			} catch (IOException e) {
+				break;
+			} catch (ContigNotFoundException e) {
+				break;
+			}
+			
+		}
+		
+		if (!allOK) {
+			int n = JOptionPane.showConfirmDialog(this.getRootPane(), "Not all variant files appear to have been phased. Proceed anyway?");
+			if (n == JOptionPane.OK_OPTION) {
+				//proceed as usual
+			}
+			else {
+				return;
+			}
+		}
+		
 		final BuilderWorker builder = new BuilderWorker(contig, startPos, endPos);
 		
 		Container rootPane = this.getRootPane();
@@ -156,8 +195,6 @@ public class AlnGenFrame extends JFrame {
 		this.setVisible(false);
 		this.dispose();
 	}
-
-
 	
 	/**
 	 * Remove all samples from added samples list
@@ -178,7 +215,7 @@ public class AlnGenFrame extends JFrame {
 		Object[] samples = vcfSampleList.getSelectedValues();
 		for(int i=0; i<samples.length; i++) {
 			String sampleName = samples[i].toString();
-			SampleReader reader = vcfReader.getReaderForSample(sampleName, phase);
+			SampleReader reader = vcfReader.getReaderForSample(sampleName, phase);			
 			sampleReaders.add(reader);
 			((DefaultListModel)addedSamplesList.getModel()).addElement(sampleName + " (" + phase + ")");
 		}
@@ -187,7 +224,6 @@ public class AlnGenFrame extends JFrame {
 			buildButton.setEnabled(true);
 		addedSamplesHeader.revalidate();
 	}
-
 
 
 	protected void browseForVCFFile() {
@@ -202,6 +238,10 @@ public class AlnGenFrame extends JFrame {
 				e.printStackTrace();
 				ErrorWindow.showErrorWindow(e, "Could not open vcf file " + vcfFile.getName());
 			}
+			catch (Exception e) {
+				e.printStackTrace();
+				ErrorWindow.showErrorWindow(e, "Error reading vcf file " + vcfFile.getName());
+			}
 		}
 	}
 
@@ -213,6 +253,10 @@ public class AlnGenFrame extends JFrame {
 	private void updateSampleListFromVCF() {
 		if (vcfReader == null)
 			throw new IllegalStateException("VCF Reader not initialized");
+		
+		if (vcfReader.getSampleNames().size() == 0) {
+			JOptionPane.showMessageDialog(this, "No samples found in vcf file");
+		}
 		
 		DefaultListModel model = new DefaultListModel();
 		for(String name : vcfReader.getSampleNames()) {
@@ -232,18 +276,24 @@ public class AlnGenFrame extends JFrame {
 	protected void browseForReferenceFile() {
 		int n = fileChooser.showOpenDialog(this);
 		if (n == JFileChooser.APPROVE_OPTION) {
-			referenceFile = fileChooser.getSelectedFile();
-			referenceFileField.setText(referenceFile.getName());
-			alnGen = new AlignmentGenerator(referenceFile);
-			if (sampleReaders.size()>0)
-				buildButton.setEnabled(true);
+			initializeReference(fileChooser.getSelectedFile().getAbsolutePath());
 		}
 	}
-
 	
-	
-	
-	
+	/**
+	 * When a reference file has been selected this method initializes an the fields
+	 * and creates an AlignmentGenerator
+	 * @param pathToReference
+	 */
+	protected void initializeReference(String pathToReference) {
+		referenceFile = new File(pathToReference);
+		referenceFileField.setText(referenceFile.getName());
+		ACGProperties.addProperty(REFERENCE_PROP, referenceFile.getAbsolutePath());
+		alnGen = new AlignmentGenerator(referenceFile);
+		if (sampleReaders.size()>0)
+			buildButton.setEnabled(true);
+	}
+		
 	private void initComponents() {
 		this.setPreferredSize(new Dimension(550, 550));
 		this.getRootPane().setLayout(new BorderLayout());
@@ -277,6 +327,13 @@ public class AlnGenFrame extends JFrame {
 		refRegionPanel.add(refPanel);
 		refPanel.add(new JLabel("Reference file:"));
 		referenceFileField = new JTextField("choose file");
+		String previousReference = ACGProperties.getProperty(REFERENCE_PROP);
+		if (previousReference != null) {
+			File testRef = new File(previousReference);
+			if (testRef.exists() && testRef.canRead()) {
+				initializeReference(testRef.getAbsolutePath());
+			}
+		}
 		referenceFileField.setPreferredSize(new Dimension(150, 32));
 		referenceFileField.setMaximumSize(new Dimension(150, 32));
 		refPanel.add(referenceFileField);
@@ -313,27 +370,13 @@ public class AlnGenFrame extends JFrame {
 		refRegionPanel.add(Box.createVerticalStrut(10));
 		refRegionPanel.add(new JSeparator(JSeparator.HORIZONTAL));
 		
-		
-		
-		//Contains vcf & sample selection panels on left and produced sequences on right 
-		JPanel lowerPanel = new JPanel();
-		mainPanel.add(lowerPanel, BorderLayout.CENTER);
-		lowerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		
-		JPanel lowerLeftPanel = new JPanel();
-		lowerLeftPanel.setLayout(new BoxLayout(lowerLeftPanel, BoxLayout.Y_AXIS));
-		lowerLeftPanel.setPreferredSize(new Dimension(250, 300));
-		lowerPanel.add(lowerLeftPanel);
-		
-		JPanel lowerRightPanel = new JPanel();
-		lowerRightPanel.setLayout(new BoxLayout(lowerRightPanel, BoxLayout.Y_AXIS));
-		lowerRightPanel.setPreferredSize(new Dimension(250, 300));
-		lowerPanel.add(lowerRightPanel);
-		
+		//VCF selection panel
 		JPanel pickVCFPanel = new JPanel();
 		pickVCFPanel.setLayout(new BoxLayout(pickVCFPanel, BoxLayout.X_AXIS));
+		pickVCFPanel.setAlignmentX(LEFT_ALIGNMENT);
 		pickVCFPanel.add(new JLabel("VCF file:"));
 		vcfFileField = new JTextField("choose");
+		vcfFileField.setMinimumSize(new Dimension(160, 20));
 		vcfFileField.setPreferredSize(new Dimension(160, 32));
 		vcfFileField.setMaximumSize(new Dimension(160, 32));
 		pickVCFPanel.add(vcfFileField);
@@ -347,7 +390,23 @@ public class AlnGenFrame extends JFrame {
 		vcfFileField.add(chooseVCFButton);
 		pickVCFPanel.add(vcfFileField);
 		pickVCFPanel.add(chooseVCFButton);
-		lowerLeftPanel.add(pickVCFPanel);
+		refRegionPanel.add(pickVCFPanel);
+		
+		
+		//Contains sample selection panels on left and produced sequences on right 
+		JPanel lowerPanel = new JPanel();
+		mainPanel.add(lowerPanel, BorderLayout.CENTER);
+		lowerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		
+		JPanel lowerLeftPanel = new JPanel();
+		lowerLeftPanel.setLayout(new BoxLayout(lowerLeftPanel, BoxLayout.Y_AXIS));
+		lowerLeftPanel.setPreferredSize(new Dimension(250, 300));
+		lowerPanel.add(lowerLeftPanel);
+		
+		JPanel lowerRightPanel = new JPanel();
+		lowerRightPanel.setLayout(new BoxLayout(lowerRightPanel, BoxLayout.Y_AXIS));
+		lowerRightPanel.setPreferredSize(new Dimension(250, 300));
+		lowerPanel.add(lowerRightPanel);
 		
 		sampleListHeader = new JLabel("No samples loaded");
 		lowerLeftPanel.add(sampleListHeader);
@@ -394,7 +453,7 @@ public class AlnGenFrame extends JFrame {
 		//Lower right panel: contains a list showing which samples have been added
 		
 		addedSamplesHeader = new JLabel("No samples added");
-		lowerRightPanel.add(Box.createVerticalStrut(30));
+		//lowerRightPanel.add(Box.createVerticalStrut(30));
 		lowerRightPanel.add(addedSamplesHeader);
 		DefaultListModel defaultModel = new DefaultListModel();
 		addedSamplesList = new JList(defaultModel);
@@ -455,11 +514,16 @@ public class AlnGenFrame extends JFrame {
 		}
 		
 		@Override
-		protected Object doInBackground() throws Exception {
-			setProgress(2);
-			List<ProtoSequence> protoSeqs = alnGen.getAlignmentParallel(contig, startPos, endPos);
-			setProgress(100);
-			buildAndSaveAlignment(protoSeqs);
+		protected Object doInBackground() {
+			try {
+				setProgress(2);
+				List<ProtoSequence> protoSeqs = alnGen.getAlignmentParallel(contig, startPos, endPos);
+				setProgress(100);
+				buildAndSaveAlignment(protoSeqs);
+			}
+			catch (Exception ex) {
+				ErrorWindow.showErrorWindow(ex, "Error building alignment");
+			}
 			return null;
 		}
 		

@@ -2,7 +2,6 @@ package newgui.gui.modelViews.loggerViews;
 
 import gui.loggerConfigs.PopSizeLoggerModel;
 import gui.loggerConfigs.RootHeightModel;
-import gui.modelElements.Configurator.InputConfigException;
 
 import java.awt.Dimension;
 
@@ -11,6 +10,8 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import newgui.gui.modelElements.Configurator.InputConfigException;
 
 public class PopSizeView extends DefaultLoggerView {
 

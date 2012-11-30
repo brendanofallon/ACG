@@ -22,9 +22,10 @@ package priors;
 import java.util.HashMap;
 import java.util.Map;
 
+import newgui.gui.modelElements.Configurator.InputConfigException;
+
 import parameter.DoubleParameter;
 import parameter.Parameter;
-import gui.modelElements.Configurator.InputConfigException;
 
 /**
  * A prior with the same density between two bounds, which may be positive and negative infinity.

@@ -19,7 +19,6 @@
 
 package newgui.gui.modelViews.loggerViews;
 
-import gui.ErrorWindow;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -30,6 +29,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import newgui.ErrorWindow;
 import newgui.gui.modelViews.AddLoggersFrame;
 import newgui.gui.widgets.RoundedPanel;
 

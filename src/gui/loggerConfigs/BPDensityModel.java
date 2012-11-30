@@ -23,7 +23,8 @@ import logging.BreakpointDensity;
 import logging.BreakpointLocation;
 import logging.PropertyLogger;
 import logging.StateLogger;
-import gui.modelElements.Configurator.InputConfigException;
+
+import newgui.gui.modelElements.Configurator.InputConfigException;
 
 import org.w3c.dom.Element;
 

@@ -20,8 +20,6 @@
 package newgui.gui.modelViews.loggerViews;
 
 import gui.loggerConfigs.StateLoggerModel;
-import gui.modelElements.Configurator;
-import gui.modelElements.Configurator.InputConfigException;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -37,6 +35,9 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import logging.StateLogger;
 
+
+import newgui.gui.modelElements.Configurator;
+import newgui.gui.modelElements.Configurator.InputConfigException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

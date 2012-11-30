@@ -19,10 +19,11 @@
 
 package gui.loggerConfigs;
 
-import gui.modelElements.Configurator.InputConfigException;
 import logging.BreakpointDensity;
 import logging.PropertyLogger;
 import logging.StateLogger;
+
+import newgui.gui.modelElements.Configurator.InputConfigException;
 
 import org.w3c.dom.Element;
 
