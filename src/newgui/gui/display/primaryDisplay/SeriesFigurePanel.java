@@ -82,18 +82,18 @@ public class SeriesFigurePanel extends AbstractSeriesPanel implements ActionList
 				burninMessage.setPosition(0.4, 0.4);
 				seriesFig.addElement(burninMessage);
 			}	
-			
-			if(memLogger.getBurninExceeded() && burninMessage != null) {
-				seriesFig.removeElement(burninMessage);
+			else {
+
+				if (burninMessage != null) {
+					seriesFig.removeElement(burninMessage);
+				}
+				HistogramSeries histo = memLogger.getHistogram(seriesName);
+				XYSeriesElement histoEl = addSeries(histo);
+				histoEl.setMode(XYSeriesElement.BOXES);
+
+				seriesFig.setYLabel("Frequency");
+				seriesFig.setXLabel("Value");
 			}
-
-			HistogramSeries histo = memLogger.getHistogram(seriesName);
-			XYSeriesElement histoEl = addSeries(histo);
-			histoEl.setMode(XYSeriesElement.BOXES);
-
-			seriesFig.setYLabel("Frequency");
-			seriesFig.setXLabel("Value");
-			
 		}
 		else {
 			XYSeries burnin = memLogger.getBurninSeries(seriesName);

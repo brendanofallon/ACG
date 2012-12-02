@@ -46,6 +46,7 @@ import newgui.UIConstants;
 import newgui.alignment.AlignmentSummary;
 import newgui.analysisTemplate.AnalysisTemplate;
 import newgui.analysisTemplate.BasicAnalysis;
+import newgui.analysisTemplate.DemographicAnalysis;
 import newgui.analysisTemplate.QuickAnalysis;
 import newgui.analysisTemplate.ThoroughAnalysis;
 import newgui.datafile.AlignmentFile;
@@ -391,6 +392,15 @@ public class AlignmentPrepPanel extends JPanel {
 		BorderlessButton demoButton = new BorderlessButton("Demographic analysis");
 		demoButton.setPreferredSize(new Dimension(150, 50));
 		bottomLeftPanel.add(demoButton, "wrap");
+		demoButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				chooseButton.setEnabled(true);
+				selectedTemplate = new DemographicAnalysis();
+				analDescBox.setText(selectedTemplate.getDescription() );
+				revalidate();
+				repaint();
+			}
+		});
 		
 		BorderlessButton thoroughButton = new BorderlessButton("Thorough analysis");
 		thoroughButton.setPreferredSize(new Dimension(150, 50));

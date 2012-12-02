@@ -25,6 +25,7 @@ import java.util.List;
 
 import newgui.gui.modelElements.Configurator.InputConfigException;
 import newgui.gui.modelElements.DoubleModifierElement.ModType;
+import newgui.gui.modelElements.DoublePriorModel.PriorType;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -58,6 +59,8 @@ public class RecombRateModel extends ModelElement {
 		recModel.setModifierType( ModType.Scale );
 		recModel.setModifierLabel("RecombRateModifier");
 		recModel.setModifierFrequency(0.1);
+		recModel.getPriorModel().setType(PriorType.Exponential);
+		recModel.getPriorModel().setMean(100.0);
 	}
 	
 	public String getModelLabel() {
