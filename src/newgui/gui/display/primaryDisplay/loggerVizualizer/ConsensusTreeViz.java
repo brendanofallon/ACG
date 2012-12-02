@@ -31,6 +31,7 @@ public class ConsensusTreeViz extends AbstractLoggerViz {
 		treeLogger = (ConsensusTreeLogger)logger;
 		treeFig = new TreeFigure();
 		add(treeFig, BorderLayout.CENTER);
+		this.fig = treeFig; //Image saving looks at fig field, so we must set it to be treeFigure if we want to save tree images
 		
 		burninMessage = new TextElement("(Burnin period not exceeded)", seriesFig);
 		burninMessage.setPosition(0.45, 0.5);
