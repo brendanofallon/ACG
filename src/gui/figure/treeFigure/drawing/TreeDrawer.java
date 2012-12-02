@@ -91,8 +91,9 @@ public class TreeDrawer implements TreeListener {
 	private double heightScale;
 	private double treeMaxHeight;
 	
-	BranchPainter defaultBranchPainter;
-	Stack<DrawableNode> nodeStack;
+	private Stroke branchPaintingStroke = new BasicStroke(1.0f); //Stroke used to paint all branches
+	private BranchPainter defaultBranchPainter;
+	private Stack<DrawableNode> nodeStack;
 	
 	boolean forceRecalculateBounds = true; //Forces a call to initializeBoundaries before painting
 	
@@ -147,7 +148,6 @@ public class TreeDrawer implements TreeListener {
 			textTransform = new AffineTransform();
 			textTransform.rotate(Math.PI*1.5);
 		}
-		
 	}
 
 	/**
@@ -742,6 +742,14 @@ public class TreeDrawer implements TreeListener {
 	}
 	
 	/**
+	 * Sets the stroke used to paint tree branches
+	 * @param stroke
+	 */
+	public void setBranchStroke(Stroke stroke) {
+		this.branchPaintingStroke = stroke;
+	}
+	
+	/**
 	 * Draw the branches and labels. We use a stack-based tree traversal hoping that it will be
 	 * a bit faster than a recursive algorithm
 	 * 
@@ -794,8 +802,8 @@ public class TreeDrawer implements TreeListener {
 					else {
 						branchPainter.setOrientation(BranchPainter.Direction.XFIRST);
 					}
-					branchPainter.paintBranch(g2d, x, y, x1, y1, dKid.getStroke(), dKid.getColor());
-					//System.out.println("Drawing branch from tree: " + node.getY() + " dKid y: " + dKid.getY() + " y: " + y + " to y1: " + y1);
+					
+					branchPainter.paintBranch(g2d, x, y, x1, y1, branchPaintingStroke, dKid.getColor());
 				}
 
 				for(Node kid : node.getOffspring()) {

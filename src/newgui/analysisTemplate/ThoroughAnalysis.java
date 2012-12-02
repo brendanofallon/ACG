@@ -39,16 +39,19 @@ public class ThoroughAnalysis extends AnalysisTemplate {
 		
 		ConsensusTreeModel treeLogger0 = new ConsensusTreeModel();
 		treeLogger0.setSite(1);
+		treeLogger0.setLogFrequency(20000);
 		model.addLoggerModel( treeLogger0 );
 
 		
 		ConsensusTreeModel treeLogger1 = new ConsensusTreeModel();
 		treeLogger1.setSite(aln.getSequenceLength()/2);
+		treeLogger1.setLogFrequency(20000);
 		model.addLoggerModel( treeLogger1 );
 
 		
 		ConsensusTreeModel treeLogger2 = new ConsensusTreeModel();
 		treeLogger2.setSite(aln.getSequenceLength()-2);
+		treeLogger2.setLogFrequency(20000);
 		model.addLoggerModel( treeLogger2 );
 
 		

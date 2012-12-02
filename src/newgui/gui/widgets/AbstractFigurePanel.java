@@ -83,6 +83,8 @@ public abstract class AbstractFigurePanel extends JPanel {
 		int val = fileChooser.showSaveDialog(this);
 		if (val==JFileChooser.APPROVE_OPTION) {
 			File file = fileChooser.getSelectedFile();
+			if (! file.getName().endsWith(".png"))
+				file = new File(file.getAbsolutePath() + ".png");
 			try {
 				ImageIO.write(image, "png", file);
 			}

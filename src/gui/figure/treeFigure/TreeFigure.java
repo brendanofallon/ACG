@@ -3,7 +3,9 @@ package gui.figure.treeFigure;
 import gui.figure.Figure;
 import gui.figure.FigureElement;
 import gui.figure.treeFigure.DrawableTree.Direction;
+import gui.figure.treeFigure.drawing.TreeDrawer;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -62,7 +64,6 @@ public class TreeFigure extends Figure {
 
 
 	Rectangle2D translatedRect;
-	//TreeDisplay display;
 	Color cartoonColor;
 	
 	Color errorBarColor = Color.LIGHT_GRAY;
@@ -88,7 +89,6 @@ public class TreeFigure extends Figure {
 
 		setRectangleSelection(false); 	//Turn off rectangle selection
 		translatedRect = new Rectangle2D.Double(0, 0, 0, 0);
-		//this.display = display;
 		cartoonColor = Color.red;
 		workingPoint = new java.awt.Point(0, 0);
 
@@ -180,6 +180,8 @@ public class TreeFigure extends Figure {
 	public void addTree(DrawableTree newTree) {
 		TreeElement newElement = new TreeElement(this);
 		newTree.setScaleType(DrawableTree.NO_SCALE_BAR);
+		TreeDrawer drawer = newElement.getTreeDrawer();
+		drawer.setBranchStroke(new BasicStroke(2.0f));
 		newElement.setScale(getWidth(), getHeight(), null);
 		newElement.setTree(newTree);
 		treeElements.add(newElement);

@@ -24,6 +24,7 @@ public class BasicAnalysis extends AnalysisTemplate {
 		
 		ConsensusTreeModel treeLogger = new ConsensusTreeModel();
 		treeLogger.setSite(aln.getSequenceLength()/2);
+		treeLogger.setLogFrequency(5000);
 		model.addLoggerModel( treeLogger );
 		
 		return model;

@@ -26,7 +26,7 @@ import mcmc.MCMCListener;
  */
 public class MemoryStateLogger implements MCMCListener {
 
-	private int statesToStore = 5000; //Maximum number of values to store for each parameter tracked
+	private int statesToStore = 4000; //Maximum number of values to store for each parameter tracked
 	private Integer logFrequency = null; //Computed when we 'initialize'
 	private boolean initialized = false;
 	private MCMC chain;
