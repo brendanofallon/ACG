@@ -2,14 +2,11 @@ package newgui.gui.alnGen;
 
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,25 +28,19 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import app.ACGProperties;
-
 import newgui.ErrorWindow;
 import newgui.datafile.AlignmentFile;
 import newgui.gui.ViewerWindow;
-
-import sequence.Alignment;
 import sequence.BasicSequenceAlignment;
-import sequence.Sequence;
 import tools.alnGen.AlignmentGenerator;
-import tools.alnGen.ContigNotFoundException;
 import tools.alnGen.ProtoSequence;
 import tools.alnGen.SampleReader;
 import tools.alnGen.VCFReader;
+import app.ACGProperties;
 
 /**
  * Main frame for alignment creation from Reference + VCF
@@ -74,11 +65,13 @@ public class AlnGenFrame extends JFrame {
 	 * Use the current reference, contig, positions, and samples to create an actual alignment. The user
 	 * is prompted to save the new alignment on successful creation
 	 */
-	protected void buildAlignment() {		
+	protected void buildAlignment() {
+		System.err.println("Beginning build alignment");
 		for(SampleReader reader : sampleReaders) {
 			reader.reset();
 			alnGen.addSampleReader(reader);
 		}
+		
 		
 		String contig = contigField.getText();
 		if (contig == null || contig.trim().length()==0) {
@@ -110,35 +103,12 @@ public class AlnGenFrame extends JFrame {
 		}
 		
 		
-		boolean allOK = true;
-		for(SampleReader reader : sampleReaders) {
-			boolean phasedOK;
-			try {
-				phasedOK = reader.queryPhased(contig, startPos, endPos);
-				reader.reset();
-				if (! phasedOK) {
-					allOK = false;
-				}
-			} catch (IOException e) {
-				break;
-			} catch (ContigNotFoundException e) {
-				break;
-			}
-			
-		}
 		
-		if (!allOK) {
-			int n = JOptionPane.showConfirmDialog(this.getRootPane(), "Not all variant files appear to have been phased. Proceed anyway?");
-			if (n == JOptionPane.OK_OPTION) {
-				//proceed as usual
-			}
-			else {
-				return;
-			}
-		}
+		System.out.println("Building builder worker..");
 		
 		final BuilderWorker builder = new BuilderWorker(contig, startPos, endPos);
 		
+		System.out.println("Creating UI components..");
 		Container rootPane = this.getRootPane();
 		rootPane.removeAll();
 		JPanel newPanel = new JPanel();
@@ -166,6 +136,34 @@ public class AlnGenFrame extends JFrame {
 		
 		rootPane.validate();
 		rootPane.repaint();
+		
+//		System.out.println("Querying phase of samples");
+//		boolean allOK = true;
+//		for(SampleReader reader : sampleReaders) {
+//			boolean phasedOK;
+//			try {
+//				phasedOK = reader.queryPhased(contig, startPos, endPos);
+//				reader.reset();
+//				if (! phasedOK) {
+//					allOK = false;
+//				}
+//			} catch (IOException e) {
+//				break;
+//			} catch (ContigNotFoundException e) {
+//				break;
+//			}
+//			
+//		}
+//		
+//		if (!allOK) {
+//			int n = JOptionPane.showConfirmDialog(this.getRootPane(), "Not all variant files appear to have been phased. Proceed anyway?");
+//			if (n == JOptionPane.OK_OPTION) {
+//				//proceed as usual
+//			}
+//			else {
+//				return;
+//			}
+//		}
 		
 		builder.execute();
 	}
@@ -313,7 +311,7 @@ public class AlnGenFrame extends JFrame {
 		
 		JPanel mainPanel = new JPanel();
 		this.getRootPane().add(mainPanel, BorderLayout.CENTER);
-		mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 10));
 		mainPanel.setLayout(new BorderLayout());
 		
 		JPanel refRegionPanel = new JPanel();
@@ -522,7 +520,7 @@ public class AlnGenFrame extends JFrame {
 				buildAndSaveAlignment(protoSeqs);
 			}
 			catch (Exception ex) {
-				ErrorWindow.showErrorWindow(ex, "Error building alignment");
+				ErrorWindow.showErrorWindow(ex, "Error building alignment: " + ex.getMessage());
 			}
 			return null;
 		}
