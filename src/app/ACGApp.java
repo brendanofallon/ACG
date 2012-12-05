@@ -29,10 +29,19 @@ public class ACGApp extends ACGApplication {
 	public static final Logger logger = Logger.getAnonymousLogger();
 	
 	static ACGApp acgApp;
-	protected ViewerWindow window;
+	protected static ViewerWindow viewerWindow;
 
 	public ACGApp() {
 		//Must have explicit no-arg constructor
+		acgApp = this;
+	}
+	
+	public static ACGApp getApplication() {
+		return acgApp;
+	}
+	
+	public static ViewerWindow getViewerWindow() {
+		return viewerWindow;
 	}
 	
 	public static void showMainWindow() {
@@ -53,6 +62,7 @@ public class ACGApp extends ACGApplication {
 				try {
 					loadProperties(); 
 					final ViewerWindow window = new ViewerWindow();
+					viewerWindow = window; 
 					window.addWindowListener(new WindowAdapter() {
 						
 						public void windowClosing(WindowEvent arg0) {

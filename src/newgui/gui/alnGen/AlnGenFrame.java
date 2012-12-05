@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -40,6 +41,7 @@ import tools.alnGen.AlignmentGenerator;
 import tools.alnGen.ProtoSequence;
 import tools.alnGen.SampleReader;
 import tools.alnGen.VCFReader;
+import app.ACGApp;
 import app.ACGProperties;
 
 /**
@@ -57,7 +59,9 @@ public class AlnGenFrame extends JFrame {
 	public AlnGenFrame() {
 		super("Alignment Creation");
 		initComponents();
-		setLocationRelativeTo(null);
+		
+		Point p = ACGApp.getViewerWindow().getLocation();
+		super.setLocation(p.x + 100, p.y+100);
 		pack();
 	}
 	
@@ -108,7 +112,7 @@ public class AlnGenFrame extends JFrame {
 		
 		final BuilderWorker builder = new BuilderWorker(contig, startPos, endPos);
 		
-		System.out.println("Creating UI components..");
+
 		Container rootPane = this.getRootPane();
 		rootPane.removeAll();
 		JPanel newPanel = new JPanel();
@@ -116,6 +120,7 @@ public class AlnGenFrame extends JFrame {
 		rootPane.add(newPanel, BorderLayout.CENTER);
 		newPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		JLabel msgLabel = new JLabel("Creating alignment... this may take a few minutes");
+		msgLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
 		newPanel.add(Box.createVerticalGlue());
 		newPanel.add(msgLabel);
 		
@@ -293,7 +298,7 @@ public class AlnGenFrame extends JFrame {
 	}
 		
 	private void initComponents() {
-		this.setPreferredSize(new Dimension(550, 550));
+		this.setPreferredSize(new Dimension(550, 600));
 		this.getRootPane().setLayout(new BorderLayout());
 		
 		JPanel topInfoPanel = new JPanel();
@@ -311,7 +316,7 @@ public class AlnGenFrame extends JFrame {
 		
 		JPanel mainPanel = new JPanel();
 		this.getRootPane().add(mainPanel, BorderLayout.CENTER);
-		mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 10));
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		mainPanel.setLayout(new BorderLayout());
 		
 		JPanel refRegionPanel = new JPanel();
@@ -332,8 +337,8 @@ public class AlnGenFrame extends JFrame {
 				initializeReference(testRef.getAbsolutePath());
 			}
 		}
-		referenceFileField.setPreferredSize(new Dimension(150, 32));
-		referenceFileField.setMaximumSize(new Dimension(150, 32));
+		referenceFileField.setPreferredSize(new Dimension(180, 32));
+		referenceFileField.setMaximumSize(new Dimension(180, 32));
 		refPanel.add(referenceFileField);
 		JButton chooseButton = new JButton("Choose");
 		chooseButton.setToolTipText("Browse for reference file");
@@ -398,12 +403,12 @@ public class AlnGenFrame extends JFrame {
 		
 		JPanel lowerLeftPanel = new JPanel();
 		lowerLeftPanel.setLayout(new BoxLayout(lowerLeftPanel, BoxLayout.Y_AXIS));
-		lowerLeftPanel.setPreferredSize(new Dimension(250, 300));
+		lowerLeftPanel.setPreferredSize(new Dimension(250, 320));
 		lowerPanel.add(lowerLeftPanel);
 		
 		JPanel lowerRightPanel = new JPanel();
 		lowerRightPanel.setLayout(new BoxLayout(lowerRightPanel, BoxLayout.Y_AXIS));
-		lowerRightPanel.setPreferredSize(new Dimension(250, 300));
+		lowerRightPanel.setPreferredSize(new Dimension(250, 320));
 		lowerPanel.add(lowerRightPanel);
 		
 		sampleListHeader = new JLabel("No samples loaded");
@@ -472,6 +477,7 @@ public class AlnGenFrame extends JFrame {
 		//Bottom panel with a cancel and build button
 		JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
+		bottomPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 		cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
