@@ -10,6 +10,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import newgui.ErrorWindow;
+import tools.alnGen.FastaIndex.IndexNotFoundException;
+import tools.alnGen.FastaReader2.EndOfContigException;
 
 /**
  * A class that takes as input a reference file and a few SampleReaders, and constructs full Sequences
@@ -44,19 +46,26 @@ public class AlignmentGenerator {
 	 * @param endPos
 	 * @return
 	 * @throws IOException
+	 * @throws IndexNotFoundException 
 	 */
-	public List<ProtoSequence> getAlignment(String contig, int startPos, int endPos) throws IOException, ContigNotFoundException {
+	public List<ProtoSequence> getAlignment(String contig, int startPos, int endPos) throws IOException, ContigNotFoundException, IndexNotFoundException {
 		List<ProtoSequence> seqs = new ArrayList<ProtoSequence>();
 
-		FastaReader refReader = new FastaReader(referenceFile);
+		FastaReader2 refReader = new FastaReader2(referenceFile);
 		StringBuilder refSeq = new StringBuilder();
-
-		Integer intContig = FastaReader.getIntegerTrack(contig);
-
-		for(int i=startPos; i<endPos; i++) {
-			char base = refReader.getBaseAt(intContig, i);
-			refSeq.append(base);
+		refReader.advanceToContig(contig);
+		
+		try {
+			refReader.advanceToPosition(startPos-1);
+			for(int i=startPos; i<endPos; i++) {
+				char base = refReader.nextBase();
+				refSeq.append(base);
+			}
+		} catch (EndOfContigException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 
 		
 		int errorCount = 0;
@@ -94,8 +103,9 @@ public class AlignmentGenerator {
 	 * @return
 	 * @throws IOException
 	 * @throws ContigNotFoundException
+	 * @throws IndexNotFoundException 
 	 */
-	public List<ProtoSequence> getAlignmentParallel(String contig, int startPos, int endPos) throws IOException, ContigNotFoundException {
+	public List<ProtoSequence> getAlignmentParallel(String contig, int startPos, int endPos) throws IOException, ContigNotFoundException, IndexNotFoundException {
 		int cpuCount = Runtime.getRuntime().availableProcessors();
 		int threads = 1;
 		if (cpuCount > 3)
@@ -104,16 +114,20 @@ public class AlignmentGenerator {
 			threads = 4;
 		ThreadPoolExecutor threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(threads);
 		
-		FastaReader refReader = new FastaReader(referenceFile);
+		FastaReader2 refReader = new FastaReader2(referenceFile);
 		StringBuilder refSeq = new StringBuilder();
-
-		Integer intContig = FastaReader.getIntegerTrack(contig);
-
-		for(int i=startPos; i<endPos; i++) {
-			char base = refReader.getBaseAt(intContig, i);
-			refSeq.append(base);
+		refReader.advanceToContig(contig);
+		
+		try {
+			refReader.advanceToPosition(startPos-1);
+			for(int i=startPos; i<endPos; i++) {
+				char base = refReader.nextBase();
+				refSeq.append(base);
+			}
+		} catch (EndOfContigException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
 
 		List<GeneratorWorker> workers = new ArrayList<GeneratorWorker>();
 		
@@ -132,7 +146,7 @@ public class AlignmentGenerator {
 			threadPool.awaitTermination(1, TimeUnit.DAYS);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-			ErrorWindow.showErrorWindow(e, "ALignment generation interrupted");
+			ErrorWindow.showErrorWindow(e, "Alignment generation interrupted");
 		} //Wait until all tasks have completed
 
 		//Make a list of all protosequences we're going to return and grab the sequence 

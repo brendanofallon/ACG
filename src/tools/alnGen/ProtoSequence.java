@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import newgui.alignment.UnrecognizedBaseException;
-
-import sequence.DNAUtils;
 import sequence.Sequence;
 import sequence.SimpleSequence;
 
@@ -113,7 +111,7 @@ public class ProtoSequence {
 			if (maskVariant)
 				alt = "N";
 			
-			System.out.println("Replacing base at site " + seqPos + " with " + alt);
+			//System.out.println("Replacing base at site " + seqPos + " with " + alt);
 			seq.replace(seqPos, seqPos+1, alt);
 		}
 		else {

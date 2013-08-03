@@ -2,14 +2,12 @@ package newgui.gui.alnGen;
 
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,25 +29,20 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import app.ACGProperties;
-
 import newgui.ErrorWindow;
 import newgui.datafile.AlignmentFile;
 import newgui.gui.ViewerWindow;
-
-import sequence.Alignment;
 import sequence.BasicSequenceAlignment;
-import sequence.Sequence;
 import tools.alnGen.AlignmentGenerator;
-import tools.alnGen.ContigNotFoundException;
 import tools.alnGen.ProtoSequence;
 import tools.alnGen.SampleReader;
 import tools.alnGen.VCFReader;
+import app.ACGApp;
+import app.ACGProperties;
 
 /**
  * Main frame for alignment creation from Reference + VCF
@@ -66,7 +59,9 @@ public class AlnGenFrame extends JFrame {
 	public AlnGenFrame() {
 		super("Alignment Creation");
 		initComponents();
-		setLocationRelativeTo(null);
+		
+		Point p = ACGApp.getViewerWindow().getLocation();
+		super.setLocation(p.x + 100, p.y+100);
 		pack();
 	}
 	
@@ -74,11 +69,13 @@ public class AlnGenFrame extends JFrame {
 	 * Use the current reference, contig, positions, and samples to create an actual alignment. The user
 	 * is prompted to save the new alignment on successful creation
 	 */
-	protected void buildAlignment() {		
+	protected void buildAlignment() {
+		System.err.println("Beginning build alignment");
 		for(SampleReader reader : sampleReaders) {
 			reader.reset();
 			alnGen.addSampleReader(reader);
 		}
+		
 		
 		String contig = contigField.getText();
 		if (contig == null || contig.trim().length()==0) {
@@ -110,35 +107,12 @@ public class AlnGenFrame extends JFrame {
 		}
 		
 		
-		boolean allOK = true;
-		for(SampleReader reader : sampleReaders) {
-			boolean phasedOK;
-			try {
-				phasedOK = reader.queryPhased(contig, startPos, endPos);
-				reader.reset();
-				if (! phasedOK) {
-					allOK = false;
-				}
-			} catch (IOException e) {
-				break;
-			} catch (ContigNotFoundException e) {
-				break;
-			}
-			
-		}
 		
-		if (!allOK) {
-			int n = JOptionPane.showConfirmDialog(this.getRootPane(), "Not all variant files appear to have been phased. Proceed anyway?");
-			if (n == JOptionPane.OK_OPTION) {
-				//proceed as usual
-			}
-			else {
-				return;
-			}
-		}
+		System.out.println("Building builder worker..");
 		
 		final BuilderWorker builder = new BuilderWorker(contig, startPos, endPos);
 		
+
 		Container rootPane = this.getRootPane();
 		rootPane.removeAll();
 		JPanel newPanel = new JPanel();
@@ -146,6 +120,7 @@ public class AlnGenFrame extends JFrame {
 		rootPane.add(newPanel, BorderLayout.CENTER);
 		newPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		JLabel msgLabel = new JLabel("Creating alignment... this may take a few minutes");
+		msgLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
 		newPanel.add(Box.createVerticalGlue());
 		newPanel.add(msgLabel);
 		
@@ -166,6 +141,34 @@ public class AlnGenFrame extends JFrame {
 		
 		rootPane.validate();
 		rootPane.repaint();
+		
+//		System.out.println("Querying phase of samples");
+//		boolean allOK = true;
+//		for(SampleReader reader : sampleReaders) {
+//			boolean phasedOK;
+//			try {
+//				phasedOK = reader.queryPhased(contig, startPos, endPos);
+//				reader.reset();
+//				if (! phasedOK) {
+//					allOK = false;
+//				}
+//			} catch (IOException e) {
+//				break;
+//			} catch (ContigNotFoundException e) {
+//				break;
+//			}
+//			
+//		}
+//		
+//		if (!allOK) {
+//			int n = JOptionPane.showConfirmDialog(this.getRootPane(), "Not all variant files appear to have been phased. Proceed anyway?");
+//			if (n == JOptionPane.OK_OPTION) {
+//				//proceed as usual
+//			}
+//			else {
+//				return;
+//			}
+//		}
 		
 		builder.execute();
 	}
@@ -295,7 +298,7 @@ public class AlnGenFrame extends JFrame {
 	}
 		
 	private void initComponents() {
-		this.setPreferredSize(new Dimension(550, 550));
+		this.setPreferredSize(new Dimension(550, 600));
 		this.getRootPane().setLayout(new BorderLayout());
 		
 		JPanel topInfoPanel = new JPanel();
@@ -334,8 +337,8 @@ public class AlnGenFrame extends JFrame {
 				initializeReference(testRef.getAbsolutePath());
 			}
 		}
-		referenceFileField.setPreferredSize(new Dimension(150, 32));
-		referenceFileField.setMaximumSize(new Dimension(150, 32));
+		referenceFileField.setPreferredSize(new Dimension(180, 32));
+		referenceFileField.setMaximumSize(new Dimension(180, 32));
 		refPanel.add(referenceFileField);
 		JButton chooseButton = new JButton("Choose");
 		chooseButton.setToolTipText("Browse for reference file");
@@ -400,12 +403,12 @@ public class AlnGenFrame extends JFrame {
 		
 		JPanel lowerLeftPanel = new JPanel();
 		lowerLeftPanel.setLayout(new BoxLayout(lowerLeftPanel, BoxLayout.Y_AXIS));
-		lowerLeftPanel.setPreferredSize(new Dimension(250, 300));
+		lowerLeftPanel.setPreferredSize(new Dimension(250, 320));
 		lowerPanel.add(lowerLeftPanel);
 		
 		JPanel lowerRightPanel = new JPanel();
 		lowerRightPanel.setLayout(new BoxLayout(lowerRightPanel, BoxLayout.Y_AXIS));
-		lowerRightPanel.setPreferredSize(new Dimension(250, 300));
+		lowerRightPanel.setPreferredSize(new Dimension(250, 320));
 		lowerPanel.add(lowerRightPanel);
 		
 		sampleListHeader = new JLabel("No samples loaded");
@@ -474,6 +477,7 @@ public class AlnGenFrame extends JFrame {
 		//Bottom panel with a cancel and build button
 		JPanel bottomPanel = new JPanel();
 		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
+		bottomPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 		cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -522,7 +526,7 @@ public class AlnGenFrame extends JFrame {
 				buildAndSaveAlignment(protoSeqs);
 			}
 			catch (Exception ex) {
-				ErrorWindow.showErrorWindow(ex, "Error building alignment");
+				ErrorWindow.showErrorWindow(ex, "Error building alignment: " + ex.getMessage());
 			}
 			return null;
 		}

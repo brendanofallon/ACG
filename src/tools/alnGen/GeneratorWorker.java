@@ -32,7 +32,7 @@ public class GeneratorWorker extends SwingWorker {
 		reader.advanceTo(contig, startPos);
 		Variant var = reader.getVariant();
 		while(errorCount < maxErrors && var.getContig().equals("" + contig) && var.getPos() < endPos) {
-			System.out.println(var);
+			//System.out.println(var);
 			seq.applyVariant(var, reader.getPhase());
 			reader.advance();
 			var = reader.getVariant();

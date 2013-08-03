@@ -20,6 +20,8 @@ public class TMRCAViz extends AbstractLoggerViz {
 		meanEl.setLineWidth((float) 1.5);
 		meanEl.setCanConfigure(true);
 		seriesFig.addSeriesElement(meanEl);
+		seriesFig.setXLabel("Sequence Position");
+		seriesFig.setYLabel("Time to most recent common ancestor");
 		
 		burninMessage = new TextElement("Burnin period (" + logger.getBurnin() + ") not exceeded", seriesFig);
 		burninMessage.setPosition(0.45, 0.5);

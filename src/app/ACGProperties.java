@@ -3,7 +3,6 @@ package app;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -36,10 +35,8 @@ public class ACGProperties {
 	private Map<String, String> props = new HashMap<String, String>();
 	private static ACGProperties properties = null;
 	
-	public ACGProperties(File propsFile) throws IOException {
-		if (properties != null)
-			throw new IllegalStateException("ACGProperties already instantiated");
-		properties = this;
+	private ACGProperties(File propsFile) throws IOException {
+		properties = this; //Must be here
 		readPropertiesFromFile(propsFile);
 	}
 	
@@ -51,12 +48,20 @@ public class ACGProperties {
 		return props;
 	}
 	
+	public static void initialize(File propertiesFile) throws IOException {
+		properties = new ACGProperties(propertiesFile);
+	}
+	
 	/**
 	 * Returns true if there is a property associated with the given key
 	 * @param key
 	 * @return
 	 */
 	public static boolean hasProperty(String key) {
+		//If there was an exception during creation then properties may be null
+		if (getProperties()==null) {
+			return false;
+		}
 		return getProperties().getPropsMap().containsKey(key);
 	}
 	
@@ -66,6 +71,10 @@ public class ACGProperties {
 	 * @return
 	 */
 	public static String getProperty(String key) {
+		//If there was an exception during creation then properties may be null
+		if (getProperties()==null) {
+			return null;
+		}
 		return getProperties().getPropsMap().get(key);
 	}
 	
@@ -137,7 +146,7 @@ public class ACGProperties {
 			line = reader.readLine();
 		}
 		
-
+		reader.close();
 		Date now = new Date();
 		addProperty(LAST_READ, now.toString());
 		addProperty(LAST_FILE_READ, propsFile.getAbsolutePath());
@@ -151,7 +160,6 @@ public class ACGProperties {
 		addProperty(JAVA_VERSION, System.getProperty("java.version"));
 		addProperty(OS_ARCH, System.getProperty("os.arch"));
 		addProperty(OS_NAME, System.getProperty("os.name"));
-		
 	}
 	
 	/**
@@ -166,6 +174,33 @@ public class ACGProperties {
 		String lastFileReadPath = getProperty(LAST_FILE_READ);
 		File file = new File(lastFileReadPath);
 		writePropertiesToFile(file);
+	}
+	
+	/**
+	 * Create a new properties file and write some basic properties to it. 
+	 * @param fileToCreate
+	 * @throws IOException
+	 */
+	public static void createPropertiesFile(File fileToCreate) throws IOException {
+		if (fileToCreate.exists()) {
+			throw new IllegalArgumentException("Properties file " + fileToCreate.getAbsolutePath() + " already exists");
+		}
+		fileToCreate.createNewFile();
+		
+		Date now = new Date();
+		addProperty(LAST_READ, now.toString());
+		addProperty(LAST_FILE_READ, fileToCreate.getAbsolutePath());
+		addProperty(ACGProperties.VERSION, ACGApp.VERSION);
+		
+		if ( getProperty(FIRST_RUN_DATE) == null) {
+			addProperty(FIRST_RUN_DATE, now.toString());
+		}
+		
+		addProperty(JAVA_VENDOR, System.getProperty("java.vendor"));
+		addProperty(JAVA_VERSION, System.getProperty("java.version"));
+		addProperty(OS_ARCH, System.getProperty("os.arch"));
+		addProperty(OS_NAME, System.getProperty("os.name"));
+		writePropertiesToFile(fileToCreate);
 	}
 	
 	/**

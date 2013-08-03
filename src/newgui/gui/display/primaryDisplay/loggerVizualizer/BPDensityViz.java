@@ -1,11 +1,10 @@
 package newgui.gui.display.primaryDisplay.loggerVizualizer;
 
-import java.awt.Color;
-
 import gui.figure.TextElement;
 import gui.figure.series.HistogramSeries;
 import gui.figure.series.XYSeriesElement;
-import gui.figure.series.XYSeriesFigure;
+
+import java.awt.Color;
 
 import logging.BreakpointDensity;
 
@@ -37,6 +36,8 @@ public class BPDensityViz extends AbstractLoggerViz {
 		histoEl.setLineWidth((float) 1.25);
 		histoEl.setCanConfigure(true);
 		seriesFig.addSeriesElement(histoEl);
+		seriesFig.setXLabel("Sequence Position");
+		seriesFig.setYLabel("Breakpoint Density");
 		
 		burninMessage = new TextElement("Burnin period (" + logger.getBurnin() + ") not exceeded", seriesFig);
 		burninMessage.setPosition(0.45, 0.5);

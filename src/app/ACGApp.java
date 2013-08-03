@@ -19,7 +19,7 @@ import newgui.gui.ViewerWindow;
  */
 public class ACGApp extends ACGApplication {
 
-	public static final Integer VERSION_NUM = 6;
+	public static final Integer VERSION_NUM = 7;
 	public static final String VERSION = "0.9-" + VERSION_NUM;
 	
 	
@@ -29,10 +29,19 @@ public class ACGApp extends ACGApplication {
 	public static final Logger logger = Logger.getAnonymousLogger();
 	
 	static ACGApp acgApp;
-	protected ViewerWindow window;
+	protected static ViewerWindow viewerWindow;
 
 	public ACGApp() {
 		//Must have explicit no-arg constructor
+		acgApp = this;
+	}
+	
+	public static ACGApp getApplication() {
+		return acgApp;
+	}
+	
+	public static ViewerWindow getViewerWindow() {
+		return viewerWindow;
 	}
 	
 	public static void showMainWindow() {
@@ -53,6 +62,7 @@ public class ACGApp extends ACGApplication {
 				try {
 					loadProperties(); 
 					final ViewerWindow window = new ViewerWindow();
+					viewerWindow = window; 
 					window.addWindowListener(new WindowAdapter() {
 						
 						public void windowClosing(WindowEvent arg0) {
@@ -113,11 +123,11 @@ public class ACGApp extends ACGApplication {
 		File propsFile = new File(path + fileSep + defaultDataDir + fileSep + defaultPropsFilename);
 		if (propsFile.exists()) {
 			try {
-				new ACGProperties(propsFile);
+				ACGProperties.initialize(propsFile);
 				return;
 			} catch (IOException e) {
 				//Hmm, error reading usual properties file... try another
-				e.printStackTrace();
+				System.err.println("Error reading properties file at " + propsFile.getAbsolutePath() + ", " + e.getLocalizedMessage() + ", trying next location...");
 			}
 		}
 		
@@ -126,11 +136,11 @@ public class ACGApp extends ACGApplication {
 
 		if (propsFile.exists()) {
 			try {
-				new ACGProperties(propsFile);
+				ACGProperties.initialize(propsFile);
 				return;
 			} catch (IOException e) {
 				//Hmm, error reading usual properties file... try another
-				e.printStackTrace();
+				System.err.println("Error reading properties file at " + propsFile.getAbsolutePath() + ", " + e.getLocalizedMessage() + ", trying next location...");
 			}
 		}
 		
@@ -141,13 +151,26 @@ public class ACGApp extends ACGApplication {
 
 		if (propsFile.exists()) {
 			try {
-				new ACGProperties(propsFile);
+				ACGProperties.initialize(propsFile);
 				return;
 			} catch (IOException e) {
 				//Hmm, error reading usual properties file... try another
-				e.printStackTrace();
+				System.err.println("Error reading properties file at " + propsFile.getAbsolutePath() + ", " + e.getLocalizedMessage() + ", cannot read properties file.");
 			}
 		}
+		
+		
+		//If we're here then properties file has not been read, so try to create it 
+		//in user.dir
+		path = System.getProperty("user.dir");
+		propsFile = new File(path + fileSep + defaultDataDir + fileSep + defaultPropsFilename);
+		try {
+			ACGProperties.createPropertiesFile(propsFile);
+		}
+		catch (IOException ex) {
+			System.err.println("Error creating properties file at " + propsFile.getAbsolutePath() + ", " + ex.getLocalizedMessage() + ", cannot read any properties files or create a new one.");
+		}
+		
 		
 		System.err.println("Warning: Could not read properties file");
 	}
