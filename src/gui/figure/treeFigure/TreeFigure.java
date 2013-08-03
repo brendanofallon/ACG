@@ -59,6 +59,9 @@ public class TreeFigure extends Figure {
 	public static final int DEPTH_TIP_LABELS = 2;
 	public static final int HEIGHT_TIP_LABELS = 3;
 	
+	//When scale is displayed, this is the text below it 
+	//private String scaleText = "Substitutions / site";
+	//private TextElement scaleTextElement;
 	
 	boolean mouseDrag = false;
 
@@ -181,7 +184,7 @@ public class TreeFigure extends Figure {
 		TreeElement newElement = new TreeElement(this);
 		newTree.setScaleType(DrawableTree.NO_SCALE_BAR);
 		TreeDrawer drawer = newElement.getTreeDrawer();
-		drawer.setBranchStroke(new BasicStroke(2.0f));
+		drawer.setBranchStroke(new BasicStroke(1.5f));
 		newElement.setScale(getWidth(), getHeight(), null);
 		newElement.setTree(newTree);
 		treeElements.add(newElement);

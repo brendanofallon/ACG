@@ -66,8 +66,7 @@ public class ScaleBarElement extends FigureElement {
 			scaleBarLabel = StringUtilities.format(heightFraction);
 		}
 		
-		
-		
+
 
 		int labelWidth = (g2d.getFontMetrics().stringWidth(scaleBarLabel));
 		

@@ -11,6 +11,7 @@ import java.util.Map;
 
 import parameter.AbstractParameter;
 import parameter.Parameter;
+import priors.AbstractPrior;
 
 import component.LikelihoodComponent;
 
@@ -188,14 +189,16 @@ public class MemoryStateLogger implements MCMCListener {
 		logFrequency = (int)Math.ceil(freq);
 		
 		for(LikelihoodComponent comp : chain.getComponents()) {
-			XYSeries series = new XYSeries(comp.getLogHeader());
-			XYSeries burnin = new XYSeries(comp.getLogHeader() + " (burnin)");
-			SeriesWrapper wrapper = new SeriesWrapper();
-			wrapper.name = comp.getName();
-			wrapper.values = series;
-			wrapper.burnin = burnin;
-			likelihoodSeriesMap.put(comp.getName(), wrapper);
-			seriesNames.add(comp.getName());
+			if (logThisComponent(comp)) {
+				XYSeries series = new XYSeries(comp.getLogHeader());
+				XYSeries burnin = new XYSeries(comp.getLogHeader() + " (burnin)");
+				SeriesWrapper wrapper = new SeriesWrapper();
+				wrapper.name = comp.getName();
+				wrapper.values = series;
+				wrapper.burnin = burnin;
+				likelihoodSeriesMap.put(comp.getName(), wrapper);
+				seriesNames.add(comp.getName());
+			}
 		}
 		
 		for(Parameter<?> p : chain.getParameters()) {
@@ -216,6 +219,10 @@ public class MemoryStateLogger implements MCMCListener {
 		initialized = true;
 	}
 
+	private boolean logThisComponent(LikelihoodComponent comp) {
+		return ! (comp instanceof AbstractPrior);
+	}
+	
 	@Override
 	public void newState(int stateNumber) {
 		if (stateNumber < ignorePeriod) {
@@ -225,18 +232,20 @@ public class MemoryStateLogger implements MCMCListener {
 			burninExceeded = stateNumber >= burnin;
 			
 			for(LikelihoodComponent comp : chain.getComponents()) {
-				String name = comp.getName();
-				SeriesWrapper wrapper = getLikelihoodSeries(name);
-				//XYSeries series = wrapper.values;
-				Point2D p = new Point2D.Float(stateNumber, new Float(comp.getProposedLogLikelihood()));
-				
-				if (! burninExceeded)
-					wrapper.burnin.addPointInOrder(p);
-				else
-					wrapper.values.addPointInOrder(p);
-				
-				if (wrapper.histo != null) {
-					wrapper.histo.addValue(comp.getProposedLogLikelihood());
+				if (logThisComponent(comp)) {
+					String name = comp.getName();
+					SeriesWrapper wrapper = getLikelihoodSeries(name);
+					//XYSeries series = wrapper.values;
+					Point2D p = new Point2D.Float(stateNumber, new Float(comp.getProposedLogLikelihood()));
+
+					if (! burninExceeded)
+						wrapper.burnin.addPointInOrder(p);
+					else
+						wrapper.values.addPointInOrder(p);
+
+					if (wrapper.histo != null) {
+						wrapper.histo.addValue(comp.getProposedLogLikelihood());
+					}
 				}
 			}
 			
